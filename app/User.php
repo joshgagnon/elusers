@@ -11,17 +11,17 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name'];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * Organisation relationship: a user belongs to an organisation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function organisation()
+    {
+        return $this->belongsTo(Organisation::class);
+    }
 }
