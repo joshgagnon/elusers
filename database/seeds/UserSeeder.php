@@ -1,5 +1,6 @@
 <?php
 
+use App\Organisation;
 use App\User;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        $evolutionLawyers = Organisation::where('legal_name', 'Evolution Lawyers Limited')->first();
+
         User::create([
             'title' => 'Mr',
             'first_name' => 'Thomas',
@@ -19,7 +22,8 @@ class UserSeeder extends Seeder
             'surname' => 'Bloy',
             'preferred_name' => 'Tom',
             'email' => 'thomas@evolutionlawyers.nz',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'organisation_id' => $evolutionLawyers->id,
         ]);
 
         User::create([
@@ -28,7 +32,8 @@ class UserSeeder extends Seeder
             'middle_name' => 'Kelly',
             'surname' => 'Cunningham-Adams',
             'email' => 'tamina@evolutionlawyers.nz',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'organisation_id' => $evolutionLawyers->id,
         ]);
 
         User::create([
@@ -38,7 +43,8 @@ class UserSeeder extends Seeder
             'surname' => 'Moran',
             'email' => 'paddy@catalex.nz',
             'preferred_name' => 'Paddy',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'organisation_id' => $evolutionLawyers->id,
         ]);
 
         User::create([
@@ -48,7 +54,8 @@ class UserSeeder extends Seeder
             'surname' => 'Gagnon',
             'email' => 'josh@catalex.nz',
             'preferred_name' => 'Josh',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'organisation_id' => $evolutionLawyers->id,
         ]);
 
         User::create([
@@ -56,7 +63,8 @@ class UserSeeder extends Seeder
             'first_name' => 'Sarah',
             'surname' => 'Thompson',
             'email' => 'me@no-middle-name.nz',
-            'password' => Hash::make('password')
+            'password' => Hash::make('password'),
+            'organisation_id' => $evolutionLawyers->id,
         ]);
     }
 }
