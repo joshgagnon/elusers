@@ -5,7 +5,7 @@ php:
 
 before_script:
   - cp .env.travis .env
-  - psql -c 'create database catalex_users_test;' -U postgres
+  - psql -c 'create database evolution_users_test;' -U postgres
   - composer self-update
   - composer install --no-interaction
   - php artisan migrate
