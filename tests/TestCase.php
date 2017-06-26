@@ -5,6 +5,7 @@ namespace Tests;
 use App\Organisation;
 use App\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Hash;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -15,7 +16,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @param array $overrides
      *
-     * @return mixed
+     * @return User
      */
     protected function createUser($overrides=[])
     {
@@ -33,7 +34,7 @@ abstract class TestCase extends BaseTestCase
         $userData = array_merge($defaults, $overrides);
 
         // Create and return the user
-        $user = User::create($userData);
+        $user = User::forceCreate($userData);
 
         return $user;
     }
@@ -43,7 +44,7 @@ abstract class TestCase extends BaseTestCase
      *
      * @param array $overrides
      *
-     * @return mixed
+     * @return Organisation
      */
     protected function createOrganisation($overrides=[])
     {
