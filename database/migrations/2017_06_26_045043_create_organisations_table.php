@@ -20,6 +20,7 @@ class CreateOrganisationsTable extends Migration
             $table->string('trading_name');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
