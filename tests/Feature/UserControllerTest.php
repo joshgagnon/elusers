@@ -29,4 +29,18 @@ class UserControllerTest extends TestCase
             ->assertStatus(200)
             ->assertExactJson($org1->users()->get()->toArray());
     }
+
+    /**
+     * @test
+     */
+    public function current_returns_the_current_user()
+    {
+        $org = $this->createOrganisation();
+        $user = $this->createUser(['organisation_id' => $org->id]);
+
+        $this->actingAs($user)
+            ->get('api/user')
+            ->assertStatus(200)
+            ->assertExactJson($user->toArray());
+    }
 }
