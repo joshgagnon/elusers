@@ -3,7 +3,9 @@ import 'babel-polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import Navbar from './components/navbar';
+
 ReactDOM.render(
-    <h1>It's Alive!</h1>,
+    <Navbar />,
     document.getElementById('main')
 );
