@@ -11,6 +11,22 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    private $emailIncrementer;
+
+    /**
+     * TestCase constructor.
+     *
+     * @param null   $name
+     * @param array  $data
+     * @param string $dataName
+     */
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        $this->emailIncrementer = 0;
+    }
+
     /**
      * Helper method for creating users for tests.
      *
@@ -26,7 +42,7 @@ abstract class TestCase extends BaseTestCase
             'middle_name' => 'One',
             'surname' => 'Two',
             'preferred_name' => 'Three',
-            'email' => 'testing@onetwo.com',
+            'email' => 'user' . ++$this->emailIncrementer . '@email.com', // use an incrementer to get unique, but not-random email addresses
             'password' => Hash::make('password'),
         ];
 

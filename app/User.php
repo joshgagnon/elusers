@@ -13,7 +13,7 @@ class User extends Authenticatable
 
     protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name'];
 
-    protected $hidden = ['password', 'remember_token'];
+    protected $visible = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email'];
 
     /**
      * Organisation relationship: a user belongs to an organisation
@@ -23,5 +23,21 @@ class User extends Authenticatable
     public function organisation()
     {
         return $this->belongsTo(Organisation::class);
+    }
+
+    /**
+     * Query scope: limit users to an organisation.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \App\Organisation $organisation
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeInOrganisation($query, $organisation)
+    {
+        if (!is_int($organisation)) {
+            $organisation = $organisation->id;
+        }
+
+        return $query->where('users.organisation_id', $organisation);
     }
 }
