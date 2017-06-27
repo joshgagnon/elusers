@@ -73,5 +73,9 @@
                 </div>
             </div>
         </div>
+
+        <div id="main"></div>
+
+        <script type="text/javascript" src="js/app.js"></script>
     </body>
 </html>
