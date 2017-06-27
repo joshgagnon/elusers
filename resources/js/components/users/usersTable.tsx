@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Panel from '../../panel';
-import Table from '../../dataTable';
+import Panel from '../panel';
+import Table from '../dataTable';
 
 const UsersTable = () => (
     <Panel title="Users">
