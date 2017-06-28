@@ -34,15 +34,14 @@ class UserController extends Controller
      *
      * @param \App\User $user
      * @return \App\User
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function show(User $user)
     {
-        // Check the request user is in the logged-in user's organisation
-        if ($user->organisation_id !== Auth::user()->organisation_id) {
-            throw new NotFoundHttpException();
-        }
+        // Check users are in the same org
+        $usersInSameOrganisation = $user->organisation_id === Auth::user()->organisation_id;
+        abort_if(!$usersInSameOrganisation, 404);
 
+        // Reutrn the user
         return $user;
     }
 }
