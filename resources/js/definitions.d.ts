@@ -1,5 +1,5 @@
 declare namespace EvolutionUsers {
-    interface User {
+    interface IUser {
         title: string;
         firstName: string;
         middleName?: string;
@@ -8,7 +8,7 @@ declare namespace EvolutionUsers {
         email: string;
     }
 
-    export interface State {
-        user: User;
+    export interface IState {
+        user: IUser;
     }
 }

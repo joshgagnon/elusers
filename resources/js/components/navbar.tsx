@@ -1,22 +1,38 @@
 import * as React from 'react';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap';
 
 const NavMenu = () => {
     return (
-        <Navbar>
+        <Navbar collapseOnSelect>
             <Navbar.Header>
                 <Navbar.Brand>
-                    <a href="#">Evolution Users</a>
+                    <Link to={`/`}>Evolution Users</Link>
                 </Navbar.Brand>
+
+                <Navbar.Toggle />
             </Navbar.Header>
 
-            <Nav pullRight>
-                <NavItem eventKey={1} href="#"><Link to={`/`}>Users</Link></NavItem>
-                <NavItem eventKey={2} href="#"><Link to={`organisation`}>Organisation</Link></NavItem>
-                <NavItem eventKey={3} href="#">My Profile</NavItem>
-                <NavItem eventKey={4} href="#">Logout</NavItem>
-            </Nav>
+            <Navbar.Collapse>
+                <Nav pullRight>
+                    <LinkContainer exact to="/">
+                        <NavItem eventKey={1}>Home</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to="/users">
+                        <NavItem eventKey={1}>Users</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to="/organisation">
+                        <NavItem eventKey={1}>Organisation</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to="/">
+                        <NavItem eventKey={1}>My Profile</NavItem>
+                    </LinkContainer>
+                    <LinkContainer exact to="/">
+                        <NavItem eventKey={1}>Logout</NavItem>
+                    </LinkContainer>
+                </Nav>
+            </Navbar.Collapse>
         </Navbar>
     );
 };

@@ -1,13 +1,22 @@
 import * as React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import UsersTable from './components/users/usersTable';
-import EditOrganisation from './components/organisation/editOrganisation'
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-export default (component) => (
-    <Router>
-        <div>
-            <Route path='/' component={UsersTable} />
-            <Route path='/organisation' component={EditOrganisation} />
-        </div>
-    </Router>
+import Layout from './components/layout';
+
+import Home from './components/home';
+import UsersTable from './components/users/usersTable';
+import EditOrganisation from './components/organisation/editOrganisation';
+
+const routes = () => (
+    <BrowserRouter>
+        <Layout>
+            <Switch>
+                <Route exact path='/' component={ Home } />
+                <Route exact path='/users' component={ UsersTable } />
+                <Route exact path='/organisation' component={ EditOrganisation } />
+            </Switch>
+        </Layout>
+    </BrowserRouter>
 );
+
+export default routes;
