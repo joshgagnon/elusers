@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Auth::loginUsingId(1);
+//Auth::loginUsingId(1);
 
 
-Route::get('users', 'UserController@index');
 Route::get('user', 'UserController@current');
-Route::get('user/{user}', 'UserController@show');
+Route::get('users', 'UserController@index');
+Route::get('users/{user}', 'UserController@show');

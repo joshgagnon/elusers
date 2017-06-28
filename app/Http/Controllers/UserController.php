@@ -39,7 +39,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         // Check the request user is in the logged-in user's organisation
-        if ($user->organisation_id === Auth::user()->id) {
+        if ($user->organisation_id !== Auth::user()->organisation_id) {
             throw new NotFoundHttpException();
         }
 
