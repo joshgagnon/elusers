@@ -41,7 +41,7 @@ class UserController extends Controller
         $usersInSameOrganisation = $user->organisation_id === Auth::user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
 
-        // Reutrn the user
+        // Return the user
         return $user;
     }
 }
