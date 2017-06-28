@@ -1,6 +1,14 @@
 declare namespace EvolutionUsers {
-    export interface DocumentSet {
-        id?: string;
-        documents: Document[];
+    interface User {
+        title: string;
+        firstName: string;
+        middleName?: string;
+        lastName: string;
+        preferredName?: string;
+        email: string;
+    }
+
+    export interface State {
+        user: User;
     }
 }

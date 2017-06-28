@@ -3,20 +3,15 @@ import 'babel-polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Navbar from './components/navbar';
-import UsersTable from './components/users/usersTable';
+import ReduxRoot from "./reduxRoot";
+import configureStore from './configureStore';
+import { browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux'
 
-const App = () => (
-    <div>
-        <Navbar />
-
-        <div className="container">
-            <UsersTable />
-        </div>
-    </div>
-);
+const store = configureStore(browserHistory);
+const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
-    <App />,
+    <ReduxRoot store={store} history={history} />,
     document.getElementById('main')
 );
