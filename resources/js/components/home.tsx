@@ -1,5 +1,27 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { toggleSomething } from '../actions/index';
 
-const Home = () => (<h1>Dashboard</h1>);
+interface IHomeProps {
+    something: boolean;
+    toggleSomething: Function;
+}
 
-export default Home;
+interface IHomeState {}
+
+class Home extends React.PureComponent<IHomeProps, IHomeState> {
+    render() {
+        return (
+            <div>
+                <h1>Dashboard: {this.props.something ? 'true' : 'false'}</h1>
+                <button onClick={() => this.props.toggleSomething()}>Toggle Something</button>
+            </div>
+        );
+    }
+}
+
+export default connect(state => ({
+    something: state.something
+}), {
+    toggleSomething
+})(Home);
