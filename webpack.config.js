@@ -5,7 +5,7 @@ var WebpackNotifierPlugin = require('webpack-notifier');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: path.resolve(__dirname, 'resources/js/app.tsx'),
+    entry: path.resolve(__dirname, 'resources/js/index.tsx'),
     output: {
         filename: 'app.js',
         path: path.resolve(__dirname, 'public/js')
