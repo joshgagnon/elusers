@@ -9,6 +9,13 @@ declare namespace EvolutionUsers {
     }
 
     export interface IState {
+        routing: any;
         user: IUser;
+        something: boolean;
+    }
+
+    export interface IAction {
+        type: string;
+        payload?: any;
     }
 }

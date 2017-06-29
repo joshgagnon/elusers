@@ -2,17 +2,20 @@ import * as React from 'react';
 import Navbar from './navbar';
 
 interface ILayoutProps {
+    user: EvolutionUsers.IUser;
     children: any;
 }
 
-const Layout = ({ children }: ILayoutProps) => (
-    <div>
-        <Navbar />
+export default class Layout extends React.PureComponent<ILayoutProps, {}> {
+    render() {
+        return (
+            <div>
+                <Navbar />
 
-        <div className="container">
-            { children }
-        </div>
-    </div>
-);
-
-export default Layout;
+                <div className="container">
+                    { this.props.children }
+                </div>
+            </div>
+        );
+    }
+}
