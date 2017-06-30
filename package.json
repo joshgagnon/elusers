@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {},
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/react": "^15.0.32",
     "@types/react-bootstrap": "0.0.51",
     "@types/react-dom": "^15.5.1",
@@ -24,6 +25,7 @@
     "webpack-notifier": "^1.5.0"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-polyfill": "^6.23.0",
     "history": "^4.6.3",
     "react": "^15.6.1",
@@ -36,6 +38,6 @@
     "redux": "^3.7.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
-    "typescript": "^2.3.4"
+    "typescript": "^2.4.0"
   }
 }
