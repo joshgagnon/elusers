@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { requestResource } from '../actions/index'
+import { requestResource } from '../../actions/index'
 
 interface IInjectorProps {
     fetch: Function;
@@ -28,9 +28,10 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
             this.fetch();
         }
 
-        componentDidUpdate() {
-            this.fetch();
-        }
+        // Only requesting on mount - for now!
+        // componentDidUpdate() {
+        //     this.fetch();
+        // }
 
         render() {
             return <ComposedComponent {...this.props} />;
@@ -45,7 +46,7 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
     function stateToProps(state: EvolutionUsers.IState, ownProps: any) {
         return {
             [propsName]: state.resources[location(ownProps)] || DEFAULT
-        }
+        };
     }
 
     function actions(dispatch: Dispatch<any>, ownProps: any) {

@@ -19,6 +19,11 @@ declare namespace EvolutionUsers {
         };
     }
 
+    export interface IResource<T> {
+        status?: ERequestStatus;
+        data?: T;
+    }
+
     export interface IState {
         routing: any;
         user: IUser;
@@ -33,6 +38,7 @@ declare namespace EvolutionUsers {
 
     export const enum EActionTypes {
         RESOURCE_REQUEST = 'RESOURCE_REQUEST',
+        RESOURCE_FETCHING = 'RESOURCE_FETCHING',
         RESOURCE_SUCCESS = 'RESOURCE_SUCCESS',
         RESOURCE_FAILURE = 'RESOURCE_FAILURE',
 

@@ -1,6 +1,6 @@
 export default function resources(state={}, action: EvolutionUsers.IAction) {
     switch (action.type) {
-        case EvolutionUsers.EActionTypes.RESOURCE_REQUEST:
+        case EvolutionUsers.EActionTypes.RESOURCE_FETCHING:
             return {
                 ...state,
                 [action.payload.key]: {
