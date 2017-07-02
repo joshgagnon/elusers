@@ -20,6 +20,6 @@ export function requestResource(resource: string) {
 
     return {
         type: EvolutionUsers.EActionTypes.RESOURCE_REQUEST,
-        payload: { key: resource }
+        payload: { key: resourceUrl }
     };
 }
