@@ -26,6 +26,8 @@ export default class UsersTable extends React.PureComponent<IUsersTableProps, IU
             )
         }
 
+        console.log(this.props);
+
         return (
             <Panel title="Users">
                 <Table headings={HEADINGS}>

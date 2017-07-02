@@ -25,7 +25,7 @@ function *checkAndRequest(action: EvolutionUsers.IAction) {
     yield put({ type: EvolutionUsers.EActionTypes.RESOURCE_FETCHING, payload: action.payload });
 
     try {
-        const response = yield call(axios.get, action.payload.key)
+        const response = yield call(axios.get, '/api/' + action.payload.key);
         yield put({type: EvolutionUsers.EActionTypes.RESOURCE_SUCCESS, payload: { response, key: action.payload.key } });
     } catch (e) {
         yield put({type: EvolutionUsers.EActionTypes.RESOURCE_FAILURE, payload: { response: e, key: action.payload.key } });

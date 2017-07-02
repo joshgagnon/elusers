@@ -16,10 +16,8 @@ export function toggleSomething() {
 };
 
 export function requestResource(resource: string) {
-    const resourceUrl = '/api/' + resource;
-
     return {
         type: EvolutionUsers.EActionTypes.RESOURCE_REQUEST,
-        payload: { key: resourceUrl }
+        payload: { key: resource }
     };
 }

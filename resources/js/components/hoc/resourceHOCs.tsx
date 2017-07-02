@@ -13,7 +13,7 @@ interface IHOCFactoryParameters {
     propsName: string;
 }
 
-const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedComponent: React.Component) => {
+const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedComponent: React.PureComponent) => {
     class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
 
         fetch(refresh?: boolean){
