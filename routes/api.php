@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Auth::loginUsingId(1);
+//Auth::loginUsingId(1);
 
 
 Route::get('user', 'UserController@current');
