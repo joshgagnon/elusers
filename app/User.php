@@ -26,6 +26,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Professional Development Record relationship: a User has many Professional Development Records
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function professionalDevelopmentRecords()
+    {
+        return $this->hasMany(ProfessionalDevelopmentRecord::class);
+    }
+
+    /**
      * Query scope: limit users to an organisation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query

@@ -11,7 +11,7 @@ module.exports = {
         path: path.resolve(__dirname, 'public/js')
 
     },
-    devtool: DEV ? "source-map" : null,
+    devtool: DEV ? "source-map" : false,
     module: {
         rules: [
             {
@@ -34,10 +34,6 @@ module.exports = {
     },
     plugins: [
         new WebpackNotifierPlugin({ title: 'Evolution Users' }),
-        !DEV ? new CleanWebpackPlugin(['public'], {
-            verbose: true,
-            dry: false
-        }) : function(){},
         !DEV ? new webpack.optimize.UglifyJsPlugin() : function(){}
     ]
 };

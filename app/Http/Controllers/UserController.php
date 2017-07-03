@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Auth;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
