@@ -38,15 +38,17 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
         }
     }
 
-    const DEFAULT = {};
-
     /**
      * Figure out where in props to put the fetched resource
      */
     function stateToProps(state: EvolutionUsers.IState, ownProps: any) {
-        return {
-            [propsName]: state.resources[location(ownProps)] || DEFAULT
-        };
+        // Dig the resource out of state
+        const resource = state.resources[location(ownProps)] || null;
+
+        const isFetching = !resource || resource.status === EvolutionUsers.ERequestStatus.FETCHING;
+        const hasErrored = resource && resource.status === EvolutionUsers.ERequestStatus.ERROR;
+
+        return { [propsName]: { isFetching, hasErrored, ...resource} };
     }
 
     function actions(dispatch: Dispatch<any>, ownProps: any) {

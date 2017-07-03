@@ -13,7 +13,7 @@ class User extends Authenticatable
 
     protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name'];
 
-    protected $visible = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email'];
+    protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email'];
 
     /**
      * Organisation relationship: a user belongs to an organisation

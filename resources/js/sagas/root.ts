@@ -1,5 +1,6 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects';
 import axios from 'axios';
+const humps = require('humps');
 
 function* rootSagas() {
     yield [
@@ -26,7 +27,8 @@ function *checkAndRequest(action: EvolutionUsers.IAction) {
 
     try {
         const response = yield call(axios.get, '/api/' + action.payload.key);
-        yield put({type: EvolutionUsers.EActionTypes.RESOURCE_SUCCESS, payload: { response, key: action.payload.key } });
+        const camelCaseResponseData = humps.camelizeKeys(response.data);
+        yield put({type: EvolutionUsers.EActionTypes.RESOURCE_SUCCESS, payload: { response: camelCaseResponseData, key: action.payload.key } });
     } catch (e) {
         yield put({type: EvolutionUsers.EActionTypes.RESOURCE_FAILURE, payload: { response: e, key: action.payload.key } });
     }

@@ -1,9 +1,10 @@
 declare namespace EvolutionUsers {
     interface IUser {
+        id: number;
         title: string;
         firstName: string;
         middleName?: string;
-        lastName: string;
+        surname: string;
         preferredName?: string;
         email: string;
     }
@@ -22,6 +23,8 @@ declare namespace EvolutionUsers {
     export interface IResource<T> {
         status?: ERequestStatus;
         data?: T;
+        isFetching: boolean;
+        hasErrored: boolean;
     }
 
     export interface IState {
