@@ -11,7 +11,7 @@ class ProfessionalDevelopmentRecord extends Model
 
     protected $fillable = ['title', 'date', 'minutes', 'reflection'];
 
-    protected $visible = ['title', 'date', 'minutes', 'reflection'];
+    protected $visible = ['id', 'title', 'date', 'minutes', 'reflection'];
 
     /**
      * User relationship: a Professional Development Record belongs to a user

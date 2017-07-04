@@ -58,7 +58,7 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
                 const options = { refresh };
                 return dispatch(requestResource(resource, options));
             }
-        }
+        };
     }
 
 
@@ -66,3 +66,4 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
 }
 
 export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
+export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.userId}/cpdpr`, propsName: 'cpdpr' });

@@ -27,8 +27,24 @@ class ProfessionalDevelopmentRecordSeeder extends Seeder
         ProfessionalDevelopmentRecord::forceCreate([
             'user_id' => $user1->id,
             'title' => 'Training of some other form',
-            'date' => Carbon::parse('16 June 2017'),
+            'date' => Carbon::parse('15 June 2017'),
             'minutes' => 90,
+            'reflection' => 'Something about someone',
+        ]);
+
+        ProfessionalDevelopmentRecord::forceCreate([
+            'user_id' => $user1->id,
+            'title' => 'Five six seven eight',
+            'date' => Carbon::parse('1 March 2016'),
+            'minutes' => 180,
+            'reflection' => 'Something about someone',
+        ]);
+
+        ProfessionalDevelopmentRecord::forceCreate([
+            'user_id' => $user1->id,
+            'title' => 'One two thre four',
+            'date' => Carbon::parse('31 October 2016'),
+            'minutes' => 150,
             'reflection' => 'Something about someone',
         ]);
     }

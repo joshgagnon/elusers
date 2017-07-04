@@ -26,6 +26,9 @@ export default class NavMenu extends React.Component<{}, {}> {
                         <LinkContainer to="/organisation">
                             <NavItem eventKey={1}>Organisation</NavItem>
                         </LinkContainer>
+                        <LinkContainer to="/cpdpr">
+                            <NavItem eventKey={1}>CPDPR</NavItem>
+                        </LinkContainer>
                         <LinkContainer to="/my-profile">
                             <NavItem eventKey={1}>My Profile</NavItem>
                         </LinkContainer>
