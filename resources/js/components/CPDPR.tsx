@@ -16,9 +16,7 @@ interface ICPDPRData {
         reflection: string;
         minutes: number;
     }[];
-    minutesThisYear: number;
-    totalMinutes: number;
-    yearEnding: number;
+    minutes: number;
 };
 
 interface ICPDPRTableProps {
