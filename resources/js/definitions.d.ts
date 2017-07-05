@@ -20,6 +20,10 @@ declare namespace EvolutionUsers {
         };
     }
 
+    interface ICPDPR {
+        yearEndingIndex: string;
+    }
+
     export interface IResource<T> {
         status?: ERequestStatus;
         data?: T;
@@ -32,6 +36,7 @@ declare namespace EvolutionUsers {
         user: IUser;
         something: boolean;
         resources: IStateResources;
+        cpdpr: ICPDPR;
     }
 
     export interface IAction {
@@ -44,6 +49,8 @@ declare namespace EvolutionUsers {
         RESOURCE_FETCHING = 'RESOURCE_FETCHING',
         RESOURCE_SUCCESS = 'RESOURCE_SUCCESS',
         RESOURCE_FAILURE = 'RESOURCE_FAILURE',
+
+        UPDATE_CPDPR_YEAR = 'UPDATE_CPDPR_YEAR',
 
         TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
     }

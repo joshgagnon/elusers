@@ -21,3 +21,10 @@ export function requestResource(resource: string) {
         payload: { key: resource }
     };
 }
+
+export function updateCPDPRYearIndex(index: number) {
+    return {
+        type: EvolutionUsers.EActionTypes.UPDATE_CPDPR_YEAR,
+        payload: index
+    };
+}

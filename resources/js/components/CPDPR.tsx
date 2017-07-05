@@ -4,85 +4,125 @@ import Table from './dataTable';
 import { UserCPDPRHOC } from './hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHours } from './utils';
+import { Button } from 'react-bootstrap';
+import { updateCPDPRYearIndex } from '../actions/index';
+
+interface ICPDPRData {
+    records: {
+        id: number;
+        title: string;
+        date: string;
+        reflection: string;
+        minutes: number;
+    }[];
+    minutesThisYear: number;
+    totalMinutes: number;
+    yearEnding: number;
+};
+
+interface ICPDPRTableProps {
+    recordSet: ICPDPRData;
+}
+
+interface ICPDPRTableState {}
 
 interface ICPDPRProps {
     userId: number;
-    cpdpr: {
-        data: {
-            records: {
-                id: number;
-                title: string;
-                date: string;
-                reflection: string;
-                minutes: number;
-            }[];
-            subtotalMinutes: number;
-            rolloverMinutes: number;
-            totalMinutes: number;
-        };
-    };
+    cpdpr: EvolutionUsers.IResource<ICPDPRData[]>;
+    updateCPDPRYearIndex: (year: number) => EvolutionUsers.IAction;
+    yearEndingIndex: number;
 }
 
 interface ICPDPRState {}
 
-const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours'];
+interface IUserCPDPRProps {}
+interface IUserCPDPRState {}
+
+class CPDPRTable extends React.PureComponent<ICPDPRTableProps, ICPDPRTableState> {
+    render() {
+        const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours'];
+
+        return (
+            <Table headings={HEADINGS} manualBodyTag>
+                <tbody>
+                    {
+                        this.props.recordSet.records.map(record => (
+                            <tr key={record.id}>
+                                <td>{record.date}</td>
+                                <td>{record.title}</td>
+                                <td>{record.reflection}</td>
+                                <td>{minutesToHours(record.minutes)}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+
+                <tfoot>
+                    <tr key="total">
+                        <th colSpan={3} className="text-right">Total:</th>
+                        <th>{minutesToHours(this.props.recordSet.minutes)}</th>
+                    </tr>
+                </tfoot>
+            </Table>
+        );
+    }
+}
 
 @PanelHOC('CPDPR')
-@UserCPDPRHOC()
-export class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
+class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
+    constructor(props: ICPDPRProps) {
+        super(props);
+
+        this.prevYear = this.prevYear.bind(this);
+        this.nextYear = this.nextYear.bind(this);
+    }
+
+    nextYear() {
+        this.props.updateCPDPRYearIndex(this.props.yearEndingIndex + 1);
+    }
+
+    prevYear() {
+        this.props.updateCPDPRYearIndex(this.props.yearEndingIndex - 1);
+    }
+
     render() {
         if (this.props.cpdpr.isFetching) {
-            return <h1>here</h1>;
+            return <h1>Loading</h1>;
         }
+
+        if (this.props.cpdpr.hasErrored) {
+            return <h1>Error</h1>;
+        }
+
+        const years = this.props.cpdpr.data.map(record => record.yearEnding);
+        const currentYear = years[this.props.yearEndingIndex];
+        const currentRecordSet = this.props.cpdpr.data.filter(d => d.yearEnding === currentYear)[0];
+
+        const disablePrevButton = this.props.yearEndingIndex === 0;
+        const disableNextButton = this.props.yearEndingIndex === this.props.cpdpr.data.length - 1
 
         return (
             <div>
-                <Table headings={HEADINGS} manualBodyTag>
-                    <tbody>
-                        {
-                            this.props.cpdpr.data.records.map(record => (
-                                <tr key={record.id}>
-                                    <td>{record.date}</td>
-                                    <td>{record.title}</td>
-                                    <td>{record.reflection}</td>
-                                    <td>{minutesToHours(record.minutes)}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
+                <Button bsStyle="info" disabled={disablePrevButton} onClick={this.prevYear}>Prev Year</Button>
+                <Button bsStyle="info" disabled={disableNextButton} onClick={this.nextYear}>Next Year</Button>
+                
+                <h3>Year ending: {currentYear}</h3>
 
-                    <tfoot>
-                        <tr key="this_year">
-                            <th colSpan={3} className="text-right">Subtotal This Year:</th>
-                            <th>{minutesToHours(this.props.cpdpr.data.subtotalMinutes + 60)}</th>
-                        </tr>
-                        <tr key="total_carry_over">
-                            <th colSpan={3} className="text-right">Rollover From Last Year:</th>
-                            <th>{minutesToHours(this.props.cpdpr.data.rolloverMinutes)}</th>
-                        </tr>
-                        <tr key="total">
-                            <th colSpan={3} className="text-right">Total:</th>
-                            <th>{minutesToHours(this.props.cpdpr.data.totalMinutes)}</th>
-                        </tr>
-                    </tfoot>
-                </Table>
+                <CPDPRTable recordSet={currentRecordSet} />
             </div>
         );
     }
 }
 
-interface IUserCPDPRProps {
-
-}
-
-interface IUserCPDPRState {
-
-}
-
-@connect((state) => ({ userId: state.user.id }))
+@connect(state => ({
+    userId: 1,
+    yearEndingIndex: state.cpdpr.yearEndingIndex
+}), {
+    updateCPDPRYearIndex
+})
+@UserCPDPRHOC()
 export default class CPDPR extends React.PureComponent<IUserCPDPRProps, IUserCPDPRState> {
     render() {
-        // return <CPDPR userId={this.props.userId} />
-        return <UserCPDPR userId={1} />
+        return <UserCPDPR { ...this.props } />
     }
 }

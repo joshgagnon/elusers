@@ -1,7 +1,7 @@
 import { combineReducers, Reducer } from 'redux';
 import { routerReducer as routing } from 'react-router-redux';
-import ResourcesReducer from './resourcesReducer';
-import UserReducer from './userReducer';
+import resourcesReducer from './resourcesReducer';
+import userReducer from './userReducer';
 
 const something = (state=false, action: EvolutionUsers.IAction) => {
     switch (action.type) {
@@ -12,11 +12,21 @@ const something = (state=false, action: EvolutionUsers.IAction) => {
     }
 };
 
+const cpdprReducer = (state={ yearEndingIndex: 0 }, action: EvolutionUsers.IAction) => {
+    switch (action.type) {
+        case EvolutionUsers.EActionTypes.UPDATE_CPDPR_YEAR:
+            return { ...state, yearEndingIndex: action.payload };
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
     routing,
     something,
-    resources: ResourcesReducer,
-    user: UserReducer
+    resources: resourcesReducer,
+    user: userReducer,
+    cpdpr: cpdprReducer,
 });
 
 export default rootReducer;
