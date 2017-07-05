@@ -4,8 +4,9 @@ import Table from './dataTable';
 import { UserCPDPRHOC } from './hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHours } from './utils';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonGroup, Glyphicon } from 'react-bootstrap';
 import { updateCPDPRYearIndex } from '../actions/index';
+import * as moment from 'moment';
 
 interface ICPDPRData {
     records: {
@@ -48,7 +49,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, ICPDPRTableState>
                     {
                         this.props.recordSet.records.map(record => (
                             <tr key={record.id}>
-                                <td>{record.date}</td>
+                                <td>{moment(record.date).format('D MMM YYYY')}</td>
                                 <td>{record.title}</td>
                                 <td>{record.reflection}</td>
                                 <td>{minutesToHours(record.minutes)}</td>
@@ -103,9 +104,11 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
 
         return (
             <div>
-                <Button bsStyle="info" disabled={disablePrevButton} onClick={this.prevYear}>Prev Year</Button>
-                <Button bsStyle="info" disabled={disableNextButton} onClick={this.nextYear}>Next Year</Button>
-                
+                <ButtonGroup className="pull-right">
+                    <Button disabled={disablePrevButton} onClick={this.prevYear}><Glyphicon glyph="arrow-left" /></Button>
+                    <Button disabled={disableNextButton} onClick={this.nextYear}><Glyphicon glyph="arrow-right" /></Button>
+                </ButtonGroup>
+
                 <h3>Year ending: {currentYear}</h3>
 
                 <CPDPRTable recordSet={currentRecordSet} />
