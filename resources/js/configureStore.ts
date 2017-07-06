@@ -6,6 +6,7 @@ import { History } from 'history';
 import createSagaMiddleware from 'redux-saga';
 import runSagas from './sagas/root';
 
+
 export default function configureStore(history: History, initialState={}) {
     const loggerMiddleware = createLogger();
     const sagaMiddleware = createSagaMiddleware();

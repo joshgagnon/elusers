@@ -19,6 +19,24 @@
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
+
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
+
+
+        <style>
+            body {
+                font-family: 'Open Sans', sans-serif;
+            }
+
+            .panel h3 {
+                margin: 5px 0;
+                font-weight: 300;
+            }
+
+            .title-row {
+                margin-bottom: 16px;
+            }
+        </style>
     </head>
     <body>
         <div id="main"></div>

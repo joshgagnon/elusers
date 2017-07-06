@@ -4,6 +4,7 @@ import { requestResource } from '../../actions/index'
 
 interface IInjectorProps {
     fetch: Function;
+    [key: string]: any;
 }
 
 interface IInjectorState {}
@@ -13,7 +14,7 @@ interface IHOCFactoryParameters {
     propsName: string;
 }
 
-const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedComponent: React.PureComponent) => {
+const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedComponent: React.PureComponent<any, any>) => {
     class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
 
         fetch(refresh?: boolean){
@@ -53,10 +54,9 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
 
     function actions(dispatch: Dispatch<any>, ownProps: any) {
         return {
-            fetch: (refresh: boolean) => {
+            fetch: () => {
                 const resource = location(ownProps);
-                const options = { refresh };
-                return dispatch(requestResource(resource, options));
+                return dispatch(requestResource(resource));
             }
         };
     }

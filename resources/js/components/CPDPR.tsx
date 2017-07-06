@@ -17,6 +17,7 @@ interface ICPDPRData {
         minutes: number;
     }[];
     minutes: number;
+    yearEnding: number;
 };
 
 interface ICPDPRTableProps {
@@ -34,7 +35,10 @@ interface ICPDPRProps {
 
 interface ICPDPRState {}
 
-interface IUserCPDPRProps {}
+interface IUserCPDPRProps {
+    userId: number;
+    yearEndingIndex: number;
+}
 interface IUserCPDPRState {}
 
 class CPDPRTable extends React.PureComponent<ICPDPRTableProps, ICPDPRTableState> {
@@ -67,7 +71,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, ICPDPRTableState>
     }
 }
 
-@PanelHOC('CPDPR')
+@PanelHOC([props => props.cpdpr])
 class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
     constructor(props: ICPDPRProps) {
         super(props);
@@ -77,37 +81,35 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
     }
 
     nextYear() {
-        this.props.updateCPDPRYearIndex(this.props.yearEndingIndex + 1);
-    }
-
-    prevYear() {
         this.props.updateCPDPRYearIndex(this.props.yearEndingIndex - 1);
     }
 
+    prevYear() {
+        this.props.updateCPDPRYearIndex(this.props.yearEndingIndex + 1);
+    }
+
     render() {
-        if (this.props.cpdpr.isFetching) {
-            return <h1>Loading</h1>;
-        }
-
-        if (this.props.cpdpr.hasErrored) {
-            return <h1>Error</h1>;
-        }
-
         const years = this.props.cpdpr.data.map(record => record.yearEnding);
         const currentYear = years[this.props.yearEndingIndex];
-        const currentRecordSet = this.props.cpdpr.data.filter(d => d.yearEnding === currentYear)[0];
+        const currentRecordSet = this.props.cpdpr.data[this.props.yearEndingIndex];
 
-        const disablePrevButton = this.props.yearEndingIndex === 0;
-        const disableNextButton = this.props.yearEndingIndex === this.props.cpdpr.data.length - 1
+        const disablePrevButton = this.props.yearEndingIndex === this.props.cpdpr.data.length - 1;
+        const disableNextButton = this.props.yearEndingIndex === 0;
 
         return (
             <div>
-                <ButtonGroup className="pull-right">
-                    <Button disabled={disablePrevButton} onClick={this.prevYear}><Glyphicon glyph="arrow-left" /></Button>
-                    <Button disabled={disableNextButton} onClick={this.nextYear}><Glyphicon glyph="arrow-right" /></Button>
-                </ButtonGroup>
+                <strong>Yearly Period:</strong>
 
-                <h3>Year ending: {currentYear}</h3>
+                <div className="row title-row">
+                    <div className="col-xs-12">
+                        <ButtonGroup className="pull-right">
+                            <Button disabled={disablePrevButton} onClick={this.prevYear}><Glyphicon glyph="arrow-left" /></Button>
+                            <Button disabled={disableNextButton} onClick={this.nextYear}><Glyphicon glyph="arrow-right" /></Button>
+                        </ButtonGroup>
+                        
+                        <h3>1 April {currentRecordSet.yearEnding - 1} to 31 March {currentRecordSet.yearEnding}</h3>
+                    </div>
+                </div>
 
                 <CPDPRTable recordSet={currentRecordSet} />
             </div>
@@ -124,6 +126,11 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
 @UserCPDPRHOC()
 export default class CPDPR extends React.PureComponent<IUserCPDPRProps, IUserCPDPRState> {
     render() {
-        return <UserCPDPR { ...this.props } />
+        return (
+            <div>
+                <h2>CPDPR</h2>
+                <UserCPDPR { ...this.props } />
+            </div>
+        );
     }
 }

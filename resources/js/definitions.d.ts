@@ -21,7 +21,7 @@ declare namespace EvolutionUsers {
     }
 
     interface ICPDPR {
-        yearEndingIndex: string;
+        yearEndingIndex: number;
     }
 
     export interface IResource<T> {

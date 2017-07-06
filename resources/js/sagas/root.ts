@@ -1,6 +1,6 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects';
 import axios from 'axios';
-const humps = require('humps');
+import * as humps from 'humps';
 
 function* rootSagas() {
     yield [
@@ -8,7 +8,7 @@ function* rootSagas() {
     ];
 }
 
-export default function runSagas(sagaMiddleware){
+export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
     sagaMiddleware.run(rootSagas);
 }
 
