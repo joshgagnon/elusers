@@ -15,8 +15,6 @@ const PanelHOC = (resources?: any[]) => (ComposedComponent: React.PureComponent<
             }
         }
 
-        console.log(props);
-
         return <ComposedComponent {...props} />;
     }
 
