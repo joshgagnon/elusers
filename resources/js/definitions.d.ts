@@ -60,4 +60,6 @@ declare namespace EvolutionUsers {
         COMPLETE = 'COMPLETE',
         ERROR = 'ERROR'
     }
+
+    export interface Stateless { }
 }

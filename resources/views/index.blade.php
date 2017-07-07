@@ -37,6 +37,27 @@
             .title-row {
                 margin-bottom: 16px;
             }
+
+            .DayPicker {
+                position: absolute;
+                top: 80px;
+                box-shadow: 0 0 60px 0 rgba(0, 0, 0, .5);
+                z-index: 100;
+            }
+
+            .DayPicker::after, .arrow_box::before {
+                bottom: 100%;
+                left: 16px;
+                border: solid;
+                content: " ";
+                position: absolute;
+            }
+
+            .DayPicker::after {
+                border-color: transparent;
+                border-bottom-color: #fff;
+                border-width: 16px;
+            }
         </style>
     </head>
     <body>

@@ -1,4 +1,5 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects';
+import { SagaMiddleware } from 'redux-saga';
 import axios from 'axios';
 import * as humps from 'humps';
 

@@ -4,11 +4,11 @@ import Table from './dataTable';
 import { UserCPDPRHOC } from './hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHours } from './utils';
-import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col, FormGroup, ControlLabel, HelpBlock, FormControl, Modal } from 'react-bootstrap';
+import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col, Modal } from 'react-bootstrap';
 import { updateCPDPRYearIndex } from '../actions/index';
 import * as moment from 'moment';
-import { Field, reduxForm, submit } from 'redux-form';
-import { SingleDatePicker } from 'react-dates';
+import { Field, reduxForm, submit, FormComponentProps, FormProps } from 'redux-form';
+import FieldComponent from './formFields/fieldComponent';
 
 
 interface ICPDPRData {
@@ -27,8 +27,6 @@ interface ICPDPRTableProps {
     recordSet: ICPDPRData;
 }
 
-interface ICPDPRTableState {}
-
 interface ICPDPRProps {
     userId: number;
     cpdpr: EvolutionUsers.IResource<ICPDPRData[]>;
@@ -36,15 +34,12 @@ interface ICPDPRProps {
     yearEndingIndex: number;
 }
 
-interface ICPDPRState {}
-
 interface IUserCPDPRProps {
     userId: number;
     yearEndingIndex: number;
 }
-interface IUserCPDPRState {}
 
-class CPDPRTable extends React.PureComponent<ICPDPRTableProps, ICPDPRTableState> {
+class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.Stateless> {
     render() {
         const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours'];
 
@@ -74,79 +69,26 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, ICPDPRTableState>
     }
 }
 
-class BootstrapField extends React.PureComponent<any, {}> {
-    componentClass(type: string) {
-        switch (type) {
-            case 'textarea':
-                return type;
-            default:
-                return 'input';
-        }
-    }
-
-    validationState(touched: boolean, error: string) {
-        if (!touched) {
-            return null;
-        }
-
-        return error ? 'error' : 'success';
-    }
-
-    render() {
-        const { input, label, type, meta: { touched, error, warning } } = this.props;
-        const displayError = touched && error;
-
-        return (
-            <FormGroup validationState={this.validationState(touched, error)}>
-                <ControlLabel>{label}</ControlLabel>
-                <div>
-                    <FormControl {...input} componentClass={this.componentClass(type)} type={type} placeholder={label} />
-                    { displayError && <HelpBlock>{error}</HelpBlock>}
-                </div>
-            </FormGroup>
-        );
-    }
+interface ICPDPRFormProps {
+    submitting: boolean;
+    handleSubmit: React.EventHandler<React.FormEvent<HTMLFormElement>>;
 }
 
-class DatePickerField extends React.PureComponent<any, {}> {
-    render() {
-        // debugger;
-        const { input, label, type, meta: { active, touched, error, warning } } = this.props;
-
-        return (
-            <FormGroup validationState={null}>
-                <SingleDatePicker
-                    id="date_input"
-                    numberOfMonths={1}
-                    date={input.value || moment()}
-                    focused={active}
-                    onDateChange={input.onChange}
-                    onFocusChange={input.onFocus}
-                    hideKeyboardShortcutsPanel={true}
-                />
-            </FormGroup>
-        );
-    }
-}
-
-class CPDPRForm extends React.PureComponent<{ submitting: boolean; handleSubmit: Function; }, {}> {
+class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EvolutionUsers.Stateless> {
     render() {
         return (
             <form onSubmit={ this.props.handleSubmit }>
                 <Row>
                     <Col sm={6}>
-                        <Field name="date" label="Date" component={BootstrapField} type="date" />
+                        <Field name="date" label="Date" component={FieldComponent} type="date" />
                     </Col>
                     <Col sm={6}>
-                        <Field name="hours" label="Hours" component={BootstrapField} type="number" />
+                        <Field name="hours" label="Hours" component={FieldComponent} type="number" />
                     </Col>
                 </Row>
 
-                <Field name="title" label="Title" component={BootstrapField} type="text" />
-                <Field name="reflection" label="Reflection" component={BootstrapField} type="textarea" />
-
-
-                <Field name="date2" label="Date" component={DatePickerField} />
+                <Field name="title" label="Title" component={FieldComponent} type="text" />
+                <Field name="reflection" label="Reflection" component={FieldComponent} type="textarea" />
 
                 <Button type="submit" bsStyle="primary" disabled={this.props.submitting}>Save</Button>
             </form>
@@ -187,8 +129,13 @@ const ReduxCPDPRForm = reduxForm({
     validate: validateCPDPRForm
 })(CPDPRForm);
 
+@connect(
+    ({ cpdpr }) => ({ userId: 1, yearEndingIndex: cpdpr.yearEndingIndex }),
+    { updateCPDPRYearIndex }
+)
+@UserCPDPRHOC()
 @PanelHOC([props => props.cpdpr])
-class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
+class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateless> {
     constructor(props: ICPDPRProps) {
         super(props);
 
@@ -251,16 +198,13 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, ICPDPRState> {
 interface IFormModalProps {
     formName: string;
     children: any;
-    dispatch: Function;
 }
 
-interface IFormModalState {}
-
 @connect()
-class FormModal extends React.PureComponent<IFormModalProps, IFormModalState> {
+class FormModal extends React.PureComponent<IFormModalProps, EvolutionUsers.Stateless> {
     render() {
         return (
-            <Modal show={false} onHide={() => {}}>
+            <Modal show={true} onHide={() => {}}>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-sm">Create CPDPR Record</Modal.Title>
                 </Modal.Header>
@@ -278,12 +222,7 @@ class FormModal extends React.PureComponent<IFormModalProps, IFormModalState> {
     }
 }
 
-@connect(
-    ({ cpdpr }) => ({ userId: 1, yearEndingIndex: cpdpr.yearEndingIndex }),
-    { updateCPDPRYearIndex }
-)
-@UserCPDPRHOC()
-export default class CPDPR extends React.PureComponent<IUserCPDPRProps, IUserCPDPRState> {
+export default class CPDPRPage extends React.PureComponent<IUserCPDPRProps, EvolutionUsers.Stateless> {
     render() {
         // debugger;
         return (

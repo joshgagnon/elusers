@@ -2,7 +2,7 @@ import * as React from 'react';
 import Panel from '../panel';
 
 const PanelHOC = (resources?: any[]) => (ComposedComponent: React.PureComponent<any, any>) => {
-    const PanelContent = (props) => {
+    const PanelContent = (props: any) => {
         let status;
 
         if (resources) {
@@ -18,13 +18,8 @@ const PanelHOC = (resources?: any[]) => (ComposedComponent: React.PureComponent<
         return <ComposedComponent {...props} />;
     }
 
-    return class extends React.PureComponent {
-        renderBody() {
-        }
-
+    return class extends React.PureComponent<any, any> {
         render() {
-            
-
             return (
                 <Panel>
                     <PanelContent {...this.props} />
