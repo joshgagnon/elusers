@@ -10,3 +10,5 @@ Homestead.yaml
 npm-debug.log
 .env
 /public/js
+/public/fonts
+/public/css
