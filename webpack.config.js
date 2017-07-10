@@ -56,19 +56,18 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif)$/,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 28192
-                        }
-                    }
-                ]
+                loader: 'url-loader',
+                query: {
+                    limit: 28192
+                }
             },
             {
                 test: /\.(svg|woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-                // loader: 'file-loader?name=[name].[ext]&outputPath=./fonts/'
-                loader: "file-loader?name=../fonts/[name].[ext]"
+                loader: "file-loader",
+                query: {
+                    name: 'fonts/[name].[ext]',
+                    publicPath: '../'
+                }
             }
         ]
     },
