@@ -68,7 +68,7 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 }
 
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif !important;
 }
 
 .panel h3 {
