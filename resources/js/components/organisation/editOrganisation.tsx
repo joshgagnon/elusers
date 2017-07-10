@@ -1,15 +1,16 @@
 import * as React from 'react';
 import Panel from '../panel';
 
-interface IEditOrganisationProps {}
-interface IEditOrganisationState {}
-
-export default class EditOrganisation extends React.PureComponent<IEditOrganisationProps, IEditOrganisationState> {
+export default class EditOrganisation extends React.PureComponent<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
     render() {
         return (
-            <Panel title="Edit Organisation">
-                <h1>Edit Org</h1>
-            </Panel>
+            <div>
+                <h2>Edit Organisation</h2>
+
+                <Panel>
+                    <h1>Edit Org</h1>
+                </Panel>
+            </div>
         );
     }
 }

@@ -12,8 +12,7 @@ interface IUsersTableState {}
 
 const HEADINGS = ['Full Name', 'Preferred Name', 'Email'];
 
-@UsersHOC()
-export default class UsersTable extends React.PureComponent<IUsersTableProps, IUsersTableState> {
+class UsersTable extends React.PureComponent<IUsersTableProps, IUsersTableState> {
     render() {
         if (this.props.users.isFetching) {
             return (
@@ -46,3 +45,5 @@ export default class UsersTable extends React.PureComponent<IUsersTableProps, IU
         );
     }
 }
+
+export default UsersHOC()(UsersTable);
