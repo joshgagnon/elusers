@@ -13,6 +13,8 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        \Auth::loginUsingId(1);
+        if (\App::environment('development')) {
+            \Auth::loginUsingId(1);
+        }
     }
 }
