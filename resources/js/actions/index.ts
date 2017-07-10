@@ -28,3 +28,11 @@ export function updateCPDPRYearIndex(index: number) {
         payload: index
     };
 }
+
+export function showCreateCPDPRModal() {
+    return { type: EvolutionUsers.EActionTypes.SHOW_CREATE_CPDPR_MODAL };
+}
+
+export function hideCreateCPDPRModal() {
+    return { type: EvolutionUsers.EActionTypes.HIDE_CREATE_CPDPR_MODAL };
+}

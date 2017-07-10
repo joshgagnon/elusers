@@ -20,10 +20,6 @@ declare namespace EvolutionUsers {
         };
     }
 
-    interface ICPDPR {
-        yearEndingIndex: number;
-    }
-
     export interface IResource<T> {
         status?: ERequestStatus;
         data?: T;
@@ -36,7 +32,10 @@ declare namespace EvolutionUsers {
         user: IUser;
         something: boolean;
         resources: IStateResources;
-        cpdpr: ICPDPR;
+        cpdpr: {
+            yearEndingIndex: number;
+            createModalVisible: boolean;
+        };
     }
 
     export interface IAction {
@@ -51,6 +50,8 @@ declare namespace EvolutionUsers {
         RESOURCE_FAILURE = 'RESOURCE_FAILURE',
 
         UPDATE_CPDPR_YEAR = 'UPDATE_CPDPR_YEAR',
+        SHOW_CREATE_CPDPR_MODAL = 'SHOW_CREATE_CPDPR_MODAL',
+        HIDE_CREATE_CPDPR_MODAL = 'HIDE_CREATE_CPDPR_MODAL',
 
         TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
     }
@@ -62,4 +63,9 @@ declare namespace EvolutionUsers {
     }
 
     export interface Stateless { }
+    export interface Propless { }
+
+    export interface IValidationErrors {
+        [key: string]: string
+    }
 }

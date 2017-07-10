@@ -12,8 +12,8 @@
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
         <!-- Bootstrap -->
-        <link href="css/app.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
+        <link href="css/app.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -23,22 +23,6 @@
         <![endif]-->
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
-
-
-        <style>
-            body {
-                font-family: 'Open Sans', sans-serif;
-            }
-
-            .panel h3 {
-                margin: 5px 0;
-                font-weight: 300;
-            }
-
-            .title-row {
-                margin-bottom: 16px;
-            }
-        </style>
     </head>
     <body>
         <div id="main"></div>
