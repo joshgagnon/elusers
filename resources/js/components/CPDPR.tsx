@@ -117,8 +117,15 @@ function validateCPDPRForm(values: any) {
     if (!values.date) {
         errors.date = 'Required';
     }
-    else if (!moment(values.date, 'MM/DD/YYYY', true).isValid()) {
+    else if (!moment(values.date, 'D MMM YYYY', true).isValid()) {
         errors.date = 'Invalid date format';
+    }
+
+    if (!values.hours) {
+        errors.hours = 'Required';
+    }
+    else if (values.hours <= 0) {
+        errors.hours = 'Hours must be more than 0';
     }
 
     return errors

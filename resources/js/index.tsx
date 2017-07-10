@@ -11,6 +11,10 @@ const history = syncHistoryWithStore(browserHistory, store);
 
 import ReduxRoot from './reduxRoot';
 
+// CSS
+import '../sass/app.scss';
+import 'react-widgets/dist/css/react-widgets.css';
+
 ReactDOM.render(
     <ReduxRoot store={store} history={history} />,
     document.getElementById('main')

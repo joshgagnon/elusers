@@ -2,30 +2,28 @@ import * as React from 'react';
 import * as moment from 'moment';
 import { FormControl } from 'react-bootstrap';
 import { WrappedFieldInputProps } from 'redux-form';
-import { SingleDatePicker, DayPickerSingleDateController } from 'react-dates';
+import { DateTimePicker } from 'react-widgets';
+import * as momentLocaliser from 'react-widgets/lib/localizers/moment';
+
+momentLocaliser(moment);
 
 interface IDatePickerFieldProps {
      input: WrappedFieldInputProps;
 }
 
-export default class DatePickerField extends React.PureComponent<IDatePickerFieldProps, {}> {
+export default class DatePickerField extends React.PureComponent<IDatePickerFieldProps, EvolutionUsers.Stateless> {
     render() {
-        const { onChange, onFocus } = this.props.input;
-        const value = this.props.input.value || moment();
+        const { input: { onChange, onBlur, value } } = this.props;
 
         return (
-            <div>
-                <FormControl componentClass="input" type="text" value={value.format('D MMM YYYY')} />
-
-                <DayPickerSingleDateController
-                    numberOfMonths={1}
-                    date={value}
-                    onDateChange={onChange}
-                    onFocusChange={onFocus}
-                    showInput={false}
-                    hideKeyboardShortcutsPanel={true}
-                />
-            </div>
+            <DateTimePicker
+                onChange={onChange as any}
+                format="D MMM YYYY"
+                time={false}
+                value={!value ? null : new Date(value)}
+                onBlur={onBlur}
+                className="form-control"
+            />
         );
     }
 }

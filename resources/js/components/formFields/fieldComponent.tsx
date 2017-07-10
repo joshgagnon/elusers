@@ -18,14 +18,14 @@ export default class FieldComponent extends React.PureComponent<IFieldComponentP
     }
 
     render() {
-        const { input, label, type, meta: { touched, error, warning } } = this.props;
+        const { label, meta: { touched, error } } = this.props;
         const displayError = touched && error;
 
         return (
             <FormGroup validationState={this.validationState(touched, error)}>
                 <ControlLabel>{label}</ControlLabel>
                 <div>
-                    <FieldFactory type={type} input={input} placeholder={label}/>
+                    <FieldFactory {...this.props} />
                     { displayError && <HelpBlock>{error}</HelpBlock>}
                 </div>
             </FormGroup>
@@ -33,13 +33,7 @@ export default class FieldComponent extends React.PureComponent<IFieldComponentP
     }
 }
 
-interface IFieldFactoryProps {
-    type: string;
-    input: WrappedFieldInputProps;
-    placeholder: string;
-}
-
-class FieldFactory extends React.PureComponent<IFieldFactoryProps, {}> {
+class FieldFactory extends React.PureComponent<IFieldComponentProps, EvolutionUsers.Stateless> {
     componentClass(type: string) {
         switch (type) {
             case 'textarea':
@@ -50,14 +44,13 @@ class FieldFactory extends React.PureComponent<IFieldFactoryProps, {}> {
     }
 
     render() {
-        const { input, type, placeholder } = this.props;
+        const { input, type, label, meta: { active } } = this.props;
 
         switch (this.props.type) {
             case "date":
                 return <DatePickerField input={input} />;
-                // return <h1>here</h1>;
             default:
-                return <FormControl {...input} componentClass={this.componentClass(type)} type={type} placeholder={placeholder} />;
+                return <FormControl {...input} componentClass={this.componentClass(type)} type={type} placeholder={label} />;
         }
     }
 }

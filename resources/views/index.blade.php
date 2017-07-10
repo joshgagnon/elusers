@@ -9,10 +9,11 @@
 
         <!-- Duplicate bootstrap import TODO: fix -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
         <!-- Bootstrap -->
         <link href="css/app.css" rel="stylesheet">
-        <link href="css/_datepicker.css" rel="stylesheet">
+        <link href="css/main.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,27 +37,6 @@
 
             .title-row {
                 margin-bottom: 16px;
-            }
-
-            .DayPicker {
-                position: absolute;
-                top: 80px;
-                box-shadow: 0 0 60px 0 rgba(0, 0, 0, .5);
-                z-index: 100;
-            }
-
-            .DayPicker::after, .arrow_box::before {
-                bottom: 100%;
-                left: 16px;
-                border: solid;
-                content: " ";
-                position: absolute;
-            }
-
-            .DayPicker::after {
-                border-color: transparent;
-                border-bottom-color: #fff;
-                border-width: 16px;
             }
         </style>
     </head>
