@@ -65,8 +65,6 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
         return (
             <Row>
                 <Col xs={6}>
-                    {/*<FormControl value={hours} min={0} componentClass="input" type="number" onChange={this.onHourChange} onBlur={this.onHourBlur} />*/}
-
                     <FormControl value={hours} componentClass="select" onChange={this.onHourChange} onBlur={this.onHourBlur} >
                         { HOUR_OPTIONS.map((optionValue, index) => {
                                 const text = optionValue + ' hours';
