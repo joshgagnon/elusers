@@ -22,10 +22,8 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
 
         this.state = { minutes: 90 };
 
-        this.onHourChange = this.onHourChange.bind(this);
-        this.onHourBlur = this.onHourBlur.bind(this);
-        this.onMinuteChange = this.onMinuteChange.bind(this);
-        this.onMinutesBlur = this.onMinutesBlur.bind(this);
+        this.onHourEvent = this.onHourEvent.bind(this);
+        this.onMinuteEvent = this.onMinuteEvent.bind(this);
     }
 
     calcNewValue(override: { hours?: number; minutes?: number; }) {
@@ -36,36 +34,25 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
         return newValue;
     }
 
-    onHourChange(e) {
+    onHourEvent(e: React.ChangeEvent<any>, handler: Function) {
         const newValue = this.calcNewValue({ hours: e.target.value });
-        this.props.input.onChange(newValue);
+        handler(newValue);
     }
 
-    onHourBlur(e) {
-        const newValue = this.calcNewValue({ hours: e.target.value });
-        this.props.input.onBlur(newValue);
-    }
-
-    onMinuteChange(e) {
+    onMinuteEvent(e: React.ChangeEvent<any>, handler: Function) {
         const newValue = this.calcNewValue({ minutes: e.target.value });
-        this.props.input.onChange(newValue);
-    }
-
-    onMinutesBlur(e) {
-        const newValue = this.calcNewValue({ minutes: e.target.value });
-        this.props.input.onBlur(newValue);
+        handler(newValue);
     }
 
 
     render() {
-        const { input: { value, onChange } } = this.props;
-
-        let { hours, minutes } = minutesToHoursAndMinutes(this.props.input.value || 0);
+        const { input: { value, onChange, onBlur } } = this.props;
+        let { hours, minutes } = minutesToHoursAndMinutes(value || 0);
 
         return (
             <Row>
                 <Col xs={6}>
-                    <FormControl value={hours} componentClass="select" onChange={this.onHourChange} onBlur={this.onHourBlur} >
+                    <FormControl value={hours} componentClass="select" onChange={e => this.onHourEvent(e, onChange)} onBlur={e => this.onHourEvent(e, onBlur)} >
                         { HOUR_OPTIONS.map((optionValue, index) => {
                                 const text = optionValue + ' hours';
                                 return <option key={optionValue} value={optionValue}>{text}</option>;
@@ -73,8 +60,9 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
                         }
                     </FormControl>
                 </Col>
+
                 <Col xs={6}>
-                    <FormControl value={minutes} componentClass="select" onChange={this.onMinuteChange} onBlur={this.onMinutesBlur} >
+                    <FormControl value={minutes} componentClass="select" onChange={e => this.onMinuteEvent(e, onChange)} onBlur={e => this.onMinuteEvent(e, onBlur)} >
                         { MINUTE_OPTIONS.map((optionValue, index) => {
                                 const text = leftPad(optionValue, 2, 0) + ' min';
                                 return <option key={optionValue} value={optionValue}>{text}</option>;
