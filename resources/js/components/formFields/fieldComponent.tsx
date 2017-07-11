@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Field, WrappedFieldInputProps, ComponentConstructor, WrappedFieldProps } from 'redux-form';
 import { FormGroup, ControlLabel, HelpBlock, FormControl } from 'react-bootstrap';
 import DatePickerField from './datePickerField';
+import DurationField from './durationField';
 
 interface IFieldComponentProps extends WrappedFieldProps<string> {
     label: string;
@@ -49,6 +50,14 @@ class FieldFactory extends React.PureComponent<IFieldComponentProps, EvolutionUs
         switch (this.props.type) {
             case "date":
                 return <DatePickerField input={input} />;
+            case "select": 
+                return  (
+                    <FormControl componentClass="select">
+                        { this.props.children }
+                    </FormControl>
+                );
+            case "duration":
+                return <DurationField input={input} />;
             default:
                 return <FormControl {...input} componentClass={this.componentClass(type)} type={type} placeholder={label} />;
         }

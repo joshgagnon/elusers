@@ -9,6 +9,8 @@ interface ICPDPRFormProps {
     handleSubmit: React.EventHandler<React.FormEvent<HTMLFormElement>>;
 }
 
+const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+
 class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EvolutionUsers.Stateless> {
     render() {
         return (
@@ -18,7 +20,7 @@ class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EvolutionUsers.Stat
                         <Field name="date" label="Date" component={FieldComponent} type="date" />
                     </Col>
                     <Col sm={6}>
-                        <Field name="hours" label="Hours" component={FieldComponent} type="number" />
+                        <Field name="duration" label="Duration" component={FieldComponent} type="duration" />
                     </Col>
                 </Row>
 
@@ -50,11 +52,11 @@ function validateCPDPRForm(values: any) {
         errors.date = 'Invalid date format';
     }
 
-    if (!values.hours) {
-        errors.hours = 'Required';
+    if (values.duration === undefined) {
+        errors.duration = 'Required';
     }
-    else if (values.hours <= 0) {
-        errors.hours = 'Hours must be more than 0';
+    else if (values.duration <= 0) {
+        errors.duration = 'Duration must be more than 0';
     }
 
     return errors

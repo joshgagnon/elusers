@@ -3,7 +3,7 @@ import PanelHOC from '../hoc/panelHOC';
 import Table from '../dataTable';
 import { UserCPDPRHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
-import { minutesToHours } from '../utils';
+import { minutesToHoursString } from '../utils';
 import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col } from 'react-bootstrap';
 import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal } from '../../actions/index';
 import * as moment from 'moment';
@@ -53,7 +53,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
                                 <td>{moment(record.date).format('D MMM YYYY')}</td>
                                 <td>{record.title}</td>
                                 <td>{record.reflection}</td>
-                                <td>{minutesToHours(record.minutes)}</td>
+                                <td>{minutesToHoursString(record.minutes)}</td>
                             </tr>
                         ))
                     }
@@ -62,7 +62,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
                 <tfoot>
                     <tr key="total">
                         <th colSpan={3} className="text-right">Total:</th>
-                        <th>{minutesToHours(this.props.recordSet.minutes)}</th>
+                        <th>{minutesToHoursString(this.props.recordSet.minutes)}</th>
                     </tr>
                 </tfoot>
             </Table>

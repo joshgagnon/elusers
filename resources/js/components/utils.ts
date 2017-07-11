@@ -1,3 +1,5 @@
+import * as leftPad from 'left-pad';
+
 // Infer the users full name
 export function fullname(user: EvolutionUsers.IUser) {
     return user.title // title
@@ -6,10 +8,14 @@ export function fullname(user: EvolutionUsers.IUser) {
         + ' ' + user.surname; // last name
 }
 
-export function minutesToHours(minutes: number) {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = (minutes % 60) + '';
-    const remainingMinutesString = remainingMinutes.length === 1 ? '0' + remainingMinutes : remainingMinutes;
+export function minutesToHoursAndMinutes(minutes: number): { hours: number; minutes: number } {
+    return {
+        hours: Math.floor(minutes / 60),
+        minutes: minutes % 60
+    };
+}
 
-    return hours + ':' + remainingMinutesString;
+export function minutesToHoursString(minutes: number) {
+    const seperateValues = minutesToHoursAndMinutes(minutes);
+    return seperateValues.hours + ':' + leftPad(seperateValues.minutes, 2, 0);
 }
