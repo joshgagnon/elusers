@@ -39,6 +39,7 @@ class ProfessionalDevelopmentController extends Controller
 
     public function delete(ProfessionalDevelopmentRecord $record)
     {
-
+        $record->delete();
+        return response()->json(['message' => 'CPDPR record deleted.'], 200);
     }
 }
