@@ -1,16 +1,3 @@
-import axios from 'axios';
-
-const JSON_HEADERS = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-};
-
-const FETCH_OPTIONS = {
-    headers: JSON_HEADERS,
-    credentials: 'same-origin'
-};
-
-
 export function toggleSomething() {
     return { type: EvolutionUsers.EActionTypes.TOGGLE_SOMETHING };
 };
@@ -20,6 +7,13 @@ export function requestResource(resource: string) {
         type: EvolutionUsers.EActionTypes.RESOURCE_REQUEST,
         payload: { key: resource }
     };
+}
+
+export function createResource(url: string, postData: object): EvolutionUsers.Actions.ICreateResourceAction {
+    return {
+        type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_REQUEST,
+        payload: { url, postData }
+    }
 }
 
 export function updateCPDPRYearIndex(index: number) {

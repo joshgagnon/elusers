@@ -5,7 +5,7 @@ import { UserCPDPRHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHoursString } from '../utils';
 import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col } from 'react-bootstrap';
-import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal } from '../../actions/index';
+import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal, createResource } from '../../actions/index';
 import * as moment from 'moment';
 import { Field, reduxForm, submit, FormComponentProps, FormProps } from 'redux-form';
 import FieldComponent from '../formFields/fieldComponent';
@@ -33,7 +33,8 @@ interface ICPDPRTableProps {
 interface ICPDPRProps {
     userId: number;
     cpdpr: EvolutionUsers.IResource<ICPDPRData[]>;
-    updateCPDPRYearIndex: (year: number) => EvolutionUsers.IAction;
+    prevYear: (currentIndex : number) => EvolutionUsers.IAction;
+    nextYear: (currentIndex: number) => EvolutionUsers.IAction;
     yearEndingIndex: number;
     showCreateCPDPRModal: Function;
     hideCreateCPDPRModal: Function;
@@ -72,39 +73,26 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
 
 @connect(
     ({ cpdpr }) => ({ userId: 1, yearEndingIndex: cpdpr.yearEndingIndex, createModalVisible: cpdpr.createModalVisible }),
-    { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal }
+    {
+        prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
+        nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
+        showCreateCPDPRModal,
+        hideCreateCPDPRModal,
+        createRecord: (userId: number, data: object) => createResource(`users/${userId}/cpdpr`, data)
+    }
 )
 @UserCPDPRHOC()
 @PanelHOC([props => props.cpdpr])
 class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateless> {
-    constructor(props: ICPDPRProps) {
-        super(props);
-
-        this.prevYear = this.prevYear.bind(this);
-        this.nextYear = this.nextYear.bind(this);
-
-        this.submitNewRecord = this.submitNewRecord.bind(this);
-    }
-
-    nextYear() {
-        this.props.updateCPDPRYearIndex(this.props.yearEndingIndex - 1);
-    }
-
-    prevYear() {
-        this.props.updateCPDPRYearIndex(this.props.yearEndingIndex + 1);
-    }
-
-    submitNewRecord() {
-        console.log('dadada');
-    }
-
     render() {
-        const years = this.props.cpdpr.data.map(record => record.yearEnding);
-        const currentYear = years[this.props.yearEndingIndex];
-        const currentRecordSet = this.props.cpdpr.data[this.props.yearEndingIndex];
+        const { cpdpr, yearEndingIndex, nextYear, prevYear } = this.props;
 
-        const disablePrevButton = this.props.yearEndingIndex === this.props.cpdpr.data.length - 1;
-        const disableNextButton = this.props.yearEndingIndex === 0;
+        const years = cpdpr.data.map(record => record.yearEnding);
+        const currentYear = years[yearEndingIndex];
+        const currentRecordSet = cpdpr.data[yearEndingIndex];
+
+        const disablePrevButton = yearEndingIndex === cpdpr.data.length - 1;
+        const disableNextButton = yearEndingIndex === 0;
 
         return (
             <div>
@@ -115,8 +103,8 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
                         <ButtonToolbar className="pull-right">
                             <Button onClick={this.props.showCreateCPDPRModal}><Icon iconName="plus" />&nbsp;&nbsp;Add</Button>
                             <ButtonGroup>
-                                <Button disabled={disablePrevButton} onClick={this.prevYear}><Icon iconName="arrow-left" /></Button>
-                                <Button disabled={disableNextButton} onClick={this.nextYear}><Icon iconName="arrow-right" /></Button>
+                                <Button disabled={disablePrevButton} onClick={() => prevYear(yearEndingIndex)}><Icon iconName="arrow-left" /></Button>
+                                <Button disabled={disableNextButton} onClick={() => nextYear(yearEndingIndex)}><Icon iconName="arrow-right" /></Button>
                             </ButtonGroup>
                         </ButtonToolbar>
                         
@@ -130,7 +118,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
 
                 { this.props.createModalVisible && 
                     <FormModal formName="cpdpr-form" hide={this.props.hideCreateCPDPRModal}>
-                        <CPDPRForm onSubmit={this.submitNewRecord} />
+                        <CPDPRForm onSubmit={(data) => this.props.createRecord(this.props.userId, data)} />
                     </FormModal>
                 }
             </div>

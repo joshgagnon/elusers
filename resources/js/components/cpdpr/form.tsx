@@ -20,7 +20,7 @@ class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EvolutionUsers.Stat
                         <Field name="date" label="Date" component={FieldComponent} type="date" />
                     </Col>
                     <Col sm={6}>
-                        <Field name="duration" label="Duration" component={FieldComponent} type="duration" />
+                        <Field name="minutes" label="Duration" component={FieldComponent} type="duration" />
                     </Col>
                 </Row>
 
@@ -52,11 +52,11 @@ function validateCPDPRForm(values: any) {
         errors.date = 'Invalid date format';
     }
 
-    if (values.duration === undefined) {
-        errors.duration = 'Required';
+    if (values.minutes === undefined) {
+        errors.minutes = 'Required';
     }
-    else if (values.duration <= 0) {
-        errors.duration = 'Duration must be more than 0';
+    else if (values.minutes <= 0) {
+        errors.minutes = 'Duration must be more than 0';
     }
 
     return errors

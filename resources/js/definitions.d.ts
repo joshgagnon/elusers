@@ -49,6 +49,11 @@ declare namespace EvolutionUsers {
         RESOURCE_SUCCESS = 'RESOURCE_SUCCESS',
         RESOURCE_FAILURE = 'RESOURCE_FAILURE',
 
+        CREATE_RESOURCE_REQUEST = 'CREATE_RESOURCE_REQUEST',
+        CREATE_RESOURCE_POSTING = 'CREATE_RESOURCE_POSTING',
+        CREATE_RESOURCE_SUCCESS = 'CREATE_RESOURCE_SUCCESS',
+        CREATE_RESOURCE_FAILURE = 'CREATE_RESOURCE_FAILURE',
+
         UPDATE_CPDPR_YEAR = 'UPDATE_CPDPR_YEAR',
         SHOW_CREATE_CPDPR_MODAL = 'SHOW_CREATE_CPDPR_MODAL',
         HIDE_CREATE_CPDPR_MODAL = 'HIDE_CREATE_CPDPR_MODAL',
@@ -67,5 +72,18 @@ declare namespace EvolutionUsers {
 
     export interface IValidationErrors {
         [key: string]: string
+    }
+}
+
+declare namespace EvolutionUsers.Actions {
+    export interface IAction {
+        type: string;
+    }
+
+    export interface ICreateResourceAction extends IAction {
+        payload: {
+            url: string;
+            postData: object;
+        }
     }
 }

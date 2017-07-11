@@ -5,11 +5,13 @@ import * as humps from 'humps';
 
 function* rootSagas() {
     yield [
-        resourceRequests()
+        resourceRequests(),
+        createResourceRequests()
     ];
 }
 
 export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
+    window.axios = axios;
     sagaMiddleware.run(rootSagas);
 }
 
@@ -17,7 +19,12 @@ function *resourceRequests() {
     yield takeEvery(EvolutionUsers.EActionTypes.RESOURCE_REQUEST, checkAndRequest);
 }
 
+function *createResourceRequests() {
+    yield takeEvery(EvolutionUsers.EActionTypes.CREATE_RESOURCE_REQUEST, createResource);
+}
+
 function *checkAndRequest(action: EvolutionUsers.IAction) {
+    // Check to see if this resource exists in state already
     const existing = yield select((state: EvolutionUsers.IState) => state.resources[action.payload.key]);
 
     if (existing) {
@@ -32,5 +39,23 @@ function *checkAndRequest(action: EvolutionUsers.IAction) {
         yield put({type: EvolutionUsers.EActionTypes.RESOURCE_SUCCESS, payload: { response: camelCaseResponseData, key: action.payload.key } });
     } catch (e) {
         yield put({type: EvolutionUsers.EActionTypes.RESOURCE_FAILURE, payload: { response: e, key: action.payload.key } });
+    }
+}
+
+function *createResource(action: EvolutionUsers.IAction) {
+    yield put({ type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_POSTING, payload: action.payload });
+
+    try {
+        const response = yield call(axios.post, '/api/' + action.payload.url, action.payload.postData);
+        
+        yield put({
+            type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS,
+            payload: response.data
+        });
+    } catch (e) {
+        yield put({
+            type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE,
+            payload: { response: e }
+        });
     }
 }
