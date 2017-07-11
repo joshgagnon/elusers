@@ -18,3 +18,4 @@ Route::get('users', 'UserController@index');
 Route::get('users/{user}', 'UserController@show');
 
 Route::get('users/{user}/cpdpr', 'ProfessionalDevelopmentController@forUser');
+Route::post('users/{user}/cpdpr', 'ProfessionalDevelopmentController@create');
