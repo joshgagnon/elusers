@@ -99,6 +99,9 @@ $panel-default-heading-bg: #fff;
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
 
+.login-container {
+    margin-top: 60px;
+}
 
 .form-control.rw-datetimepicker {
     padding: 0;
