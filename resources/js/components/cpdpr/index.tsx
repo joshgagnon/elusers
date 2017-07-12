@@ -78,7 +78,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
 }
 
 @connect(
-    ({ cpdpr }) => ({ userId: 1, yearEndingIndex: cpdpr.yearEndingIndex, createModalVisible: cpdpr.createModalVisible }),
+    ({ cpdpr }) => ({ userId: 2, yearEndingIndex: cpdpr.yearEndingIndex, createModalVisible: cpdpr.createModalVisible }),
     {
         prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
         nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
