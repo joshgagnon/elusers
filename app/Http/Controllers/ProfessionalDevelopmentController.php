@@ -17,6 +17,17 @@ class ProfessionalDevelopmentController extends Controller
 
         $cpdpr_summary = $result[0]->user_pdr;
 
+        // Handle the case of no records
+        if (!$cpdpr_summary) {
+            $currentCPDPRYear = Carbon::now()->lt(Carbon::parse('31 March')) ? Carbon::now()->year : Carbon::now()->addYear()->year;
+
+            return [[
+                'minutes' => 0,
+                'records' => [],
+                'year_ending' => $currentCPDPRYear
+            ]];
+        }
+
         return $cpdpr_summary;
     }
 
