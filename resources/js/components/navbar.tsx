@@ -6,7 +6,7 @@ import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 export default class NavMenu extends React.Component<{}, {}> {
     render() {
         return (
-            <Navbar collapseOnSelect>
+            <Navbar collapseOnSelect staticTop>
                 <Navbar.Header>
                     <Navbar.Brand>
                         <Link to={`/`}>Evolution Users</Link>
