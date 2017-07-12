@@ -24,7 +24,7 @@ class UserController extends Controller
      *
      * @return \App\User
      */
-    public function current()
+    public function current(Request $request)
     {
         return $request->user();
     }
@@ -35,7 +35,7 @@ class UserController extends Controller
      * @param \App\User $user
      * @return \App\User
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
         // Check users are in the same org
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
