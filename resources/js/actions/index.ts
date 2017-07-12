@@ -16,6 +16,13 @@ export function createResource(url: string, postData: object): EvolutionUsers.Ac
     }
 }
 
+export function deleteResource(url: string) {
+    return {
+        type: EvolutionUsers.EActionTypes.DELETE_RESOURCE_REQUEST,
+        payload: { url }
+    };
+}
+
 export function updateCPDPRYearIndex(index: number) {
     return {
         type: EvolutionUsers.EActionTypes.UPDATE_CPDPR_YEAR,

@@ -1,4 +1,6 @@
-export default function resources(state={}, action: EvolutionUsers.IAction) {
+const DEFAULT_STATE = {};
+
+export default function resources(state=DEFAULT_STATE, action: EvolutionUsers.IAction) {
     switch (action.type) {
         case EvolutionUsers.EActionTypes.RESOURCE_FETCHING:
             return {
@@ -25,7 +27,10 @@ export default function resources(state={}, action: EvolutionUsers.IAction) {
             };
         case EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS:
         case EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE:
-            return {};
+        case EvolutionUsers.EActionTypes.DELETE_RESOURCE_SUCCESS:
+        case EvolutionUsers.EActionTypes.DELETE_RESOURCE_FAILURE:
+            // Reset resources state to default
+            return DEFAULT_STATE;
         default:
             return state;
     }

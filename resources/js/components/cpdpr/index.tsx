@@ -5,7 +5,7 @@ import { UserCPDPRHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHoursString } from '../utils';
 import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col } from 'react-bootstrap';
-import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal, createResource } from '../../actions/index';
+import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal, createResource, deleteResource } from '../../actions/index';
 import * as moment from 'moment';
 import { Field, reduxForm, submit, FormComponentProps, FormProps } from 'redux-form';
 import FieldComponent from '../formFields/fieldComponent';
@@ -21,6 +21,7 @@ interface ICPDPRData {
         date: string;
         reflection: string;
         minutes: number;
+        editable: boolean;
     }[];
     minutes: number;
     yearEnding: number;
@@ -28,6 +29,7 @@ interface ICPDPRData {
 
 interface ICPDPRTableProps {
     recordSet: ICPDPRData;
+    deleteRecord: (recordId: number) => null;
 }
 
 interface ICPDPRProps {
@@ -43,7 +45,7 @@ interface ICPDPRProps {
 
 class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.Stateless> {
     render() {
-        const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours'];
+        const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours', 'Actions'];
 
         return (
             <Table headings={HEADINGS} manualBodyTag>
@@ -55,6 +57,9 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
                                 <td>{record.title}</td>
                                 <td>{record.reflection}</td>
                                 <td>{minutesToHoursString(record.minutes)}</td>
+                                <td>
+                                    { record.editable && <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteRecord(record.id)}>Delete</Button> }
+                                </td>
                             </tr>
                         ))
                     }
@@ -64,6 +69,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
                     <tr key="total">
                         <th colSpan={3} className="text-right">Total:</th>
                         <th>{minutesToHoursString(this.props.recordSet.minutes)}</th>
+                        <td></td>
                     </tr>
                 </tfoot>
             </Table>
@@ -76,9 +82,12 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
     {
         prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
         nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
+        
         showCreateCPDPRModal,
         hideCreateCPDPRModal,
-        createRecord: (userId: number, data: object) => createResource(`users/${userId}/cpdpr`, data)
+
+        createRecord: (userId: number, data: object) => createResource(`users/${userId}/cpdpr`, data),
+        deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
     }
 )
 @UserCPDPRHOC()
@@ -124,7 +133,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
 
                 <hr />
 
-                <CPDPRTable recordSet={currentRecordSet} />
+                <CPDPRTable recordSet={currentRecordSet} deleteRecord={this.props.deleteRecord} />
 
                 { this.props.createModalVisible && 
                     <FormModal formName="cpdpr-form" hide={this.props.hideCreateCPDPRModal}>
