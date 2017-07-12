@@ -3,7 +3,7 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
-export default class NavMenu extends React.Component<{}, {}> {
+export default class NavMenu extends React.Component<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
     render() {
         return (
             <Navbar collapseOnSelect staticTop>
@@ -18,26 +18,39 @@ export default class NavMenu extends React.Component<{}, {}> {
                 <Navbar.Collapse>
                     <Nav pullRight>
                         <IndexLinkContainer to="/">
-                            <NavItem eventKey={1}>Home</NavItem>
+                            <NavItem>Home</NavItem>
                         </IndexLinkContainer>
+                        
                         <LinkContainer to="/users">
-                            <NavItem eventKey={1}>Users</NavItem>
+                            <NavItem>Users</NavItem>
                         </LinkContainer>
+                        
                         <LinkContainer to="/organisation">
-                            <NavItem eventKey={1}>Organisation</NavItem>
+                            <NavItem>Organisation</NavItem>
                         </LinkContainer>
+                        
                         <LinkContainer to="/cpdpr">
-                            <NavItem eventKey={1}>CPDPR</NavItem>
+                            <NavItem>CPDPR</NavItem>
                         </LinkContainer>
+                        
                         <LinkContainer to="/my-profile">
-                            <NavItem eventKey={1}>My Profile</NavItem>
+                            <NavItem>My Profile</NavItem>
                         </LinkContainer>
-                        <LinkContainer to="/logout">
-                            <NavItem eventKey={1}>Logout</NavItem>
-                        </LinkContainer>
+
+                        <LogoutButton />
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
+        );
+    }
+}
+
+class LogoutButton extends React.PureComponent<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
+    render() {
+        return (
+            <li role="presentation">
+                <a href="/logout">Logout</a>
+            </li>
         );
     }
 }
