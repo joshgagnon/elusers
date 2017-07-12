@@ -7,7 +7,7 @@ WITH  RECURSIVE
             min(date),
             GREATEST(max(date), now())
         FROM professional_development_records
-        WHERE user_id = $1
+        WHERE user_id = $1 AND deleted_at IS NULL
     ),
         financial_years(start_date, end_date, year_ending) AS (
         SELECT
