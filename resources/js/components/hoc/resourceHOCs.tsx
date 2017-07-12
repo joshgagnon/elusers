@@ -20,19 +20,21 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
         fetch(refresh?: boolean){
             // Set the default of refresh to false
             refresh = refresh !== undefined ? refresh : false;
-
-            // Call the props fetch function
-            this.props.fetch(refresh)
+            
+            // Only fetch if we need to, or refresh is true
+            if (refresh || (!this.props[propsName] || !this.props[propsName].status)) {
+                // Call the props fetch function
+                this.props.fetch(refresh)
+            }
         }
 
         componentWillMount() {
             this.fetch();
         }
 
-        // Only requesting on mount - for now!
-        // componentDidUpdate() {
-        //     this.fetch();
-        // }
+        componentDidUpdate() {
+            this.fetch();
+        }
 
         render() {
             return <ComposedComponent {...this.props} />;

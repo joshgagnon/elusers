@@ -84,6 +84,16 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
 @UserCPDPRHOC()
 @PanelHOC([props => props.cpdpr])
 class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateless> {
+    constructor(props: ICPDPRProps) {
+        super(props);
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    onSubmit(data) {
+        this.props.createRecord(this.props.userId, data)
+        this.props.hideCreateCPDPRModal();
+    }
+
     render() {
         const { cpdpr, yearEndingIndex, nextYear, prevYear } = this.props;
 
@@ -118,7 +128,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
 
                 { this.props.createModalVisible && 
                     <FormModal formName="cpdpr-form" hide={this.props.hideCreateCPDPRModal}>
-                        <CPDPRForm onSubmit={(data) => this.props.createRecord(this.props.userId, data)} />
+                        <CPDPRForm onSubmit={this.onSubmit} />
                     </FormModal>
                 }
             </div>

@@ -23,6 +23,9 @@ export default function resources(state={}, action: EvolutionUsers.IAction) {
                     data: action.payload.response
                 }
             };
+        case EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS:
+        case EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE:
+            return {};
         default:
             return state;
     }

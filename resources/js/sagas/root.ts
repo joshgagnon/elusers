@@ -11,7 +11,6 @@ function* rootSagas() {
 }
 
 export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
-    window.axios = axios;
     sagaMiddleware.run(rootSagas);
 }
 
@@ -47,7 +46,7 @@ function *createResource(action: EvolutionUsers.IAction) {
 
     try {
         const response = yield call(axios.post, '/api/' + action.payload.url, action.payload.postData);
-        
+
         yield put({
             type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS,
             payload: response.data
