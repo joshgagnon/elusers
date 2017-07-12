@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Auth;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -12,9 +13,9 @@ class UserController extends Controller
      *
      * @return \App\User[]
      */
-    public function index()
+    public function index(Request $request)
     {
-        $currentOrgId = Auth::user()->organisation_id;
+        $currentOrgId = $request->user()->organisation_id;
         return User::inOrganisation($currentOrgId)->get();
     }
 
@@ -25,7 +26,7 @@ class UserController extends Controller
      */
     public function current()
     {
-        return Auth::user();
+        return $request->user();
     }
 
     /**
@@ -37,7 +38,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         // Check users are in the same org
-        $usersInSameOrganisation = $user->organisation_id === Auth::user()->organisation_id;
+        $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
 
         // Return the user
