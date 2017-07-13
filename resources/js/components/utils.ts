@@ -15,6 +15,14 @@ export function minutesToHoursAndMinutes(minutes: number): { hours: number; minu
     };
 }
 
+export function minutesToFractionalHours(minutes: number): string {
+    return (minutes / 60).toFixed(1);
+}
+
+export function fractionalHoursToMinutes(fractionalHours: number): number {
+    return fractionalHours * 60;
+}
+
 export function minutesToHoursString(minutes: number) {
     const seperateValues = minutesToHoursAndMinutes(minutes);
     return seperateValues.hours + ':' + leftPad(seperateValues.minutes, 2, 0);
