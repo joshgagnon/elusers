@@ -15,8 +15,8 @@ export function minutesToHoursAndMinutes(minutes: number): { hours: number; minu
     };
 }
 
-export function minutesToFractionalHours(minutes: number): string {
-    return (minutes / 60).toFixed(1);
+export function minutesToFractionalHours(minutes: number): number {
+    return minutes / 60;
 }
 
 export function fractionalHoursToMinutes(fractionalHours: number): number {

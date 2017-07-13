@@ -27,15 +27,18 @@ declare namespace EvolutionUsers {
         hasErrored: boolean;
     }
 
+    interface ICPDPRState {
+        yearEndingIndex: number;
+        createModalVisible: boolean;
+        editRecordId?: number;
+    }
+
     export interface IState {
         routing: any;
         user: IUser;
         something: boolean;
         resources: IStateResources;
-        cpdpr: {
-            yearEndingIndex: number;
-            createModalVisible: boolean;
-        };
+        cpdpr: ICPDPRState;
     }
 
     export interface IAction {
@@ -44,6 +47,9 @@ declare namespace EvolutionUsers {
     }
 
     export const enum EActionTypes {
+        /**
+         * Resources
+         */
         RESOURCE_REQUEST = 'RESOURCE_REQUEST',
         RESOURCE_FETCHING = 'RESOURCE_FETCHING',
         RESOURCE_SUCCESS = 'RESOURCE_SUCCESS',
@@ -53,14 +59,28 @@ declare namespace EvolutionUsers {
         CREATE_RESOURCE_SUCCESS = 'CREATE_RESOURCE_SUCCESS',
         CREATE_RESOURCE_FAILURE = 'CREATE_RESOURCE_FAILURE',
 
+        UPDATE_RESOURCE_REQUEST = 'UPDATE_RESOURCE_REQUEST',
+        UPDATE_RESOURCE_SUCCESS = 'UPDATE_RESOURCE_SUCCESS',
+        UPDATE_RESOURCE_FAILURE = 'UPDATE_RESOURCE_FAILURE',
+
         DELETE_RESOURCE_REQUEST = 'DELETE_RESOURCE_REQUEST',
         DELETE_RESOURCE_SUCCESS = 'DELETE_RESOURCE_SUCCESS',
         DELETE_RESOURCE_FAILURE = 'DELETE_RESOURCE_FAILURE',
 
+        /**
+         * CPDPR
+         */
         UPDATE_CPDPR_YEAR = 'UPDATE_CPDPR_YEAR',
+
         SHOW_CREATE_CPDPR_MODAL = 'SHOW_CREATE_CPDPR_MODAL',
         HIDE_CREATE_CPDPR_MODAL = 'HIDE_CREATE_CPDPR_MODAL',
 
+        SHOW_EDIT_CPDPR_RECORD_MODAL = 'SHOW_EDIT_CPDPR_RECORD_MODAL',
+        HIDE_EDIT_CPDPR_RECORD_MODAL = 'HIDE_EDIT_CPDPR_RECORD_MODAL',
+
+        /**
+         * Initial testing
+         */
         TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
     }
 
@@ -87,6 +107,13 @@ declare namespace EvolutionUsers.Actions {
         payload: {
             url: string;
             postData: object;
+        }
+    }
+
+    export interface IUpdateResourceAction extends IAction {
+        payload: {
+            url: string;
+            data: object;
         }
     }
 }

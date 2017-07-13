@@ -13,23 +13,32 @@ import FormModal from '../formModal';
 import CPDPRForm from './form';
 import Icon from '../icon';
 
+interface ICPDPRRecordData {
+    title: string;
+    date: string;
+    reflection: string;
+    minutes: number;
+}
+
+interface IUpdateCPDPRRecordData extends ICPDPRRecordData {
+    id?: number;
+}
+
+interface ICPDPRRecord extends ICPDPRRecordData {
+    id: number;
+    editable: boolean;
+}
 
 interface ICPDPRData {
-    records: {
-        id: number;
-        title: string;
-        date: string;
-        reflection: string;
-        minutes: number;
-        editable: boolean;
-    }[];
+    records: ICPDPRRecord[];
     minutes: number;
     yearEnding: number;
 };
 
 interface ICPDPRTableProps {
     recordSet: ICPDPRData;
-    deleteRecord: (recordId: number) => null;
+    deleteRecord: (recordId: number) => void;
+    editRecord: (recordId: number) => void;
 }
 
 interface ICPDPRProps {
@@ -38,9 +47,42 @@ interface ICPDPRProps {
     prevYear: (currentIndex : number) => EvolutionUsers.IAction;
     nextYear: (currentIndex: number) => EvolutionUsers.IAction;
     yearEndingIndex: number;
-    showCreateCPDPRModal: Function;
-    hideCreateCPDPRModal: Function;
+    showCreateCPDPRModal: () => void;
+    hideCreateCPDPRModal: () => void;
     createModalVisible: boolean;
+    createRecord: (userId: number, data: ICPDPRRecordData) => void;
+}
+
+interface ICPDPRTableRowProps {
+    record: ICPDPRRecord;
+    editRecord: () => void;
+    deleteRecord: () => void;
+}
+
+class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EvolutionUsers.Stateless> {
+    renderButtons() {
+        if (this.props.record.editable) {
+            return (
+                <div>
+                    <Button bsStyle="info" bsSize="sm" onClick={this.props.editRecord}>Edit</Button>
+                    <Button bsStyle="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
+                </div> 
+            );
+        }
+    }
+
+    render() {
+        const { record } = this.props;
+        return (
+            <tr>
+                <td>{moment(record.date).format('D MMM YYYY')}</td>
+                <td>{record.title}</td>
+                <td>{record.reflection}</td>
+                <td>{minutesToHoursString(record.minutes)}</td>
+                <td>{this.renderButtons()}</td>
+            </tr>
+        );
+    }
 }
 
 class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.Stateless> {
@@ -51,17 +93,12 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
             <Table headings={HEADINGS} manualBodyTag>
                 <tbody>
                     {
-                        this.props.recordSet.records.map(record => (
-                            <tr key={record.id}>
-                                <td>{moment(record.date).format('D MMM YYYY')}</td>
-                                <td>{record.title}</td>
-                                <td>{record.reflection}</td>
-                                <td>{minutesToHoursString(record.minutes)}</td>
-                                <td>
-                                    { record.editable && <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteRecord(record.id)}>Delete</Button> }
-                                </td>
-                            </tr>
-                        ))
+                        this.props.recordSet.records.map(record =>
+                            <CPDPRTableRow
+                                key={record.id}
+                                record={record}
+                                editRecord={() => this.props.editRecord(record.id)}
+                                deleteRecord={() => this.props.deleteRecord(record.id)} />)
                     }
                 </tbody>
 
@@ -86,7 +123,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
         showCreateCPDPRModal,
         hideCreateCPDPRModal,
 
-        createRecord: (userId: number, data: object) => createResource(`users/${userId}/cpdpr`, data),
+        createRecord: (userId: number, data: ICPDPRRecordData) => createResource(`users/${userId}/cpdpr`, data),
         deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
     }
 )
@@ -98,7 +135,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    onSubmit(data) {
+    onSubmit(data: ICPDPRRecordData) {
         this.props.createRecord(this.props.userId, data)
         this.props.hideCreateCPDPRModal();
     }
@@ -140,6 +177,10 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
                         <CPDPRForm onSubmit={this.onSubmit} />
                     </FormModal>
                 }
+
+                <FormModal formName="cpdpr-form" hide={this.props.hideCreateCPDPRModal}>
+                    <CPDPRForm initialValues={currentRecordSet.records[0]} />
+                </FormModal>
             </div>
         );
     }

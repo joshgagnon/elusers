@@ -7,6 +7,7 @@ function* rootSagas() {
     yield [
         resourceRequests(),
         createResourceRequests(),
+        updateResourceRequests(),
         deleteResourceRequests(),
     ];
 }
@@ -21,6 +22,10 @@ function *resourceRequests() {
 
 function *createResourceRequests() {
     yield takeEvery(EvolutionUsers.EActionTypes.CREATE_RESOURCE_REQUEST, createResource);
+}
+
+function *updateResourceRequests() {
+    yield takeEvery(EvolutionUsers.EActionTypes.UPDATE_RESOURCE_REQUEST, updateResource);
 }
 
 function *deleteResourceRequests() {
@@ -74,6 +79,25 @@ function *createResource(action: EvolutionUsers.Actions.ICreateResourceAction) {
             type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE,
             payload: { response: e }
         }); 
+    }
+}
+
+function *updateResource(action: EvolutionUsers.IAction) {
+    try {
+        // Make the update PUT request
+        const response = yield call(axios.put, '/api/' + action.payload.url, action.payload.data);
+
+        // Fire a update resource success action
+        yield put({
+            type: EvolutionUsers.EActionTypes.UPDATE_RESOURCE_SUCCESS,
+            payload: response.data
+        });
+    } catch (e) {
+        // Update failed: fire an update resource failure action
+        yield put({
+            type: EvolutionUsers.EActionTypes.UPDATE_RESOURCE_FAILURE,
+            payload: { response: e }
+        })
     }
 }
 

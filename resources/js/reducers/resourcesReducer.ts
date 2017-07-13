@@ -27,6 +27,10 @@ export default function resources(state=DEFAULT_STATE, action: EvolutionUsers.IA
             };
         case EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS:
         case EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE:
+        
+        case EvolutionUsers.EActionTypes.UPDATE_RESOURCE_SUCCESS:
+        case EvolutionUsers.EActionTypes.UPDATE_RESOURCE_FAILURE:
+
         case EvolutionUsers.EActionTypes.DELETE_RESOURCE_SUCCESS:
         case EvolutionUsers.EActionTypes.DELETE_RESOURCE_FAILURE:
             // Reset resources state to default

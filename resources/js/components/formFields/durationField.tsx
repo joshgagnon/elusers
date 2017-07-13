@@ -19,7 +19,7 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
         super(props);
 
         this.state = {
-            fractionalHours: ''
+            fractionalHours: minutesToFractionalHours(this.props.input.value) + ''
         };
 
         this.onChange = this.onChange.bind(this);
@@ -27,23 +27,19 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
     }
 
     onChange(e: React.ChangeEvent<any>) {
-        const totalMinutes = fractionalHoursToMinutes(Number(this.state.fractionalHours || 0));
         const newValue = e.target.value;
+        
         if (numberRegex.test(newValue)) {
-            this.setState({fractionalHours: newValue});
-            this.props.input.onChange(newValue);
+            this.setState({ fractionalHours: newValue });
         }
     }
 
     onBlur(e: React.ChangeEvent<any>) {
-        const totalMinutes = fractionalHoursToMinutes(Number(this.state.fractionalHours || 0));
+        const totalMinutes = this.state.fractionalHours === '' ? '' : fractionalHoursToMinutes(Number(this.state.fractionalHours || 0));
         this.props.input.onBlur(totalMinutes);
     }
 
     render() {
-        const { input: { value, onChange, onBlur } } = this.props;
-        const fractionalHours = minutesToFractionalHours(value || 0);
-
         return (
             <FormControl value={this.state.fractionalHours} componentClass="input" type="text" onChange={this.onChange} onBlur={this.onBlur} />
         );
