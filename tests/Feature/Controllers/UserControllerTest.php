@@ -27,19 +27,6 @@ class UserControllerTest extends TestCase
             ->assertExactJson($org1->users()->get()->toArray());
     }
 
-    public function test_current_returns_the_authed_user()
-    {
-        // Create a user
-        $org = $this->createOrganisation();
-        $user = $this->createUser(['organisation_id' => $org->id]);
-
-        // Request the current user route as the user and check the output matches up
-        $this->actingAs($user)
-            ->get('api/user')
-            ->assertStatus(200)
-            ->assertExactJson($user->toArray());
-    }
-
     public function test_show_returns_requested_user()
     {
         // Create an org with two users

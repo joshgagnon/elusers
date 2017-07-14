@@ -16,7 +16,6 @@ Route::group(['middleware' => 'auth'], function() {
     /**
      * Users
      */
-    Route::get('user', 'UserController@current');
     Route::get('users', 'UserController@index');
     Route::get('users/{user}', 'UserController@show');
 
