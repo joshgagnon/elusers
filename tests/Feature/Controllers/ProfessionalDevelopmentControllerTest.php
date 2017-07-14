@@ -68,7 +68,7 @@ class ProfessionalDevelopmentControllerTest extends TestCase
         $responseData = $response->getData(true);
         $this->assertEquals($responseData['message'], 'CPDPR record updated.');
 
-        // Get the created record
+        // The record has changed outside of this function (through the api) - get the updated record.
         $record = $record->fresh();
 
         // Check the created record matches the data we sent the api endpoint
@@ -76,5 +76,33 @@ class ProfessionalDevelopmentControllerTest extends TestCase
 
         // Check the record was created for the correct user
         $this->assertEquals($user->id, $record->user_id);
+    }
+
+    /**
+     * Delete record
+     *
+     * @test
+     */
+    public function delete_record()
+    {
+        // Create a user
+        $user = $this->createUser();
+
+        // Create the record
+        $record = ProfessionalDevelopmentRecord::forceCreate(['user_id' => $user->id, 'date' => '2017-11-16', 'minutes' => 150, 'title' => 'Testing', 'reflection' => 'One two three']);
+
+        // Make the delete request
+        $response = $this->actingAs($user)->delete('api/cpdpr/' . $record->id);
+
+        // Check the response status
+        $response->assertStatus(200);
+
+        // Get the response data and check it includes the updated message
+        $responseData = $response->getData(true);
+        $this->assertEquals($responseData['message'], 'CPDPR record deleted.');
+
+        // Grab a fresh copy of the record (from the DB), and check it has been deleted
+        $record = $record->fresh();
+        $this->assertNotNull($record->deleted_at);
     }
 }
