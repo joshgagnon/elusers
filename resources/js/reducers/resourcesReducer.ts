@@ -1,38 +1,38 @@
 const DEFAULT_STATE = {};
 
-export default function resources(state=DEFAULT_STATE, action: EvolutionUsers.IAction) {
+export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action) {
     switch (action.type) {
-        case EvolutionUsers.EActionTypes.RESOURCE_FETCHING:
+        case EL.ActionTypes.RESOURCE_FETCHING:
             return {
                 ...state,
                 [action.payload.key]: {
-                    status: EvolutionUsers.ERequestStatus.FETCHING
+                    status: EL.RequestStatus.FETCHING
                 }
             };
-        case EvolutionUsers.EActionTypes.RESOURCE_SUCCESS:
+        case EL.ActionTypes.RESOURCE_SUCCESS:
             return {
                 ...state,
                 [action.payload.key]: {
-                    status: EvolutionUsers.ERequestStatus.COMPLETE,
+                    status: EL.RequestStatus.COMPLETE,
                     data: action.payload.response
                 }
             };
-        case EvolutionUsers.EActionTypes.RESOURCE_FAILURE:
+        case EL.ActionTypes.RESOURCE_FAILURE:
             return {
                 ...state,
                 [action.payload.key]: {
-                    status: EvolutionUsers.ERequestStatus.ERROR,
+                    status: EL.RequestStatus.ERROR,
                     data: action.payload.response
                 }
             };
-        case EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS:
-        case EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE:
+        case EL.ActionTypes.CREATE_RESOURCE_SUCCESS:
+        case EL.ActionTypes.CREATE_RESOURCE_FAILURE:
         
-        case EvolutionUsers.EActionTypes.UPDATE_RESOURCE_SUCCESS:
-        case EvolutionUsers.EActionTypes.UPDATE_RESOURCE_FAILURE:
+        case EL.ActionTypes.UPDATE_RESOURCE_SUCCESS:
+        case EL.ActionTypes.UPDATE_RESOURCE_FAILURE:
 
-        case EvolutionUsers.EActionTypes.DELETE_RESOURCE_SUCCESS:
-        case EvolutionUsers.EActionTypes.DELETE_RESOURCE_FAILURE:
+        case EL.ActionTypes.DELETE_RESOURCE_SUCCESS:
+        case EL.ActionTypes.DELETE_RESOURCE_FAILURE:
             // Reset resources state to default
             return DEFAULT_STATE;
         default:

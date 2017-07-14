@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Panel from '../panel';
 
-export default class EditOrganisation extends React.PureComponent<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
+export default class EditOrganisation extends React.PureComponent<EL.Propless, EL.Stateless> {
     render() {
         return (
             <div>

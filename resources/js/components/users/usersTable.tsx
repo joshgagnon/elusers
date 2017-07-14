@@ -5,7 +5,7 @@ import { UsersHOC } from '../hoc/resourceHOCs';
 import { fullname } from '../utils';
 
 interface IUsersTableProps {
-    users: EvolutionUsers.IResource<EvolutionUsers.IUser[]>;
+    users: EL.Resource<EL.User[]>;
 }
 
 interface IUsersTableState {}

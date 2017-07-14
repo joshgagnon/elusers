@@ -31,10 +31,31 @@ class ProfessionalDevelopmentController extends Controller
         return $cpdpr_summary;
     }
 
-    public function create(Request $request, User $user)
+    public function get(ProfessionalDevelopmentRecord $record)
     {
-        $values = $request->only(['date', 'minutes', 'title', 'reflection']);
+        return $record;
+    }
 
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'user_id'    => 'required|exists:users,id',
+            'date'       => 'required|date',
+            'minutes'    => 'required|integer|min:1',
+            'title'      => 'required|max:255',
+            'reflection' => 'required',
+        ]);
+
+        $values = $request->only(['user_id', 'date', 'minutes', 'title', 'reflection']);
+
+        $values['date'] = Carbon::parse($values['date']); // because laravel date casting cant handle both dates and datetimes in the same model
+        ProfessionalDevelopmentRecord::forceCreate($values);
+
+        return response()->json(['message' => 'CPDPR record created.'], 201);
+    }
+
+    public function update(Request $request, ProfessionalDevelopmentRecord $record)
+    {
         $this->validate($request, [
             'date'       => 'required|date',
             'minutes'    => 'required|integer|min:1',
@@ -42,10 +63,10 @@ class ProfessionalDevelopmentController extends Controller
             'reflection' => 'required'
         ]);
 
-        $values['date'] = Carbon::parse($values['date']); // because laravel date casting cant handle both dates and datetimes in the same model
-        $user->professionalDevelopmentRecords()->create($values);
+        $values = $request->only(['date', 'minutes', 'title', 'reflection']);
 
-        return response()->json(['message' => 'CPDPR record created.'], 201);
+        $record->update($values);
+        return response()->json(['message' => 'CPDPR record updated.'], 200);
     }
 
     public function delete(ProfessionalDevelopmentRecord $record)

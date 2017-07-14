@@ -1,5 +1,5 @@
-declare namespace EvolutionUsers {
-    interface IUser {
+declare namespace EL {
+    interface User {
         id: number;
         title: string;
         firstName: string;
@@ -9,44 +9,39 @@ declare namespace EvolutionUsers {
         email: string;
     }
 
-    interface IStateResources {
+    interface StateResources {
         users?: {
-            status: ERequestStatus;
-            data: IUser[];
+            status: RequestStatus;
+            data: User[];
         };
         [key: string]: {
-            status: ERequestStatus;
+            status: RequestStatus;
             data: any;
         };
     }
 
-    export interface IResource<T> {
-        status?: ERequestStatus;
+    export interface Resource<T> {
+        status?: RequestStatus;
         data?: T;
         isFetching: boolean;
         hasErrored: boolean;
     }
 
-    interface ICPDPRState {
+    interface CPDPRState {
         yearEndingIndex: number;
         createModalVisible: boolean;
         editRecordId?: number;
     }
 
-    export interface IState {
+    export interface State {
         routing: any;
-        user: IUser;
+        user: User;
         something: boolean;
-        resources: IStateResources;
-        cpdpr: ICPDPRState;
+        resources: StateResources;
+        cpdpr: CPDPRState;
     }
 
-    export interface IAction {
-        type: string;
-        payload?: any;
-    }
-
-    export const enum EActionTypes {
+    export const enum ActionTypes {
         /**
          * Resources
          */
@@ -84,7 +79,7 @@ declare namespace EvolutionUsers {
         TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
     }
 
-    export const enum ERequestStatus {
+    export const enum RequestStatus {
         FETCHING = 'FETCHING',
         COMPLETE = 'COMPLETE',
         ERROR = 'ERROR'
@@ -93,27 +88,58 @@ declare namespace EvolutionUsers {
     export interface Stateless { }
     export interface Propless { }
 
-    export interface IValidationErrors {
+    export interface ValidationErrors {
         [key: string]: string
     }
 }
 
-declare namespace EvolutionUsers.Actions {
-    export interface IAction {
-        type: string;
+declare namespace EL.Actions {
+    export interface Meta {
+        onSuccess?: Action[];
+        onFailure?: Action[];
     }
 
-    export interface ICreateResourceAction extends IAction {
+    export interface Action {
+        type: string;
+        meta?: Meta;
+        [key: string]: any;
+    }
+
+    export interface CreateResourceAction extends Action {
         payload: {
             url: string;
             postData: object;
         }
     }
 
-    export interface IUpdateResourceAction extends IAction {
+    export interface UpdateResourceAction extends Action {
         payload: {
             url: string;
             data: object;
-        }
+        };
+    }
+
+    export interface DeleteResourceAction extends Action {
+        payload: {
+            url: string;
+        };
+    }
+}
+
+declare namespace EL.CPDPR {
+    interface RecordData {
+        title: string;
+        date: string;
+        reflection: string;
+        minutes: number;
+    }
+
+    interface UpdateRecordData extends RecordData {
+        id?: number;
+    }
+
+    interface Record extends RecordData {
+        id: number;
+        editable: boolean;
     }
 }

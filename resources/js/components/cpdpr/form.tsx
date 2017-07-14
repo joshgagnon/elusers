@@ -11,7 +11,7 @@ interface ICPDPRFormProps {
 
 const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
-class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EvolutionUsers.Stateless> {
+class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EL.Stateless> {
     render() {
         return (
             <form onSubmit={ this.props.handleSubmit }>
@@ -32,7 +32,7 @@ class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EvolutionUsers.Stat
 }
 
 function validateCPDPRForm(values: any) {
-    let errors: EvolutionUsers.IValidationErrors = {};
+    let errors: EL.ValidationErrors = {};
 
     // Title
     if (!values.title) {

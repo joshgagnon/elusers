@@ -3,7 +3,7 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
-export default class NavMenu extends React.Component<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
+export default class NavMenu extends React.Component<EL.Propless, EL.Stateless> {
     render() {
         return (
             <Navbar collapseOnSelect staticTop>
@@ -45,7 +45,7 @@ export default class NavMenu extends React.Component<EvolutionUsers.Propless, Ev
     }
 }
 
-class LogoutButton extends React.PureComponent<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
+class LogoutButton extends React.PureComponent<EL.Propless, EL.Stateless> {
     render() {
         return (
             <li role="presentation">

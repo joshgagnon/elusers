@@ -44,12 +44,12 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
     /**
      * Figure out where in props to put the fetched resource
      */
-    function stateToProps(state: EvolutionUsers.IState, ownProps: any) {
+    function stateToProps(state: EL.State, ownProps: any) {
         // Dig the resource out of state
         const resource = state.resources[location(ownProps)] || null;
 
-        const isFetching = !resource || resource.status === EvolutionUsers.ERequestStatus.FETCHING;
-        const hasErrored = resource && resource.status === EvolutionUsers.ERequestStatus.ERROR;
+        const isFetching = !resource || resource.status === EL.RequestStatus.FETCHING;
+        const hasErrored = resource && resource.status === EL.RequestStatus.ERROR;
 
         return { [propsName]: { isFetching, hasErrored, ...resource} };
     }
@@ -69,3 +69,4 @@ const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedCo
 
 export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
 export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.userId}/cpdpr`, propsName: 'cpdpr' });
+export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });

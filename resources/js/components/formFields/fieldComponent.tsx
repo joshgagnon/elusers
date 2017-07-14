@@ -9,7 +9,7 @@ interface IFieldComponentProps extends WrappedFieldProps<string> {
     type: string;
 }
 
-export default class FieldComponent extends React.PureComponent<IFieldComponentProps, EvolutionUsers.Stateless> {
+export default class FieldComponent extends React.PureComponent<IFieldComponentProps, EL.Stateless> {
     validationState(touched: boolean, error: string) {
         if (!touched) {
             return null;
@@ -34,7 +34,7 @@ export default class FieldComponent extends React.PureComponent<IFieldComponentP
     }
 }
 
-class FieldFactory extends React.PureComponent<IFieldComponentProps, EvolutionUsers.Stateless> {
+class FieldFactory extends React.PureComponent<IFieldComponentProps, EL.Stateless> {
     componentClass(type: string) {
         switch (type) {
             case 'textarea':

@@ -9,6 +9,9 @@ function* rootSagas() {
         createResourceRequests(),
         updateResourceRequests(),
         deleteResourceRequests(),
+
+        resourceSuccess(),
+        resourceFailure()
     ];
 }
 
@@ -17,36 +20,70 @@ export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
 }
 
 function *resourceRequests() {
-    yield takeEvery(EvolutionUsers.EActionTypes.RESOURCE_REQUEST, checkAndRequest);
+    yield takeEvery(EL.ActionTypes.RESOURCE_REQUEST, checkAndRequest);
 }
 
 function *createResourceRequests() {
-    yield takeEvery(EvolutionUsers.EActionTypes.CREATE_RESOURCE_REQUEST, createResource);
+    yield takeEvery(EL.ActionTypes.CREATE_RESOURCE_REQUEST, createResource);
 }
 
 function *updateResourceRequests() {
-    yield takeEvery(EvolutionUsers.EActionTypes.UPDATE_RESOURCE_REQUEST, updateResource);
+    yield takeEvery(EL.ActionTypes.UPDATE_RESOURCE_REQUEST, updateResource);
 }
 
 function *deleteResourceRequests() {
-    yield takeEvery(EvolutionUsers.EActionTypes.DELETE_RESOURCE_REQUEST, deleteResource);
+    yield takeEvery(EL.ActionTypes.DELETE_RESOURCE_REQUEST, deleteResource);
 }
 
-function *checkAndRequest(action: EvolutionUsers.IAction) {
+function *resourceSuccess() {
+    yield takeEvery([
+        EL.ActionTypes.RESOURCE_SUCCESS,
+        EL.ActionTypes.CREATE_RESOURCE_SUCCESS,
+        EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
+        EL.ActionTypes.DELETE_RESOURCE_SUCCESS
+    ], fireOnSuccessActions)
+}
+
+function *resourceFailure() {
+    yield takeEvery([
+        EL.ActionTypes.RESOURCE_FAILURE,
+        EL.ActionTypes.CREATE_RESOURCE_FAILURE,
+        EL.ActionTypes.UPDATE_RESOURCE_FAILURE,
+        EL.ActionTypes.DELETE_RESOURCE_FAILURE
+    ], fireOnFailureActions)
+}
+
+function *fireOnSuccessActions(action: EL.Actions.Action) {
+    if (action.meta && action.meta.onSuccess) {
+        for (const successAction of action.meta.onSuccess) {
+            yield put(successAction);
+        }
+    }
+}
+
+function *fireOnFailureActions(action: EL.Actions.Action) {
+    if (action.meta && action.meta.onFailure) {
+        for (const failureAction of action.meta.onFailure) {
+            yield put(failureAction);
+        }
+    }
+}
+
+function *checkAndRequest(action: EL.Actions.Action) {
     // Check to see if this resource exists in state already
-    const existing = yield select((state: EvolutionUsers.IState) => state.resources[action.payload.key]);
+    const existing = yield select((state: EL.State) => state.resources[action.payload.key]);
 
     if (existing) {
         return;
     }
 
-    yield put({ type: EvolutionUsers.EActionTypes.RESOURCE_FETCHING, payload: action.payload });
+    yield put({ type: EL.ActionTypes.RESOURCE_FETCHING, payload: action.payload });
 
     try {
         const response = yield call(axios.get, '/api/' + action.payload.key);
         const camelCaseResponseData = humps.camelizeKeys(response.data);
         yield put({
-            type: EvolutionUsers.EActionTypes.RESOURCE_SUCCESS,
+            type: EL.ActionTypes.RESOURCE_SUCCESS,
             payload: {
                 response: camelCaseResponseData,
                 key: action.payload.key
@@ -54,7 +91,7 @@ function *checkAndRequest(action: EvolutionUsers.IAction) {
         });
     } catch (e) {
         yield put({
-            type: EvolutionUsers.EActionTypes.RESOURCE_FAILURE,
+            type: EL.ActionTypes.RESOURCE_FAILURE,
             payload: {
                 response: e,
                 key: action.payload.key
@@ -63,59 +100,65 @@ function *checkAndRequest(action: EvolutionUsers.IAction) {
     }
 }
 
-function *createResource(action: EvolutionUsers.Actions.ICreateResourceAction) {
+function *createResource(action: EL.Actions.CreateResourceAction) {
     try {
         // Make the create request
         const response = yield call(axios.post, '/api/' + action.payload.url, action.payload.postData);
 
         // Fire a create resources success action
         yield put({
-            type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_SUCCESS,
-            payload: response.data
+            type: EL.ActionTypes.CREATE_RESOURCE_SUCCESS,
+            payload: response.data,
+            meta: action.meta
         });
     } catch (e) {
         // Create failed: fire a create resource failure action
         yield put({
-            type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_FAILURE,
-            payload: { response: e }
+            type: EL.ActionTypes.CREATE_RESOURCE_FAILURE,
+            payload: { response: e },
+            meta: action.meta
         }); 
     }
 }
 
-function *updateResource(action: EvolutionUsers.IAction) {
+function *updateResource(action: EL.Actions.UpdateResourceAction) {
     try {
         // Make the update PUT request
         const response = yield call(axios.put, '/api/' + action.payload.url, action.payload.data);
 
         // Fire a update resource success action
         yield put({
-            type: EvolutionUsers.EActionTypes.UPDATE_RESOURCE_SUCCESS,
-            payload: response.data
+            type: EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
+            payload: response.data,
+            meta: action.meta
         });
     } catch (e) {
         // Update failed: fire an update resource failure action
         yield put({
-            type: EvolutionUsers.EActionTypes.UPDATE_RESOURCE_FAILURE,
-            payload: { response: e }
+            type: EL.ActionTypes.UPDATE_RESOURCE_FAILURE,
+            payload: { response: e },
+            meta: action.meta
         })
     }
 }
 
-function *deleteResource(action: EvolutionUsers.IAction) {
+function *deleteResource(action: EL.Actions.DeleteResourceAction) {
     try {
         // Make the delete request
         const response = yield call(axios.delete, '/api/' + action.payload.url);
 
         // Fire a delete resourse success action
         yield put({
-            type: EvolutionUsers.EActionTypes.DELETE_RESOURCE_SUCCESS,
-            payload: response.data
+            type: EL.ActionTypes.DELETE_RESOURCE_SUCCESS,
+            payload: response.data,
+            meta: action.meta
         });
     } catch (e) {
         // Delete failed: fire a delete resource failure action
         yield put({
-            type: EvolutionUsers.EActionTypes.DELETE_RESOURCE_FAILURE,
-            payload: { response: e }
+            type: EL.ActionTypes.DELETE_RESOURCE_FAILURE,
+            payload: { response: e },
+            meta: action.meta
         })
     }
 }

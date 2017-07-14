@@ -8,9 +8,9 @@ import userReducer from './userReducer';
 import cpdprReducer from './cpdprReducer';
 
 
-const something = (state=false, action: EvolutionUsers.IAction) => {
+const something = (state=false, action: EL.Actions.Action) => {
     switch (action.type) {
-        case EvolutionUsers.EActionTypes.TOGGLE_SOMETHING:
+        case EL.ActionTypes.TOGGLE_SOMETHING:
             return !state;
         default:
             return state;

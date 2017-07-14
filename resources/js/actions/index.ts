@@ -1,39 +1,50 @@
 export function toggleSomething() {
-    return { type: EvolutionUsers.EActionTypes.TOGGLE_SOMETHING };
+    return { type: EL.ActionTypes.TOGGLE_SOMETHING };
 };
 
-export function requestResource(resource: string) {
+export function requestResource(resource: string, meta?: EL.Actions.Meta) {
     return {
-        type: EvolutionUsers.EActionTypes.RESOURCE_REQUEST,
-        payload: { key: resource }
+        type: EL.ActionTypes.RESOURCE_REQUEST,
+        payload: { key: resource },
+        meta
     };
 }
 
-export function createResource(url: string, postData: object): EvolutionUsers.Actions.ICreateResourceAction {
+export function createResource(url: string, postData: object, meta?: EL.Actions.Meta): EL.Actions.CreateResourceAction {
     return {
-        type: EvolutionUsers.EActionTypes.CREATE_RESOURCE_REQUEST,
-        payload: { url, postData }
+        type: EL.ActionTypes.CREATE_RESOURCE_REQUEST,
+        payload: { url, postData },
+        meta
     }
 }
 
-export function deleteResource(url: string) {
+export function updateResource( url: string, data: object, meta?: EL.Actions.Meta): EL.Actions.UpdateResourceAction {
     return {
-        type: EvolutionUsers.EActionTypes.DELETE_RESOURCE_REQUEST,
-        payload: { url }
+        type: EL.ActionTypes.UPDATE_RESOURCE_REQUEST,
+        payload: { url, data },
+        meta
+    }
+}
+
+export function deleteResource(url: string, meta?: EL.Actions.Meta) {
+    return {
+        type: EL.ActionTypes.DELETE_RESOURCE_REQUEST,
+        payload: { url },
+        meta
     };
 }
 
 export function updateCPDPRYearIndex(index: number) {
     return {
-        type: EvolutionUsers.EActionTypes.UPDATE_CPDPR_YEAR,
+        type: EL.ActionTypes.UPDATE_CPDPR_YEAR,
         payload: index
     };
 }
 
 export function showCreateCPDPRModal() {
-    return { type: EvolutionUsers.EActionTypes.SHOW_CREATE_CPDPR_MODAL };
+    return { type: EL.ActionTypes.SHOW_CREATE_CPDPR_MODAL };
 }
 
 export function hideCreateCPDPRModal() {
-    return { type: EvolutionUsers.EActionTypes.HIDE_CREATE_CPDPR_MODAL };
+    return { type: EL.ActionTypes.HIDE_CREATE_CPDPR_MODAL };
 }

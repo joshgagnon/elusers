@@ -2,7 +2,7 @@ import * as React from 'react';
 import Navbar from './navbar';
 
 interface ILayoutProps {
-    user: EvolutionUsers.IUser;
+    user: EL.User;
     children: any;
 }
 

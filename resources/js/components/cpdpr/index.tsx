@@ -12,25 +12,10 @@ import FieldComponent from '../formFields/fieldComponent';
 import FormModal from '../formModal';
 import CPDPRForm from './form';
 import Icon from '../icon';
-
-interface ICPDPRRecordData {
-    title: string;
-    date: string;
-    reflection: string;
-    minutes: number;
-}
-
-interface IUpdateCPDPRRecordData extends ICPDPRRecordData {
-    id?: number;
-}
-
-interface ICPDPRRecord extends ICPDPRRecordData {
-    id: number;
-    editable: boolean;
-}
+import { Link } from 'react-router';
 
 interface ICPDPRData {
-    records: ICPDPRRecord[];
+    records: EL.CPDPR.Record[];
     minutes: number;
     yearEnding: number;
 };
@@ -38,33 +23,29 @@ interface ICPDPRData {
 interface ICPDPRTableProps {
     recordSet: ICPDPRData;
     deleteRecord: (recordId: number) => void;
-    editRecord: (recordId: number) => void;
 }
 
 interface ICPDPRProps {
     userId: number;
-    cpdpr: EvolutionUsers.IResource<ICPDPRData[]>;
-    prevYear: (currentIndex : number) => EvolutionUsers.IAction;
-    nextYear: (currentIndex: number) => EvolutionUsers.IAction;
+    cpdpr: EL.Resource<ICPDPRData[]>;
+    prevYear: (currentIndex : number) => EL.Actions.Action;
+    nextYear: (currentIndex: number) => EL.Actions.Action;
     yearEndingIndex: number;
-    showCreateCPDPRModal: () => void;
-    hideCreateCPDPRModal: () => void;
-    createModalVisible: boolean;
-    createRecord: (userId: number, data: ICPDPRRecordData) => void;
 }
 
 interface ICPDPRTableRowProps {
-    record: ICPDPRRecord;
-    editRecord: () => void;
+    record: EL.CPDPR.Record;
     deleteRecord: () => void;
 }
 
-class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EvolutionUsers.Stateless> {
+class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EL.Stateless> {
     renderButtons() {
         if (this.props.record.editable) {
+            const editLink = `cpdpr/${this.props.record.id}/edit`;
+
             return (
                 <div>
-                    <Button bsStyle="info" bsSize="sm" onClick={this.props.editRecord}>Edit</Button>
+                    <Link to={editLink} className="btn btn-info btn-sm">Edit</Link>
                     <Button bsStyle="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
                 </div> 
             );
@@ -85,7 +66,7 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EvolutionUs
     }
 }
 
-class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.Stateless> {
+class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EL.Stateless> {
     render() {
         const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours', 'Actions'];
 
@@ -97,7 +78,6 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
                             <CPDPRTableRow
                                 key={record.id}
                                 record={record}
-                                editRecord={() => this.props.editRecord(record.id)}
                                 deleteRecord={() => this.props.deleteRecord(record.id)} />)
                     }
                 </tbody>
@@ -115,31 +95,20 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EvolutionUsers.St
 }
 
 @connect(
-    ({ cpdpr }) => ({ userId: 2, yearEndingIndex: cpdpr.yearEndingIndex, createModalVisible: cpdpr.createModalVisible }),
+    (state: EL.State) => ({
+        userId: state.user.id,
+        yearEndingIndex: state.cpdpr.yearEndingIndex,
+        createModalVisible: state.cpdpr.createModalVisible
+    }),
     {
         prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
         nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
-        
-        showCreateCPDPRModal,
-        hideCreateCPDPRModal,
-
-        createRecord: (userId: number, data: ICPDPRRecordData) => createResource(`users/${userId}/cpdpr`, data),
         deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
     }
 )
 @UserCPDPRHOC()
 @PanelHOC([props => props.cpdpr])
-class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateless> {
-    constructor(props: ICPDPRProps) {
-        super(props);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    onSubmit(data: ICPDPRRecordData) {
-        this.props.createRecord(this.props.userId, data)
-        this.props.hideCreateCPDPRModal();
-    }
-
+class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
     render() {
         const { cpdpr, yearEndingIndex, nextYear, prevYear } = this.props;
 
@@ -157,7 +126,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
                 <div className="row title-row">
                     <div className="col-xs-12">
                         <ButtonToolbar className="pull-right">
-                            <Button onClick={this.props.showCreateCPDPRModal}><Icon iconName="plus" />&nbsp;&nbsp;Add</Button>
+                            <Link to="cpdpr/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Add</Link>
                             <ButtonGroup>
                                 <Button disabled={disablePrevButton} onClick={() => prevYear(yearEndingIndex)}><Icon iconName="arrow-left" /></Button>
                                 <Button disabled={disableNextButton} onClick={() => nextYear(yearEndingIndex)}><Icon iconName="arrow-right" /></Button>
@@ -171,27 +140,19 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EvolutionUsers.Stateles
                 <hr />
 
                 <CPDPRTable recordSet={currentRecordSet} deleteRecord={this.props.deleteRecord} />
-
-                { this.props.createModalVisible && 
-                    <FormModal formName="cpdpr-form" hide={this.props.hideCreateCPDPRModal}>
-                        <CPDPRForm onSubmit={this.onSubmit} />
-                    </FormModal>
-                }
-
-                <FormModal formName="cpdpr-form" hide={this.props.hideCreateCPDPRModal}>
-                    <CPDPRForm initialValues={currentRecordSet.records[0]} />
-                </FormModal>
             </div>
         );
     }
 }
 
-export default class CPDPRPage extends React.PureComponent<EvolutionUsers.Propless, EvolutionUsers.Stateless> {
+export default class CPDPRPage extends React.PureComponent<EL.Propless, EL.Stateless> {
     render() {
         return (
             <div>
                 <h2>CPDPR</h2>
                 <UserCPDPR />
+
+                {this.props.children && this.props.children}
             </div>
         );
     }

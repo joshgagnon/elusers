@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Panel from '../panel';
+import Loading from '../loading';
 
 const PanelHOC = (resources?: any[]) => (ComposedComponent: React.PureComponent<any, any>) => {
     const PanelContent = (props: any) => {
@@ -11,7 +12,7 @@ const PanelHOC = (resources?: any[]) => (ComposedComponent: React.PureComponent<
             }
 
             if (resources.some(r => r(props).isFetching)) {
-                return <h1>Loading</h1>;
+                return <Loading />;
             }
         }
 

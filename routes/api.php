@@ -13,11 +13,20 @@ use Illuminate\Http\Request;
 |
 */
 Route::group(['middleware' => 'auth'], function() {
+    /**
+     * Users
+     */
     Route::get('user', 'UserController@current');
     Route::get('users', 'UserController@index');
     Route::get('users/{user}', 'UserController@show');
 
+    /**
+     * CPDPR
+     */
     Route::get('users/{user}/cpdpr', 'ProfessionalDevelopmentController@forUser');
-    Route::post('users/{user}/cpdpr', 'ProfessionalDevelopmentController@create');
+
+    Route::post('cpdpr', 'ProfessionalDevelopmentController@create');
+    Route::get('cpdpr/{record}', 'ProfessionalDevelopmentController@get');
+    Route::put('cpdpr/{record}', 'ProfessionalDevelopmentController@update');
     Route::delete('cpdpr/{record}', 'ProfessionalDevelopmentController@delete');
 });

@@ -5,17 +5,18 @@ import { submit } from 'redux-form';
 
 interface IFormModalProps {
     formName: string;
+    title: string;
     hide: Function;
     children: any;
     dispatch: Function;
 }
 
-class FormModal extends React.PureComponent<IFormModalProps, EvolutionUsers.Stateless> {
+class FormModal extends React.PureComponent<IFormModalProps, EL.Stateless> {
     render() {
         return (
             <Modal show={true} onHide={this.props.hide}>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-sm">Create CPDPR Record</Modal.Title>
+                    <Modal.Title id="contained-modal-title-sm">{this.props.title}</Modal.Title>
                 </Modal.Header>
                 
                 <Modal.Body>

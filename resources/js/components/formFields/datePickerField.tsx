@@ -11,7 +11,7 @@ interface IDatePickerFieldProps {
      input: WrappedFieldInputProps;
 }
 
-export default class DatePickerField extends React.PureComponent<IDatePickerFieldProps, EvolutionUsers.Stateless> {
+export default class DatePickerField extends React.PureComponent<IDatePickerFieldProps, EL.Stateless> {
     render() {
         const { input: { onChange, onBlur, value } } = this.props;
 

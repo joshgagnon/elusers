@@ -1,27 +1,27 @@
-const defaultState: EvolutionUsers.ICPDPRState = {
+const defaultState: EL.CPDPRState = {
     yearEndingIndex: 0,
     createModalVisible: false
 }
 
-export default function(state=defaultState, action: EvolutionUsers.IAction): EvolutionUsers.ICPDPRState {
+export default function(state=defaultState, action: EL.Actions.Action): EL.CPDPRState {
     switch (action.type) {
-        case EvolutionUsers.EActionTypes.UPDATE_CPDPR_YEAR:
+        case EL.ActionTypes.UPDATE_CPDPR_YEAR:
             return { ...state, yearEndingIndex: action.payload };
 
         /**
          * Create CPDPR record
          */
-        case EvolutionUsers.EActionTypes.SHOW_CREATE_CPDPR_MODAL:
+        case EL.ActionTypes.SHOW_CREATE_CPDPR_MODAL:
             return { ...state, createModalVisible: true };
-        case EvolutionUsers.EActionTypes.HIDE_CREATE_CPDPR_MODAL:
+        case EL.ActionTypes.HIDE_CREATE_CPDPR_MODAL:
             return { ...state, createModalVisible: false };
 
         /**
          * Edit CPDPR record
          */
-        case EvolutionUsers.EActionTypes.SHOW_EDIT_CPDPR_RECORD_MODAL:
+        case EL.ActionTypes.SHOW_EDIT_CPDPR_RECORD_MODAL:
             return { ...state, editRecordId: action.payload.cpdprId };
-        case EvolutionUsers.EActionTypes.HIDE_EDIT_CPDPR_RECORD_MODAL:
+        case EL.ActionTypes.HIDE_EDIT_CPDPR_RECORD_MODAL:
             return { ...state, editRecordId: undefined };
 
         /**
