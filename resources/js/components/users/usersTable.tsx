@@ -9,12 +9,10 @@ interface IUsersTableProps {
     users: EL.Resource<EL.User[]>;
 }
 
-interface IUsersTableState {}
-
 const HEADINGS = ['Full Name', 'Preferred Name', 'Email'];
 
 @PanelHOC([props => props.users])
-class UsersTable extends React.PureComponent<IUsersTableProps, IUsersTableState> {
+class UsersTable extends React.PureComponent<IUsersTableProps, EL.Stateless> {
     render() {
         return (
             <Table headings={HEADINGS}>
