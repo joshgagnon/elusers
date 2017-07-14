@@ -31,6 +31,7 @@ interface ICPDPRProps {
     prevYear: (currentIndex : number) => EL.Actions.Action;
     nextYear: (currentIndex: number) => EL.Actions.Action;
     yearEndingIndex: number;
+    deleteRecord: (recordId: number) => void;
 }
 
 interface ICPDPRTableRowProps {
@@ -44,10 +45,10 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EL.Stateles
             const editLink = `cpdpr/${this.props.record.id}/edit`;
 
             return (
-                <div>
+                <ButtonToolbar>
                     <Link to={editLink} className="btn btn-info btn-sm">Edit</Link>
                     <Button bsStyle="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
-                </div> 
+                </ButtonToolbar> 
             );
         }
     }
