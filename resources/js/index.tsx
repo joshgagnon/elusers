@@ -4,9 +4,17 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import configureStore from './configureStore';
 import { browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux'
+import { syncHistoryWithStore } from 'react-router-redux';
 
-const store = configureStore(browserHistory);
+// Get the page load data injected when the app is served
+let initialState = {};
+try{
+    initialState = JSON.parse(document.getElementById("load-data").textContent);
+} catch(e) {
+    // Do nothing
+}
+
+const store = configureStore(browserHistory, initialState);
 const history = syncHistoryWithStore(browserHistory, store);
 
 import ReduxRoot from './reduxRoot';

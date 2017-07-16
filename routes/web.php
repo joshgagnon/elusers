@@ -23,7 +23,5 @@ Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm
 
 // Catch all and serve the main app
 Route::group(['middleware' => 'auth'], function() {
-    Route::get('{path?}', function () {
-        return view('index');
-    })->where('path', '.*');
+    Route::get('{path?}', 'HomeController@index')->where('path', '.*');
 });
