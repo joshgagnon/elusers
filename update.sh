@@ -1,5 +1,5 @@
 if [[ $# -ne 1 ]]; then
-    echo "Usage: sudo $0 <server-username>"
+    echo "Usage: $0 <server-username>"
     exit 1
 fi
 
@@ -18,6 +18,7 @@ sudo -u $1 php artisan clear-compiled
 sudo -u $1 composer dump-autoload
 sudo -u $1 NODE_ENV=production node_modules/.bin/webpack
 sudo -u $1 php artisan migrate
+sudo -u $1 php artisan db:update-functions
 sudo -u $1 php artisan optimize
 
 php artisan up
