@@ -23,6 +23,13 @@ export default class DatePickerField extends React.PureComponent<IDatePickerFiel
                 value={!value ? null : new Date(value)}
                 onBlur={onBlur}
                 className="form-control"
+                ref="date"
+                onFocus={(event: React.FocusEvent<any>) => {
+                    if (event.target.tagName === 'INPUT' && !this.props.value) {
+                        this.refs.date && this.refs.date.getControlledInstance() &&this.refs.date.getControlledInstance().open("calendar");
+                    }
+                    //this.props.onFocus(event)
+                }}
             />
         );
     }
