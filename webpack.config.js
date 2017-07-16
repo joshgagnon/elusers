@@ -77,6 +77,17 @@ module.exports = {
     plugins: [
         new WebpackNotifierPlugin({ title: 'Evolution Users' }),
         new ExtractTextPlugin('css/[name].css'),
-        !DEV ? new webpack.optimize.UglifyJsPlugin() : function(){}
+        DEV ? function(){} : new webpack.optimize.UglifyJsPlugin(),
+
+        // Using define pluggin makes sure we are using the production build
+        // of React when we build for production.
+        new webpack.DefinePlugin({
+            __DEV__: DEV,
+            __SERVER__: false,
+            "process.env": {
+                // This has effect on the react lib size
+                "NODE_ENV": JSON.stringify(process.env.NODE_ENV)
+            }
+        }),
     ]
 };
