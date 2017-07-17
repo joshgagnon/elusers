@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Field, WrappedFieldInputProps, ComponentConstructor, WrappedFieldProps } from 'redux-form';
+import { WrappedFieldProps } from 'redux-form';
 import { FormGroup, ControlLabel, HelpBlock, FormControl } from 'react-bootstrap';
 import DatePickerField from './datePickerField';
 import DurationField from './durationField';

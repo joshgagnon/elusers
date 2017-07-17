@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Col, Row, FormControl, HelpBlock } from 'react-bootstrap';
-import { Field, WrappedFieldInputProps } from 'redux-form';
-import { minutesToHoursAndMinutes, fractionalHoursToMinutes, minutesToFractionalHours } from '../utils';
+import { FormControl } from 'react-bootstrap';
+import { WrappedFieldInputProps } from 'redux-form';
+import { fractionalHoursToMinutes, minutesToFractionalHours } from '../utils';
 
 interface IDurationFieldProps {
     input: WrappedFieldInputProps;

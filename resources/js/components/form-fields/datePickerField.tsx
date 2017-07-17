@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import { FormControl } from 'react-bootstrap';
 import { WrappedFieldInputProps } from 'redux-form';
 import { DateTimePicker } from 'react-widgets';
 import * as momentLocaliser from 'react-widgets/lib/localizers/moment';

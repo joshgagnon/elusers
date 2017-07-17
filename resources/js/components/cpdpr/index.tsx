@@ -4,13 +4,9 @@ import Table from '../dataTable';
 import { UserCPDPRHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHoursString } from '../utils';
-import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col } from 'react-bootstrap';
-import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal, createResource, deleteResource } from '../../actions/index';
+import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import { updateCPDPRYearIndex, deleteResource } from '../../actions/index';
 import * as moment from 'moment';
-import { Field, reduxForm, submit, FormComponentProps, FormProps } from 'redux-form';
-import FieldComponent from '../form-fields/fieldComponent';
-import FormModal from '../formModal';
-import CPDPRForm from './form';
 import Icon from '../icon';
 import { Link } from 'react-router';
 

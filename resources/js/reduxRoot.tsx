@@ -5,10 +5,7 @@ import routes from './routes';
 import { Router } from 'react-router';
 import { History } from 'history';
 
-const ConnectedLayout = connect(state => ({ user: state.user }), {
-    // Connect actions
-    // addDocument: addDocument
-})(Layout);
+const ConnectedLayout = connect(state => ({ user: state.user }))(Layout);
 
 interface RootProps {
     history: History,

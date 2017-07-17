@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Panel from '../panel';
 import Table from '../dataTable';
 import { UsersHOC } from '../hoc/resourceHOCs';
 import { fullname } from '../utils';
