@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Col, Row, FormControl, HelpBlock } from 'react-bootstrap';
 import { Field, WrappedFieldInputProps } from 'redux-form';
-import * as leftPad from 'left-pad';
 import { minutesToHoursAndMinutes, fractionalHoursToMinutes, minutesToFractionalHours } from '../utils';
 
 interface IDurationFieldProps {

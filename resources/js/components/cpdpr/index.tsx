@@ -8,7 +8,7 @@ import { Button, ButtonGroup, ButtonToolbar, Glyphicon, Row, Col } from 'react-b
 import { updateCPDPRYearIndex, showCreateCPDPRModal, hideCreateCPDPRModal, createResource, deleteResource } from '../../actions/index';
 import * as moment from 'moment';
 import { Field, reduxForm, submit, FormComponentProps, FormProps } from 'redux-form';
-import FieldComponent from '../formFields/fieldComponent';
+import FieldComponent from '../form-fields/fieldComponent';
 import FormModal from '../formModal';
 import CPDPRForm from './form';
 import Icon from '../icon';
