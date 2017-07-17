@@ -1,5 +1,3 @@
-import * as leftPad from 'left-pad';
-
 // Infer the users full name
 export function fullname(user: EL.User) {
     return user.title // title
@@ -25,5 +23,5 @@ export function fractionalHoursToMinutes(fractionalHours: number): number {
 
 export function minutesToHoursString(minutes: number) {
     const seperateValues = minutesToHoursAndMinutes(minutes);
-    return seperateValues.hours + ':' + leftPad(seperateValues.minutes, 2, 0);
+    return seperateValues.hours + ':' + seperateValues.minutes.toString().padStart(2, '0');
 }
