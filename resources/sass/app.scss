@@ -1,15 +1,3 @@
-
-
-/*!
- * Bootstrap v3.3.7 (http://getbootstrap.com)
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
-
-// Core variables and mixins
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
-
-
 // Body
 $body-bg: #f5f8fa;
 
@@ -20,20 +8,15 @@ $navbar-default-border: $laravel-border-color;
 $panel-default-border: $laravel-border-color;
 $panel-inner-border: $laravel-border-color;
 
-// Brands
-$brand-primary: #3097D1;
-$brand-info: #8eb4cb;
-$brand-success: #2ab27b;
-$brand-warning: #cbb956;
-$brand-danger: #bf5329;
-
 // Typography
-$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+$icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
 $fa-font-path: '~font-awesome/fonts';
-$font-family-sans-serif: "Raleway", sans-serif;
+$font-family-sans-serif: 'Open Sans', sans-serif;
 $font-size-base: 14px;
 $line-height-base: 1.6;
 $text-color: #636b6f;
+
+$brand-primary: #337ab7;
 
 // Navbar
 $navbar-default-bg: #fff;
@@ -50,6 +33,8 @@ $input-color-placeholder: lighten($text-color, 30%);
 $panel-default-heading-bg: #fff;
 
 
+// Core variables and mixins
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 
 // Reset and dependencies
@@ -101,13 +86,6 @@ $panel-default-heading-bg: #fff;
 
 
 
-
-
-
-
-
-
-
 @import '_loading';
 
 
@@ -117,10 +95,6 @@ $panel-default-heading-bg: #fff;
 
 .form-control.rw-datetimepicker {
     padding: 0;
-}
-
-body {
-    font-family: 'Open Sans', sans-serif !important;
 }
 
 table.table>tbody>tr>td {
