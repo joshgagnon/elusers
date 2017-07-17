@@ -2,31 +2,35 @@ import * as React from 'react';
 import Panel from '../panel';
 import Loading from '../loading';
 
-const PanelHOC = (resources?: any[]) => (ComposedComponent: React.PureComponent<any, any>) => {
-    const PanelContent = (props: any) => {
-        let status;
+function PanelHOC(resources?: any[]) {
+    return function<T extends React.Component<any, any>>(ComposedComponent: () => T) {
+        function PanelContent(props: T) {
+            let status;
 
-        if (resources) {
-            if (resources.some(r => r(props).hasErrored)) {
-                return <h1>Error</h1>;
+            if (resources) {
+                if (resources.some(r => r(props).hasErrored)) {
+                    return <h1>Error</h1>;
+                }
+
+                if (resources.some(r => r(props).isFetching)) {
+                    return <Loading />;
+                }
             }
 
-            if (resources.some(r => r(props).isFetching)) {
-                return <Loading />;
+            return <ComposedComponent {...props} />;
+        }
+
+        class PanelWithContent extends React.PureComponent<any, any> {
+            render() {
+                return (
+                    <Panel>
+                        <PanelContent {...this.props} />
+                    </Panel>
+                );
             }
         }
 
-        return <ComposedComponent {...props} />;
-    }
-
-    return class extends React.PureComponent<any, any> {
-        render() {
-            return (
-                <Panel>
-                    <PanelContent {...this.props} />
-                </Panel>
-            );
-        }
+        return PanelWithContent;
     }
 }
 
