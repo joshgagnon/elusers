@@ -14,57 +14,59 @@ interface IHOCFactoryParameters {
     propsName: string;
 }
 
-const HOCFactory = ({location, propsName}: IHOCFactoryParameters) => (ComposedComponent: React.PureComponent<any, any>) => {
-    class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
+function HOCFactory({location, propsName}: IHOCFactoryParameters) {
+    return function ConnectedInjector<T extends React.Component<any, any>>(ComposedComponent: () =>  T) {
+        class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
 
-        fetch(refresh?: boolean){
-            // Set the default of refresh to false
-            refresh = refresh !== undefined ? refresh : false;
-            
-            // Only fetch if we need to, or refresh is true
-            if (refresh || (!this.props[propsName] || !this.props[propsName].status)) {
-                // Call the props fetch function
-                this.props.fetch(refresh)
+            fetch(refresh?: boolean){
+                // Set the default of refresh to false
+                refresh = refresh !== undefined ? refresh : false;
+                
+                // Only fetch if we need to, or refresh is true
+                if (refresh || (!this.props[propsName] || !this.props[propsName].status)) {
+                    // Call the props fetch function
+                    this.props.fetch(refresh)
+                }
+            }
+
+            componentWillMount() {
+                this.fetch();
+            }
+
+            componentDidUpdate() {
+                this.fetch();
+            }
+
+            render() {
+                return <ComposedComponent {...this.props} />;
             }
         }
 
-        componentWillMount() {
-            this.fetch();
+        /**
+         * Figure out where in props to put the fetched resource
+         */
+        function stateToProps(state: EL.State, ownProps: any) {
+            // Dig the resource out of state
+            const resource = state.resources[location(ownProps)] || null;
+
+            const isFetching = !resource || resource.status === EL.RequestStatus.FETCHING;
+            const hasErrored = resource && resource.status === EL.RequestStatus.ERROR;
+
+            return { [propsName]: { isFetching, hasErrored, ...resource} };
         }
 
-        componentDidUpdate() {
-            this.fetch();
+        function actions(dispatch: Dispatch<any>, ownProps: any) {
+            return {
+                fetch: () => {
+                    const resource = location(ownProps);
+                    return dispatch(requestResource(resource));
+                }
+            };
         }
 
-        render() {
-            return <ComposedComponent {...this.props} />;
-        }
+
+        return connect(stateToProps, actions)(Injector);
     }
-
-    /**
-     * Figure out where in props to put the fetched resource
-     */
-    function stateToProps(state: EL.State, ownProps: any) {
-        // Dig the resource out of state
-        const resource = state.resources[location(ownProps)] || null;
-
-        const isFetching = !resource || resource.status === EL.RequestStatus.FETCHING;
-        const hasErrored = resource && resource.status === EL.RequestStatus.ERROR;
-
-        return { [propsName]: { isFetching, hasErrored, ...resource} };
-    }
-
-    function actions(dispatch: Dispatch<any>, ownProps: any) {
-        return {
-            fetch: () => {
-                const resource = location(ownProps);
-                return dispatch(requestResource(resource));
-            }
-        };
-    }
-
-
-    return connect(stateToProps, actions)(Injector);
 }
 
 export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
