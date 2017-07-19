@@ -5,11 +5,13 @@ import * as ReactDOM from 'react-dom';
 import configureStore from './configureStore';
 import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
+import * as humps from 'humps';
 
 // Get the page load data injected when the app is served
 let initialState = {};
-try{
-    initialState = JSON.parse(document.getElementById("load-data").textContent);
+try {
+    const loadData = JSON.parse(document.getElementById("load-data").textContent);
+    initialState = humps.camelizeKeys(loadData);
 } catch(e) {
     // Do nothing
 }
