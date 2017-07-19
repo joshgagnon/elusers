@@ -40,6 +40,10 @@ class MyProfileForm extends React.PureComponent<IMyProfileFormProps, EL.Stateles
                 <Field name="preferredName" label="Preferred Name" component={FieldComponent} type="text" />
 
                 <Field name="email" label="Email" component={FieldComponent} type="email" />
+
+                <Field name="lawAdmissionDate" label="Law Admission Date" component={FieldComponent} type="date" />
+                <Field name="irdNumber" label="IRD Number" component={FieldComponent} type="text" />
+                <Field name="bankAccountNumber" label="Bank Account Number" component={FieldComponent} type="text" />
             </Form>
         );
     }

@@ -7,6 +7,9 @@ declare namespace EL {
         surname: string;
         preferredName?: string;
         email: string;
+        lawAdmissionDate?: string;
+        irdNumber?: string;
+        bankAccountNumber?: string;
     }
 
     interface StateResources {

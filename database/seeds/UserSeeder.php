@@ -24,6 +24,9 @@ class UserSeeder extends Seeder
             'email' => 'thomas@evolutionlawyers.nz',
             'password' => Hash::make('password'),
             'organisation_id' => $evolutionLawyers->id,
+            'law_admission_date' => '30 Sep 2011',
+            'ird_number' => '07441122',
+            'bank_account_number' => '0905219955005000',
         ]);
 
         User::create([
