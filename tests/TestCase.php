@@ -56,6 +56,9 @@ abstract class TestCase extends BaseTestCase
         // Create and return the user
         $user = User::forceCreate($userData);
 
+        // Bug where some null fields would not be in this object, so grab a fresh copy
+        $user = $user->fresh();
+
         return $user;
     }
 
