@@ -20,7 +20,7 @@ interface IEditCPDPRRecordProps {
         submit: (data: EL.CPDPR.UpdateRecordData) => dispatch(updateResource(`cpdpr/${ownProps.recordId}`, data, { onSuccess: [push('/cpdpr')] }))
 }))
 @CPDPRHOC()
-export default class EditCPDPRRecord extends React.PureComponent<IEditCPDPRRecordProps, EL.Stateless> {
+class EditCPDPRRecord extends React.PureComponent<IEditCPDPRRecordProps, EL.Stateless> {
     render() {
         return (
             <FormModal title="Edit CPDPR Record" formName="cpdpr-form" hide={this.props.close}>
