@@ -32,11 +32,7 @@ class UserController extends Controller
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
 
-        $response = $user->toArray();
-
-        $response['emergency_contact'] = $user->emergencyContact()->first()->toArray();
-
         // Return the user
-        return $response;
+        return $user;
     }
 }

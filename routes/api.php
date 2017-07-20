@@ -19,6 +19,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('users', 'UserController@index');
     Route::get('users/{user}', 'UserController@show');
 
+    Route::get('users/{user}/emergency-contact', 'EmergencyContactController@get');
+    Route::put('emergency-contact/{contact}', 'EmergencyContactController@update');
+
     /**
      * CPDPR
      */
