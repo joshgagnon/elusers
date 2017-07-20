@@ -16,7 +16,7 @@ class User extends Authenticatable
     protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number'];
 
     /**
-     * Organisation relationship: a user belongs to an organisation
+     * Organisation relationship: a user belongs to an organisation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -26,7 +26,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Professional Development Record relationship: a User has many Professional Development Records
+     * Professional Development Record relationship: a User has many Professional Development Records.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -36,10 +36,20 @@ class User extends Authenticatable
     }
 
     /**
+     * Emergency Contact relationship: the emergency contact for this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function emergencyContact()
+    {
+        return $this->hasOne(EmergencyContact::class);
+    }
+
+    /**
      * Query scope: limit users to an organisation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \App\Organisation $organisation
+     * @param \App\Organisation                     $organisation
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeInOrganisation($query, $organisation)

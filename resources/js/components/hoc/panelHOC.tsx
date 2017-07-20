@@ -2,7 +2,7 @@ import * as React from 'react';
 import Panel from '../panel';
 import Loading from '../loading';
 
-function PanelHOC(resources?: any[]) {
+function PanelHOC(title?: string, resources?: any[]) {
     return function<T extends React.Component<any, any>>(ComposedComponent: () => T) {
         function PanelContent(props: T) {
             let status;
@@ -23,7 +23,7 @@ function PanelHOC(resources?: any[]) {
         class PanelWithContent extends React.PureComponent<any, any> {
             render() {
                 return (
-                    <Panel>
+                    <Panel title={title}>
                         <PanelContent {...this.props} />
                     </Panel>
                 );

@@ -16,17 +16,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $currentOrgId = $request->user()->organisation_id;
-        return User::inOrganisation($currentOrgId)->get();
-    }
 
-    /**
-     * Get the current user.
-     *
-     * @return \App\User
-     */
-    public function current(Request $request)
-    {
-        return $request->user();
+        return User::inOrganisation($currentOrgId)->get();
     }
 
     /**
@@ -41,7 +32,11 @@ class UserController extends Controller
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
 
+        $response = $user->toArray();
+
+        $response['emergency_contact'] = $user->emergencyContact()->first()->toArray();
+
         // Return the user
-        return $user;
+        return $response;
     }
 }

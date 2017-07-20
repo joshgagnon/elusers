@@ -109,3 +109,7 @@ table.table>tbody>tr>td {
 .title-row {
     margin-bottom: 16px;
 }
+
+.panel-default > .panel-heading {
+    background: $gray-lighter;
+}

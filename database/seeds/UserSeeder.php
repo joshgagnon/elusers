@@ -1,5 +1,6 @@
 <?php
 
+use App\EmergencyContact;
 use App\Organisation;
 use App\User;
 use Illuminate\Database\Seeder;
@@ -15,7 +16,7 @@ class UserSeeder extends Seeder
     {
         $evolutionLawyers = Organisation::where('legal_name', 'Evolution Lawyers Limited')->first();
 
-        User::create([
+        $thomas = User::create([
             'title' => 'Mr',
             'first_name' => 'Thomas',
             'middle_name' => 'David',
@@ -29,7 +30,9 @@ class UserSeeder extends Seeder
             'bank_account_number' => '0905219955005000',
         ]);
 
-        User::create([
+        $thomas->emergencyContact()->create(['name' => 'Sophie Bloy', 'email' => 'sophie@evolutionlawyers.nz', 'phone' => '02102439766']);
+
+        $tamina = User::create([
             'title' => 'Ms',
             'first_name' => 'Tamina',
             'middle_name' => 'Kelly',
@@ -39,7 +42,9 @@ class UserSeeder extends Seeder
             'organisation_id' => $evolutionLawyers->id,
         ]);
 
-        User::create([
+        $tamina->emergencyContact()->create(['name' => 'John Williamson', 'email' => 'john@williamson.com', 'phone' => '0211515850']);
+
+        $paddy = User::create([
             'title' => 'Mr',
             'first_name' => 'Patrick',
             'middle_name' => 'Daniel',
@@ -50,7 +55,9 @@ class UserSeeder extends Seeder
             'organisation_id' => $evolutionLawyers->id,
         ]);
 
-        User::create([
+        $paddy->emergencyContact()->create(['name' => 'Terry Wilson', 'email' => 'terry@wilson.com', 'phone' => '0204458477']);
+
+        $josh = User::create([
             'title' => 'Mr',
             'first_name' => 'Joshua',
             'middle_name' => 'Normand',
@@ -61,7 +68,9 @@ class UserSeeder extends Seeder
             'organisation_id' => $evolutionLawyers->id,
         ]);
 
-        User::create([
+        $paddy->emergencyContact()->create(['name' => 'Kiri Pullar', 'email' => 'kiri@pullar.com', 'phone' => '0200050044']);
+
+        $sarah = User::create([
             'title' => 'Ms',
             'first_name' => 'Sarah',
             'surname' => 'Thompson',
@@ -69,5 +78,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'organisation_id' => $evolutionLawyers->id,
         ]);
+
+        $sarah->emergencyContact()->create(['name' => 'John Cena', 'email' => 'john@cena.com', 'phone' => '0274258876']);
     }
 }
