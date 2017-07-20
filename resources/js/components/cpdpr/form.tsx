@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Row, Col } from 'react-bootstrap';
-import FieldComponent from '../form-fields/fieldComponent';
+import { Row, Col, Form } from 'react-bootstrap';
+import { DatePicker, DurationField, InputField } from '../form-fields';
 import * as moment from 'moment';
 
 interface ICPDPRFormProps {
@@ -14,19 +14,12 @@ const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EL.Stateless> {
     render() {
         return (
-            <form onSubmit={ this.props.handleSubmit }>
-                <Row>
-                    <Col sm={6}>
-                        <Field name="date" label="Date" component={FieldComponent} type="date" />
-                    </Col>
-                    <Col sm={6}>
-                        <Field name="minutes" label="Duration" component={FieldComponent} type="duration" />
-                    </Col>
-                </Row>
-
-                <Field name="title" label="Title" component={FieldComponent} type="text" />
-                <Field name="reflection" label="Reflection" component={FieldComponent} type="textarea" />
-            </form>
+            <Form onSubmit={this.props.handleSubmit} horizontal>
+                <DatePicker name="date" label="Date" />
+                <DurationField name="minutes" label="Duration" />
+                <InputField name="title" label="Title" type="text" />
+                <InputField name="reflection" label="Reflection" type="textarea" />
+            </Form>
         );
     }
 }

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import PanelHOC from '../hoc/panelHOC';
-import { Row, Col, Form } from 'react-bootstrap';
-import { Field, reduxForm } from 'redux-form';
-import FieldComponent from '../form-fields/fieldComponent';
+import { Row, Col, Form, Button } from 'react-bootstrap';
+import { reduxForm } from 'redux-form';
+import { Combobox, DatePicker, InputField } from '../form-fields';
 import { connect } from 'react-redux';
 
 interface IMyProfileProps {
@@ -13,37 +13,52 @@ interface IMyProfileFormProps {
     handleSubmit: (data: object) => void;
 }
 
-@connect((state: EL.State) => ({ user: state.user }))
-export default class MyProfile extends React.PureComponent<IMyProfileProps, EL.Stateless> {
+export default class MyProfileWrapper extends React.PureComponent<IMyProfileProps, EL.Stateless> {
     render() {
         return (
             <div>
                 <h2>My Profile</h2>
-                <MyProfileForm handleSubmit={(data: object) => console.log(data)} initialValues={this.props.user} />
+
+                <MyProfile />
             </div>
         );
     }
 }
 
+@connect((state: EL.State) => ({ user: state.user }))
 @PanelHOC()
+class MyProfile extends React.PureComponent<IMyProfileFormProps, EL.Stateless> {
+    render() {
+        return (
+            <div>
+                <MyProfileForm handleSubmit={(data: object) => console.log(data)} initialValues={this.props.user} />
+
+                <hr />
+            </div>
+        );
+    }
+}
+
 @reduxForm({ form: 'my-profile-form', validate: validateMyProfileForm })
 class MyProfileForm extends React.PureComponent<IMyProfileFormProps, EL.Stateless> {
     render() {
         return (
-            <Form onSubmit={ this.props.handleSubmit }>
-                <Field name="title" label="Title" component={FieldComponent} type="text" />
+            <Form onSubmit={ this.props.handleSubmit } horizontal>
+                <Combobox name="title" label="Title" data={["Mr", "Mrs", "Ms"]} />
                 
-                <Field name="firstName" label="First Name" component={FieldComponent} type="text" />
-                <Field name="middleName" label="Middle Name" component={FieldComponent} type="text" />
-                <Field name="surname" label="Surname" component={FieldComponent} type="text" />
+                <InputField name="firstName" label="First Name" type="text" />
+                <InputField name="middleName" label="Middle Name" type="text" />
+                <InputField name="surname" label="Surname" type="text" />
 
-                <Field name="preferredName" label="Preferred Name" component={FieldComponent} type="text" />
+                <InputField name="preferredName" label="Preferred Name" type="text" />
 
-                <Field name="email" label="Email" component={FieldComponent} type="email" />
+                <InputField name="email" label="Email" type="email" />
 
-                <Field name="lawAdmissionDate" label="Law Admission Date" component={FieldComponent} type="date" />
-                <Field name="irdNumber" label="IRD Number" component={FieldComponent} type="text" />
-                <Field name="bankAccountNumber" label="Bank Account Number" component={FieldComponent} type="text" />
+                <DatePicker name="lawAdmissionDate" label="Law Admission Date" />
+                <InputField name="irdNumber" label="IRD Number" type="text" />
+                <InputField name="bankAccountNumber" label="Bank Account Number" type="text" />
+
+                <Button bsStyle="primary" className="pull-right" type="submit">Save</Button>
             </Form>
         );
     }

@@ -1,11 +1,7 @@
 import * as React from 'react';
-import { FormControl } from 'react-bootstrap';
-import { WrappedFieldInputProps } from 'redux-form';
+import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { fractionalHoursToMinutes, minutesToFractionalHours } from '../utils';
-
-interface IDurationFieldProps {
-    input: WrappedFieldInputProps;
-}
+import { FormControl } from 'react-bootstrap';
 
 interface IDurationFieldState {
     fractionalHours: string;
@@ -13,8 +9,8 @@ interface IDurationFieldState {
 
 const numberRegex = /^$|^(\d+(\.)?(\d{1,2})?)$/;
 
-export default class DurationField extends React.PureComponent<IDurationFieldProps, IDurationFieldState> {
-    constructor(props: IDurationFieldProps) {
+export default class DurationFieldComponent extends React.PureComponent<IFieldComponentProps, IDurationFieldState> {
+    constructor(props: IFieldComponentProps) {
         super(props);
 
         this.state = {
@@ -40,7 +36,9 @@ export default class DurationField extends React.PureComponent<IDurationFieldPro
 
     render() {
         return (
-            <FormControl value={this.state.fractionalHours} componentClass="input" type="text" onChange={this.onChange} onBlur={this.onBlur} />
+            <BaseFieldComponent {...this.props} >
+                <FormControl value={this.state.fractionalHours} componentClass="input" type="text" onChange={this.onChange} onBlur={this.onBlur} />
+            </BaseFieldComponent>
         );
     }
 }
