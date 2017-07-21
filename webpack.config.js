@@ -43,7 +43,8 @@ module.exports = {
                         options: {
                             plugins: [
                                 autoprefixer
-                            ]
+                            ],
+                            sourceMap: true
                         }
                     },
                     {
