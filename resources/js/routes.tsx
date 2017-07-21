@@ -9,7 +9,9 @@ import CPDPRIndex from './components/cpdpr/index';
 import EditCPDPRRecord from './components/cpdpr/edit';
 import CreateCPDPRRecord from './components/cpdpr/create';
 
-import MyProfile, { BasicDetails, EmergencyContact } from './components/my-profile';
+import MyProfile from './components/my-profile';
+import BasicDetails from './components/my-profile/basicDetails';
+import EmergencyContact from './components/my-profile/emergencyContact';
 
 const routes = (routeComponent: RouteComponent) => (
     <Route path='/' component={ routeComponent }>

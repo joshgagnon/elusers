@@ -93,7 +93,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EL.Stateless> {
 
 @connect(
     (state: EL.State) => ({
-        userId: state.user.id,
+        user: state.user,
         yearEndingIndex: state.cpdpr.yearEndingIndex,
         createModalVisible: state.cpdpr.createModalVisible
     }),

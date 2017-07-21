@@ -23,6 +23,13 @@ declare namespace EL {
         };
     }
 
+    interface IEmergencyContact {
+        id: number;
+        name: string;
+        email: string;
+        phone: string;
+    }
+
     export interface Resource<T> {
         status?: RequestStatus;
         data?: T;

@@ -2,14 +2,26 @@ import * as React from 'react';
 import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { Combobox, DatePicker, InputField } from '../form-fields';
 import { reduxForm } from 'redux-form';
+import PanelHOC from '../hoc/panelHOC';
+import { connect } from 'react-redux';
 
 interface IBasicDetailsFormProps {
     user: EL.User;
-    handleSubmit: (data: object) => void;
+    handleSubmit: (data: React.FormEvent<Form>) => void;
+}
+
+@connect((state: EL.State) => ({ user: state.user }))
+@PanelHOC('Basic Details')
+export default class BasicDetails extends React.PureComponent<EL.Propless, EL.Stateless> {
+    render() {
+        return (
+            <BasicDetailsForm handleSubmit={(data: object) => console.log(data)} initialValues={this.props.user} />
+        );
+    }
 }
 
 @reduxForm({ form: 'user-form', validate: validateMyProfileForm })
-export default class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.Stateless> {
+class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.Stateless> {
     render() {
         return (
             <Form onSubmit={ this.props.handleSubmit } horizontal>

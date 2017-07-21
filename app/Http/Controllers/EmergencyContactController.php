@@ -29,12 +29,12 @@ class EmergencyContactController extends Controller
     public function update(Request $request, EmergencyContact $contact)
     {
         $this->validate($request, [
-            'name'  => 'required|date',
-            'email' => 'required|integer|min:1',
+            'name'  => 'required|max:255',
+            'email' => 'required|max:255|email',
             'phone' => 'required|max:255',
         ]);
 
-        $values = $request->only(['date', 'minutes', 'title', 'reflection']);
+        $values = $request->only(['name', 'email', 'phone']);
         $contact->update($values);
 
         return response()->json(['message' => 'Emergency contact updated.'], 200);
