@@ -10,6 +10,8 @@ import EditCPDPRRecord from '../components/cpdpr/edit';
 import CreateCPDPRRecord from '../components/cpdpr/create';
 
 import MyProfile, { BasicDetails, EmergencyContact } from '../components/my-profile';
+import WikiRoutes from './wiki';
+
 
 const routes = (routeComponent: RouteComponent) => (
     <Route path='/' component={ routeComponent }>
@@ -27,6 +29,7 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path="addresses" component={BasicDetails} />
             <Route path="password" component={BasicDetails} />
         </Route>
+        { WikiRoutes }
     </Route>
 );
 

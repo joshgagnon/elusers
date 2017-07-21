@@ -21,7 +21,7 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
             fetch(refresh?: boolean){
                 // Set the default of refresh to false
                 refresh = refresh !== undefined ? refresh : false;
-                
+
                 // Only fetch if we need to, or refresh is true
                 if (refresh || (!this.props[propsName] || !this.props[propsName].status)) {
                     // Call the props fetch function
@@ -72,3 +72,4 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
 export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
 export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.userId}/cpdpr`, propsName: 'cpdpr' });
 export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });
+export const WikiHOC = () => HOCFactory({ location: (props) => `wiki/${props.path}`, propsName: 'wikiPath' });
