@@ -27,7 +27,7 @@ function mapStateToProps(state: EL.State) {
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
-        submit: (data: React.FormEvent<Form>, emergencyContact: EL.EmergencyContact) => {
+        submit: (data: React.FormEvent<Form>, emergencyContact: EL.IEmergencyContact) => {
             const url = `emergency-contact/${emergencyContact.id}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [ ] // TODO: add notification here
@@ -50,7 +50,7 @@ export default class EmergencyContact extends React.PureComponent<IEmergencyCont
 }
 
 
-const validationRules = {
+const validationRules: EL.IValidationFields = {
     name:  { name: 'Name',  required: true, maxLength: 255 },
     email: { name: 'Email', required: true, maxLength: 255 },
     phone: { name: 'Phone', required: true, maxLength: 255, isPhoneNumber: true }

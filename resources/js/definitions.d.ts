@@ -101,6 +101,23 @@ declare namespace EL {
     export interface ValidationErrors {
         [key: string]: string
     }
+
+    interface IValidationField {
+        name: string;
+        required?: boolean;
+        maxLength?: number;
+        minValue?: number;
+        maxValue?: number;
+        isDate?: boolean;
+        isPhoneNumber?: boolean;
+        isBankAccountNumber?: boolean;
+    }
+
+    interface IValidationFields extends ObjectOf<EL.IValidationField> {}
+
+    interface ObjectOf<T> {
+        [key: string]: T;
+    }
 }
 
 declare namespace EL.Actions {

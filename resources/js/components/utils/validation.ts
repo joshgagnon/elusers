@@ -1,15 +1,7 @@
-interface validationFields {
-    name: string;
-    required?: boolean;
-    maxLength?: number;
-    minValue?: number;
-    maxValue?: number;
-    isDate?: boolean;
-    isPhoneNumber?: boolean;
-}
+import * as moment from 'moment';
 
-export function validate(fields: validationFields[], values) {
-    function getFieldErrors(field, value) {
+export function validate(fields: EL.IValidationFields, values: any) {
+    function getFieldErrors(field: EL.IValidationField, value: any) {
         // Required
         if (field.required === true) {
             if (!value) {
@@ -44,6 +36,14 @@ export function validate(fields: validationFields[], values) {
 
             if (!phoneNumberRegex.test(value)) {
                 return field.name + ' must be a phone number.';
+            }
+        }
+
+        if (field.isBankAccountNumber === true) {
+            const bankAccountNumberRegex = /^[0-9]{16}$/;
+
+            if (!bankAccountNumberRegex.test(value)) {
+                return field.name + ' must be a bank account number.';
             }
         }
 

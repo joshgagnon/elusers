@@ -4,6 +4,7 @@ import { Combobox, DatePicker, InputField } from '../form-fields';
 import { reduxForm } from 'redux-form';
 import PanelHOC from '../hoc/panelHOC';
 import { connect } from 'react-redux';
+import { validate } from '../utils/validation';
 
 interface IBasicDetailsFormProps {
     user: EL.User;
@@ -15,12 +16,28 @@ interface IBasicDetailsFormProps {
 export default class BasicDetails extends React.PureComponent<EL.Propless, EL.Stateless> {
     render() {
         return (
-            <BasicDetailsForm handleSubmit={(data: object) => console.log(data)} initialValues={this.props.user} />
+            <BasicDetailsForm onSubmit={(data: object) => console.log(data)} initialValues={this.props.user} />
         );
     }
 }
 
-@reduxForm({ form: 'user-form', validate: validateMyProfileForm })
+const validationRules: EL.IValidationFields = {
+    title: { name: 'Title', required: true, maxLength: 255 },
+
+    firstName: { name: 'First name', required: true, maxLength: 255 },
+    middleName: { name: 'Middle name', required: true, maxLength: 255 },
+    surname: { name: 'Surname', required: true, maxLength: 255 },
+
+    preferredName: { name: 'Preferred name', required: true, maxLength: 255 },
+    
+    email: { name: 'Email', required: true, maxLength: 255 },
+
+    lawAdmissionDate: { name: 'Law admission date', required: true, isDate: true },
+    irdNumber: { name: 'IRD number', required: true, maxLength: 255 },
+    bankAccountNumber: { name: 'Bank account number', required: true, maxLength: 255, isBankAccountNumber: true },
+};
+
+@reduxForm({ form: 'user-form', validate: values => validate(validationRules, values) })
 class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.Stateless> {
     render() {
         return (
@@ -45,17 +62,4 @@ class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.St
             </Form>
         );
     }
-}
-
-function validateMyProfileForm(values: any) {
-    let errors: EL.ValidationErrors = {};
-
-    // Title
-    if (!values.title) {
-        errors.title = 'Required';
-    } else if (values.title.length > 255) {
-        errors.title = 'Must be 255 characters or less';
-    }
-
-    return errors
 }
