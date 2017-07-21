@@ -12,6 +12,7 @@ import CreateCPDPRRecord from './components/cpdpr/create';
 import MyProfile from './components/my-profile';
 import BasicDetails from './components/my-profile/basicDetails';
 import EmergencyContact from './components/my-profile/emergencyContact';
+import ChangePassword from './components/my-profile/changePassword';
 
 const routes = (routeComponent: RouteComponent) => (
     <Route path='/' component={ routeComponent }>
@@ -27,7 +28,7 @@ const routes = (routeComponent: RouteComponent) => (
             <IndexRoute component={BasicDetails} />
             <Route path="emergency-contact" component={EmergencyContact} />
             <Route path="addresses" component={BasicDetails} />
-            <Route path="password" component={BasicDetails} />
+            <Route path="password" component={ChangePassword} />
         </Route>
     </Route>
 );

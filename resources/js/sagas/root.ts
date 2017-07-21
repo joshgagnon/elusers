@@ -132,7 +132,7 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
         yield put({
             type: EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
             payload: response.data,
-            meta: action.metau
+            meta: action.meta
         });
     } catch (e) {
         // Update failed: fire an update resource failure action

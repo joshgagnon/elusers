@@ -41,7 +41,7 @@ export default class BasicDetails extends React.PureComponent<IBasicDetailsProps
 }
 
 const validationRules: EL.IValidationFields = {
-    title: { name: 'Title', required: true, maxLength: 255 },
+    // title: { name: 'Title', required: true, maxLength: 255 },
 
     firstName: { name: 'First name', required: true, maxLength: 255 },
     middleName: { name: 'Middle name', required: true, maxLength: 255 },

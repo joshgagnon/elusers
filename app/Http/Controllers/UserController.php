@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -59,5 +60,27 @@ class UserController extends Controller
 
         // Return the user
         return $user;
+    }
+
+    public function changePassword(Request $request, User $user)
+    {
+        $this->validate($request, [
+            'current_password' => 'required',
+            'new_password' => 'required',
+            'new_password_confirmation' => 'required|same:new_password',
+        ]);
+
+        $data = $request->all();
+
+        $currentPasswordMatches = Hash::check($data['current_password'], $user->password);
+
+        if (!$currentPasswordMatches) {
+            return response()->json(['current_password' => 'The current password doesn\'t match the user\'s current password'], 422);
+        }
+
+        $user->password = Hash::make($data['new_password']);
+        $user->save();
+
+        return response()->json(['message' => 'Password changed']);
     }
 }
