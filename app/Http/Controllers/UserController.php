@@ -21,12 +21,37 @@ class UserController extends Controller
     }
 
     /**
+     * Update a user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\User                $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, User $user)
+    {
+        $this->validate($request, [
+            'title'               => 'required|max:255',
+            'first_name'          => 'required|max:255',
+            'middle_name'         => 'required|max:255',
+            'surname'             => 'required|max:255',
+            'email'               => 'required|max:255|email',
+            'law_admission_date'  => 'required|date',
+            'ird_number'          => 'required|regex:/^[0-9]{8,9}$/',
+            'bank_account_number' => 'required|regex:/^[0-9]{16}$/',
+        ]);
+
+        $user->update($request->all());
+
+        return response()->json(['message' => 'User updated.'], 200);
+    }
+
+    /**
      * Return an individual user.
      *
      * @param \App\User $user
      * @return \App\User
      */
-    public function show(Request $request, User $user)
+    public function get(Request $request, User $user)
     {
         // Check users are in the same org
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;

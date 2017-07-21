@@ -3,20 +3,39 @@ import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { Combobox, DatePicker, InputField } from '../form-fields';
 import { reduxForm } from 'redux-form';
 import PanelHOC from '../hoc/panelHOC';
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import { validate } from '../utils/validation';
+import { updateResource } from '../../actions'
+
+interface IBasicDetailsProps {
+    submit: (event: React.FormEvent<Form>, user: EL.User) => void;
+    user: EL.User;
+}
 
 interface IBasicDetailsFormProps {
     user: EL.User;
     handleSubmit: (data: React.FormEvent<Form>) => void;
 }
 
-@connect((state: EL.State) => ({ user: state.user }))
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+    return {
+        submit: (event: React.FormEvent<Form>, user: EL.User) => {
+            const url = `users/${user.id}`;
+            const meta: EL.Actions.Meta = {
+                onSuccess: [ ] // TODO: add notification here
+            };
+
+            dispatch(updateResource(url, event, meta));
+        }
+    };
+}
+
+@connect((state: EL.State) => ({ user: state.user }), mapDispatchToProps)
 @PanelHOC('Basic Details')
-export default class BasicDetails extends React.PureComponent<EL.Propless, EL.Stateless> {
+export default class BasicDetails extends React.PureComponent<IBasicDetailsProps, EL.Stateless> {
     render() {
         return (
-            <BasicDetailsForm onSubmit={(data: object) => console.log(data)} initialValues={this.props.user} />
+            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.user)} initialValues={this.props.user} />
         );
     }
 }
@@ -27,13 +46,11 @@ const validationRules: EL.IValidationFields = {
     firstName: { name: 'First name', required: true, maxLength: 255 },
     middleName: { name: 'Middle name', required: true, maxLength: 255 },
     surname: { name: 'Surname', required: true, maxLength: 255 },
-
-    preferredName: { name: 'Preferred name', required: true, maxLength: 255 },
     
     email: { name: 'Email', required: true, maxLength: 255 },
 
     lawAdmissionDate: { name: 'Law admission date', required: true, isDate: true },
-    irdNumber: { name: 'IRD number', required: true, maxLength: 255 },
+    irdNumber: { name: 'IRD number', required: true, maxLength: 255, isIRDNumber: true },
     bankAccountNumber: { name: 'Bank account number', required: true, maxLength: 255, isBankAccountNumber: true },
 };
 

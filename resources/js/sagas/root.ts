@@ -103,7 +103,8 @@ function *checkAndRequest(action: EL.Actions.Action) {
 function *createResource(action: EL.Actions.CreateResourceAction) {
     try {
         // Make the create request
-        const response = yield call(axios.post, '/api/' + action.payload.url, action.payload.postData);
+        const data = humps.decamelizeKeys(action.payload.postData);
+        const response = yield call(axios.post, '/api/' + action.payload.url, data);
 
         // Fire a create resources success action
         yield put({
@@ -124,13 +125,14 @@ function *createResource(action: EL.Actions.CreateResourceAction) {
 function *updateResource(action: EL.Actions.UpdateResourceAction) {
     try {
         // Make the update PUT request
-        const response = yield call(axios.put, '/api/' + action.payload.url, action.payload.data);
+        const data = humps.decamelizeKeys(action.payload.data);
+        const response = yield call(axios.put, '/api/' + action.payload.url, data);
 
         // Fire a update resource success action
         yield put({
             type: EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
             payload: response.data,
-            meta: action.meta
+            meta: action.metau
         });
     } catch (e) {
         // Update failed: fire an update resource failure action

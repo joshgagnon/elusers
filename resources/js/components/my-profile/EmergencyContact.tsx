@@ -21,7 +21,7 @@ interface IEmergencyContactFormProps {
 
 function mapStateToProps(state: EL.State) {
     return {
-        user: state.user;
+        user: state.user
     };
 }
 
@@ -44,7 +44,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 export default class EmergencyContact extends React.PureComponent<IEmergencyContactProps, EL.Stateless> {
     render() {
         return (
-            <EmergencyContactForm onSubmit={(data) => this.props.submit(data, this.props.emergencyContact.data)} initialValues={this.props.emergencyContact.data} />
+            <EmergencyContactForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.emergencyContact.data)} initialValues={this.props.emergencyContact.data} />
         );
     }
 }

@@ -18,3 +18,11 @@ __Running tests:__ `phpunit`
 ## API
 
 Dates are required in the format: day-month-year as the validation and date parsing using php strtotime to parse dates.
+
+## Known bugs
+
+After updating a users basic details, a new user (state.user) is not re-fetched.
+
+Combobox field border not coloured for validation.
+
+Dates are not valid in in the datepicker on initial load

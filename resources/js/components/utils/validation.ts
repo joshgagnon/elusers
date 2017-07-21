@@ -35,7 +35,7 @@ export function validate(fields: EL.IValidationFields, values: any) {
             const phoneNumberRegex = /^[0-9]+$/;
 
             if (!phoneNumberRegex.test(value)) {
-                return field.name + ' must be a phone number.';
+                return field.name + ' must be a valid phone number.';
             }
         }
 
@@ -43,7 +43,15 @@ export function validate(fields: EL.IValidationFields, values: any) {
             const bankAccountNumberRegex = /^[0-9]{16}$/;
 
             if (!bankAccountNumberRegex.test(value)) {
-                return field.name + ' must be a bank account number.';
+                return field.name + ' must be a valid bank account number.';
+            }
+        }
+
+        if (field.isIRDNumber === true) {
+            const irdNumberRegex = /^[0-9]{8,9}$/;
+
+            if (!irdNumberRegex.test(value)) {
+                return field.name + ' must be a valid IRD number.';
             }
         }
 

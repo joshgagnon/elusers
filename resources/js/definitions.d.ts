@@ -111,6 +111,7 @@ declare namespace EL {
         isDate?: boolean;
         isPhoneNumber?: boolean;
         isBankAccountNumber?: boolean;
+        isIRDNumber?: boolean;
     }
 
     interface IValidationFields extends ObjectOf<EL.IValidationField> {}
