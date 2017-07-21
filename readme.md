@@ -26,3 +26,5 @@ After updating a users basic details, a new user (state.user) is not re-fetched.
 Combobox field border not coloured for validation.
 
 Dates are not valid in in the datepicker on initial load
+
+Not create or update notifications yet
