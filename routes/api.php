@@ -31,4 +31,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('cpdpr/{record}', 'ProfessionalDevelopmentController@get');
     Route::put('cpdpr/{record}', 'ProfessionalDevelopmentController@update');
     Route::delete('cpdpr/{record}', 'ProfessionalDevelopmentController@delete');
+
+
+    Route::resource('wiki', 'WikiController');
 });
