@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Provider, connect } from 'react-redux';
 import Layout from './components/layout';
-import routes from './routes';
+import routes from './routes/index';
 import { Router } from 'react-router';
 import { History } from 'history';
 

@@ -6,6 +6,12 @@ import configureStore from './configureStore';
 import { browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import * as humps from 'humps';
+import ReduxRoot from './reduxRoot';
+
+// CSS
+import '../sass/app.scss';
+import 'react-widgets/dist/css/react-widgets.css';
+
 
 // Get the page load data injected when the app is served
 let initialState = {};
@@ -19,11 +25,8 @@ try {
 const store = configureStore(browserHistory, initialState);
 const history = syncHistoryWithStore(browserHistory, store);
 
-import ReduxRoot from './reduxRoot';
 
-// CSS
-import '../sass/app.scss';
-import 'react-widgets/dist/css/react-widgets.css';
+
 
 ReactDOM.render(
     <ReduxRoot store={store} history={history} />,

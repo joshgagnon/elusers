@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Route, IndexRoute, RouteComponent } from 'react-router';
 
-import Home from './components/home';
-import Users from './components/users/index';
-import EditOrganisation from './components/organisation/editOrganisation';
+import Home from '../components/home';
+import Users from '../components/users/index';
+import EditOrganisation from '../components/organisation/editOrganisation';
 
-import CPDPRIndex from './components/cpdpr/index';
-import EditCPDPRRecord from './components/cpdpr/edit';
-import CreateCPDPRRecord from './components/cpdpr/create';
+import CPDPRIndex from '../components/cpdpr/index';
+import EditCPDPRRecord from '../components/cpdpr/edit';
+import CreateCPDPRRecord from '../components/cpdpr/create';
 
-import MyProfile, { BasicDetails, EmergencyContact } from './components/my-profile';
+import MyProfile, { BasicDetails, EmergencyContact } from '../components/my-profile';
 
 const routes = (routeComponent: RouteComponent) => (
     <Route path='/' component={ routeComponent }>
