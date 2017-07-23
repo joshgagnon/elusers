@@ -26,10 +26,10 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
 
         return (
             <FormGroup validationState={this.validationState(touched, error)}>
-                <Col componentClass={ControlLabel} md={2}>
+                <Col componentClass={ControlLabel} md={3}>
                     {label}
                 </Col>
-                <Col md={10}>
+                <Col md={9}>
                     {this.props.children}
                     { displayError && <HelpBlock>{error}</HelpBlock>}
                 </Col>

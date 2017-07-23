@@ -48,3 +48,14 @@ export function showCreateCPDPRModal() {
 export function hideCreateCPDPRModal() {
     return { type: EL.ActionTypes.HIDE_CREATE_CPDPR_MODAL };
 }
+
+export function createNotification(message: string, isError?: boolean): EL.Actions.ICreateNotificationAction {
+    return {
+        type: EL.ActionTypes.CREATE_NOTIFICATION,
+        payload: {
+            id: 'message_' + Math.random(),
+            message,
+            isError: isError !== undefined ? isError : false
+        }
+    }
+}

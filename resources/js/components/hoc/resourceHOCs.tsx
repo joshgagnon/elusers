@@ -70,7 +70,11 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
 }
 
 export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
-export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.userId}/cpdpr`, propsName: 'cpdpr' });
+
+export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/cpdpr`, propsName: 'cpdpr' });
 export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });
+
+export const UserEmergencyContactHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/emergency-contact`, propsName: 'emergencyContact' });
+
 export const WikiIndexHOC = () => HOCFactory({ location: (props) => `wiki`, propsName: 'wiki' });
 export const WikiHOC = () => HOCFactory({ location: (props) => `wiki/${props.wikiPath}`, propsName: 'wikiPage' });

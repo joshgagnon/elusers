@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 interface ICPDPRFormProps {
     submitting: boolean;
-    handleSubmit: React.EventHandler<React.FormEvent<HTMLFormElement>>;
+    handleSubmit: React.EventHandler<React.FormEvent<Form>>;
 }
 
 const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
@@ -52,7 +52,7 @@ function validateCPDPRForm(values: any) {
         errors.minutes = 'Duration must be more than 0';
     }
 
-    return errors
+    return errors;
 }
 
 export default reduxForm({
