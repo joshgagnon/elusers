@@ -19,6 +19,10 @@ __Running tests:__ `phpunit`
 
 Dates are required in the format: day-month-year as the validation and date parsing using php strtotime to parse dates.
 
+## Todo
+
+Enforce password strength policy (first we need to create a password policy)
+
 ## Known bugs
 
 After updating a users basic details, a new user (state.user) is not re-fetched.
