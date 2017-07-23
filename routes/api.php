@@ -33,5 +33,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('cpdpr/{record}', 'ProfessionalDevelopmentController@delete');
 
 
-    Route::resource('wiki', 'WikiController');
+    Route::get('wiki', 'WikiController@index');
+    Route::get('wiki/{url}', 'WikiController@get')->where('url', '.*');
 });

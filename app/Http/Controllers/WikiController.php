@@ -45,9 +45,9 @@ class WikiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function get($url)
     {
-        return Wiki::find($id);
+        return Wiki::where('path', $url)->first();
     }
 
     /**
