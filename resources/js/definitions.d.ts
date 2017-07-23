@@ -43,12 +43,19 @@ declare namespace EL {
         editRecordId?: number;
     }
 
+    interface INotification {
+        id: string;
+        message: string;
+        isError: boolean;
+    }
+
     export interface State {
         routing: any;
         user: User;
         something: boolean;
         resources: StateResources;
         cpdpr: CPDPRState;
+        notifications: ObjectOf<INotification>;
     }
 
     export const enum ActionTypes {
@@ -82,6 +89,12 @@ declare namespace EL {
 
         SHOW_EDIT_CPDPR_RECORD_MODAL = 'SHOW_EDIT_CPDPR_RECORD_MODAL',
         HIDE_EDIT_CPDPR_RECORD_MODAL = 'HIDE_EDIT_CPDPR_RECORD_MODAL',
+
+        /**
+         * Notifications
+         */
+        CREATE_NOTIFICATION = 'CREATE_NOTIFICATION',
+        DELETE_NOTIFICATION = 'DELETE_NOTIFICATION',
 
         /**
          * Initial testing
@@ -151,6 +164,10 @@ declare namespace EL.Actions {
         payload: {
             url: string;
         };
+    }
+
+    interface ICreateNotificationAction extends Action {
+        payload: EL.INotification;
     }
 }
 
