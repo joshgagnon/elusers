@@ -10,7 +10,7 @@ class EmergencyContact extends Model
     use SoftDeletes;
 
     protected $fillable = ['name', 'email', 'phone'];
-    protected $visible = ['name', 'email', 'phone'];
+    protected $visible = ['id', 'name', 'email', 'phone'];
 
     /**
      * User relationship: the user that this emergency contact is for.

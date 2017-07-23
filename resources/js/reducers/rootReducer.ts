@@ -5,6 +5,7 @@ import { reducer as formReducer } from 'redux-form';
 import resourcesReducer from './resourcesReducer';
 import userReducer from './userReducer';
 import cpdprReducer from './cpdprReducer';
+import notificationsReducer from './notificationsReducer';
 
 const rootReducer = combineReducers({    
     routing,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     resources: resourcesReducer,
     user: userReducer,
     cpdpr: cpdprReducer,
+    notifications: notificationsReducer,
 });
 
 export default rootReducer;

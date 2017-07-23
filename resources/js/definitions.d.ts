@@ -23,6 +23,13 @@ declare namespace EL {
         };
     }
 
+    interface IEmergencyContact {
+        id: number;
+        name: string;
+        email: string;
+        phone: string;
+    }
+
     export interface Resource<T> {
         status?: RequestStatus;
         data?: T;
@@ -36,12 +43,19 @@ declare namespace EL {
         editRecordId?: number;
     }
 
+    interface INotification {
+        id: string;
+        message: string;
+        isError: boolean;
+    }
+
     export interface State {
         routing: any;
         user: User;
         something: boolean;
         resources: StateResources;
         cpdpr: CPDPRState;
+        notifications: ObjectOf<INotification>;
     }
 
     export const enum ActionTypes {
@@ -77,6 +91,12 @@ declare namespace EL {
         HIDE_EDIT_CPDPR_RECORD_MODAL = 'HIDE_EDIT_CPDPR_RECORD_MODAL',
 
         /**
+         * Notifications
+         */
+        CREATE_NOTIFICATION = 'CREATE_NOTIFICATION',
+        DELETE_NOTIFICATION = 'DELETE_NOTIFICATION',
+
+        /**
          * Initial testing
          */
         TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
@@ -93,6 +113,24 @@ declare namespace EL {
 
     export interface ValidationErrors {
         [key: string]: string
+    }
+
+    interface IValidationField {
+        name: string;
+        required?: boolean;
+        maxLength?: number;
+        minValue?: number;
+        maxValue?: number;
+        isDate?: boolean;
+        isPhoneNumber?: boolean;
+        isBankAccountNumber?: boolean;
+        isIRDNumber?: boolean;
+    }
+
+    interface IValidationFields extends ObjectOf<EL.IValidationField> {}
+
+    interface ObjectOf<T> {
+        [key: string]: T;
     }
 }
 
@@ -126,6 +164,10 @@ declare namespace EL.Actions {
         payload: {
             url: string;
         };
+    }
+
+    interface ICreateNotificationAction extends Action {
+        payload: EL.INotification;
     }
 }
 
