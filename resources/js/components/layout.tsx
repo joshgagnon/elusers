@@ -8,11 +8,12 @@ interface ILayoutProps {
 
 export default class Layout extends React.PureComponent<ILayoutProps, {}> {
     render() {
+        const fluid = this.props.route.childRoutes.some(c => c.component.FLUID_CONTAINER);
         return (
             <div>
                 <Navbar />
 
-                <div className="container">
+                <div className={fluid ? 'container-fluid' : 'container'}>
                     { this.props.children }
                 </div>
             </div>

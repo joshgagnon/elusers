@@ -22,12 +22,14 @@ interface WikiPageProps {
 
 
 class Wiki extends React.PureComponent<WikiProps, EL.Stateless> {
+    static readonly FLUID_CONTAINER = true;
     render() {
         return <div>
         { this.props.children }
         </div>
     }
 }
+
 
 @PanelHOC('Knowledge Base')
 @WikiIndexHOC()
@@ -52,7 +54,7 @@ class WikiPage extends React.PureComponent<WikiPageProps, EL.Stateless> {
     }
 }
 
-const WikiRoutes = (<Route path='wiki' component={ Wiki }>
+const WikiRoutes = (<Route path='wiki' component={ Wiki } >
                     <IndexRoute component={ WikiRoot } />
                     <Route path="*" component={ WikiPage } />
    </Route>
