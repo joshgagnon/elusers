@@ -4,7 +4,7 @@ import { WikiHOC, WikiIndexHOC } from '../components/hoc/resourceHOCs';
 import PanelHOC from '../components/hoc/panelHOC';
 import Panel from '../components/panel';
 import { Field, reduxForm } from 'redux-form';
-import { Row, Col, Form } from 'react-bootstrap';
+import { Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { InputField } from '../components/form-fields';
 import { Field as ReduxField } from 'redux-form';
 import { Markdown } from 'react-showdown';
@@ -82,7 +82,7 @@ class WikiPageDetailsForm extends React.PureComponent<WikiPageEditFormProps, EL.
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <InputField name="title" label="Title" type="text" />
                 <InputField name="keywords" label="Keywords" type="text" />
-                <InputField name="categories" label="Categories" type="text" />
+                <InputField name="categories" label="Categories" type="text"/>
                 <div className="text-center">
                 <Link className="btn btn-default" to={`/wiki/${this.props.wikiPath}`}>Close</Link>
                     { /** <Button bsStyle="danger" onClick={this.props.handleDelete}>Delete</Button> */ }
@@ -120,7 +120,7 @@ class RenderMarkdown extends React.PureComponent<IFieldComponentProps, EL.Statel
 class WikiPagePreview extends React.PureComponent<WikiPageEditFormProps, EL.Stateless> {
     render() {
         return (
-                <ReduxField name="data" component={RenderMarkdown} />
+             <ReduxField name="data" component={RenderMarkdown} />
         );
     }
 }
@@ -144,8 +144,8 @@ class EditWikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL
         values = {
             title: values.title,
             data: values.data || '',
-            keywords: JSON.stringify((values.keywords || '').split(', ')),
-            categories: JSON.stringify((values.categories || '').split(', '))
+            keywords: JSON.stringify((values.keywords || '').split(' | ')),
+            categories: JSON.stringify((values.categories || '').split(' | '))
         };
         (this.props.wikiPage.data ? this.props.update : this.props.create)(`wiki/${this.props.wikiPath}`, values)
     }
@@ -173,19 +173,40 @@ class EditWikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL
     }
 }
 
+class Categories extends React.PureComponent<CategoryProps, EL.Stateless> {
+    render() {
+        return <Panel title={this.props.title}>
+
+            { this.props.items.map((item, i) => {
+                return <div key={i}><Link to={`/wiki/${item.path}/`}>{item.title}</Link></div>
+            })
+            }
+
+         </Panel>
+    }
+}
 
 @WikiHOC()
 class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Stateless> {
+
+    renderBody(title, value) {
+        return <Panel title={title}>
+             <RenderMarkdown input={{value: value}} />
+             <hr />
+             <div className="text-right"><Link className="btn btn-primary" to={{query: {edit: true}, pathname: `/wiki/${this.props.wikiPath}`}}>Edit Page</Link></div>
+         </Panel>
+    }
+
     render() {
         if(this.props.wikiPage.isFetching){
             return false;
         }
         let values = {...this.props.wikiPage.data};
         if(values.categories){
-            values.categories = JSON.parse(values.categories).join(", ");
+            values.categories = JSON.parse(values.categories).join(" | ");
          }
         if(values.keywords){
-            values.keywords = JSON.parse(values.keywords).join(", ");
+            values.keywords = JSON.parse(values.keywords).join(" | ");
         }
         else{
             values = {};
@@ -193,13 +214,21 @@ class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Sta
         if(this.props.edit){
             return <EditWikiPageWithPath wikiPage={this.props.wikiPage} values={values} wikiPath={this.props.wikiPath}/>
         }
-        console.log(this.props)
+        const title = values.title || 'New Page';
+        if(values.categoryGroup){
+            return <div className="container">
+            <Row>
+                <Col md={3}>
+                    <Categories items={values.categoryGroup} title={values.categories}  />
+                </Col>
+                <Col md={9}>
+                    { this.renderBody(title, values.data) }
+                </Col>
+                </Row>
+            </div>
+        }
         return <div className="container">
-                     <Panel title={values.title || 'New Page'}>
-                         <RenderMarkdown input={{value: values.data}} />
-
-                         <Link className="btn btn-primary" to={{query: {edit: true}, pathname: `/wiki/${this.props.wikiPath}`}}>Edit Page</Link>
-                     </Panel>
+              { this.renderBody(title, values.data) }
          </div>
     }
 }

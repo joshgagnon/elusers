@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Wiki;
+use DB;
 
 class WikiController extends Controller
 {
@@ -43,7 +44,15 @@ class WikiController extends Controller
      */
     public function get($url)
     {
-        return Wiki::where('path', $url)->first();
+        $record = Wiki::where('path', $url)->first();
+        if($record['categories']){
+            $record = $record->toArray();
+            $categories = json_decode($record['categories']);
+            if(count($categories) && $categories[0]){
+                $record['categoryGroup'] = DB::select('select title, path from wiki where categories->>0 = ?', [$categories[0]]);
+            }
+        }
+        return $record;
     }
 
     /**
