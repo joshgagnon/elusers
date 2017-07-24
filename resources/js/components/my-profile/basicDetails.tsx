@@ -5,7 +5,7 @@ import { reduxForm } from 'redux-form';
 import PanelHOC from '../hoc/panelHOC';
 import { connect, Dispatch } from 'react-redux';
 import { validate } from '../utils/validation';
-import { updateResource } from '../../actions'
+import { updateResource, createNotification } from '../../actions'
 
 interface IBasicDetailsProps {
     submit: (event: React.FormEvent<Form>, user: EL.User) => void;
@@ -22,7 +22,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
         submit: (event: React.FormEvent<Form>, user: EL.User) => {
             const url = `users/${user.id}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [ ] // TODO: add notification here
+                onSuccess: [createNotification('Basic details updated.')],
+                onFailure: [createNotification('Basic details update failed. Please try again.', true)]
             };
 
             dispatch(updateResource(url, event, meta));
@@ -59,8 +60,18 @@ class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.St
     render() {
         return (
             <Form onSubmit={ this.props.handleSubmit } horizontal>
+                <BasicDetailsFormFields />
+            </Form>
+        );
+    }
+}
+
+export class BasicDetailsFormFields extends React.PureComponent<EL.Propless, EL.Stateless> {
+    render() {
+        return (
+            <div>
                 <Combobox name="title" label="Title" data={["Mr", "Mrs", "Ms"]} />
-                
+                    
                 <InputField name="firstName" label="First Name" type="text" />
                 <InputField name="middleName" label="Middle Name" type="text" />
                 <InputField name="surname" label="Surname" type="text" />
@@ -76,7 +87,7 @@ class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.St
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Save</Button>
                 </ButtonToolbar>
-            </Form>
+            </div>
         );
     }
 }
