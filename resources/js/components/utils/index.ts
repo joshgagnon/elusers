@@ -25,3 +25,31 @@ export function minutesToHoursString(minutes: number) {
     const seperateValues = minutesToHoursAndMinutes(minutes);
     return seperateValues.hours + ':' + seperateValues.minutes.toString().padStart(2, '0');
 }
+
+export function getAddressSegments(address: EL.IAddress): string[] {
+    const lineKeys = ['addressOne', 'addressTwo', 'addressThree', 'postCode', 'countryCode'];
+
+    return lineKeys.reduce((lines: string[], nextKey: string) => {
+        if (address[nextKey]) {
+            return [...lines, address[nextKey]];
+        }
+
+        return lines;
+    }, [])
+}
+
+export function formatAddress(address: EL.IAddress): string {
+    const addressSegments = getAddressSegments(address);
+    let formattedAddress = '';
+    
+    for (let index = 0; index < addressSegments.length; index++) {
+        formattedAddress += addressSegments[index];
+
+        // add ', ' to the end of all segments except the last
+        if (index !== addressSegments.length - 1) {
+            formattedAddress += ', ';
+        }
+    }
+
+    return formattedAddress;
+}
