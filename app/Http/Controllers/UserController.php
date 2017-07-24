@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\EmergencyContact;
 use App\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -30,16 +31,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $this->validate($request, [
-            'title'               => 'required|max:255',
-            'first_name'          => 'required|max:255',
-            'middle_name'         => 'required|max:255',
-            'surname'             => 'required|max:255',
-            'email'               => 'required|max:255|email',
-            'law_admission_date'  => 'required|date',
-            'ird_number'          => 'required|regex:/^[0-9]{8,9}$/',
-            'bank_account_number' => 'required|regex:/^[0-9]{16}$/',
-        ]);
+        $this->validate($request, User::$validationRules);
 
         $user->update($request->all());
 
@@ -61,6 +53,29 @@ class UserController extends Controller
         // Return the user
         return $user;
     }
+
+    /**
+     * Create a new user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(Request $request)
+    {
+        $validationRules = array_merge(User::$validationRules, ['password' => 'required']);
+        $this->validate($request, $validationRules);
+
+        $data = $request->all();
+        $user = new User($data);
+
+        $user->organisation_id = $request->user()->organisation_id;
+        $user->password = Hash::make($data['password']);
+
+        $user->save();
+
+        return response()->json(['message' => 'User created'], 201);
+    }
+
 
     public function changePassword(Request $request, User $user)
     {

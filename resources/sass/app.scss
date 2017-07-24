@@ -129,3 +129,13 @@ table.table>tbody>tr>td {
     width:100%;
     min-height:800px;
 }
+
+fieldset {
+    &:not {
+        margin-bottom: 15px;
+    }
+ 
+    legend {
+        text-align: center;
+    }
+}

@@ -12,6 +12,12 @@ class EmergencyContact extends Model
     protected $fillable = ['name', 'email', 'phone'];
     protected $visible = ['id', 'name', 'email', 'phone'];
 
+    public static $validationRules = [
+        'name'  => 'required|max:255',
+        'email' => 'required|max:255|email',
+        'phone' => 'required|max:255',
+    ];
+
     /**
      * User relationship: the user that this emergency contact is for.
      *

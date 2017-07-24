@@ -17,6 +17,7 @@ Route::group(['middleware' => 'auth'], function() {
      * Users
      */
     Route::get('users', 'UserController@index');
+    Route::post('users', 'UserController@create');
     Route::get('users/{user}', 'UserController@get');
     Route::put('users/{user}', 'UserController@update');
 

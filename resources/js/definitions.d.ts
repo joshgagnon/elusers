@@ -138,6 +138,10 @@ declare namespace EL {
         isPhoneNumber?: boolean;
         isBankAccountNumber?: boolean;
         isIRDNumber?: boolean;
+        sameAs: {
+            fieldName: string;
+            fieldDisplayName: string;
+        };
     }
 
     interface IValidationFields extends ObjectOf<EL.IValidationField> {}

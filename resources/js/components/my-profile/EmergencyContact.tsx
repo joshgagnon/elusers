@@ -7,6 +7,7 @@ import { UserEmergencyContactHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
 import { updateResource } from '../../actions';
 import { validate } from '../utils/validation';
+import { EmergencyContactFormFields, emergencyContactValidationRules } from '../users/formFields';
 
 interface IEmergencyContactProps {
     user: EL.User;
@@ -49,26 +50,17 @@ export default class EmergencyContact extends React.PureComponent<IEmergencyCont
     }
 }
 
-
-const validationRules: EL.IValidationFields = {
-    name:  { name: 'Name',  required: true, maxLength: 255 },
-    email: { name: 'Email', required: true, maxLength: 255 },
-    phone: { name: 'Phone', required: true, maxLength: 255, isPhoneNumber: true }
-};
-
-@reduxForm({ form: 'emergency-contact-form', validate: (values) => validate(validationRules, values) })
+@reduxForm({ form: 'emergency-contact-form', validate: (values) => validate(emergencyContactValidationRules, values) })
 class EmergencyContactForm extends React.PureComponent<IEmergencyContactFormProps, EL.Stateless> {
     render() {
         return (
-            <Form onSubmit={this.props.handleSubmit}  horizontal>
-                <InputField name="name" label="Name" type="text" />
-                <InputField name="email" label="Email" type="email" />
-                <InputField name="phone" label="Phone" type="text" />
+            <Form onSubmit={this.props.handleSubmit} horizontal>
+                <EmergencyContactFormFields />
 
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Save</Button>
                 </ButtonToolbar>
             </Form>
-        );
+        )
     }
 }

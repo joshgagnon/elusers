@@ -55,6 +55,12 @@ export function validate(fields: EL.IValidationFields, values: any) {
             }
         }
 
+        if (field.sameAs !== undefined) {
+            if (value !== values[field.sameAs.fieldName]) {
+                return `${field.name} must match ${field.sameAs.fieldDisplayName}.`;
+            }
+        }
+
         return undefined;
     }
 
