@@ -10,7 +10,8 @@ interface ILayoutProps {
 @connect((state: EL.State) => ({ notifications: state.notifications }))
 export default class Layout extends React.PureComponent<ILayoutProps, {}> {
     render() {
-        const fluid = this.props.route.childRoutes.some(c => c.component.FLUID_CONTAINER);
+        const fluid = this.props.routes.some(c => c.component.FLUID_CONTAINER);
+
         return (
             <div>
                 <Navbar />

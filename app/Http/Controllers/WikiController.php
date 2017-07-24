@@ -14,7 +14,7 @@ class WikiController extends Controller
      */
     public function index()
     {
-        return Wiki::all();
+        return Wiki::select('title', 'path')->get();
     }
 
     /**
@@ -22,22 +22,18 @@ class WikiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $url)
     {
-        $record = Wiki::create($request->data());
+
+        $values = array_merge($request->all(), ['path' => $url]);
+        if(!$values['data']) {
+            $values['data'] = '';
+        }
+        Wiki::where('path', $url)->delete();
+        $record = Wiki::create($values);
         return response()->json(['message' => 'Wiki entry created', 'record_id' => $record->id], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -57,9 +53,16 @@ class WikiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $url)
     {
-        //
+        $values = array_merge($request->all(), ['path' => $url]);
+        if(!$values['data']) {
+            $values['data'] = '';
+        }
+
+        Wiki::where('path', $url)
+          ->update($values);
+        return response()->json(['message' => 'Wiki entry updated'], 201);
     }
 
     /**

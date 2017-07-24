@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 import { FormGroup, ControlLabel, HelpBlock, Col, FormControl } from 'react-bootstrap';
-   
+
 export interface IFieldComponentProps extends WrappedFieldProps<string> {
     label: string;
     type: string;
 }
 
-interface IBaseFieldComponentProps extends IFieldComponentProps {
+export interface IBaseFieldComponentProps extends IFieldComponentProps {
     children: any;
 }
 
