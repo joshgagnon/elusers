@@ -13,6 +13,7 @@ export default class MyProfile extends React.PureComponent<EL.Propless, EL.State
             <Row>
                 <Col md={3}>
                     <MyProfileNavigation />
+                    <MyOrganisationNavigation />
                 </Col>
 
                 <Col md={9}>
@@ -26,7 +27,7 @@ export default class MyProfile extends React.PureComponent<EL.Propless, EL.State
 class MyProfileNavigation extends React.Component<EL.Propless, EL.Stateless> { // Cannot be pure component - or links wont update their ective state
     render() {
         return (
-            <Panel>
+            <Panel title="Profile">
                 <ListGroup fill>
                     <IndexLinkContainer to="/my-profile">
                         <ListGroupItem>Basic Details</ListGroupItem>
@@ -43,6 +44,20 @@ class MyProfileNavigation extends React.Component<EL.Propless, EL.Stateless> { /
                     <LinkContainer to="/my-profile/password">
                         <ListGroupItem>Change Password</ListGroupItem>
                     </LinkContainer>
+                </ListGroup>
+            </Panel>
+        );
+    }
+}
+
+class MyOrganisationNavigation extends React.Component<EL.Propless, EL.Stateless> {
+    render() {
+        return (
+            <Panel title="Organisation">
+                <ListGroup fill>
+                    <IndexLinkContainer to="/my-profile/organisation">
+                        <ListGroupItem>Basic Details</ListGroupItem>
+                    </IndexLinkContainer>
                 </ListGroup>
             </Panel>
         );
