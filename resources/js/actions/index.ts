@@ -2,6 +2,10 @@ export function toggleSomething() {
     return { type: EL.ActionTypes.TOGGLE_SOMETHING };
 };
 
+/**
+ * Resources
+ */
+
 export function requestResource(resource: string, meta?: EL.Actions.Meta) {
     return {
         type: EL.ActionTypes.RESOURCE_REQUEST,
@@ -34,6 +38,10 @@ export function deleteResource(url: string, meta?: EL.Actions.Meta) {
     };
 }
 
+/**
+ * CPDPR
+ */
+
 export function updateCPDPRYearIndex(index: number) {
     return {
         type: EL.ActionTypes.UPDATE_CPDPR_YEAR,
@@ -48,6 +56,10 @@ export function showCreateCPDPRModal() {
 export function hideCreateCPDPRModal() {
     return { type: EL.ActionTypes.HIDE_CREATE_CPDPR_MODAL };
 }
+
+/**
+ * Notifications
+ */
 
 export function createNotification(message: string, isError?: boolean): EL.Actions.ICreateNotificationAction {
     return {

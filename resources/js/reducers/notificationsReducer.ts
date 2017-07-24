@@ -10,8 +10,9 @@ export default function notificationsReducer(state=DEFAULT_STATE, action: EL.Act
                     isError: action.payload.isError
                 }
             };
-        case EL.ActionTypes.DELETE_NOTIFICATION:
-            return { ...state, [action.payload.id]: undefined };
+        case EL.ActionTypes.REMOVE_NOTIFICATION:
+            const { [action.payload.id]: any, ...rest } = state;
+            return rest;
         default:
             return state;
     }

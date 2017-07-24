@@ -4,7 +4,7 @@ import { InputField } from '../form-fields';
 import { reduxForm, reset } from 'redux-form';
 import { connect, Dispatch } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
-import { updateResource } from '../../actions';
+import { updateResource, createNotification } from '../../actions';
 import { validate } from '../utils/validation';
 
 interface IChangePasswordProps {
@@ -27,8 +27,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
         submit: (data: React.FormEvent<Form>, user: EL.User) => {
             const url = `users/${user.id}/password`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [reset('change-password-form')], // TODO: add notification here
-                onFailure: [reset('change-password-form')]
+                onSuccess: [reset('change-password-form'), createNotification('Password changed.')],
+                onFailure: [reset('change-password-form'), createNotification('Password change failed. Please try again.', true)]
             };
 
             dispatch(updateResource(url, data, meta));

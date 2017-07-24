@@ -49,13 +49,15 @@ declare namespace EL {
         isError: boolean;
     }
 
+    interface INotifications extends ObjectOf<INotification> {}
+
     export interface State {
         routing: any;
         user: User;
         something: boolean;
         resources: StateResources;
         cpdpr: CPDPRState;
-        notifications: ObjectOf<INotification>;
+        notifications: INotifications;
     }
 
     export const enum ActionTypes {
@@ -94,7 +96,7 @@ declare namespace EL {
          * Notifications
          */
         CREATE_NOTIFICATION = 'CREATE_NOTIFICATION',
-        DELETE_NOTIFICATION = 'DELETE_NOTIFICATION',
+        REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION',
 
         /**
          * Initial testing
@@ -168,6 +170,12 @@ declare namespace EL.Actions {
 
     interface ICreateNotificationAction extends Action {
         payload: EL.INotification;
+    }
+
+    interface IRemoveNotificationAction {
+        payload: {
+            id: string;
+        }
     }
 }
 

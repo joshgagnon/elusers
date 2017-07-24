@@ -111,6 +111,20 @@ table.table>tbody>tr>td {
     background: $gray-lighter;
 }
 
+.notifications {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    z-index: 1;
+    width: 400px;
+    max-width:90%;
+
+    .notification {
+        height: 50px;
+        
+    }
+}
+
 .markdown-editor textarea{
     width:100%;
     min-height:800px;
