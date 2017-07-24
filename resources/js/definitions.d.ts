@@ -30,6 +30,17 @@ declare namespace EL {
         phone: string;
     }
 
+    interface IAddress {
+        id?: number;
+        addressName: string;
+        addressOne: string;
+        addressTwo: string;
+        addressThree: string;
+        postCode: string;
+        countryCode: string;
+        addressType: string;
+    }
+
     export interface Resource<T> {
         status?: RequestStatus;
         data?: T;

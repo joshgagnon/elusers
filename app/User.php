@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->hasOne(EmergencyContact::class);
     }
 
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
+
     /**
      * Query scope: limit users to an organisation.
      *

@@ -13,6 +13,9 @@ import BasicDetails from '../components/my-profile/basicDetails';
 import EmergencyContact from '../components/my-profile/emergencyContact';
 import ChangePassword from '../components/my-profile/changePassword';
 import EditOrganisation from '../components/my-profile/organisation';
+import Addresses from '../components/my-profile/addresses';
+import CreateAddress from '../components/my-profile/createAddress';
+import EditAddress from '../components/my-profile/editAddress';
 
 import WikiRoutes from './wiki';
 
@@ -25,12 +28,14 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path=':cpdprId/edit' component={ EditCPDPRRecord } />
         </Route>
 
-        <Route path="my-profile" component={MyProfile}>
-            <IndexRoute component={BasicDetails} />
-            <Route path="addresses" component={BasicDetails} />
-            <Route path="emergency-contact" component={EmergencyContact} />
-            <Route path="password" component={ChangePassword} />
+        <Route path="my-profile" component={ MyProfile }>
+            <IndexRoute component={ BasicDetails } />
+            <Route path="emergency-contact" component={ EmergencyContact } />
+            <Route path="password" component={ ChangePassword } />
             <Route path='organisation' component={ EditOrganisation } />
+            <Route path="addresses" component={ Addresses } />
+            <Route path="addresses/create" component={ CreateAddress } />
+            <Route path="addresses/:addressId/edit" component={ EditAddress } />
         </Route>
         { WikiRoutes }
     </Route>

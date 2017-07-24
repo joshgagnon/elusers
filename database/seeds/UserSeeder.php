@@ -32,6 +32,28 @@ class UserSeeder extends Seeder
 
         $thomas->emergencyContact()->create(['name' => 'Sophie Bloy', 'email' => 'sophie@evolutionlawyers.nz', 'phone' => '02102439766']);
 
+        $thomas->addresses()->create([
+            'address_type' => 'Physical Address',
+            'address_name' => 'Office Address',
+            'address_one' => '19 Halberg Street',
+            'address_two' => 'Glenfield',
+            'address_three' => 'Auckland',
+            'address_type' => 'physical_address',
+            'post_code' => '0629',
+            'country_code' => 'NZ',
+        ]);
+
+        $thomas->addresses()->create([
+            'address_type' => 'Physical Address',
+            'address_name' => 'Postal Address',
+            'address_one' => '110 Harbour Terrace',
+            'address_two' => 'North Dunedin',
+            'address_three' => 'Dunedin',
+            'address_type' => 'physical_address',
+            'post_code' => '9016',
+            'country_code' => 'NZ',
+        ]);
+
         $tamina = User::create([
             'title' => 'Ms',
             'first_name' => 'Tamina',
