@@ -20,8 +20,8 @@ export default class Layout extends React.PureComponent<ILayoutProps, {}> {
                 </div>
 
                 <div className="notifications">
-                    {Object.keys(this.props.notifications).map((notificationKey, index) =>
-                        <Notification key={index} isError={this.props.notifications[notificationKey].isError}>
+                    {Object.keys(this.props.notifications).map(notificationKey =>
+                        <Notification key={notificationKey} isError={this.props.notifications[notificationKey].isError}>
                             {this.props.notifications[notificationKey].message}
                         </Notification>)
                     }
