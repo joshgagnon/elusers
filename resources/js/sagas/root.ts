@@ -1,5 +1,5 @@
 import { select, takeEvery, put, call } from 'redux-saga/effects';
-import { SagaMiddleware } from 'redux-saga';
+import { SagaMiddleware, delay } from 'redux-saga';
 import axios from 'axios';
 import * as humps from 'humps';
 
@@ -11,7 +11,9 @@ function* rootSagas() {
         deleteResourceRequests(),
 
         resourceSuccess(),
-        resourceFailure()
+        resourceFailure(),
+
+        notificationTimeout(),
     ];
 }
 
@@ -41,7 +43,7 @@ function *resourceSuccess() {
         EL.ActionTypes.CREATE_RESOURCE_SUCCESS,
         EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
         EL.ActionTypes.DELETE_RESOURCE_SUCCESS
-    ], fireOnSuccessActions)
+    ], fireOnSuccessActions);
 }
 
 function *resourceFailure() {
@@ -50,7 +52,17 @@ function *resourceFailure() {
         EL.ActionTypes.CREATE_RESOURCE_FAILURE,
         EL.ActionTypes.UPDATE_RESOURCE_FAILURE,
         EL.ActionTypes.DELETE_RESOURCE_FAILURE
-    ], fireOnFailureActions)
+    ], fireOnFailureActions);
+}
+
+function *notificationTimeout() {
+    yield takeEvery(EL.ActionTypes.CREATE_NOTIFICATION, setNotificationTimeout);
+}
+
+function *setNotificationTimeout(action: EL.Actions.ICreateNotificationAction) {
+    const TIMEOUT = 4000;
+    yield call(delay, TIMEOUT);
+    yield put({ type: EL.ActionTypes.REMOVE_NOTIFICATION, payload: { id: action.payload.id } });
 }
 
 function *fireOnSuccessActions(action: EL.Actions.Action) {

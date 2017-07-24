@@ -110,3 +110,17 @@ table.table>tbody>tr>td {
 .panel-default > .panel-heading {
     background: $gray-lighter;
 }
+
+.notifications {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    z-index: 1;
+    width: 400px;
+    max-width:90%;
+
+    .notification {
+        height: 50px;
+        
+    }
+}
