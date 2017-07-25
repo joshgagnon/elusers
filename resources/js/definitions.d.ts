@@ -30,6 +30,17 @@ declare namespace EL {
         phone: string;
     }
 
+    interface IAddress {
+        id?: number;
+        addressName: string;
+        addressOne: string;
+        addressTwo: string;
+        addressThree: string;
+        postCode: string;
+        countryCode: string;
+        addressType: string;
+    }
+
     export interface Resource<T> {
         status?: RequestStatus;
         data?: T;
@@ -124,9 +135,10 @@ declare namespace EL {
         minValue?: number;
         maxValue?: number;
         isDate?: boolean;
-        isPhoneNumber?: boolean;
-        isBankAccountNumber?: boolean;
-        isIRDNumber?: boolean;
+        sameAs?: {
+            fieldName: string;
+            fieldDisplayName: string;
+        };
     }
 
     interface IValidationFields extends ObjectOf<EL.IValidationField> {}

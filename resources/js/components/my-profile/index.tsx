@@ -14,6 +14,8 @@ export default class MyProfile extends React.PureComponent<EL.Propless, EL.State
                 <Col md={3}>
                     <MyProfileNavigation />
                     <MyOrganisationNavigation />
+
+                    <Button block bsStyle="success">Create User</Button>
                 </Col>
 
                 <Col md={9}>

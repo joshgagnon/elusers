@@ -17,14 +17,27 @@ Route::group(['middleware' => 'auth'], function() {
      * Users
      */
     Route::get('users', 'UserController@index');
+    Route::post('users', 'UserController@create');
     Route::get('users/{user}', 'UserController@get');
     Route::put('users/{user}', 'UserController@update');
 
-
+    // Passwords
     Route::put('users/{user}/password', 'UserController@changePassword');
 
+    // Emergency contact
     Route::get('users/{user}/emergency-contact', 'EmergencyContactController@get');
     Route::put('emergency-contact/{contact}', 'EmergencyContactController@update');
+
+    // User based address routes
+    Route::get('users/{user}/addresses', 'UserAddressController@all');
+    Route::post('users/{user}/addresses', 'UserAddressController@create');
+
+    /**
+     * Addresses
+     */
+    Route::get('addresses/{address}', 'UserAddressController@get');
+    Route::put('addresses/{address}', 'UserAddressController@update');
+    Route::delete('addresses/{address}', 'UserAddressController@delete');
 
     /**
      * CPDPR

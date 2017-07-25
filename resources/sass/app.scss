@@ -175,6 +175,18 @@ table.table>tbody>tr>td {
     min-height:800px;
 }
 
+
 .markdown{
     @import "markdown";
 }
+
+fieldset {
+    &:not {
+        margin-bottom: 15px;
+    }
+
+    legend {
+        text-align: center;
+    }
+}
+

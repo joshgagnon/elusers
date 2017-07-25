@@ -68,7 +68,7 @@ function *setNotificationTimeout(action: EL.Actions.ICreateNotificationAction) {
 function *fireOnSuccessActions(action: EL.Actions.Action) {
     if (action.meta && action.meta.onSuccess) {
         for (const successAction of action.meta.onSuccess) {
-            yield put(successAction);
+            yield put(typeof successAction === 'function' ? successAction(action.payload) : successAction);
         }
     }
 }
@@ -76,7 +76,7 @@ function *fireOnSuccessActions(action: EL.Actions.Action) {
 function *fireOnFailureActions(action: EL.Actions.Action) {
     if (action.meta && action.meta.onFailure) {
         for (const failureAction of action.meta.onFailure) {
-            yield put(failureAction);
+            yield put(typeof failureAction === 'function' ? failureAction(action.payload) : failureAction);
         }
     }
 }
@@ -121,7 +121,7 @@ function *createResource(action: EL.Actions.CreateResourceAction) {
         // Fire a create resources success action
         yield put({
             type: EL.ActionTypes.CREATE_RESOURCE_SUCCESS,
-            payload: response.data,
+            payload: humps.camelizeKeys(response.data),
             meta: action.meta
         });
     } catch (e) {
@@ -143,7 +143,7 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
         // Fire a update resource success action
         yield put({
             type: EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
-            payload: response.data,
+            payload: humps.camelizeKeys(response.data),
             meta: action.meta
         });
     } catch (e) {
@@ -164,7 +164,7 @@ function *deleteResource(action: EL.Actions.DeleteResourceAction) {
         // Fire a delete resourse success action
         yield put({
             type: EL.ActionTypes.DELETE_RESOURCE_SUCCESS,
-            payload: response.data,
+            payload: humps.camelizeKeys(response.data),
             meta: action.meta
         });
     } catch (e) {
