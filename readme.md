@@ -21,14 +21,16 @@ Dates are required in the format: day-month-year as the validation and date pars
 
 ## Todo
 
-Enforce password strength policy (first we need to create a password policy)
+Enforce password strength policy (first we need to create a password policy).
 
-## Known bugs
+Create permissions system - pass rules to frontend - eg. can_edit_users, can_change_users_password, can_change_own_password, etc. Then build permissions system in frontend to interpret these rules.
+
+### Known bugs
 
 After updating a users basic details, a new user (state.user) is not re-fetched.
 
 Combobox field border not coloured for validation.
 
-Dates are not valid in in the datepicker on initial load
+Dates are not valid in in the datepicker on initial load - currently using a work around in the backend, but every route has to convert dates before they are sent to the frontend. We should convert the dates to our format once we receive them from the API.
 
-Not create or update notifications yet
+Some forms still need success/error notifications
