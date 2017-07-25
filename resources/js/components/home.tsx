@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import { toggleSomething } from '../actions/index';
 
 export default class Home extends React.PureComponent<EL.Propless, EL.Stateless> {
+    static readonly FLUID_CONTAINER = true;
     render() {
-        return <h2>Dashboard</h2>;
+        return <div>
+            <div className=" sea"><p>A law firm for modern New Zealanders</p></div>
+
+        </div>;
     }
 }

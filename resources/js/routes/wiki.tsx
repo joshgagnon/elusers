@@ -110,7 +110,7 @@ class WikiPageBodyForm extends React.PureComponent<WikiPageEditFormProps, EL.Sta
 
 class RenderMarkdown extends React.PureComponent<IFieldComponentProps, EL.Stateless>{
     render() {
-        return <Markdown markup={ this.props.input.value } />
+        return <div className="markdown"><Markdown markup={ this.props.input.value } /></div>
     }
 }
 
