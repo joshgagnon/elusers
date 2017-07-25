@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHoc';
+import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button } from 'react-bootstrap';
 import { BasicDetailsFormFields, basicDetailsValidationRules, EmergencyContactFormFields, emergencyContactValidationRules } from './formFields';
 import { reduxForm } from 'redux-form';
