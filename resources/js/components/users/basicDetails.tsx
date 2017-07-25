@@ -78,7 +78,7 @@ export class EditBasicDetails extends React.PureComponent<> {
 }
 
 @connect(
-    undefined
+    undefined,
     {
         submit: (event: React.FormEvent<Form>, userId: number) => {
             const url = `users/${userId}`;
