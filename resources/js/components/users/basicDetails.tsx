@@ -58,7 +58,7 @@ export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDeta
                     <dd>{user.email}</dd>
 
                     <dt>Is Lawyer</dt>
-                    <dd>{user.lawAdmissionDate ? 'Yes, addmission date: ' + formatDate(user.lawAdmissionDate) : 'Not a lawyer'}</dd>
+                    <dd>{user.lawAdmissionDate ? 'Yes, admission date: ' + formatDate(user.lawAdmissionDate) : 'Not a lawyer'}</dd>
 
                     {user.irdNumber && <dt>IRD Number</dt> }
                     {user.irdNumber && <dd>{user.irdNumber}</dd> }
@@ -78,7 +78,7 @@ export class EditBasicDetails extends React.PureComponent<> {
 }
 
 @connect(
-    undefined
+    undefined,
     {
         submit: (event: React.FormEvent<Form>, userId: number) => {
             const url = `users/${userId}`;
@@ -96,7 +96,7 @@ export class EditBasicDetails extends React.PureComponent<> {
 class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps, EL.Stateless> {
     render() {
         return (
-            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.user.id)} initialValues={this.props.user.data} />
+            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.userId)} initialValues={this.props.user.data} />
         );
     }
 }

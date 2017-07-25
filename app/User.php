@@ -20,9 +20,7 @@ class User extends Authenticatable
         'first_name'          => 'required',
         'surname'             => 'required',
         'email'               => 'required|email',
-        'law_admission_date'  => 'date',
-        'ird_number'          => 'required',
-        'bank_account_number' => 'required',
+        'law_admission_date'  => 'nullable|date',
     ];
 
     /**
