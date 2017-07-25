@@ -11,7 +11,7 @@ interface IUsersTableProps {
     users: EL.Resource<EL.User[]>;
 }
 
-const HEADINGS = ['Full Name', 'Preferred Name', 'Email'];
+const HEADINGS = ['Full Name', 'Preferred Name', 'Email', 'Actions'];
 
 @PanelHOC('Users', [(props: IUsersTableProps) => props.users])
 class UsersTable extends React.PureComponent<IUsersTableProps, EL.Stateless> {
@@ -28,6 +28,7 @@ class UsersTable extends React.PureComponent<IUsersTableProps, EL.Stateless> {
                             <td>{fullname(user)}</td>
                             <td>{user.preferredName || '—'}</td>
                             <td><a href={ 'mailto:' + user.email }>{user.email}</a></td>
+                            <td><Link to={`/users/${user.id}`}>View</Link></td>
                         </tr>
                     )) }
                 </Table>

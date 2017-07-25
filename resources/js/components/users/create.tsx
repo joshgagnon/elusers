@@ -23,7 +23,7 @@ interface ICreateUserFormProps {
         submit: (data: React.FormEvent<Form>) => {
             const url = 'users';
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('User created.'), push('/users')],
+                onSuccess: [createNotification('User created.'), (response) => push(`/users/${response.userId}`)],
                 onFailure: [createNotification('User creation failed. Please try again.', true)],
             };
 
@@ -40,8 +40,8 @@ export default class CreateUser extends React.PureComponent<ICreateUserProps, EL
 
 const createUserValidationRules: EL.IValidationFields = {
     ...basicDetailsValidationRules,
-    password: { name: 'Password', required: true }
-    passwordConfirmation: { name: 'Password', required: true, sameAs: { fieldName: 'password', fieldDisplayName: 'password' } },
+    password: { name: 'Password', required: true },
+    passwordConfirmation: { name: 'Password confirmation', required: true, sameAs: { fieldName: 'password', fieldDisplayName: 'password' } },
 };
 
 @reduxForm({ form: 'create-user-form', validate: values => validate(createUserValidationRules, values) })

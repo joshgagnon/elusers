@@ -30,31 +30,7 @@ export function validate(fields: EL.IValidationFields, values: any) {
             }
         }
 
-        // Is phone number
-        if (field.isPhoneNumber === true) {
-            const phoneNumberRegex = /^[0-9]+$/;
-
-            if (!phoneNumberRegex.test(value)) {
-                return field.name + ' must be a valid phone number.';
-            }
-        }
-
-        if (field.isBankAccountNumber === true) {
-            const bankAccountNumberRegex = /^[0-9]{16}$/;
-
-            if (!bankAccountNumberRegex.test(value)) {
-                return field.name + ' must be a valid bank account number.';
-            }
-        }
-
-        if (field.isIRDNumber === true) {
-            const irdNumberRegex = /^[0-9]{8,9}$/;
-
-            if (!irdNumberRegex.test(value)) {
-                return field.name + ' must be a valid IRD number.';
-            }
-        }
-
+        // Fields have same value
         if (field.sameAs !== undefined) {
             if (value !== values[field.sameAs.fieldName]) {
                 return `${field.name} must match ${field.sameAs.fieldDisplayName}.`;

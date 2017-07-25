@@ -3,7 +3,10 @@ import { Route, IndexRoute, RouteComponent } from 'react-router';
 
 import Home from '../components/home';
 import Users from '../components/users';
+
+import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
+import { ViewBasicDetails, EditBasicDetails } from '../components/users/basicDetails';
 
 import CPDPRIndex from '../components/cpdpr';
 import EditCPDPRRecord from '../components/cpdpr/edit';
@@ -25,6 +28,11 @@ const routes = (routeComponent: RouteComponent) => (
         <IndexRoute component={ Home } />
         <Route path='users' component={ Users } />
         <Route path='users/create' component={ CreateUser } />
+        <Route path='users/:userId' component={ UserLayout }>
+            <IndexRoute component={ ViewBasicDetails } />
+            <Route path='edit' component={ EditBasicDetails } />
+        </Route>
+
         <Route path='cpdpr' component={ CPDPRIndex }>
             <Route path='create' component={ CreateCPDPRRecord } />
             <Route path=':cpdprId/edit' component={ EditCPDPRRecord } />

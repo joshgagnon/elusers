@@ -12,9 +12,9 @@ export const basicDetailsValidationRules: EL.IValidationFields = {
     
     email: { name: 'Email', required: true },
 
-    lawAdmissionDate: { name: 'Law admission date', required: true, isDate: true },
-    irdNumber: { name: 'IRD number', required: true, isIRDNumber: true },
-    bankAccountNumber: { name: 'Bank account number', required: true, isBankAccountNumber: true },
+    lawAdmissionDate: { name: 'Law admission date', isDate: true },
+    irdNumber: { name: 'IRD number', required: true },
+    bankAccountNumber: { name: 'Bank account number', required: true },
 };
 
 export class BasicDetailsFormFields extends React.PureComponent<EL.Propless, EL.Stateless> {
@@ -43,9 +43,9 @@ export class BasicDetailsFormFields extends React.PureComponent<EL.Propless, EL.
  * Emergency Contact
  */
 export const emergencyContactValidationRules: EL.IValidationFields = {
-    name:  { name: 'Name',  required: true, maxLength: 255 },
-    email: { name: 'Email', required: true, maxLength: 255 },
-    phone: { name: 'Phone', required: true, maxLength: 255, isPhoneNumber: true }
+    name:  { name: 'Name',  required: true },
+    email: { name: 'Email', required: true },
+    phone: { name: 'Phone', required: true }
 };
 
 export class EmergencyContactFormFields extends React.PureComponent<EL.Propless, EL.Stateless> {

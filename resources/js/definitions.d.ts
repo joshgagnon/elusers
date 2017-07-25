@@ -135,10 +135,7 @@ declare namespace EL {
         minValue?: number;
         maxValue?: number;
         isDate?: boolean;
-        isPhoneNumber?: boolean;
-        isBankAccountNumber?: boolean;
-        isIRDNumber?: boolean;
-        sameAs: {
+        sameAs?: {
             fieldName: string;
             fieldDisplayName: string;
         };

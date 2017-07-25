@@ -70,6 +70,7 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
 }
 
 export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
+export const UserHOC = () => HOCFactory({ location: (props) => `users/${props.userId}`, propsName: 'user' });
 
 export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/cpdpr`, propsName: 'cpdpr' });
 export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });

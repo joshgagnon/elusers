@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 // Infer the users full name
 export function fullname(user: EL.User) {
     return user.title // title
@@ -24,6 +26,10 @@ export function fractionalHoursToMinutes(fractionalHours: number): number {
 export function minutesToHoursString(minutes: number) {
     const seperateValues = minutesToHoursAndMinutes(minutes);
     return seperateValues.hours + ':' + seperateValues.minutes.toString().padStart(2, '0');
+}
+
+export function formatDate(date: string) {
+    return moment(date).format('D MMM YYYY')
 }
 
 export function getAddressSegments(address: EL.IAddress): string[] {
