@@ -52,7 +52,7 @@ class UserController extends Controller
         abort_if(!$usersInSameOrganisation, 404);
 
         $response = $user->toArray();
-        $response['law_admission_date'] = Carbon::parse($user->law_admission_date)->format('d M Y');
+        $response['law_admission_date'] = $user->law_admission_date ? Carbon::parse($user->law_admission_date)->format('d M Y') : null;
 
         // Return the user
         return $response;
@@ -85,6 +85,10 @@ class UserController extends Controller
 
     public function changePassword(Request $request, User $user)
     {
+//        $requestingUser = $request->user();
+//
+//        if ($requestingUser->id !== )
+
         $this->validate($request, [
             'current_password' => 'required',
             'new_password' => 'required',
