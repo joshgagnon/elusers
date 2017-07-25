@@ -75,7 +75,7 @@ export const UserHOC = () => HOCFactory({ location: (props) => `users/${props.us
 export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/cpdpr`, propsName: 'cpdpr' });
 export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });
 
-export const UserAddressesHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/addresses`, propsName: 'addresses' });
+export const UserAddressesHOC = () => HOCFactory({ location: (props) => `users/${props.userId || props.user.id}/addresses`, propsName: 'addresses' });
 export const UserAddressHOC = () => HOCFactory({ location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
 
 export const UserEmergencyContactHOC = () => HOCFactory({ location: (props) => `users/${props.userId || props.user.id}/emergency-contact`, propsName: 'emergencyContact' });

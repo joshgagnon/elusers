@@ -11,25 +11,15 @@ import { EmergencyContactFormFields, emergencyContactValidationRules } from '../
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { push } from 'react-router-redux';
+import mapParamsToProps from '../hoc/mapParamsToProps';
 
 
 interface IViewEmergencyContactProps {
-    params: {
-        userId: number;
-    };
-}
-interface IViewEmergencyContactContentProps {
     emergencyContact: EL.Resource<EL.IEmergencyContact>;
     userId: number;
 }
 
 interface IEditEmergencyContactProps {
-    params: {
-        userId: number;
-    };
-}
-
-interface IEditEmergencyContactContentsProps {
     userId: number;
     submit: (data: React.FormEvent<Form>) => void;
     emergencyContact: EL.Resource<EL.IEmergencyContact>;
@@ -40,15 +30,10 @@ interface IEditEmergencyContactFormProps {
     initialValues: EL.IEmergencyContact;
 }
 
-export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyContactProps> {
-    render() {
-        return <ViewEmergencyContactContents userId={this.props.params.userId} />
-    }
-}
-
+@mapParamsToProps(['userId'])
 @UserEmergencyContactHOC()
 @PanelHOC('Emergency Contact', [props => props.emergencyContact])
-class ViewEmergencyContactContents extends React.PureComponent<IViewEmergencyContactContentProps> {
+export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyContactProps> {
     render() {
         const emergencyContact = this.props.emergencyContact.data;
 
@@ -69,12 +54,7 @@ class ViewEmergencyContactContents extends React.PureComponent<IViewEmergencyCon
     }
 }
 
-export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps, EL.Stateless> {
-    render() {
-        return <EditEmergencyContactContents userId={this.props.params.userId} />
-    }
-}
-
+@mapParamsToProps(['userId'])
 @connect(
     undefined,
     {
@@ -91,7 +71,7 @@ export class EditEmergencyContact extends React.PureComponent<IEditEmergencyCont
 )
 @UserEmergencyContactHOC()
 @PanelHOC('Emergency Contact', [props => props.emergencyContact])
-class EditEmergencyContactContents extends React.PureComponent<IEditEmergencyContactContentsProps, EL.Stateless> {
+export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps, EL.Stateless> {
     render() {
         return (
             <EmergencyContactForm

@@ -8,6 +8,7 @@ import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
 import { ViewBasicDetails, EditBasicDetails } from '../components/users/basicDetails';
 import { ViewEmergencyContact, EditEmergencyContact } from '../components/users/emergencyContact';
+import { ViewAddresses, EditAddress, CreateAddress } from '../components/users/addresses';
 
 import CPDPRIndex from '../components/cpdpr';
 import EditCPDPRRecord from '../components/cpdpr/edit';
@@ -35,6 +36,10 @@ const routes = (routeComponent: RouteComponent) => (
             
             <Route path='emergency-contact' component={ ViewEmergencyContact } />
             <Route path='emergency-contact/edit' component={ EditEmergencyContact } />
+            
+            <Route path='addresses' component={ ViewAddresses } />
+            <Route path='addresses/create' component={ CreateAddress } />
+            <Route path='addresses/:addressId/edit' component={ EditAddress } />
         </Route>
 
         <Route path='cpdpr' component={ CPDPRIndex }>
