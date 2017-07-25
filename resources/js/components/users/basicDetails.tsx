@@ -96,7 +96,7 @@ export class EditBasicDetails extends React.PureComponent<> {
 class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps, EL.Stateless> {
     render() {
         return (
-            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.user.id)} initialValues={this.props.user.data} />
+            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.userId)} initialValues={this.props.user.data} />
         );
     }
 }
