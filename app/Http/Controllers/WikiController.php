@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Wiki;
 use DB;
+use Carbon\Carbon;
 
 class WikiController extends Controller
 {
@@ -16,7 +17,7 @@ class WikiController extends Controller
     public function index()
     {
         //return Wiki::select('title', 'categories->>0', 'path')->get();
-        $record = DB::select('SELECT json_agg(x) as wiki from (select json_agg((SELECT x FROM (SELECT title, path order by title) x)) as articles, categories->>0 as category from wiki group by category) x');
+        $record = DB::select('SELECT json_agg(x) as wiki from (select json_agg((SELECT x FROM (SELECT title, path order by title) x)) as articles, categories->>0 as category from wiki where deleted_at is null group by category) x');
         return json_decode($record[0]->wiki);
     }
 
@@ -69,9 +70,9 @@ class WikiController extends Controller
         if(!$values['data']) {
             $values['data'] = '';
         }
-
-        Wiki::where('path', $url)
-          ->update($values);
+        $date = Carbon::now();
+        Wiki::where('path', $url)->update(['path' => $url.'/'.$date->timestamp, 'deleted_at' => $date]);
+        $record = Wiki::create($values);
         return response()->json(['message' => 'Wiki entry updated'], 201);
     }
 
