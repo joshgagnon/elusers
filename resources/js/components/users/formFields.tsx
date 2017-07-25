@@ -13,8 +13,6 @@ export const basicDetailsValidationRules: EL.IValidationFields = {
     email: { name: 'Email', required: true },
 
     lawAdmissionDate: { name: 'Law admission date', isDate: true },
-    irdNumber: { name: 'IRD number', required: true },
-    bankAccountNumber: { name: 'Bank account number', required: true },
 };
 
 export class BasicDetailsFormFields extends React.PureComponent<EL.Propless, EL.Stateless> {

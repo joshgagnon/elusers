@@ -24,7 +24,7 @@ export function validate(fields: EL.IValidationFields, values: any) {
         }
 
         // Is date
-        if (field.isDate === true) {
+        if (value && field.isDate === true) {
             if (!moment(value, 'D MMM YYYY', true).isValid()) {
                 return field.name + ' must be a valid date.';
             }
