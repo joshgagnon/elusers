@@ -50,7 +50,7 @@ class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless>
                         <ListGroupItem>Addresses</ListGroupItem>
                     </LinkContainer>
 
-                    { this.props.authedUser.id === 2 || this.props.authedUser.id === 3 && 
+                    { (this.props.authedUser.id === 2 || this.props.authedUser.id === 3) && 
                         <LinkContainer to={`/users/${userId}/password`}>
                             <ListGroupItem>Change Password</ListGroupItem>
                         </LinkContainer>
