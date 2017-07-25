@@ -78,7 +78,7 @@ export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.r
 export const UserAddressesHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/addresses`, propsName: 'addresses' });
 export const UserAddressHOC = () => HOCFactory({ location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
 
-export const UserEmergencyContactHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/emergency-contact`, propsName: 'emergencyContact' });
+export const UserEmergencyContactHOC = () => HOCFactory({ location: (props) => `users/${props.userId || props.user.id}/emergency-contact`, propsName: 'emergencyContact' });
 
 export const WikiIndexHOC = () => HOCFactory({ location: (props) => `wiki`, propsName: 'wiki' });
 export const WikiHOC = () => HOCFactory({ location: (props) => `wiki/${props.wikiPath}`, propsName: 'wikiPage' });
