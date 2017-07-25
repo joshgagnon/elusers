@@ -25,6 +25,8 @@ Enforce password strength policy (first we need to create a password policy).
 
 Create permissions system - pass rules to frontend - eg. can_edit_users, can_change_users_password, can_change_own_password, etc. Then build permissions system in frontend to interpret these rules.
 
+Fix the metric shitload of Typescript errors :)
+
 ### Known bugs
 
 After updating a users basic details, a new user (state.user) is not re-fetched.
