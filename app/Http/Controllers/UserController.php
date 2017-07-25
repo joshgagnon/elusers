@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\EmergencyContact;
 use App\User;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -50,8 +51,11 @@ class UserController extends Controller
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
 
+        $response = $user->toArray();
+        $response['law_admission_date'] = Carbon::parse($user->law_admission_date)->format('d M Y');
+
         // Return the user
-        return $user;
+        return $response;
     }
 
     /**

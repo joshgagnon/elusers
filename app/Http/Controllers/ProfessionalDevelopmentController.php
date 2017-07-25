@@ -33,7 +33,9 @@ class ProfessionalDevelopmentController extends Controller
 
     public function get(ProfessionalDevelopmentRecord $record)
     {
-        return $record;
+        $response = $record->toArray();
+        $response['date'] = Carbon::parse($record->date)->format('d M Y');
+        return $response;
     }
 
     public function create(Request $request)
