@@ -58,7 +58,7 @@ export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDeta
                     <dd>{user.email}</dd>
 
                     <dt>Is Lawyer</dt>
-                    <dd>{user.lawAdmissionDate ? 'Yes, addmission date: ' + formatDate(user.lawAdmissionDate) : 'Not a lawyer'}</dd>
+                    <dd>{user.lawAdmissionDate ? 'Yes, admission date: ' + formatDate(user.lawAdmissionDate) : 'Not a lawyer'}</dd>
 
                     {user.irdNumber && <dt>IRD Number</dt> }
                     {user.irdNumber && <dd>{user.irdNumber}</dd> }
