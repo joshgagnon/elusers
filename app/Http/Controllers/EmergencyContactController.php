@@ -28,14 +28,9 @@ class EmergencyContactController extends Controller
      */
     public function update(Request $request, EmergencyContact $contact)
     {
-        $this->validate($request, [
-            'name'  => 'required|max:255',
-            'email' => 'required|max:255|email',
-            'phone' => 'required|max:255',
-        ]);
+        $this->validate($request, EmergencyContact::$validationRules);
 
-        $values = $request->only(['name', 'email', 'phone']);
-        $contact->update($values);
+        $contact->update($request->all());
 
         return response()->json(['message' => 'Emergency contact updated.'], 200);
     }

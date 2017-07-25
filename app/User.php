@@ -11,9 +11,19 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
-    protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'law_admission_date', 'ird_number', 'bank_account_number'];
+    protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number'];
 
     protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number'];
+
+    public static $validationRules = [
+        'title'               => 'required',
+        'first_name'          => 'required',
+        'surname'             => 'required',
+        'email'               => 'required|email',
+        'law_admission_date'  => 'date',
+        'ird_number'          => 'required',
+        'bank_account_number' => 'required',
+    ];
 
     /**
      * Organisation relationship: a user belongs to an organisation.
@@ -43,6 +53,11 @@ class User extends Authenticatable
     public function emergencyContact()
     {
         return $this->hasOne(EmergencyContact::class);
+    }
+
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     /**
