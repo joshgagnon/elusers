@@ -85,9 +85,11 @@ class UserController extends Controller
 
     public function changePassword(Request $request, User $user)
     {
-//        $requestingUser = $request->user();
-//
-//        if ($requestingUser->id !== )
+        $requestingUser = $request->user();
+
+        if ($requestingUser->id !== $user->id && $requestingUser->id !== 2 && $requestingUser->id !== 3) { // hacky but works for now
+            abort(401);
+        }
 
         $this->validate($request, [
             'current_password' => 'required',
