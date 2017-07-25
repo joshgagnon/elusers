@@ -73,6 +73,8 @@ class UserController extends Controller
 
         $user->save();
 
+        $user->emergencyContact()->create(['name' => '', 'email' => '', 'phone' => '']); // Create an empty emergency contact
+
         return response()->json(['message' => 'User created', 'user_id' => $user->id], 201);
     }
 

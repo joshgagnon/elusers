@@ -8,7 +8,8 @@ import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
 import { ViewBasicDetails, EditBasicDetails } from '../components/users/basicDetails';
 import { ViewEmergencyContact, EditEmergencyContact } from '../components/users/emergencyContact';
-import { ViewAddresses, EditAddress, CreateAddress } from '../components/users/addresses';
+import { ViewAddresses, EditAddress as EditUserAddress, CreateAddress as CreateUserAddress } from '../components/users/addresses';
+import { ChangePassword as ChangeUserPassword } from '../components/users/changePassword';
 
 import CPDPRIndex from '../components/cpdpr';
 import EditCPDPRRecord from '../components/cpdpr/edit';
@@ -26,20 +27,22 @@ import EditAddress from '../components/my-profile/editAddress';
 import WikiRoutes from './wiki';
 
 const routes = (routeComponent: RouteComponent) => (
-    <Route path='/' component={ routeComponent }>
-        <IndexRoute component={ Home } />
-        <Route path='users' component={ Users } />
-        <Route path='users/create' component={ CreateUser } />
-        <Route path='users/:userId' component={ UserLayout }>
-            <IndexRoute component={ ViewBasicDetails } />
-            <Route path='edit' component={ EditBasicDetails } />
+    <Route path='/' component={routeComponent}>
+        <IndexRoute component={Home} />
+        <Route path='users' component={Users} />
+        <Route path='users/create' component={CreateUser} />
+        <Route path='users/:userId' component={UserLayout}>
+            <IndexRoute component={ViewBasicDetails} />
+            <Route path='edit' component={EditBasicDetails} />
             
-            <Route path='emergency-contact' component={ ViewEmergencyContact } />
-            <Route path='emergency-contact/edit' component={ EditEmergencyContact } />
+            <Route path='emergency-contact' component={ViewEmergencyContact} />
+            <Route path='emergency-contact/edit' component={EditEmergencyContact} />
             
-            <Route path='addresses' component={ ViewAddresses } />
-            <Route path='addresses/create' component={ CreateAddress } />
-            <Route path='addresses/:addressId/edit' component={ EditAddress } />
+            <Route path='addresses' component={ViewAddresses} />
+            <Route path='addresses/create' component={CreateUserAddress} />
+            <Route path='addresses/:addressId/edit' component={EditUserAddress} />
+
+            <Route path="password" component={ChangeUserPassword} />
         </Route>
 
         <Route path='cpdpr' component={ CPDPRIndex }>

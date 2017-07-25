@@ -37,6 +37,15 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
     render() {
         const emergencyContact = this.props.emergencyContact.data;
 
+        if (!emergencyContact.name && !emergencyContact.email && !emergencyContact.phone) {
+            return (
+                <div>
+                    <Link to={`/users/${this.props.userId}/emergency-contact/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Create</Link>
+                    <h3>No Emergency Contact</h3>
+                </div>
+            );
+        }
+
         return (
             <div>
                 <Link to={`/users/${this.props.userId}/emergency-contact/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
@@ -73,10 +82,11 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
 @PanelHOC('Emergency Contact', [props => props.emergencyContact])
 export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps, EL.Stateless> {
     render() {
+        console.log(this.props.emergencyContact);
         return (
             <EmergencyContactForm
                 onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.emergencyContact.data.id, this.props.userId)}
-                initialValues={this.props.emergencyContact.data} />
+                initialValues={this.props.emergencyContact.data || {}} />
         );
     }
 }
