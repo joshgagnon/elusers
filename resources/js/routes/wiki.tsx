@@ -49,16 +49,17 @@ class Wiki extends React.PureComponent<WikiProps, EL.Stateless> {
     }
 }
 
-@PanelHOC('Knowledge Base')
+
 class WikiRootPanel extends React.PureComponent<WikiRootProps, EL.Stateless> {
     render() {
         return <div>
-            <h3>Index of all Articles</h3>
-            <ul>
             { (this.props.wiki.data || []).map((e, i) => {
-                return <li key={i}><Link to={`/wiki/${e.path}`}>{ e.title}</Link></li>
-            }) }
-            </ul>
+                return <Panel title={e.category || 'No Category'} key={i}>
+                    <ul>
+                        { e.articles.map((a, j) => <li key={j}><Link to={`/wiki/${a.path}`}>{ a.title }</Link></li>) }
+                    </ul>
+                      </Panel>
+                   }) }
             </div>
     }
 }

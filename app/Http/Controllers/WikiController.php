@@ -15,7 +15,9 @@ class WikiController extends Controller
      */
     public function index()
     {
-        return Wiki::select('title', 'path')->get();
+        //return Wiki::select('title', 'categories->>0', 'path')->get();
+        $record = DB::select('SELECT json_agg(x) as wiki from (select json_agg((SELECT x FROM (SELECT title, path order by title) x)) as articles, categories->>0 as category from wiki group by category) x');
+        return json_decode($record[0]->wiki);
     }
 
     /**
@@ -25,7 +27,6 @@ class WikiController extends Controller
      */
     public function create(Request $request, $url)
     {
-
         $values = array_merge($request->all(), ['path' => $url]);
         if(!$values['data']) {
             $values['data'] = '';
@@ -49,7 +50,7 @@ class WikiController extends Controller
             $record = $record->toArray();
             $categories = json_decode($record['categories']);
             if(count($categories) && $categories[0]){
-                $record['categoryGroup'] = DB::select('select title, path from wiki where categories->>0 = ?', [$categories[0]]);
+                $record['categoryGroup'] = DB::select('select title, path from wiki where categories->>0 = ? order by title', [$categories[0]]);
             }
         }
         return $record;
