@@ -36,3 +36,5 @@ Combobox field border not coloured for validation.
 Dates are not valid in in the datepicker on initial load - currently using a work around in the backend, but every route has to convert dates before they are sent to the frontend. We should convert the dates to our format once we receive them from the API.
 
 Some forms still need success/error notifications
+
+Users sub-navigation doesn't update until page refresh - probably caused by a PureComponent. I'm assuming the react-redux connect function is what is causing the issue. Solution: move the connect up to the parent component and pass the userId through
