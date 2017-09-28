@@ -40,6 +40,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('addresses/{address}', 'UserAddressController@delete');
 
     /**
+     * Deed files
+     */
+    Route::get('deed-files', 'DeedFileController@all');
+
+    /**
      * CPDPR
      */
     Route::get('users/{user}/cpdpr', 'ProfessionalDevelopmentController@forUser');
