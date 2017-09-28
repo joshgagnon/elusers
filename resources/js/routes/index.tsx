@@ -3,6 +3,7 @@ import { Route, IndexRoute, RouteComponent } from 'react-router';
 
 import Home from '../components/home';
 import Users from '../components/users';
+import DeedFiles from '../components/deed-files';
 
 import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
@@ -44,6 +45,8 @@ const routes = (routeComponent: RouteComponent) => (
 
             <Route path="password" component={ChangeUserPassword} />
         </Route>
+
+        <Route path='deed-files' component={DeedFiles} />
 
         <Route path='cpdpr' component={ CPDPRIndex }>
             <Route path='create' component={ CreateCPDPRRecord } />
