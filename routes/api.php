@@ -45,6 +45,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('deed-files', 'DeedFileController@all');
 
     /**
+     * Clients
+     */
+    Route::get('clients', 'ClientController@all');
+
+    /**
      * CPDPR
      */
     Route::get('users/{user}/cpdpr', 'ProfessionalDevelopmentController@forUser');
