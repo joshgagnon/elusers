@@ -77,7 +77,7 @@ class DeedFileController extends Controller
     }
 
     /**
-     * Update a deed file
+     * Update a deed file.
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\DeedFile            $deedFile
