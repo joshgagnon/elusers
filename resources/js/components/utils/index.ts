@@ -8,6 +8,10 @@ export function fullname(user: EL.User) {
         + ' ' + user.surname; // last name
 }
 
+export function name(user: EL.User) {
+    return user.preferredName || user.firstName;
+}
+
 export function minutesToHoursAndMinutes(minutes: number): { hours: number; minutes: number } {
     return {
         hours: Math.floor(minutes / 60),
