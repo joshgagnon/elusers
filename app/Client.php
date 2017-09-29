@@ -13,11 +13,6 @@ class Client extends Model
 
     protected $visible = ['id', 'title', 'created_by_user_id'];
 
-    public static $validationRules = [
-        'title'              => 'required',
-        'created_by_user_id' => 'required|exists:users,id',
-    ];
-
     /**
      * Deed file relationship: a client has many deed files.
      *

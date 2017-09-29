@@ -22,7 +22,15 @@ interface ICreateDeedFileFormProps {
 @connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => console.log(data)
+        submit: (data: React.FormEvent<Form>) => {
+            const url = 'deed-files';
+            const meta: EL.Actions.Meta = {
+                onSuccess: [createNotification('Deed file created.'), (response) => push('/deed-files')],
+                onFailure: [createNotification('Deed file creation failed. Please try again.', true)],
+            };
+
+            return createResource(url, data, meta)
+        }
     }
 )
 @ClientsHOC()
@@ -35,7 +43,7 @@ export default class CreateDeedFile extends React.PureComponent<ICreateDeedFileP
 }
 
 const createDeedFileValidationRules: EL.IValidationFields = {
-    clientName: { name: 'Client name', required: true },
+    clientTitle: { name: 'Client title', required: true },
     documentDate: { name: 'Document date', required: true, isDate: true },
     parties: { name: 'Parties', required: true },
     matter: { name: 'Matter', required: true },
@@ -46,7 +54,7 @@ class CreateDeedFileForm extends React.PureComponent<ICreateDeedFileFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <Combobox name="clientName" label="Client Name" data={this.props.clientTitles} />
+                <Combobox name="clientTitle" label="Client Title" data={this.props.clientTitles} />
                 <DatePicker name="documentDate" label="Document Date" />
                 <InputField name="parties" label="Parties" type="text" />
                 <InputField name="matter" label="Matter" type="text" />

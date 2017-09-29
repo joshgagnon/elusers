@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function() {
      * Deed files
      */
     Route::get('deed-files', 'DeedFileController@all');
+    Route::post('deed-files', 'DeedFileController@create');
 
     /**
      * Clients
