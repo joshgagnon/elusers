@@ -9,5 +9,5 @@ WHERE
     AND deed_files.deleted_at IS NULL
 
 ORDER BY
-    clients.title DESC,
+    LOWER(clients.title) ASC,
     deed_files.document_date ASC
