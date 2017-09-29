@@ -41,6 +41,17 @@ declare namespace EL {
         addressType: string;
     }
 
+    interface DeedFile {
+        id: number;
+        clientId: number;
+        clientTitle: string;
+        documentDate: string;
+        parties: string;
+        matter: string;
+        createdAt: string;
+        createdByUserId: number;
+    }
+
     export interface Resource<T> {
         status?: RequestStatus;
         data?: T;
@@ -58,6 +69,11 @@ declare namespace EL {
         id: string;
         message: string;
         isError: boolean;
+    }
+
+    interface Client {
+        id: number;
+        title: string;
     }
 
     interface INotifications extends ObjectOf<INotification> {}

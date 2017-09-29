@@ -4,6 +4,12 @@ import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
+import { DeedFilesHOC, UsersHOC } from '../hoc/resourceHOCs';
+
+interface DeedFilesProps {
+    users: EL.Resource<EL.User[]>;
+    deedFiles: EL.Resource<EL.DeedFile[]>;
+}
 
 const HEADINGS = ['Client Name', 'Document Date', 'Parties', 'Matter', 'Created By'];
 
@@ -16,23 +22,25 @@ const data = [{
     createdBy: 'testing',
 }];
 
-@PanelHOC('Deed Files')
-export default class DeedFiles extends React.PureComponent {
+@UsersHOC()
+@DeedFilesHOC()
+@PanelHOC('Deed Files', [(props: DeedFilesProps) => props.deedFiles, (props: DeedFilesProps) => props.users])
+class DeedFiles extends React.PureComponent<DeedFilesProps> {
     render() {
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/users/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed File</Link>
+                    <Link to="/deed-files/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed File</Link>
                 </ButtonToolbar>
 
                 <Table headings={HEADINGS}>
-                    { data.map(deed => (
+                    { this.props.deedFiles.data.map(deed => (
                         <tr key={deed.id}>
-                            <td>{deed.clientName}</td>
+                            <td>{deed.clientTitle}</td>
                             <td>{deed.documentDate}</td>
                             <td>{deed.parties}</td>
                             <td>{deed.matter}</td>
-                            <td>{deed.createdBy}</td>
+                            <td>{this.props.users.data.find(u => u.id === deed.createdByUserId).firstName}</td>
                         </tr>
                     )) }
                 </Table>
@@ -40,3 +48,5 @@ export default class DeedFiles extends React.PureComponent {
         );
     }
 }
+
+export default DeedFiles;

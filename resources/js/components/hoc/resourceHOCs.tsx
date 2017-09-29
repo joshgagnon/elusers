@@ -82,3 +82,6 @@ export const UserEmergencyContactHOC = () => HOCFactory({ location: (props) => `
 
 export const WikiIndexHOC = () => HOCFactory({ location: (props) => `wiki`, propsName: 'wiki' });
 export const WikiHOC = () => HOCFactory({ location: (props) => `wiki/${props.wikiPath}`, propsName: 'wikiPage' });
+
+export const DeedFilesHOC = () => HOCFactory({ location: () => 'deed-files', propsName: 'deedFiles' });
+export const ClientsHOC = () => HOCFactory({ location: () => 'clients', propsName: 'clients' });
