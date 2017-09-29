@@ -8,7 +8,7 @@ import { DeedFilesHOC, UsersHOC } from '../hoc/resourceHOCs';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { deleteResource } from '../../actions';
-import { name } from '../utils';
+import { name, formatDate } from '../utils';
 
 interface DeedFilesProps {
     users: EL.Resource<EL.User[]>;
@@ -49,7 +49,7 @@ class DeedFiles extends React.PureComponent<DeedFilesProps> {
                         return (
                             <tr key={deed.id}>
                                 <td>{deed.clientTitle}</td>
-                                <td>{deed.documentDate}</td>
+                                <td>{formatDate(deed.documentDate)}</td>
                                 <td>{deed.parties}</td>
                                 <td>{deed.matter}</td>
                                 <td>{name(createdBy)}</td>
