@@ -42,18 +42,25 @@ class DeedFiles extends React.PureComponent<DeedFilesProps> {
                 </ButtonToolbar>
 
                 <Table headings={HEADINGS}>
-                    { this.props.deedFiles.data.map(deed => (
-                        <tr key={deed.id}>
-                            <td>{deed.clientTitle}</td>
-                            <td>{deed.documentDate}</td>
-                            <td>{deed.parties}</td>
-                            <td>{deed.matter}</td>
-                            <td>{name(this.props.users.data.find(u => u.id === deed.createdByUserId))}</td>
-                            <td>
-                                <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedFile(deed.id)}>Delete</Button>
-                            </td>
-                        </tr>
-                    )) }
+                    { this.props.deedFiles.data.map(deed => {
+                        const createdBy = this.props.users.data.find(u => u.id === deed.createdByUserId);
+                        const editLink = `/deed-files/${deed.id}/edit`;
+
+                        return (
+                            <tr key={deed.id}>
+                                <td>{deed.clientTitle}</td>
+                                <td>{deed.documentDate}</td>
+                                <td>{deed.parties}</td>
+                                <td>{deed.matter}</td>
+                                <td>{name(createdBy)}</td>
+                                <td>
+                                    <ButtonToolbar>
+                                        <Link to={editLink} className="btn btn-default btn-sm">Edit</Link>
+                                        <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedFile(deed.id)}>Delete</Button>
+                                    </ButtonToolbar>
+                                </td>
+                            </tr>
+                    )}) }
                 </Table>
             </div>
         );

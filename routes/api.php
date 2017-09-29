@@ -43,7 +43,9 @@ Route::group(['middleware' => 'auth'], function() {
      * Deed files
      */
     Route::get('deed-files', 'DeedFileController@all');
+    Route::get('deed-files/{deedFileId}', 'DeedFileController@get');
     Route::post('deed-files', 'DeedFileController@create');
+    Route::put('deed-files/{deedFile}', 'DeedFileController@update');
     Route::delete('deed-files/{deedFile}', 'DeedFileController@delete');
 
     /**

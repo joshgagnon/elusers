@@ -13,6 +13,17 @@ class Client extends Model
 
     protected $visible = ['id', 'title', 'created_by_user_id'];
 
+    public static function findOrCreate($title, $createdBy)
+    {
+        $client = self::where('title', $title)->first();
+
+        if (!$client) {
+            $client = self::create(['title' => $title, 'created_by_user_id' => $createdBy]);
+        }
+
+        return $client;
+    }
+
     /**
      * Deed file relationship: a client has many deed files.
      *

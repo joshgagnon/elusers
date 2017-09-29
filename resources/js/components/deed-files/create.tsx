@@ -14,9 +14,10 @@ interface ICreateDeedFileProps {
     clients: EL.Resource<EL.Client[]>;
 }
 
-interface ICreateDeedFileFormProps {
+interface IDeedFileFormProps {
     handleSubmit: (data: React.FormEvent<Form>) => void;
     clientTitles: string[];
+    saveButtonText: string;
 }
 
 @connect(
@@ -38,19 +39,18 @@ interface ICreateDeedFileFormProps {
 export default class CreateDeedFile extends React.PureComponent<ICreateDeedFileProps> {
     render() {
         const clientTitles = this.props.clients.data.map(client => client.title)
-        return <CreateDeedFileForm onSubmit={this.props.submit} clientTitles={clientTitles} />;
+        return <CreateDeedFileForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed File" />;
     }
 }
 
-const createDeedFileValidationRules: EL.IValidationFields = {
+export const deedFileValidationRules: EL.IValidationFields = {
     clientTitle: { name: 'Client title', required: true },
     documentDate: { name: 'Document date', required: true, isDate: true },
     parties: { name: 'Parties', required: true },
     matter: { name: 'Matter', required: true },
 };
 
-@reduxForm({ form: 'create-deed-file-form', validate: values => validate(createDeedFileValidationRules, values) })
-class CreateDeedFileForm extends React.PureComponent<ICreateDeedFileFormProps> {
+export class DeedFileForm extends React.PureComponent<IDeedFileFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
@@ -62,9 +62,14 @@ class CreateDeedFileForm extends React.PureComponent<ICreateDeedFileFormProps> {
                 <hr />
 
                 <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Create Deed File</Button>
+                    <Button bsStyle="primary" className="pull-right" type="submit">{this.props.saveButtonText}</Button>
                 </ButtonToolbar>
             </Form>
         );
     }
 }
+
+const CreateDeedFileForm = reduxForm({
+    form: 'create-deed-file-form',
+    validate: values => validate(deedFileValidationRules, values)
+})(DeedFileForm);

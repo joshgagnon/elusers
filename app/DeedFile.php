@@ -15,6 +15,13 @@ class DeedFile extends Model
 
     protected $dates = ['document_date'];
 
+    public static $validationRules = [
+        'client_title'  => 'required',
+        'document_date' => 'required|date',
+        'parties'       => 'required',
+        'matter'        => 'required',
+    ];
+
     /**
      * Client relationship: a deed file belongs to a client
      *
