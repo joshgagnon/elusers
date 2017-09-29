@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-export function validate(fields: EL.IValidationFields, values: any) {
+export function validate(fields: EL.IValidationFields, values: any): EL.ValidationErrors {
     function getFieldErrors(field: EL.IValidationField, value: any) {
         // Required
         if (field.required === true) {
@@ -40,7 +40,7 @@ export function validate(fields: EL.IValidationFields, values: any) {
         return undefined;
     }
 
-    let errors = {};
+    let errors: EL.ValidationErrors = {};
 
     Object.keys(fields).map(fieldKey => {
         errors[fieldKey] = getFieldErrors(fields[fieldKey], values[fieldKey])
