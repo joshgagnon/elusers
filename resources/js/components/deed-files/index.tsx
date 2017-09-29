@@ -51,7 +51,7 @@ class DeedFiles extends React.PureComponent<DeedFilesProps> {
                 </ButtonToolbar>
 
                 <div>
-                    <FormControl type="text" value={this.state.searchValue} placeholder="Enter text" onChange={(e) => this.setState({searchValue: e.target.value})} />
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e) => this.setState({searchValue: e.target.value})} />
                 </div>
 
                 <Table headings={HEADINGS}>
