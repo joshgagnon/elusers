@@ -5,13 +5,17 @@ import { Link } from 'react-router';
 import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
 import { DeedFilesHOC, UsersHOC } from '../hoc/resourceHOCs';
+import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { deleteResource } from '../../actions';
 
 interface DeedFilesProps {
     users: EL.Resource<EL.User[]>;
     deedFiles: EL.Resource<EL.DeedFile[]>;
+    deleteDeedFile: (deedFileId: number) => void;
 }
 
-const HEADINGS = ['Client Name', 'Document Date', 'Parties', 'Matter', 'Created By'];
+const HEADINGS = ['Client Name', 'Document Date', 'Parties', 'Matter', 'Created By', 'Actions'];
 
 const data = [{
     id: 1,
@@ -22,6 +26,9 @@ const data = [{
     createdBy: 'testing',
 }];
 
+@connect(undefined, {
+    deleteDeedFile: (deedFileId: number) => deleteResource(`deed-files/${deedFileId}`)
+})
 @UsersHOC()
 @DeedFilesHOC()
 @PanelHOC('Deed Files', [(props: DeedFilesProps) => props.deedFiles, (props: DeedFilesProps) => props.users])
@@ -41,6 +48,9 @@ class DeedFiles extends React.PureComponent<DeedFilesProps> {
                             <td>{deed.parties}</td>
                             <td>{deed.matter}</td>
                             <td>{this.props.users.data.find(u => u.id === deed.createdByUserId).firstName}</td>
+                            <td>
+                                <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedFile(deed.id)}>Delete</Button>
+                            </td>
                         </tr>
                     )) }
                 </Table>

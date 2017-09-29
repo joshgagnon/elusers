@@ -62,4 +62,16 @@ class DeedFileController extends Controller
 
         return response()->json(['message' => 'Deed file created', 'deed_file_id' => $deedFile->id], 201);
     }
+
+    /**
+     * Delete a deed file.
+     *
+     * @param \App\DeedFile $deedFile
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(DeedFile $deedFile)
+    {
+        $deedFile->delete();
+        return response()->json(['message' => 'Deed file deleted.'], 200);
+    }
 }
