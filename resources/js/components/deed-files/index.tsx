@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
 import { DeedFilesHOC, UsersHOC } from '../hoc/resourceHOCs';
-import { Button } from 'react-bootstrap';
+import { Button, FormControl } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { deleteResource } from '../../actions';
 import { name, formatDate } from '../utils';
@@ -34,15 +34,28 @@ const data = [{
 @DeedFilesHOC()
 @PanelHOC('Deed Files', [(props: DeedFilesProps) => props.deedFiles, (props: DeedFilesProps) => props.users])
 class DeedFiles extends React.PureComponent<DeedFilesProps> {
+    constructor(props: DeedFilesProps) {
+        super(props);
+
+        this.state = {
+            searchValue: ''
+        };
+    }
     render() {
+        const deeds = this.props.deedFiles.data.filter(deed => deed.clientTitle.includes(this.state.searchValue));
+
         return (
             <div>
                 <ButtonToolbar>
                     <Link to="/deed-files/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed File</Link>
                 </ButtonToolbar>
 
+                <div>
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Enter text" onChange={(e) => this.setState({searchValue: e.target.value})} />
+                </div>
+
                 <Table headings={HEADINGS}>
-                    { this.props.deedFiles.data.map(deed => {
+                    { deeds.map(deed => {
                         const createdBy = this.props.users.data.find(u => u.id === deed.createdByUserId);
                         const editLink = `/deed-files/${deed.id}/edit`;
 
