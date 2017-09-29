@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\DeedFile;
 use App\Library\SQLFile;
 use Illuminate\Http\Request;
 

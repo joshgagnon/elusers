@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\EmergencyContact;
 use App\User;
 use Auth;
 use Carbon\Carbon;
