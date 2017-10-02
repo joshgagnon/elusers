@@ -71,7 +71,7 @@ export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDeta
     }
 }
 
-export class EditBasicDetails extends React.PureComponent<> {
+export class EditBasicDetails extends React.PureComponent {
     render() {
         return <EditBasicDetailsContents userId={this.props.params.userId} />;
     }

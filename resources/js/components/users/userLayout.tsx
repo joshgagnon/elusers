@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Row, Col, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
 import Panel from '../panel';
 import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
+import { connect } from 'react-redux';
 
 interface IUserLayoutProps {
     params: {
@@ -29,6 +30,7 @@ interface IUserNavigationProps {
     userId: number;
 }
 
+@connect((state: EL.State) => ({ authedUser: state.user }))
 class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless> {
     render() {
         const userId = this.props.userId;
@@ -48,9 +50,11 @@ class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless>
                         <ListGroupItem>Addresses</ListGroupItem>
                     </LinkContainer>
 
-                    <LinkContainer to={`/users/${userId}/password`}>
-                        <ListGroupItem>Change Password</ListGroupItem>
-                    </LinkContainer>
+                    { (this.props.authedUser.id === 2 || this.props.authedUser.id === 3) && 
+                        <LinkContainer to={`/users/${userId}/password`}>
+                            <ListGroupItem>Change Password</ListGroupItem>
+                        </LinkContainer>
+                    }
                 </ListGroup>
             </Panel>
         );

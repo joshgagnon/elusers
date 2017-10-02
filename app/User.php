@@ -59,6 +59,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Created clients relationship: a user creates many clients.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function createdClients()
+    {
+        return $this->hasMany(Client::class, 'created_by_user_id');
+    }
+
+    /**
+     * Created deed files: a user creates has deed files.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function createdDeedFiles()
+    {
+        return $this->hasMany(DeedFile::class, 'created_by_user_id');
+    }
+
+    /**
      * Query scope: limit users to an organisation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
