@@ -2,39 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\DeedFileRecord;
+use App\Client;
+use App\DeedFile;
+use App\Library\SQLFile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class DeedFileRecordController extends Controller
+class DeedPacketController extends Controller
 {
     /**
-     * Get all deed file records for the current organisation.
+     * Get all deed files for the current organisation.
      *
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
     public function all(Request $request)
     {
-        $orgId = $request->user()->organisation_id;
+        $currentOrgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('all_deed_file_records', ['org_id' => $orgId]);
+        $query = new SQLFile('deed_files', ['org_id' => $currentOrgId]);
         $result = $query->get();
 
         return $result;
     }
 
     /**
-     * Get a specific deed file record.
-     *
      * @param \Illuminate\Http\Request $request
-     * @param                          $recordId
+     * @param                          $deedFileId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Request $request, $recordId)
+    public function get(Request $request, $deedFileId)
     {
         $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('get_deed_file_record', ['org_id' => $orgId, 'record_id' => $recordId]);
+        $query = new SQLFile('deed_file', ['org_id' => $orgId, 'deed_file_id' => $deedFileId]);
         $result = $query->get();
 
         // 404 if no record
@@ -42,30 +43,27 @@ class DeedFileRecordController extends Controller
             abort(404);
         }
 
-        $record = $result[0];
+        $deedFile = $result[0];
 
-        $record->document_date = Carbon::parse($record->document_date)->format('d M Y');
+        $deedFile->document_date = Carbon::parse($deedFile->document_date)->format('d M Y');
 
-        return response()->json($record, 200);
+        return response()->json($result[0], 200);
     }
 
     /**
-     * Create a deed file record. This may require creating a deed file.
+     * Create a deed file. This may require creating a client.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $this->validate($request, DeedFileRecord::$validationRules);
+        $this->validate($request, DeedFile::$validationRules);
 
         $user = $request->user();
         $data = $request->all();
 
-        $client = DeedFile::findOrCreate($data['deed_file_title'], $user->id);
-
         $deedFile = DeedFile::create([
-            'client_id'          => $client->id,
             'document_date'      => Carbon::parse($data['document_date']),
             'parties'            => $data['parties'],
             'matter'             => $data['matter'],
@@ -102,14 +100,14 @@ class DeedFileRecordController extends Controller
     }
 
     /**
-     * Delete a deed file.
+     * Delete a deed packet
      *
-     * @param \App\DeedFile $deedFile
+     * @param \App\Http\Controllers\DeedPacket $deedPacket
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeedFile $deedFile)
+    public function delete(DeedPacket $deedPacket)
     {
-        $deedFile->delete();
-        return response()->json(['message' => 'Deed file deleted.'], 200);
+        $deedPacket->delete();
+        return response()->json(['message' => 'Deed packet deleted.'], 200);
     }
 }

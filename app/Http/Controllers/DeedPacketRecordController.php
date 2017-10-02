@@ -2,40 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Client;
-use App\DeedFile;
-use App\Library\SQLFile;
-use Carbon\Carbon;
+use App\DeedFileRecord;
 use Illuminate\Http\Request;
 
-class DeedFileController extends Controller
+class DeedPacketRecordController extends Controller
 {
     /**
-     * Get all deed files for the current organisation.
+     * Get all deed file records for the current organisation.
      *
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
     public function all(Request $request)
     {
-        $currentOrgId = $request->user()->organisation_id;
+        $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('deed_files', ['org_id' => $currentOrgId]);
+        $query = new SQLFile('all_deed_file_records', ['org_id' => $orgId]);
         $result = $query->get();
 
         return $result;
     }
 
     /**
+     * Get a specific deed file record.
+     *
      * @param \Illuminate\Http\Request $request
-     * @param                          $deedFileId
+     * @param                          $recordId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Request $request, $deedFileId)
+    public function get(Request $request, $recordId)
     {
         $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('deed_file', ['org_id' => $orgId, 'deed_file_id' => $deedFileId]);
+        $query = new SQLFile('get_deed_file_record', ['org_id' => $orgId, 'record_id' => $recordId]);
         $result = $query->get();
 
         // 404 if no record
@@ -43,27 +42,27 @@ class DeedFileController extends Controller
             abort(404);
         }
 
-        $deedFile = $result[0];
+        $record = $result[0];
 
-        $deedFile->document_date = Carbon::parse($deedFile->document_date)->format('d M Y');
+        $record->document_date = Carbon::parse($record->document_date)->format('d M Y');
 
-        return response()->json($result[0], 200);
+        return response()->json($record, 200);
     }
 
     /**
-     * Create a deed file. This may require creating a client.
+     * Create a deed file record. This may require creating a deed file.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $this->validate($request, DeedFile::$validationRules);
+        $this->validate($request, DeedFileRecord::$validationRules);
 
         $user = $request->user();
         $data = $request->all();
 
-        $client = Client::findOrCreate($data['client_title'], $user->id);
+        $client = DeedFile::findOrCreate($data['deed_file_title'], $user->id);
 
         $deedFile = DeedFile::create([
             'client_id'          => $client->id,
