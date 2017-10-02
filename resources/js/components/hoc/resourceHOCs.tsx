@@ -15,7 +15,8 @@ interface IHOCFactoryParameters {
 }
 
 function HOCFactory({location, propsName}: IHOCFactoryParameters) {
-    return function ConnectedInjector<T extends React.Component<any, any>>(ComposedComponent: () =>  T) {
+    //return function ConnectedInjector<T extends React.PureComponent<any, any>>(ComposedComponent: () =>  T) {
+    return function ConnectedInjector<any>(ComposedComponent: any) : any {
         class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
 
             fetch(refresh?: boolean){

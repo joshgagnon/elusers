@@ -5,6 +5,7 @@ import { FormGroup, ControlLabel, HelpBlock, Col, FormControl } from 'react-boot
 export interface IFieldComponentProps extends WrappedFieldProps<string> {
     label: string;
     type: string;
+    value?: string
 }
 
 export interface IBaseFieldComponentProps extends IFieldComponentProps {
