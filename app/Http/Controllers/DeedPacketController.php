@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Client;
-use App\DeedFile;
+use App\DeedPacket;
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -11,31 +11,33 @@ use Illuminate\Http\Request;
 class DeedPacketController extends Controller
 {
     /**
-     * Get all deed files for the current organisation.
+     * Get all deed packets for the users organisation.
      *
      * @param \Illuminate\Http\Request $request
      * @return mixed
      */
     public function all(Request $request)
     {
-        $currentOrgId = $request->user()->organisation_id;
+        $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('deed_files', ['org_id' => $currentOrgId]);
+        $query = new SQLFile('all_deed_packets', ['org_id' => $orgId]);
         $result = $query->get();
 
         return $result;
     }
 
     /**
+     * Get a specific deed packet
+     *
      * @param \Illuminate\Http\Request $request
-     * @param                          $deedFileId
+     * @param                          $deedPacketId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get(Request $request, $deedFileId)
+    public function get(Request $request, $deedPacketId)
     {
         $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('deed_file', ['org_id' => $orgId, 'deed_file_id' => $deedFileId]);
+        $query = new SQLFile('get_deed_packet', ['org_id' => $orgId, 'deed_packet_id' => $deedPacketId]);
         $result = $query->get();
 
         // 404 if no record
@@ -43,60 +45,51 @@ class DeedPacketController extends Controller
             abort(404);
         }
 
-        $deedFile = $result[0];
+        $deedPacket = $result[0];
+        $deedPacket->document_date = Carbon::parse($deedPacket->document_date)->format('d M Y');
 
-        $deedFile->document_date = Carbon::parse($deedFile->document_date)->format('d M Y');
-
-        return response()->json($result[0], 200);
+        return response()->json($deedPacket, 200);
     }
 
     /**
-     * Create a deed file. This may require creating a client.
+     * Create a deed packet.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $this->validate($request, DeedFile::$validationRules);
+        $this->validate($request, DeedPacket::$validationRules);
 
         $user = $request->user();
         $data = $request->all();
 
-        $deedFile = DeedFile::create([
-            'document_date'      => Carbon::parse($data['document_date']),
-            'parties'            => $data['parties'],
-            'matter'             => $data['matter'],
+        $deedPacket = DeedPacket::create([
+            'title'              => $data['title'],
             'created_by_user_id' => $user->id,
         ]);
 
-        return response()->json(['message' => 'Deed file created', 'deed_file_id' => $deedFile->id], 201);
+        return response()->json(['message' => 'Deed packet created', 'deed_packet_id' => $deedPacket->id], 201);
     }
 
     /**
-     * Update a deed file.
+     * Update a deed packet.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\DeedFile            $deedFile
+     * @param \Illuminate\Http\Request         $request
+     * @param \App\Http\Controllers\DeedPacket $deedPacket
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, DeedFile $deedFile)
+    public function update(Request $request, DeedPacket $deedPacket)
     {
-        $this->validate($request, DeedFile::$validationRules);
+        $this->validate($request, DeedPacket::$validationRules);
 
-        $user = $request->user();
         $data = $request->all();
 
-        $client = Client::findOrCreate($data['client_title'], $user->id);
-
-        $deedFile->update([
-            'client_id'     => $client->id,
-            'document_date' => Carbon::parse($data['document_date']),
-            'parties'       => $data['parties'],
-            'matter'        => $data['matter'],
+        $deedPacket->update([
+            'title' => $data['title'],
         ]);
 
-        return response()->json(['message' => 'Deed file updated', 'deed_file_id' => $deedFile->id], 200);
+        return response()->json(['message' => 'Deed packet updated', 'deed_packet_id' => $deedPacket->id], 200);
     }
 
     /**

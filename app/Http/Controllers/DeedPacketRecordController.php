@@ -104,7 +104,7 @@ class DeedPacketRecordController extends Controller
     /**
      * Delete a deed file.
      *
-     * @param \App\DeedFile $deedFile
+     * @param \App\DeedFile $deedFil
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(DeedFile $deedFile)
