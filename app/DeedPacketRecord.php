@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DeedFileRecord extends Model
+class DeedPacketRecord extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['deed_file_id', 'created_by_user_id', 'document_name', 'document_date', 'parties', 'matter_id', 'archive_date'];
 
     protected $dates = ['document_date'];
@@ -16,7 +19,7 @@ class DeedFileRecord extends Model
         'document_date' => 'required|date',
         'parties' => 'required',
         'matter_id' => 'required',
-        'archive_date' => 'nullable|date',
+        'destruction_date' => 'nullable|date',
     ];
 
     /**

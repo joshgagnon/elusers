@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\DeedFileRecord;
+use App\DeedPacketRecord;
 use Illuminate\Http\Request;
 
 class DeedPacketRecordController extends Controller
 {
     /**
-     * Get all deed file records for the current organisation.
+     * Get all deed packet records for the current organisation.
      *
      * @param \Illuminate\Http\Request $request
      * @return mixed
@@ -17,14 +17,14 @@ class DeedPacketRecordController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('all_deed_file_records', ['org_id' => $orgId]);
+        $query = new SQLFile('all_deed_packet_records', ['org_id' => $orgId]);
         $result = $query->get();
 
         return $result;
     }
 
     /**
-     * Get a specific deed file record.
+     * Get a specific deed packet record.
      *
      * @param \Illuminate\Http\Request $request
      * @param                          $recordId
@@ -34,7 +34,7 @@ class DeedPacketRecordController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('get_deed_file_record', ['org_id' => $orgId, 'record_id' => $recordId]);
+        $query = new SQLFile('get_deed_packet_record', ['org_id' => $orgId, 'record_id' => $recordId]);
         $result = $query->get();
 
         // 404 if no record
@@ -43,73 +43,65 @@ class DeedPacketRecordController extends Controller
         }
 
         $record = $result[0];
-
         $record->document_date = Carbon::parse($record->document_date)->format('d M Y');
 
         return response()->json($record, 200);
     }
 
     /**
-     * Create a deed file record. This may require creating a deed file.
+     * Create a deed packet record.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
-        $this->validate($request, DeedFileRecord::$validationRules);
+        $this->validate($request, DeedPacketRecord::$validationRules);
 
         $user = $request->user();
         $data = $request->all();
 
-        $client = DeedFile::findOrCreate($data['deed_file_title'], $user->id);
-
-        $deedFile = DeedFile::create([
-            'client_id'          => $client->id,
+        $record = DeedPacketRecord::create([
             'document_date'      => Carbon::parse($data['document_date']),
             'parties'            => $data['parties'],
             'matter'             => $data['matter'],
             'created_by_user_id' => $user->id,
         ]);
 
-        return response()->json(['message' => 'Deed file created', 'deed_file_id' => $deedFile->id], 201);
+        return response()->json(['message' => 'Deed packet record created', 'record_id' => $record->id], 201);
     }
 
     /**
-     * Update a deed file.
+     * Update a deed packet record.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\DeedFile            $deedFile
+     * @param \App\DeedPacketRecord    $record
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, DeedFile $deedFile)
+    public function update(Request $request, DeedPacketRecord $record)
     {
-        $this->validate($request, DeedFile::$validationRules);
+        $this->validate($request, DeedPacketRecord::$validationRules);
 
-        $user = $request->user();
         $data = $request->all();
 
-        $client = Client::findOrCreate($data['client_title'], $user->id);
-
-        $deedFile->update([
-            'client_id'     => $client->id,
+        $record->update([
             'document_date' => Carbon::parse($data['document_date']),
             'parties'       => $data['parties'],
             'matter'        => $data['matter'],
         ]);
 
-        return response()->json(['message' => 'Deed file updated', 'deed_file_id' => $deedFile->id], 200);
+        return response()->json(['message' => 'Deed packet record updated', 'record_id' => $record->id], 200);
     }
 
     /**
-     * Delete a deed file.
+     * Delete a deed packet record.
      *
-     * @param \App\DeedFile $deedFil
+     * @param \App\DeedPacketRecord $record
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeedFile $deedFile)
+    public function delete(DeedPacketRecord $record)
     {
-        $deedFile->delete();
-        return response()->json(['message' => 'Deed file deleted.'], 200);
+        $record->delete();
+        return response()->json(['message' => 'Deed packet record deleted.'], 200);
     }
 }
