@@ -9,7 +9,7 @@ class DeedPacketRecord extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['deed_file_id', 'created_by_user_id', 'document_name', 'document_date', 'parties', 'matter_id', 'archive_date'];
+    protected $fillable = ['deed_file_id', 'created_by_user_id', 'document_name', 'document_date', 'parties', 'matter_id', 'archive_date', 'office_location_id'];
 
     protected $dates = ['document_date'];
 
@@ -20,6 +20,7 @@ class DeedPacketRecord extends Model
         'parties' => 'required',
         'matter_id' => 'required',
         'destruction_date' => 'nullable|date',
+        'office_location_id' => 'nullable|exists:office_locations',
     ];
 
     /**
@@ -30,5 +31,15 @@ class DeedPacketRecord extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by_user_id');
+    }
+
+    /**
+     * Location relationship: a deed packet record has a location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function location()
+    {
+        return $this->belongsTo(OfficeLocation::class);
     }
 }
