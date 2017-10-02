@@ -27,7 +27,7 @@ class DeedPacketController extends Controller
     }
 
     /**
-     * Get a specific deed packet
+     * Get a specific deed packet.
      *
      * @param \Illuminate\Http\Request $request
      * @param                          $deedPacketId
@@ -75,8 +75,8 @@ class DeedPacketController extends Controller
     /**
      * Update a deed packet.
      *
-     * @param \Illuminate\Http\Request         $request
-     * @param \App\Http\Controllers\DeedPacket $deedPacket
+     * @param \Illuminate\Http\Request $request
+     * @param \App\DeedPacket          $deedPacket
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, DeedPacket $deedPacket)
@@ -95,7 +95,7 @@ class DeedPacketController extends Controller
     /**
      * Delete a deed packet
      *
-     * @param \App\Http\Controllers\DeedPacket $deedPacket
+     * @param \App\DeedPacket $deedPacket
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(DeedPacket $deedPacket)
