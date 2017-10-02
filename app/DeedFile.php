@@ -9,31 +9,28 @@ class DeedFile extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['client_id', 'document_date', 'parties', 'matter', 'created_by_user_id'];
-
-    protected $visible = ['id', 'client_id', 'document_date', 'parties', 'matter', 'created_by_user_id'];
-
-    protected $dates = ['document_date'];
-
-    public static $validationRules = [
-        'client_title'  => 'required',
-        'document_date' => 'required|date',
-        'parties'       => 'required',
-        'matter'        => 'required',
-    ];
+    protected $fillable = ['title', 'created_by_user_id'];
 
     /**
-     * Client relationship: a deed file belongs to a client
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
+     * @param $title
+     * @param $createdByUserId
+     * @return DeedFile
      */
-    public function client()
+    public static function findOrCreate($title, $createdByUserId)
     {
-        return $this->belongsTo(Client::class);
+        $deedFile = self::where('title', $title)->first();
+
+        if (!$deedFile) {
+            $deedFile = self::create(['title' => $title, 'create_by_user_id' => $createdByUserId]);
+        }
+
+        return $deedFile;
     }
 
     /**
-     * Created by relationship: a client was created by a user.
+     * Created by relationship: a deed file was created by a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
