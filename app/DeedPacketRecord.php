@@ -9,7 +9,7 @@ class DeedPacketRecord extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['deed_file_id', 'created_by_user_id', 'document_name', 'document_date', 'parties', 'matter_id', 'archive_date', 'office_location_id'];
+    protected $fillable = ['deed_file_id', 'created_by_user_id', 'document_name', 'document_date', 'parties', 'matter_id', 'archive_date', 'office_location_id', 'organisation_id'];
 
     protected $dates = ['document_date'];
 
