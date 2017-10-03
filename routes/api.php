@@ -58,6 +58,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('deed-packet-records/{record}', 'DeedPacketRecordController@delete');
 
     /**
+     * Contacts
+     */
+    Route::get('contacts', 'ContactController@all');
+
+    /**
      * CPDPR
      */
     Route::get('users/{user}/cpdpr', 'ProfessionalDevelopmentController@forUser');
