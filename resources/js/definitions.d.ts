@@ -46,13 +46,21 @@ declare global {
 
         interface DeedPacket {
             id: number;
-            clientId: number;
-            clientTitle: string;
+            title: string;
+            createdByUserId: number;
+            records: DeedRecord[];
+        }
+
+        interface DeedRecord {
+            id: number;
+            deedPacketId: string;
+            documentName: string;
             documentDate: string;
             parties: string;
-            matter: string;
-            createdAt: string;
+            matterId: string;
+            destructionDate: string;
             createdByUserId: number;
+            office_location_id: number;
         }
 
         interface Contact {

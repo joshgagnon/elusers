@@ -16,7 +16,7 @@ interface DeedPacketsProps {
     deleteDeedPacket: (deedPacketId: number) => void;
 }
 
-const HEADINGS = ['Client Name', 'Document Date', 'Parties', 'Matter', 'Created By', 'Actions'];
+const HEADINGS = ['ID', 'Document Name', 'Document Date', 'Matter ID', 'Created By', 'Actions'];
 
 const data = [{
     id: 1,
@@ -26,6 +26,23 @@ const data = [{
     matter: 'matter',
     createdBy: 'testing',
 }];
+
+interface PacketProps {
+    packet: EL.DeedPacket;
+    users: EL.User[];
+}
+
+class Packet extends React.PureComponent<PacketProps> {
+    render() {
+        return (
+            <div>
+                {this.props.packet.title}
+
+                
+            </div>
+        )
+    }
+}
 
 
 @connect(undefined, {
@@ -43,7 +60,8 @@ class DeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: st
         };
     }
     render() {
-        const deeds = this.props.deedPackets.data.filter(deed => deed.clientTitle.includes(this.state.searchValue));
+        // const deeds = this.props.deedPackets.data.filter(deed => deed.clientTitle.includes(this.state.searchValue));
+        const packets = this.props.deedPackets.data;
 
         return (
             <div>
@@ -56,25 +74,42 @@ class DeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: st
                 </div>
 
                 <Table headings={HEADINGS}>
-                    { deeds.map(deed => {
-                        const createdBy = this.props.users.data.find(u => u.id === deed.createdByUserId);
-                        const editLink = `/deed-packets/${deed.id}/edit`;
-
-                        return (
-                            <tr key={deed.id}>
-                                <td>{deed.clientTitle}</td>
-                                <td>{formatDate(deed.documentDate)}</td>
-                                <td>{deed.parties}</td>
-                                <td>{deed.matter}</td>
-                                <td>{name(createdBy)}</td>
-                                <td>
-                                    <ButtonToolbar>
-                                        <Link to={editLink} className="btn btn-default btn-sm">Edit</Link>
-                                        <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(deed.id)}>Delete</Button>
-                                    </ButtonToolbar>
-                                </td>
+                    {packets.map(packet => {
+                        const titleRow = (
+                            <tr>
+                                <th>{packet.id}</th>
+                                <th colSpan={4}>{packet.title}</th>
+                                    <td>
+                                        <ButtonToolbar>
+                                            <Link to={`/deed-packets/${packet.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
+                                            <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(packet.id)}>Delete</Button>
+                                        </ButtonToolbar>
+                                    </td>
                             </tr>
-                    )}) }
+                        );
+
+                        const recordRows = packet.records.map(record => {
+                            const createdBy = this.props.users.data.find(u => u.id === record.createdByUserId);
+
+                            return (
+                                <tr key={record.id}>
+                                    <td>{record.id}</td>
+                                    <td>{record.documentName}</td>
+                                    <td>{record.documentDate}</td>
+                                    <td>{record.matterId}</td>
+                                    <td>{name(createdBy)}</td>
+                                    <td>
+                                        <ButtonToolbar>
+                                            <Link to={`/deed-packets/${packet.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
+                                            <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(packet.id)}>Delete</Button>
+                                        </ButtonToolbar>
+                                    </td>
+                                </tr>
+                            );
+                        });
+
+                        return [titleRow, ...recordRows];
+                    })}
                 </Table>
             </div>
         );
