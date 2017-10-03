@@ -22,9 +22,10 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                     className="form-control"
                     ref="date"
                     onFocus={(event: React.FocusEvent<any>) => {
-                        const shouldOpen = event.target.tagName === 'INPUT' && !this.props.value;
-                        const widgetInstance = this.refs.date && this.refs.date.getControlledInstance();
-                        
+                        const target : any = event.target;
+                        const shouldOpen = target.tagName === 'INPUT' && !this.props.value;
+                        const widgetInstance = this.refs.date && (this.refs.date as any).getControlledInstance();
+
                         if (shouldOpen && widgetInstance) {
                             widgetInstance.open("calendar");
                         }

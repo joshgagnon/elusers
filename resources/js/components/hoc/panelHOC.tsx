@@ -31,7 +31,7 @@ function PanelHOC(title?: string, resources?: any[]) {
         }
 
         return PanelWithContent;
-    }
+    } as any
 }
 
 export default PanelHOC;

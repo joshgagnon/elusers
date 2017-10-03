@@ -11,7 +11,7 @@ import { EmergencyContactFormFields, emergencyContactValidationRules } from '../
 
 interface IEmergencyContactProps {
     user: EL.User;
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<Form>, emergencyContact: EL.IEmergencyContact) => void;
     emergencyContact: EL.Resource<EL.IEmergencyContact>;
 }
 

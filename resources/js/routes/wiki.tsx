@@ -19,26 +19,89 @@ import { Link } from 'react-router';
 interface WikiProps {
     children: any;
 }
+
+interface Article {
+    title: string,
+    path: string
+}
+interface WikiData {
+    articles: Article[],
+    category: string
+}
+
 interface WikiRootProps {
-    wiki: any;
+    wiki: {
+        data: WikiData[]
+    },
+}
+
+interface WikiPage {
+    title: string,
+    data: string,
+    keywords: string,
+    categories: string
+}
+
+interface WikiPageForm {
+    title?: string,
+    data?: string,
+    keywords?: string,
+    categories?: string
 }
 
 interface WikiPageWithPathProps {
     wikiPath: string,
-    edit: boolean,
-    create: Function,
-    update: Function
+    edit?: boolean,
 }
 
+interface InjectedWikiPageWithPathProps extends WikiPageWithPathProps {
+    wikiPage?: {
+        data: WikiPage,
+        isFetching: boolean
+    }
+}
+
+
+interface WikiPageUpdateProps {
+    update?: Function,
+    create?: Function,
+    values?: WikiPageForm,
+    wikiData?: WikiData,
+}
+
+interface WikiPagePreviewProps {
+    values: WikiPageForm
+}
 
 interface WikiPageProps {
-    routeParams: any;
+    routeParams: any
+    location: any,
 }
 
-interface WikiPageEditFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
-   // handleDelete: React.EventHandler<React.FormEvent<HTMLFormElement>>;
+interface Category {
+    title: string,
+    value: string,
+    path: string,
 }
+
+interface CategoryProps {
+    items: Category[],
+    title: string,
+}
+
+
+type EditPageProps = InjectedWikiPageWithPathProps & WikiPageUpdateProps;
+
+interface WikiPageEditFormProps {
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    initialValues?: WikiPageForm,
+    wikiPath: string
+}
+
+interface WrappedWikiPageEditFormProps extends WikiPageEditFormProps{
+    onSubmit: (values: WikiPageForm) => void;
+}
+
 
 class Wiki extends React.PureComponent<WikiProps, EL.Stateless> {
     static readonly FLUID_CONTAINER = true;
@@ -53,7 +116,7 @@ class Wiki extends React.PureComponent<WikiProps, EL.Stateless> {
 class WikiRootPanel extends React.PureComponent<WikiRootProps, EL.Stateless> {
     render() {
         return <div>
-            { (this.props.wiki.data || []).map((e, i) => {
+            { (this.props.wiki.data || []).map((e: WikiData, i: number) => {
                 return <Panel title={e.category || 'No Category'} key={i}>
                     <ul>
                         { e.articles.map((a, j) => <li key={j}><Link to={`/wiki/${a.path}`}>{ a.title }</Link></li>) }
@@ -65,19 +128,21 @@ class WikiRootPanel extends React.PureComponent<WikiRootProps, EL.Stateless> {
 }
 
 @WikiIndexHOC()
-class WikiRoot extends React.PureComponent<WikiRootProps, EL.Stateless> {
+class WikiRoot extends React.PureComponent<WikiRootProps> {
     render() {
         return <div className="container">
             <WikiRootPanel wiki={this.props.wiki} />
-            </div>
+        </div>
     }
 }
 
-@reduxForm({
+
+
+@(reduxForm<WikiPageEditFormProps>({
     form: 'wiki-edit',
-    validate: (values) => validate(validationRules, values) }
-})
-class WikiPageDetailsForm extends React.PureComponent<WikiPageEditFormProps, EL.Stateless> {
+    validate: (values) => validate(validationRules, values)
+}) as any)
+class WikiPageDetailsForm extends React.PureComponent<WrappedWikiPageEditFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
@@ -94,11 +159,11 @@ class WikiPageDetailsForm extends React.PureComponent<WikiPageEditFormProps, EL.
     }
 }
 
-@reduxForm({
+@(reduxForm<{}>({
     form: 'wiki-edit',
-    validate: (values) => validate(validationRules, values) }
-})
-class WikiPageBodyForm extends React.PureComponent<WikiPageEditFormProps, EL.Stateless> {
+    validate: (values) => validate(validationRules, values)
+}) as any)
+class WikiPageBodyForm extends React.PureComponent<{}> {
     render() {
         return (<div className="markdown-editor">
                 <div className="text-right"><a href="https://github.com/showdownjs/showdown/wiki/Showdown's-Markdown-syntax" target="_blank">View Documentation <i className="glyphicon glyphicon-new-window"/></a></div>
@@ -108,40 +173,43 @@ class WikiPageBodyForm extends React.PureComponent<WikiPageEditFormProps, EL.Sta
     }
 }
 
-class RenderMarkdown extends React.PureComponent<IFieldComponentProps, EL.Stateless>{
+class RenderMarkdown extends React.PureComponent<{ input: {value: string} }, EL.Stateless>{
     render() {
         return <div className="markdown"><Markdown markup={ this.props.input.value } /></div>
     }
 }
 
-@reduxForm({
+@(reduxForm({
     form: 'wiki-edit',
-    validate: (values) => validate(validationRules, values) }
-})
-class WikiPagePreview extends React.PureComponent<WikiPageEditFormProps, EL.Stateless> {
+    validate: (values) => validate(validationRules, values)
+}) as any)
+class WikiPagePreview extends React.PureComponent<{}> {
     render() {
         return (
-             <ReduxField name="data" component={RenderMarkdown} />
+             <ReduxField name="data" component={RenderMarkdown as any} />
         );
     }
 }
+
 const validationRules: EL.IValidationFields = {
     title:  { name: 'Title',  required: true },
 };
 
 
-@connect(undefined, {
+
+
+@(connect<{}, {}, InjectedWikiPageWithPathProps>(undefined, {
     create: (url, data) => createResource(url, data),
     update: (url, data) => updateResource(url, data)
-})
-class EditWikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Stateless> {
+}) as any)
+class EditWikiPageWithPath extends React.PureComponent<EditPageProps> {
 
-    constructor(props) {
+    constructor(props: EditPageProps) {
         super(props);
         this.submit = this.submit.bind(this);
     }
 
-    submit(values) {
+    submit(values: WikiPageForm): void {
         values = {
             title: values.title,
             data: values.data || '',
@@ -174,11 +242,13 @@ class EditWikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL
     }
 }
 
+
+
 class Categories extends React.PureComponent<CategoryProps, EL.Stateless> {
     render() {
         return <Panel title={this.props.title}>
 
-            { this.props.items.map((item, i) => {
+            { this.props.items.map((item: Category, i: number) => {
                 return <div key={i}><Link to={`/wiki/${item.path}/`}>{item.title}</Link></div>
             })
             }
@@ -188,11 +258,11 @@ class Categories extends React.PureComponent<CategoryProps, EL.Stateless> {
 }
 
 @WikiHOC()
-class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Stateless> {
+class WikiPageWithPath extends React.PureComponent<InjectedWikiPageWithPathProps> {
 
-    renderBody(title, value) {
+    renderBody(title: string, value: string) {
         return <Panel title={title}>
-             <RenderMarkdown input={{value: value}} />
+             <RenderMarkdown input={{value: value}}  />
              <hr />
              <div className="text-right"><Link className="btn btn-primary" to={{query: {edit: true}, pathname: `/wiki/${this.props.wikiPath}`}}>Edit Page</Link></div>
          </Panel>
@@ -202,12 +272,12 @@ class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Sta
         if(this.props.wikiPage.isFetching){
             return false;
         }
-        let values = {...this.props.wikiPage.data};
-        if(values.categories){
-            values.categories = JSON.parse(values.categories).join(" | ");
+        let values : WikiPageForm = {title: this.props.wikiPage.data.title, data: this.props.wikiPage.data.data};
+        if(this.props.wikiPage.data.categories){
+            values.categories = JSON.parse(this.props.wikiPage.data.categories).join(" | ");
          }
-        if(values.keywords){
-            values.keywords = JSON.parse(values.keywords).join(" | ");
+        if(this.props.wikiPage.data.keywords){
+            values.keywords = JSON.parse(this.props.wikiPage.data.keywords).join(" | ");
         }
         else{
             values = {};
@@ -216,7 +286,7 @@ class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Sta
             return <EditWikiPageWithPath wikiPage={this.props.wikiPage} values={values} wikiPath={this.props.wikiPath}/>
         }
         const title = values.title || 'New Page';
-        if(values.categoryGroup){
+        /*if(values.categoryGroup){
             return <div className="container">
             <Row>
                 <Col md={3}>
@@ -227,7 +297,7 @@ class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Sta
                 </Col>
                 </Row>
             </div>
-        }
+        }*/
         return <div className="container">
               { this.renderBody(title, values.data) }
          </div>
@@ -236,7 +306,7 @@ class WikiPageWithPath extends React.PureComponent<WikiPageWithPathProps, EL.Sta
 
 class WikiPage extends React.PureComponent<WikiPageProps, EL.Stateless> {
     render() {
-        return <WikiPageWithPath wikiPath={this.props.routeParams.splat} edit={this.props.location.query.edit === 'true'}/>
+        return <WikiPageWithPath wikiPath={this.props.routeParams.splat} edit={this.props.location.query.edit === 'true'} />
     }
 }
 

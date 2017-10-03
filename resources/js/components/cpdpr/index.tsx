@@ -44,7 +44,7 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EL.Stateles
                 <ButtonToolbar>
                     <Link to={editLink} className="btn btn-info btn-sm">Edit</Link>
                     <Button bsStyle="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
-                </ButtonToolbar> 
+                </ButtonToolbar>
             );
         }
     }
@@ -91,18 +91,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EL.Stateless> {
     }
 }
 
-@connect(
-    (state: EL.State) => ({
-        user: state.user,
-        yearEndingIndex: state.cpdpr.yearEndingIndex,
-        createModalVisible: state.cpdpr.createModalVisible
-    }),
-    {
-        prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
-        nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
-        deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
-    }
-)
+
 @UserCPDPRHOC()
 @PanelHOC('Professional Development Records', [props => props.cpdpr])
 class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
@@ -129,7 +118,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
                                 <Button disabled={disableNextButton} onClick={() => nextYear(yearEndingIndex)}><Icon iconName="arrow-right" /></Button>
                             </ButtonGroup>
                         </ButtonToolbar>
-                        
+
                         <h3>1 April {currentRecordSet.yearEnding - 1} to 31 March {currentRecordSet.yearEnding}</h3>
                     </div>
                 </div>
@@ -142,11 +131,24 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
     }
 }
 
+const ConnectedUserCPDPR = connect(
+    (state: EL.State) => ({
+        user: state.user,
+        yearEndingIndex: state.cpdpr.yearEndingIndex,
+        createModalVisible: state.cpdpr.createModalVisible
+    }),
+    {
+        prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
+        nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
+        deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
+    }
+)(UserCPDPR);
+
 export default class CPDPRPage extends React.PureComponent<EL.Propless, EL.Stateless> {
     render() {
         return (
             <div>
-                <UserCPDPR />
+                <ConnectedUserCPDPR />
 
                 {this.props.children && this.props.children}
             </div>

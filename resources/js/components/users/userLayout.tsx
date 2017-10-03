@@ -30,7 +30,7 @@ interface IUserNavigationProps {
     userId: number;
 }
 
-@connect((state: EL.State) => ({ authedUser: state.user }))
+
 class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless> {
     render() {
         const userId = this.props.userId;
@@ -41,7 +41,7 @@ class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless>
                     <IndexLinkContainer to={`/users/${userId}`}>
                         <ListGroupItem>Basic Details</ListGroupItem>
                     </IndexLinkContainer>
-                    
+
                     <LinkContainer to={`/users/${userId}/emergency-contact`}>
                         <ListGroupItem>Emergency Contact</ListGroupItem>
                     </LinkContainer>
@@ -50,11 +50,6 @@ class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless>
                         <ListGroupItem>Addresses</ListGroupItem>
                     </LinkContainer>
 
-                    { (this.props.authedUser.id === 2 || this.props.authedUser.id === 3) && 
-                        <LinkContainer to={`/users/${userId}/password`}>
-                            <ListGroupItem>Change Password</ListGroupItem>
-                        </LinkContainer>
-                    }
                 </ListGroup>
             </Panel>
         );

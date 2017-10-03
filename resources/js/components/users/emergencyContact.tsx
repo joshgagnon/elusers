@@ -21,7 +21,7 @@ interface IViewEmergencyContactProps {
 
 interface IEditEmergencyContactProps {
     userId: number;
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<Form>, emergencyContactId: number, userId: number) => void;
     emergencyContact: EL.Resource<EL.IEmergencyContact>;
 }
 
@@ -64,7 +64,7 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
 }
 
 @mapParamsToProps(['userId'])
-@connect(
+@(connect<{}, {}, {userId: number}>(
     undefined,
     {
         submit: (data: React.FormEvent<Form>, emergencyContactId: number, userId: number) => {
@@ -77,12 +77,11 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
             return updateResource(url, data, meta);
         }
     }
-)
+) as any)
 @UserEmergencyContactHOC()
 @PanelHOC('Emergency Contact', [props => props.emergencyContact])
-export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps, EL.Stateless> {
+export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps> {
     render() {
-        console.log(this.props.emergencyContact);
         return (
             <EmergencyContactForm
                 onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.emergencyContact.data.id, this.props.userId)}
@@ -91,8 +90,11 @@ export class EditEmergencyContact extends React.PureComponent<IEditEmergencyCont
     }
 }
 
-@reduxForm({ form: 'emergency-contact-form', validate: (values) => validate(emergencyContactValidationRules, values) })
-class EmergencyContactForm extends React.PureComponent<IEditEmergencyContactFormProps, EL.Stateless> {
+@reduxForm<{emergencyContact: EL.Resource<EL.IEmergencyContact>}>({
+    form: 'emergency-contact-form',
+    validate: (values) => validate(emergencyContactValidationRules, values)
+})
+class EmergencyContactForm extends React.PureComponent<IEditEmergencyContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>

@@ -16,7 +16,7 @@ const validationRules: EL.IValidationFields = {
     countryCode: { name: 'Country code',  required: true },
 };
 
-@reduxForm({ form: 'address-form', validate: (values) => validate(validationRules, values) })
+@(reduxForm({ form: 'address-form', validate: (values) => validate(validationRules, values) }) as any)
 export default class AddressForm extends React.PureComponent<IAddressFormProps, EL.Stateless> {
     render() {
         return (

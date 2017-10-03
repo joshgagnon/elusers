@@ -5,7 +5,24 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
+        <link rel="apple-touch-icon" sizes="57x57" href="https://evolutionlawyers.nz/images/favicons/apple-touch-icon-57x57-517fec1f58.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="https://evolutionlawyers.nz/images/favicons/apple-touch-icon-60x60-7429c00601.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="https://evolutionlawyers.nz/images/favicons/apple-touch-icon-72x72-c958b0a3d5.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="https://evolutionlawyers.nz/images/favicons/apple-touch-icon-76x76-f44134f2a8.png">
+        <link rel="icon" type="image/png" href="https://evolutionlawyers.nz/images/favicons/favicon-32x32-bbd5d053e4.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="https://evolutionlawyers.nz/images/favicons/favicon-96x96-540cd9674c.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="https://evolutionlawyers.nz/images/favicons/favicon-16x16-b2ff926b0a.png" sizes="16x16">
+        <link rel="manifest" href="https://evolutionlawyers.nz/images/favicons/manifest.json">
+        <link rel="mask-icon" href="https://evolutionlawyers.nz/images/favicons/safari-pinned-tab-f5f84a304e.svg" color="#5bbad5">
+
+
+        <meta name="apple-mobile-web-app-title" content="Evolution Lawyers">
+        <meta name="application-name" content="Evolution Lawyers">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+
+
         <!-- Title -->
         <title>Evolution Lawyers</title>
 

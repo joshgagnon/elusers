@@ -11,7 +11,7 @@ interface ICPDPRFormProps {
 
 const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
-class CPDPRForm extends React.PureComponent<ICPDPRFormProps, EL.Stateless> {
+class CPDPRForm extends React.PureComponent<ICPDPRFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>

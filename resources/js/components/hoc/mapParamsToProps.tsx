@@ -13,5 +13,5 @@ export default function mapParamsToProps(paramNames: string[]) {
         }
 
         return PanelWithContent;
-    }
+    } as any
 }

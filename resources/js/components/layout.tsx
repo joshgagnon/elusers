@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 interface ILayoutProps {
     user: EL.User;
     notifications: EL.INotifications;
+    routes: any
 }
 
-@connect((state: EL.State) => ({ notifications: state.notifications }))
+@connect((state: EL.State) => ({ notifications: state.notifications, user: state.user }))
 export default class Layout extends React.PureComponent<ILayoutProps, {}> {
     render() {
         const fluid = this.props.routes.some(c => c.component.FLUID_CONTAINER);

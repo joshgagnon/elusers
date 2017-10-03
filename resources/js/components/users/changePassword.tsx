@@ -10,7 +10,7 @@ import mapParamsToProps from '../hoc/mapParamsToProps';
 
 interface IChangePasswordProps {
     userId: number;
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<Form>, userId: number) => void;
 }
 
 interface IChangePasswordFormProps {

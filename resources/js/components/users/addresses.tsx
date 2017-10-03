@@ -9,6 +9,7 @@ import { formatAddress } from '../utils';
 import AddressForm from '../address/form';
 import { createNotification, updateResource, createResource } from '../../actions';
 import { push } from 'react-router-redux';
+import { Form } from 'react-bootstrap';
 
 interface IViewAddressesProps {
     addresses: EL.Resource<EL.IAddress[]>;
@@ -38,7 +39,7 @@ export class ViewAddresses extends React.PureComponent<IViewAddressesProps> {
             <div>
                 <Link to={`/users/${this.props.userId}/addresses/create`} className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Add Address</Link>
                 <hr />
-                
+
                 {this.props.addresses.data.map(address => <Address key={address.id} address={address} userId={this.props.userId} />)}
             </div>
         );
@@ -48,7 +49,7 @@ export class ViewAddresses extends React.PureComponent<IViewAddressesProps> {
 class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
     render() {
         const { address } = this.props;
-        
+
         return (
             <div>
                 <Link to={`/users/${this.props.userId}/addresses/${address.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>

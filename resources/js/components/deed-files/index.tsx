@@ -33,10 +33,10 @@ const data = [{
 @UsersHOC()
 @DeedFilesHOC()
 @PanelHOC('Deed Files', [(props: DeedFilesProps) => props.deedFiles, (props: DeedFilesProps) => props.users])
-class DeedFiles extends React.PureComponent<DeedFilesProps> {
+class DeedFiles extends React.PureComponent<DeedFilesProps, {searchValue: string}> {
+
     constructor(props: DeedFilesProps) {
         super(props);
-
         this.state = {
             searchValue: ''
         };
@@ -51,7 +51,7 @@ class DeedFiles extends React.PureComponent<DeedFilesProps> {
                 </ButtonToolbar>
 
                 <div>
-                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e) => this.setState({searchValue: e.target.value})} />
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
 
                 <Table headings={HEADINGS}>
