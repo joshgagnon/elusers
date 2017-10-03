@@ -4,6 +4,8 @@ import { Route, IndexRoute, RouteComponent } from 'react-router';
 import Home from '../components/home';
 import Users from '../components/users';
 
+import Contacts from '../components/contacts';
+
 import DeedFiles from '../components/deed-files';
 import CreateDeedFile from '../components/deed-files/create';
 import EditDeedFile from '../components/deed-files/edit';
@@ -48,6 +50,8 @@ const routes = (routeComponent: RouteComponent) => (
 
             <Route path="password" component={ChangeUserPassword} />
         </Route>
+
+        <Route path="contacts" component={Contacts} />
 
         <Route path="deed-files" component={DeedFiles} />
         <Route path="deed-files/create" component={CreateDeedFile} />

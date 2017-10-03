@@ -55,6 +55,13 @@ declare global {
             createdByUserId: number;
         }
 
+        interface Contact {
+            id: number;
+            name: string;
+            email: string;
+            phone: string;
+        }
+
         export interface Resource<T> {
             status?: RequestStatus;
             data?: T;

@@ -88,3 +88,5 @@ export const ClientsHOC = () => HOCFactory({ location: () => 'clients', propsNam
 
 export const DeedFilesHOC = () => HOCFactory({ location: () => 'deed-files', propsName: 'deedFiles' });
 export const DeedFileHOC = () => HOCFactory({ location: (props) => `deed-files/${props.deedFileId}`, propsName: 'deedFile' });
+
+export const ContactsHOC = () => HOCFactory({ location: (props) => 'contacts', propsName: 'contacts' });
