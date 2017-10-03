@@ -86,7 +86,7 @@ export const WikiHOC = () => HOCFactory({ location: (props) => `wiki/${props.wik
 
 export const ClientsHOC = () => HOCFactory({ location: () => 'clients', propsName: 'clients' });
 
-export const DeedFilesHOC = () => HOCFactory({ location: () => 'deed-files', propsName: 'deedFiles' });
-export const DeedFileHOC = () => HOCFactory({ location: (props) => `deed-files/${props.deedFileId}`, propsName: 'deedFile' });
+export const DeedPacketsHOC = () => HOCFactory({ location: () => 'deed-packets', propsName: 'deedPacket' });
+export const DeedPacketHOC = () => HOCFactory({ location: (props) => `deed-packets/${props.deedFileId}`, propsName: 'deedPacket' });
 
 export const ContactsHOC = () => HOCFactory({ location: (props) => 'contacts', propsName: 'contacts' });

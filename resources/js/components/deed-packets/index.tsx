@@ -4,16 +4,16 @@ import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
-import { DeedFilesHOC, UsersHOC } from '../hoc/resourceHOCs';
+import { DeedPacketsHOC, UsersHOC } from '../hoc/resourceHOCs';
 import { Button, FormControl } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { deleteResource } from '../../actions';
 import { name, formatDate } from '../utils';
 
-interface DeedFilesProps {
+interface DeedPacketsProps {
     users: EL.Resource<EL.User[]>;
-    deedFiles: EL.Resource<EL.DeedFile[]>;
-    deleteDeedFile: (deedFileId: number) => void;
+    deedPackets: EL.Resource<EL.DeedPacket[]>;
+    deleteDeedPacket: (deedPacketId: number) => void;
 }
 
 const HEADINGS = ['Client Name', 'Document Date', 'Parties', 'Matter', 'Created By', 'Actions'];
@@ -28,26 +28,26 @@ const data = [{
 }];
 
 @connect(undefined, {
-    deleteDeedFile: (deedFileId: number) => deleteResource(`deed-files/${deedFileId}`)
+    deleteDeedPacket: (deedPacketId: number) => deleteResource(`deed-packets/${deedPacketId}`)
 })
 @UsersHOC()
-@DeedFilesHOC()
-@PanelHOC('Deed Files', [(props: DeedFilesProps) => props.deedFiles, (props: DeedFilesProps) => props.users])
-class DeedFiles extends React.PureComponent<DeedFilesProps, {searchValue: string}> {
+@DeedPacketsHOC()
+@PanelHOC('Deed Packets', [(props: DeedPacketsProps) => props.deedPackets, (props: DeedPacketsProps) => props.users])
+class DeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: string}> {
 
-    constructor(props: DeedFilesProps) {
+    constructor(props: DeedPacketsProps) {
         super(props);
         this.state = {
             searchValue: ''
         };
     }
     render() {
-        const deeds = this.props.deedFiles.data.filter(deed => deed.clientTitle.includes(this.state.searchValue));
+        const deeds = this.props.deedPackets.data.filter(deed => deed.clientTitle.includes(this.state.searchValue));
 
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/deed-files/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed File</Link>
+                    <Link to="/deeds/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed Packet</Link>
                 </ButtonToolbar>
 
                 <div>
@@ -57,7 +57,7 @@ class DeedFiles extends React.PureComponent<DeedFilesProps, {searchValue: string
                 <Table headings={HEADINGS}>
                     { deeds.map(deed => {
                         const createdBy = this.props.users.data.find(u => u.id === deed.createdByUserId);
-                        const editLink = `/deed-files/${deed.id}/edit`;
+                        const editLink = `/deed-packets/${deed.id}/edit`;
 
                         return (
                             <tr key={deed.id}>
@@ -69,7 +69,7 @@ class DeedFiles extends React.PureComponent<DeedFilesProps, {searchValue: string
                                 <td>
                                     <ButtonToolbar>
                                         <Link to={editLink} className="btn btn-default btn-sm">Edit</Link>
-                                        <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedFile(deed.id)}>Delete</Button>
+                                        <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(deed.id)}>Delete</Button>
                                     </ButtonToolbar>
                                 </td>
                             </tr>
@@ -80,4 +80,4 @@ class DeedFiles extends React.PureComponent<DeedFilesProps, {searchValue: string
     }
 }
 
-export default DeedFiles;
+export default DeedPackets;

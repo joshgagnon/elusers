@@ -44,7 +44,7 @@ declare global {
             addressType: string;
         }
 
-        interface DeedFile {
+        interface DeedPacket {
             id: number;
             clientId: number;
             clientTitle: string;
