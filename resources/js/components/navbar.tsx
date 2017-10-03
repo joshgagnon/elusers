@@ -26,8 +26,8 @@ export default class NavMenu extends React.Component<EL.Propless, EL.Stateless> 
                             <NavItem>Contacts</NavItem>
                         </LinkContainer>
 
-                        <LinkContainer to="/deed-files">
-                            <NavItem>Deed Files</NavItem>
+                        <LinkContainer to="/deeds">
+                            <NavItem>Deeds</NavItem>
                         </LinkContainer>
 
                         <LinkContainer to="/cpdpr">
