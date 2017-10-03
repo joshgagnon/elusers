@@ -9,48 +9,17 @@ import { push } from 'react-router-redux';
 import { Combobox, DatePicker, InputField } from '../form-fields';
 import { ClientsHOC } from '../hoc/resourceHOCs';
 
-interface ICreateDeedPacketProps {
+interface CreateDeedPacketProps {
     submit: (data: React.FormEvent<Form>) => void;
     clients: EL.Resource<EL.Client[]>;
 }
 
-<<<<<<< HEAD:resources/js/components/deed-files/create.tsx
-interface IDeedFileFormProps {
+interface DeedPacketFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
-=======
-interface IDeedPacketFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
->>>>>>> 5c872a9d481025894e153f548d12eb2d0f695de0:resources/js/components/deed-packets/create.tsx
     clientTitles: string[];
     saveButtonText: string;
 }
-
-<<<<<<< HEAD:resources/js/components/deed-files/create.tsx
-=======
-@connect(
-    undefined,
-    {
-        submit: (data: React.FormEvent<Form>) => {
-            const url = 'deed-packets';
-            const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed packet created.'), (response) => push('/deeds')],
-                onFailure: [createNotification('Deed packet creation failed. Please try again.', true)],
-            };
-
-            return createResource(url, data, meta)
-        }
-    }
-)
-@ClientsHOC()
-@PanelHOC('Create Deed Packet', [(props: ICreateDeedPacketProps) => props.clients])
-export default class CreateDeedPacket extends React.PureComponent<ICreateDeedPacketProps> {
-    render() {
-        const clientTitles = this.props.clients.data.map(client => client.title)
-        return <CreateDeedPacketForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed Packet" />;
-    }
-}
->>>>>>> 5c872a9d481025894e153f548d12eb2d0f695de0:resources/js/components/deed-packets/create.tsx
 
 export const deedPacketValidationRules: EL.IValidationFields = {
     clientTitle: { name: 'Client title', required: true },
@@ -59,7 +28,7 @@ export const deedPacketValidationRules: EL.IValidationFields = {
     matter: { name: 'Matter', required: true },
 };
 
-export class DeedPacketForm extends React.PureComponent<IDeedPacketFormProps> {
+export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
@@ -78,11 +47,10 @@ export class DeedPacketForm extends React.PureComponent<IDeedPacketFormProps> {
     }
 }
 
-<<<<<<< HEAD:resources/js/components/deed-files/create.tsx
-const CreateDeedFileForm = (reduxForm({
-    form: 'create-deed-file-form',
-    validate: values => validate(deedFileValidationRules, values)
-})(DeedFileForm) as any);
+const CreateDeedPacketForm = (reduxForm({
+    form: 'create-deed-packet-form',
+    validate: values => validate(deedPacketValidationRules, values)
+})(DeedPacketForm) as any);
 
 
 
@@ -91,10 +59,10 @@ const CreateDeedFileForm = (reduxForm({
     undefined,
     {
         submit: (data: React.FormEvent<Form>) => {
-            const url = 'deed-files';
+            const url = 'deed-packets';
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed file created.'), (response) => push('/deed-files')],
-                onFailure: [createNotification('Deed file creation failed. Please try again.', true)],
+                onSuccess: [createNotification('Deed packet created.'), (response) => push('/deeds')],
+                onFailure: [createNotification('Deed packet creation failed. Please try again.', true)],
             };
 
             return createResource(url, data, meta)
@@ -102,16 +70,10 @@ const CreateDeedFileForm = (reduxForm({
     }
 ) as any)
 @ClientsHOC()
-@PanelHOC('Create Deed File', [(props: ICreateDeedFileProps) => props.clients])
-export default class CreateDeedFile extends React.PureComponent<ICreateDeedFileProps> {
+@PanelHOC('Create Deed Packet', [(props: CreateDeedPacketProps) => props.clients])
+export default class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps> {
     render() {
         const clientTitles = this.props.clients.data.map(client => client.title)
-        return <CreateDeedFileForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed File" />;
+        return <CreateDeedPacketForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed Packet" />;
     }
 }
-=======
-const CreateDeedPacketForm = (reduxForm({
-    form: 'create-deed-packet-form',
-    validate: values => validate(deedPacketValidationRules, values)
-})(DeedPacketForm) as any);
->>>>>>> 5c872a9d481025894e153f548d12eb2d0f695de0:resources/js/components/deed-packets/create.tsx
