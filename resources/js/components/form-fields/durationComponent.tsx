@@ -9,7 +9,7 @@ interface IDurationFieldState {
 
 const numberRegex = /^$|^(\d+(\.)?(\d{1,2})?)$/;
 
-export default class DurationFieldComponent extends React.PureComponent<IFieldComponentProps, IDurationFieldState> {
+export default class DurationFieldComponent extends React.PureComponent<IFieldComponentProps & {input: any}, IDurationFieldState> {
     constructor(props: IFieldComponentProps) {
         super(props);
 
@@ -23,7 +23,7 @@ export default class DurationFieldComponent extends React.PureComponent<IFieldCo
 
     onChange(e: React.ChangeEvent<any>) {
         const newValue = e.target.value;
-        
+
         if (numberRegex.test(newValue)) {
             this.setState({ fractionalHours: newValue });
         }

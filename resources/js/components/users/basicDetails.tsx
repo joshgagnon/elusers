@@ -23,6 +23,7 @@ interface IViewBasicDetailsProps {
 interface IEditBasicDetailsProps {
     submit: (event: React.FormEvent<Form>, userId: number) => void;
     user: EL.Resource<EL.User>;
+    userId: number
 }
 
 interface IViewBasicDetailsContentsProps {
@@ -71,7 +72,7 @@ export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDeta
     }
 }
 
-export class EditBasicDetails extends React.PureComponent {
+export class EditBasicDetails extends React.PureComponent<{params: {userId: number}}> {
     render() {
         return <EditBasicDetailsContents userId={this.props.params.userId} />;
     }

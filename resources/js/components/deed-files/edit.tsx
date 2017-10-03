@@ -18,7 +18,7 @@ interface EditDeedFileProps {
 
 @connect(
     undefined,
-    (dispatch: Dispatch<any>, ownProps: { deedFileId: number }) => ({
+    (dispatch: Function, ownProps: { deedFileId: number }) => ({
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-files/${ownProps.deedFileId}`;
             const meta: EL.Actions.Meta = {
@@ -40,7 +40,7 @@ class EditDeedFile extends React.PureComponent<EditDeedFileProps> {
     }
 }
 
-export default class EditDeedFileRouteMapper extends React.PureComponent {
+export default class EditDeedFileRouteMapper extends React.PureComponent<{params: {deedFileId: number}}> {
     render() {
         return <EditDeedFile deedFileId={this.props.params.deedFileId} />;
     }

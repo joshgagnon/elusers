@@ -9,7 +9,7 @@ import { validate } from '../utils/validation';
 
 interface IChangePasswordProps {
     user: EL.User;
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<Form>, user: EL.User) => void;
 }
 
 interface IChangePasswordFormProps {

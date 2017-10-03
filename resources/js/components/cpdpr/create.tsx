@@ -15,7 +15,7 @@ function mapStateToProps(state: EL.State) {
     return { userId: state.user.id };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>, ownProps: { recordId: number }) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         close: () => dispatch(push('/cpdpr')),
         submit: (userId: number, data: EL.CPDPR.UpdateRecordData) => {
@@ -28,8 +28,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>, ownProps: { recordId: numbe
     }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class CreateCPDPRRecord extends React.PureComponent<CreateCPDPRRecordProps, EL.Stateless> {
+class CreateCPDPRRecord extends React.PureComponent<CreateCPDPRRecordProps> {
     render() {
         return (
             <FormModal title="Create CPDPR Record" formName="cpdpr-form" hide={this.props.close}>
@@ -38,3 +37,4 @@ export default class CreateCPDPRRecord extends React.PureComponent<CreateCPDPRRe
         );
     }
 }
+export default connect<{}, {}, {userId: number}>(mapStateToProps, mapDispatchToProps)(CreateCPDPRRecord)

@@ -69,7 +69,7 @@ export class DeedFileForm extends React.PureComponent<IDeedFileFormProps> {
     }
 }
 
-const CreateDeedFileForm = reduxForm({
+const CreateDeedFileForm = (reduxForm({
     form: 'create-deed-file-form',
     validate: values => validate(deedFileValidationRules, values)
-})(DeedFileForm);
+})(DeedFileForm) as any);

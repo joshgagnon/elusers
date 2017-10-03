@@ -13,7 +13,16 @@ interface ICreateAddressProps {
     user: EL.User;
 }
 
-@connect(
+
+@PanelHOC('Add Address')
+class CreateAddress extends React.PureComponent<ICreateAddressProps, EL.Stateless> {
+    render() {
+        return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.user.id)} />;
+    }
+}
+
+
+export default  connect(
     (state: EL.State) => ({ user: state.user }),
     {
         submit: (data: React.FormEvent<Form>, userId: number) => {
@@ -26,10 +35,4 @@ interface ICreateAddressProps {
             return createResource(url, data, meta);
         }
     }
-)
-@PanelHOC('Add Address')
-export default class CreateAddress extends React.PureComponent<ICreateAddressProps, EL.Stateless> {
-    render() {
-        return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.user.id)} />;
-    }
-}
+)(CreateAddress);

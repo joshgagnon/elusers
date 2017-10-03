@@ -5,7 +5,6 @@ import routes from './routes/index';
 import { Router } from 'react-router';
 import { History } from 'history';
 
-const ConnectedLayout = connect(state => ({ user: state.user }))(Layout);
 
 interface RootProps {
     history: History,
@@ -17,7 +16,7 @@ export default class Root extends React.PureComponent<RootProps, {}> {
         return (
             <Provider store={this.props.store}>
                 <Router history={this.props.history}>
-                    { routes(ConnectedLayout) }
+                    { routes(Layout) }
                     { this.props.children }
                 </Router>
             </Provider>

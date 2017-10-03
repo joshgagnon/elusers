@@ -173,7 +173,7 @@ class WikiPageBodyForm extends React.PureComponent<{}> {
     }
 }
 
-class RenderMarkdown extends React.PureComponent<{ input: IFieldComponentProps }, EL.Stateless>{
+class RenderMarkdown extends React.PureComponent<{ input: {value: string} }, EL.Stateless>{
     render() {
         return <div className="markdown"><Markdown markup={ this.props.input.value } /></div>
     }
@@ -262,7 +262,7 @@ class WikiPageWithPath extends React.PureComponent<InjectedWikiPageWithPathProps
 
     renderBody(title: string, value: string) {
         return <Panel title={title}>
-             <RenderMarkdown input={{value: value, label: '', type: 'markdown'}}  />
+             <RenderMarkdown input={{value: value}}  />
              <hr />
              <div className="text-right"><Link className="btn btn-primary" to={{query: {edit: true}, pathname: `/wiki/${this.props.wikiPath}`}}>Edit Page</Link></div>
          </Panel>
