@@ -23,7 +23,7 @@ class DeedPacketController extends Controller
         $query = new SQLFile('all_deed_packets', ['org_id' => $orgId]);
         $result = $query->get();
 
-        return $result;
+        return $result[0]->packets;
     }
 
     /**
