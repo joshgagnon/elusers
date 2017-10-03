@@ -59,16 +59,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Created clients relationship: a user creates many clients.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function createdClients()
-    {
-        return $this->hasMany(Client::class, 'created_by_user_id');
-    }
-
-    /**
      * Created deed files: a user creates has deed files.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

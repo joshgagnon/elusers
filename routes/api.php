@@ -40,18 +40,27 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('addresses/{address}', 'UserAddressController@delete');
 
     /**
-     * Deed files
+     * Deed packets
      */
-    Route::get('deed-files', 'DeedFileController@all');
-    Route::get('deed-files/{deedFileId}', 'DeedFileController@get');
-    Route::post('deed-files', 'DeedFileController@create');
-    Route::put('deed-files/{deedFile}', 'DeedFileController@update');
-    Route::delete('deed-files/{deedFile}', 'DeedFileController@delete');
+    Route::get('deed-packets', 'DeedPacketController@all');
+    Route::get('deed-packets/{packetId}', 'DeedPacketController@get');
+    Route::post('deed-packets', 'DeedPacketController@create');
+    Route::put('deed-packets/{packet}', 'DeedPacketController@update');
+    Route::delete('deed-packets/{packet}', 'DeedPacketController@delete');
 
     /**
-     * Clients
+     * Deed packet records
      */
-    Route::get('clients', 'ClientController@all');
+    Route::get('deed-packet-records', 'DeedPacketRecordController@all');
+    Route::get('deed-packet-records/{recordId}', 'DeedPacketRecordController@get');
+    Route::post('deed-packet-records', 'DeedPacketRecordController@create');
+    Route::put('deed-packet-records/{record}', 'DeedPacketRecordController@update');
+    Route::delete('deed-packet-records/{record}', 'DeedPacketRecordController@delete');
+
+    /**
+     * Contacts
+     */
+    Route::get('contacts', 'ContactController@all');
 
     /**
      * CPDPR

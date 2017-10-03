@@ -4,9 +4,11 @@ import { Route, IndexRoute, RouteComponent } from 'react-router';
 import Home from '../components/home';
 import Users from '../components/users';
 
-import DeedFiles from '../components/deed-files';
-import CreateDeedFile from '../components/deed-files/create';
-import EditDeedFile from '../components/deed-files/edit';
+import Contacts from '../components/contacts';
+
+import DeedPackets from '../components/deed-packets';
+import CreateDeedPacket from '../components/deed-packets/create';
+import EditDeedPacket from '../components/deed-packets/edit';
 
 import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
@@ -49,9 +51,11 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path="password" component={ChangeUserPassword} />
         </Route>
 
-        <Route path="deed-files" component={DeedFiles} />
-        <Route path="deed-files/create" component={CreateDeedFile} />
-        <Route path="deed-files/:deedFileId/edit" component={EditDeedFile} />
+        <Route path="contacts" component={Contacts} />
+
+        <Route path="deeds" component={DeedPackets} />
+        <Route path="deeds/create" component={CreateDeedPacket} />
+        <Route path="deeds/:deedPacketId/edit" component={EditDeedPacket} />
 
         <Route path='cpdpr' component={ CPDPRIndex }>
             <Route path='create' component={ CreateCPDPRRecord } />

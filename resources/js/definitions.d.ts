@@ -44,7 +44,7 @@ declare global {
             addressType: string;
         }
 
-        interface DeedFile {
+        interface DeedPacket {
             id: number;
             clientId: number;
             clientTitle: string;
@@ -53,6 +53,13 @@ declare global {
             matter: string;
             createdAt: string;
             createdByUserId: number;
+        }
+
+        interface Contact {
+            id: number;
+            name: string;
+            email: string;
+            phone: string;
         }
 
         export interface Resource<T> {
