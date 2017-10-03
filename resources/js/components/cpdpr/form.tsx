@@ -5,7 +5,6 @@ import { DatePicker, DurationField, InputField } from '../form-fields';
 import * as moment from 'moment';
 
 interface ICPDPRFormProps {
-    submitting: boolean;
     handleSubmit: React.EventHandler<React.FormEvent<Form>>;
 }
 
@@ -55,7 +54,7 @@ function validateCPDPRForm(values: any) {
     return errors;
 }
 
-export default reduxForm({
+export default (reduxForm({
     form: 'cpdpr-form',
     validate: validateCPDPRForm
-})(CPDPRForm);
+}) as any)(CPDPRForm);

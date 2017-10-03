@@ -21,18 +21,20 @@ interface IViewBasicDetailsProps {
 }
 
 interface IEditBasicDetailsProps {
-    submit: (event: React.FormEvent<Form>, userId: number) => void;
-    user: EL.Resource<EL.User>;
+    user?: EL.Resource<EL.User>;
     userId: number
+    submit?: (event: React.FormEvent<Form>, userId: number) => void;
 }
 
 interface IViewBasicDetailsContentsProps {
-    user: EL.Resource<EL.User>;
+    user?: EL.Resource<EL.User>;
+    userId: number
 }
 
 interface IEditBasicDetailsFormProps {
-    user: EL.User;
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    onSubmit?: (event: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    initialValues: any
 }
 
 export class ViewBasicDetails extends React.PureComponent<IViewBasicDetailsProps, EL.Stateless> {
@@ -78,7 +80,7 @@ export class EditBasicDetails extends React.PureComponent<{params: {userId: numb
     }
 }
 
-@connect(
+@(connect(
     undefined,
     {
         submit: (event: React.FormEvent<Form>, userId: number) => {
@@ -91,7 +93,7 @@ export class EditBasicDetails extends React.PureComponent<{params: {userId: numb
             return updateResource(url, event, meta);
         }
     }
-)
+) as any)
 @UserHOC()
 @PanelHOC('Basic Details', [props => props.user])
 class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps, EL.Stateless> {
@@ -102,7 +104,7 @@ class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProp
     }
 }
 
-@reduxForm({ form: 'user-form', validate: values => validate(basicDetailsValidationRules, values) })
+@(reduxForm({ form: 'user-form', validate: values => validate(basicDetailsValidationRules, values) }) as any)
 class BasicDetailsForm extends React.PureComponent<IEditBasicDetailsFormProps, EL.Stateless> {
     render() {
         return (

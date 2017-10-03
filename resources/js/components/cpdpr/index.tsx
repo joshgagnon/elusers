@@ -131,7 +131,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
     }
 }
 
-const ConnectedUserCPDPR = connect(
+const ConnectedUserCPDPR = (connect(
     (state: EL.State) => ({
         user: state.user,
         yearEndingIndex: state.cpdpr.yearEndingIndex,
@@ -142,7 +142,8 @@ const ConnectedUserCPDPR = connect(
         nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
         deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
     }
-)(UserCPDPR);
+) as any)(UserCPDPR);
+
 
 export default class CPDPRPage extends React.PureComponent<EL.Propless, EL.Stateless> {
     render() {

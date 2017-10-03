@@ -10,13 +10,13 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 
 interface EditDeedFileProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit?: (data: React.FormEvent<Form>) => void;
     clients: EL.Resource<EL.Client[]>;
     deedFileId: number;
     deedFile: EL.Resource<EL.DeedFile>;
 }
 
-@connect(
+@(connect(
     undefined,
     (dispatch: Function, ownProps: { deedFileId: number }) => ({
         submit: (data: React.FormEvent<Form>) => {
@@ -29,7 +29,7 @@ interface EditDeedFileProps {
             return dispatch(updateResource(url, data, meta))
         }
     })
-)
+) as any)
 @DeedFileHOC()
 @ClientsHOC()
 @PanelHOC('Edit Deed File', [(props: EditDeedFileProps) => props.deedFile, (props: EditDeedFileProps) => props.clients])
@@ -46,7 +46,7 @@ export default class EditDeedFileRouteMapper extends React.PureComponent<{params
     }
 }
 
-const EditDeedFileForm = reduxForm({
+const EditDeedFileForm = (reduxForm({
     form: 'edit-deed-file-form',
     validate: values => validate(deedFileValidationRules, values)
-})(DeedFileForm);
+})(DeedFileForm) as any);

@@ -15,33 +15,12 @@ interface ICreateDeedFileProps {
 }
 
 interface IDeedFileFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit: (data: React.FormEvent<Form>) => void;
     clientTitles: string[];
     saveButtonText: string;
 }
 
-@connect(
-    undefined,
-    {
-        submit: (data: React.FormEvent<Form>) => {
-            const url = 'deed-files';
-            const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed file created.'), (response) => push('/deed-files')],
-                onFailure: [createNotification('Deed file creation failed. Please try again.', true)],
-            };
-
-            return createResource(url, data, meta)
-        }
-    }
-)
-@ClientsHOC()
-@PanelHOC('Create Deed File', [(props: ICreateDeedFileProps) => props.clients])
-export default class CreateDeedFile extends React.PureComponent<ICreateDeedFileProps> {
-    render() {
-        const clientTitles = this.props.clients.data.map(client => client.title)
-        return <CreateDeedFileForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed File" />;
-    }
-}
 
 export const deedFileValidationRules: EL.IValidationFields = {
     clientTitle: { name: 'Client title', required: true },
@@ -73,3 +52,29 @@ const CreateDeedFileForm = (reduxForm({
     form: 'create-deed-file-form',
     validate: values => validate(deedFileValidationRules, values)
 })(DeedFileForm) as any);
+
+
+
+
+@(connect(
+    undefined,
+    {
+        submit: (data: React.FormEvent<Form>) => {
+            const url = 'deed-files';
+            const meta: EL.Actions.Meta = {
+                onSuccess: [createNotification('Deed file created.'), (response) => push('/deed-files')],
+                onFailure: [createNotification('Deed file creation failed. Please try again.', true)],
+            };
+
+            return createResource(url, data, meta)
+        }
+    }
+) as any)
+@ClientsHOC()
+@PanelHOC('Create Deed File', [(props: ICreateDeedFileProps) => props.clients])
+export default class CreateDeedFile extends React.PureComponent<ICreateDeedFileProps> {
+    render() {
+        const clientTitles = this.props.clients.data.map(client => client.title)
+        return <CreateDeedFileForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed File" />;
+    }
+}

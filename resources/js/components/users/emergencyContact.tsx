@@ -26,7 +26,8 @@ interface IEditEmergencyContactProps {
 }
 
 interface IEditEmergencyContactFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    onSubmit: (args: any) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
     initialValues: EL.IEmergencyContact;
 }
 
@@ -85,15 +86,15 @@ export class EditEmergencyContact extends React.PureComponent<IEditEmergencyCont
         return (
             <EmergencyContactForm
                 onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.emergencyContact.data.id, this.props.userId)}
-                initialValues={this.props.emergencyContact.data || {}} />
+                initialValues={this.props.emergencyContact.data || ({} as EL.IEmergencyContact) } />
         );
     }
 }
 
-@reduxForm<{emergencyContact: EL.Resource<EL.IEmergencyContact>}>({
+@(reduxForm<{emergencyContact: EL.Resource<EL.IEmergencyContact>}>({
     form: 'emergency-contact-form',
     validate: (values) => validate(emergencyContactValidationRules, values)
-})
+}) as any)
 class EmergencyContactForm extends React.PureComponent<IEditEmergencyContactFormProps> {
     render() {
         return (

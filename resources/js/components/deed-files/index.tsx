@@ -27,9 +27,9 @@ const data = [{
     createdBy: 'testing',
 }];
 
-@connect(undefined, {
+@(connect(undefined, {
     deleteDeedFile: (deedFileId: number) => deleteResource(`deed-files/${deedFileId}`)
-})
+}) as any)
 @UsersHOC()
 @DeedFilesHOC()
 @PanelHOC('Deed Files', [(props: DeedFilesProps) => props.deedFiles, (props: DeedFilesProps) => props.users])

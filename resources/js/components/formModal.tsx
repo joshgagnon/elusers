@@ -6,7 +6,7 @@ import { submit } from 'redux-form';
 interface IFormModalProps {
     formName: string;
     title: string;
-    hide: Function;
+    hide: () => void;
     children: any;
     dispatch: Function;
 }
@@ -32,4 +32,4 @@ class FormModal extends React.PureComponent<IFormModalProps, EL.Stateless> {
     }
 }
 
-export default connect()(FormModal);
+export default connect(null)(FormModal);

@@ -14,11 +14,12 @@ interface IChangePasswordProps {
 }
 
 interface IChangePasswordFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit?: (data: React.FormEvent<Form>) => void;
 }
 
 @mapParamsToProps(['userId'])
-@connect(
+@(connect(
     undefined,
     {
         submit: (data: React.FormEvent<Form>, userId: number) => {
@@ -31,7 +32,7 @@ interface IChangePasswordFormProps {
             return updateResource(url, data, meta);
         }
     }
-)
+) as any)
 @PanelHOC('Change Password')
 export class ChangePassword extends React.PureComponent<IChangePasswordProps, EL.Stateless> {
     render() {
@@ -46,7 +47,7 @@ const validationRules: EL.IValidationFields = {
     newPasswordConfirmation: { name: 'New password confirmation', required: true, maxLength: 255 }
 };
 
-@reduxForm({ form: 'change-password-form', validate: (values) => validate(validationRules, values) })
+@(reduxForm({ form: 'change-password-form', validate: (values) => validate(validationRules, values) }) as any)
 class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps, EL.Stateless> {
     render() {
         return (
