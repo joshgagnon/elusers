@@ -11,12 +11,12 @@ import { push } from 'react-router-redux';
 
 interface IEditAddressRouteMapperProps {
     params: {
-        addressId: number;
+        addressId:number;
     };
 }
 
 interface IEditAddressProps {
-    addressId: EL.IAddress;
+    addressId: number;
     userId: number;
 }
 

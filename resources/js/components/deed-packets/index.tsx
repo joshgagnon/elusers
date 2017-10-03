@@ -27,6 +27,7 @@ const data = [{
     createdBy: 'testing',
 }];
 
+
 @connect(undefined, {
     deleteDeedPacket: (deedPacketId: number) => deleteResource(`deed-packets/${deedPacketId}`)
 })

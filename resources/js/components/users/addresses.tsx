@@ -22,12 +22,16 @@ interface IAddressProps {
 }
 
 interface IEditAddressProps {
-    addressId: EL.IAddress;
+    addressId: number;
     userId: number;
+    submit: (args: any, addressId: number, userId: number) => void,
+    address?: any
 }
 
 interface ICreateAddressProps {
     user: EL.User;
+    userId: number,
+    submit: (args: any,  userId: number) => void,
 }
 
 @mapParamsToProps(['userId'])
@@ -64,7 +68,7 @@ class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
 }
 
 @mapParamsToProps(['userId', 'addressId'])
-@connect(
+@(connect(
     undefined,
     {
         submit: (data: React.FormEvent<Form>, addressId: number, userId: number) => {
@@ -77,11 +81,11 @@ class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
             return updateResource(url, data, meta);
         }
     }
-)
+) as any)
 @UserHOC()
 @UserAddressHOC()
 @PanelHOC('Edit Address', [props => props.address])
-export class EditAddress extends React.PureComponent<IEditAddressProps, EL.Stateless> {
+export class EditAddress extends React.PureComponent<IEditAddressProps> {
     render() {
         return <AddressForm
                     onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.addressId, this.props.userId)}
@@ -90,7 +94,7 @@ export class EditAddress extends React.PureComponent<IEditAddressProps, EL.State
 }
 
 @mapParamsToProps(['userId'])
-@connect(
+@(connect(
     (state: EL.State) => ({ user: state.user }),
     {
         submit: (data: React.FormEvent<Form>, userId: number) => {
@@ -103,7 +107,7 @@ export class EditAddress extends React.PureComponent<IEditAddressProps, EL.State
             return createResource(url, data, meta);
         }
     }
-)
+) as any)
 @PanelHOC('Add Address')
 export class CreateAddress extends React.PureComponent<ICreateAddressProps, EL.Stateless> {
     render() {

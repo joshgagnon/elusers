@@ -14,7 +14,8 @@ interface ICreateUserProps {
 }
 
 interface ICreateUserFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit?: (data: React.FormEvent<Form>) => void;
 }
 
 
@@ -24,7 +25,7 @@ const createUserValidationRules: EL.IValidationFields = {
     passwordConfirmation: { name: 'Password confirmation', required: true, sameAs: { fieldName: 'password', fieldDisplayName: 'password' } },
 };
 
-@reduxForm({ form: 'create-user-form', validate: values => validate(createUserValidationRules, values) })
+@(reduxForm({ form: 'create-user-form', validate: values => validate(createUserValidationRules, values) }) as any)
 class CreateUserForm extends React.PureComponent<ICreateUserFormProps> {
     render() {
         return (

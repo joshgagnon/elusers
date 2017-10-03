@@ -5,7 +5,9 @@ import { Form, ButtonToolbar, Button } from 'react-bootstrap';
 import { InputField } from '../form-fields';
 
 interface IAddressFormProps {
-    handleSubmit: (event: React.FormEvent<Form>) => void;
+    handleSubmit?: (event: React.FormEvent<Form>) => void;
+    onSubmit: (event: React.FormEvent<Form>) => void;
+    initialValues?: any
 }
 
 const validationRules: EL.IValidationFields = {
