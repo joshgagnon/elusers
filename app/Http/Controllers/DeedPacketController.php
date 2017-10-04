@@ -45,10 +45,7 @@ class DeedPacketController extends Controller
             abort(404);
         }
 
-        $deedPacket = $result[0];
-        $deedPacket->document_date = Carbon::parse($deedPacket->document_date)->format('d M Y');
-
-        return response()->json($deedPacket, 200);
+        return response()->json($result[0], 200);
     }
 
     /**
