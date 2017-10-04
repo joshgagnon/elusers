@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DeedPacketRecord;
 use App\Library\SQLFile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DeedPacketRecordController extends Controller
@@ -19,7 +20,7 @@ class DeedPacketRecordController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $query = new SQLFile('get_deed_packet_record', ['org_id' => $orgId, 'record_id' => $recordId]);
+        $query = new SQLFile('get_deed_record', ['org_id' => $orgId, 'record_id' => $recordId]);
         $result = $query->get();
 
         // 404 if no record
@@ -29,6 +30,7 @@ class DeedPacketRecordController extends Controller
 
         $record = $result[0];
         $record->document_date = Carbon::parse($record->document_date)->format('d M Y');
+        $record->destruction_date = Carbon::parse($record->destruction_date)->format('d M Y');
 
         return response()->json($record, 200);
     }
