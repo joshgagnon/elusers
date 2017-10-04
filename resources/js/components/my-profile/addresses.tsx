@@ -10,7 +10,7 @@ interface IAddressesProps {
     addresses: EL.Resource<EL.IAddress[]>;
 }
 
-@connect((state: EL.State) => ({ user: state.user }))
+@(connect((state: EL.State) => ({ user: state.user })) as any)
 @UserAddressesHOC()
 @PanelHOC('Addresses', [props => props.addresses])
 export default class Addresses extends React.PureComponent<IAddressesProps, EL.Stateless> {
@@ -19,7 +19,7 @@ export default class Addresses extends React.PureComponent<IAddressesProps, EL.S
             <div>
                 <Link to="/my-profile/addresses/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Add Address</Link>
                 <hr />
-                
+
                 {this.props.addresses.data.map(address => <Address key={address.id} address={address} />)}
             </div>
         );
@@ -33,7 +33,7 @@ interface IAddressProps {
 class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
     render() {
         const { address } = this.props;
-        
+
         return (
             <div>
                 <h3>{address.addressName} <Link to={`/my-profile/addresses/${address.id}/edit`}><Icon iconName="pencil-square-o" /></Link></h3>

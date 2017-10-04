@@ -32,4 +32,4 @@ class FormModal extends React.PureComponent<IFormModalProps, EL.Stateless> {
     }
 }
 
-export default connect(null)(FormModal);
+export default (connect(null) as any)(FormModal);

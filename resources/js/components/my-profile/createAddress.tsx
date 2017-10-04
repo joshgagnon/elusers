@@ -11,6 +11,7 @@ import { push } from 'react-router-redux';
 
 interface ICreateAddressProps {
     user: EL.User;
+    submit: (data: any, userId: number) => void
 }
 
 
