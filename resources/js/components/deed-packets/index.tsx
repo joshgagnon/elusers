@@ -60,7 +60,6 @@ class DeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: st
         };
     }
     render() {
-        // const deeds = this.props.deedPackets.data.filter(deed => deed.clientTitle.includes(this.state.searchValue));
         const packets = this.props.deedPackets.data;
 
         return (
@@ -77,8 +76,7 @@ class DeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: st
                     {packets.map(packet => {
                         const titleRow = (
                             <tr>
-                                <th>{packet.id}</th>
-                                <th colSpan={4}>{packet.title}</th>
+                                <th colSpan={5}>{packet.title}</th>
                                     <td>
                                         <ButtonToolbar>
                                             <Link to={`/deed-packets/${packet.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
@@ -95,7 +93,7 @@ class DeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: st
                                 <tr key={record.id}>
                                     <td>{record.id}</td>
                                     <td>{record.documentName}</td>
-                                    <td>{record.documentDate}</td>
+                                    <td>{formatDate(record.documentDate)}</td>
                                     <td>{record.matterId}</td>
                                     <td>{name(createdBy)}</td>
                                     <td>
