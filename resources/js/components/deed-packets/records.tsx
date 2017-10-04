@@ -10,10 +10,9 @@ import { DeedPacketRecordHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
 
 interface UnwrapperEditDeedRecordProps {
-    submit: (data: React.FormEvent<Form>) => void;
-    clients: EL.Resource<EL.Client[]>;
+    submit?: (data: React.FormEvent<Form>) => void;
     recordId: number;
-    record: EL.Resource<EL.DeedRecord>;
+    record?: EL.Resource<EL.DeedRecord>;
 }
 
 interface CreateDeedRecordProps {
@@ -55,7 +54,12 @@ export class EditDeedRecord extends React.PureComponent<{params: {recordId: numb
 }
 
 const deedRecordValidationRules: EL.IValidationFields = {
-    title: { name: 'title', required: true },
+    documentName: { name: 'Document name', required: true },
+    documentDate: { name: 'Document date', required: true, isDate: true },
+    parties: { name: 'Parties', required: true },
+    matterId: { name: 'Matter ID', required: true },
+    destructionDate: { name: 'Destruction date', required: false, isDate: true },
+    officeLocationId: { name: 'Office location', required: false },
 };
 
 interface DeedRecordFormProps {
