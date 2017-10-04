@@ -16,7 +16,8 @@ interface IEmergencyContactProps {
 }
 
 interface IEmergencyContactFormProps {
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit: (data: React.FormEvent<Form>) => void;
     initialValues: EL.IEmergencyContact;
 }
 
@@ -50,7 +51,7 @@ export default class EmergencyContact extends React.PureComponent<IEmergencyCont
     }
 }
 
-@reduxForm({ form: 'emergency-contact-form', validate: (values) => validate(emergencyContactValidationRules, values) })
+@(reduxForm({ form: 'emergency-contact-form', validate: (values) => validate(emergencyContactValidationRules, values) }) as any)
 class EmergencyContactForm extends React.PureComponent<IEmergencyContactFormProps, EL.Stateless> {
     render() {
         return (

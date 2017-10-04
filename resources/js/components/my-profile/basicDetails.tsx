@@ -13,8 +13,9 @@ interface IBasicDetailsProps {
 }
 
 interface IBasicDetailsFormProps {
-    user: EL.User;
-    handleSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit: (data: React.FormEvent<Form>) => void;
+    initialValues: EL.User;
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
@@ -31,7 +32,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     };
 }
 
-@connect((state: EL.State) => ({ user: state.user }), mapDispatchToProps)
+@(connect((state: EL.State) => ({ user: state.user }), mapDispatchToProps) as any)
 @PanelHOC('Basic Details')
 export default class BasicDetails extends React.PureComponent<IBasicDetailsProps, EL.Stateless> {
     render() {
@@ -41,7 +42,7 @@ export default class BasicDetails extends React.PureComponent<IBasicDetailsProps
     }
 }
 
-@reduxForm({ form: 'user-form', validate: values => validate(basicDetailsValidationRules, values) })
+@(reduxForm({ form: 'user-form', validate: values => validate(basicDetailsValidationRules, values) }) as any)
 class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.Stateless> {
     render() {
         return (

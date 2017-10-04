@@ -8,7 +8,7 @@ interface ILayoutProps {
     routes: any
 }
 
-@connect((state: EL.State) => ({ notifications: state.notifications, user: state.user }))
+@(connect((state: EL.State) => ({ notifications: state.notifications, user: state.user })) as any)
 export default class Layout extends React.PureComponent<ILayoutProps, {}> {
     render() {
         const fluid = this.props.routes.some(c => c.component.FLUID_CONTAINER);
