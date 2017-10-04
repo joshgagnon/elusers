@@ -24,4 +24,14 @@ class DeedPacket extends Model
     {
         return $this->belongsTo(User::class, 'created_by_user_id');
     }
+
+    /**
+     * Contact relationship: a deed packet belongs to many contacts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function contacts()
+    {
+        return $this->belongsToMany(Contact::class);
+    }
 }

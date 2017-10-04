@@ -1,5 +1,6 @@
 <?php
 
+use App\Contact;
 use App\DeedPacket;
 use App\DeedPacketRecord;
 use App\OfficeLocation;
@@ -18,6 +19,7 @@ class DeedPacketSeeder extends Seeder
     {
         $users = User::get();
         $officeLocations = OfficeLocation::get();
+        $contacts = Contact::get();
 
         $user1 = $users[0];
         $user2 = $users[1];
@@ -25,11 +27,14 @@ class DeedPacketSeeder extends Seeder
         $office1 = $officeLocations[0];
         $office2 = $officeLocations[1];
 
-
         $packet1 = DeedPacket::create(['created_by_user_id' => $user1->id, 'title' => 'Cook family trust']);
         $packet2 = DeedPacket::create(['created_by_user_id' => $user1->id, 'title' => 'Johnson family trust']);
         $packet3 = DeedPacket::create(['created_by_user_id' => $user2->id, 'title' => 'Bloy family trust']);
-        DeedPacket::create(['created_by_user_id' => $user2->id, 'title' => 'Martin family trust']);
+        $packet4 = DeedPacket::create(['created_by_user_id' => $user2->id, 'title' => 'Martin family trust']);
+
+        $packet1->contacts()->attach([1, 3, 4]);
+        $packet2->contacts()->attach([1]);
+        $packet4->contacts()->attach([2, 3, 4, 5]);
 
         $this->createRecord($user1->id, $packet1->id, 'Packet 1 doc 1', 'p1d1');
         $this->createRecord($user1->id, $packet1->id, 'Packet 1 doc 2', 'p1d2');

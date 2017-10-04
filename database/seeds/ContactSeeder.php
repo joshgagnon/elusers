@@ -32,5 +32,19 @@ class ContactSeeder extends Seeder
             'email' => 'mia@martin.com',
             'phone' => '021 333 3333',
         ]);
+
+        Contact::create([
+            'organisation_id' => 1,
+            'name' => 'Jack Johnson',
+            'email' => 'jack@johnson.com',
+            'phone' => '021 444 4444',
+        ]);
+
+        Contact::create([
+            'organisation_id' => 1,
+            'name' => 'Anne Greenstone',
+            'email' => 'anne@greenstone.com',
+            'phone' => '021 555 5555',
+        ]);
     }
 }
