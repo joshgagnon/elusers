@@ -3,26 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\DeedPacketRecord;
+use App\Library\SQLFile;
 use Illuminate\Http\Request;
 
 class DeedPacketRecordController extends Controller
 {
-    /**
-     * Get all deed packet records for the current organisation.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return mixed
-     */
-    public function all(Request $request)
-    {
-        $orgId = $request->user()->organisation_id;
-
-        $query = new SQLFile('all_deed_packet_records', ['org_id' => $orgId]);
-        $result = $query->get();
-
-        return $result;
-    }
-
     /**
      * Get a specific deed packet record.
      *

@@ -51,7 +51,6 @@ Route::group(['middleware' => 'auth'], function() {
     /**
      * Deed packet records
      */
-    Route::get('deed-packet-records', 'DeedPacketRecordController@all');
     Route::get('deed-packet-records/{recordId}', 'DeedPacketRecordController@get');
     Route::post('deed-packet-records', 'DeedPacketRecordController@create');
     Route::put('deed-packet-records/{record}', 'DeedPacketRecordController@update');
