@@ -6,9 +6,7 @@ import Users from '../components/users';
 
 import Contacts from '../components/contacts';
 
-import DeedPackets from '../components/deed-packets';
-import CreateDeedPacket from '../components/deed-packets/create';
-import EditDeedPacket from '../components/deed-packets/edit';
+import { ListDeedPackets, CreateDeedPacket, EditDeedPacket} from '../components/deed-packets';
 
 import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
@@ -53,7 +51,7 @@ const routes = (routeComponent: RouteComponent) => (
 
         <Route path="contacts" component={Contacts} />
 
-        <Route path="deeds" component={DeedPackets} />
+        <Route path="deeds" component={ListDeedPackets} />
         <Route path="deeds/create" component={CreateDeedPacket} />
         <Route path="deeds/:deedPacketId/edit" component={EditDeedPacket} />
 

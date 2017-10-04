@@ -18,8 +18,10 @@ FROM (
         packets.id,
         packets.title,
         packets.created_by_user_id,
-        json_agg(records.*) records
+        CASE WHEN COUNT(records.*) > 0 THEN json_agg(records.*) ELSE '[]'::json END AS records
     FROM deed_packets packets
-        JOIN records ON packets.id = records.deed_packet_id
+        LEFT JOIN records ON packets.id = records.deed_packet_id
+    WHERE
+        packets.deleted_at IS NULL
     GROUP BY packets.id, packets.title, packets.created_by_user_id
 ) q
