@@ -44,7 +44,7 @@ class DeedPacketController extends Controller
             abort(404);
         }
 
-        return response()->json($result[0], 200);
+        return $result[0]->packet;
     }
 
     /**
