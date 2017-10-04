@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Combobox, DatePicker, InputField } from '../form-fields';
+import { Combobox, DatePicker, InputField, SelectField } from '../form-fields';
 import { validate } from '../utils/validation';
 import { reduxForm } from 'redux-form';
 import { push } from 'react-router-redux';
@@ -45,7 +45,7 @@ interface DeedRecordFormProps {
 @PanelHOC('Edit Deed Packet Record', [(props: UnwrapperEditDeedRecordProps) => props.record, (props: UnwrapperEditDeedRecordProps) => props.offices])
 class UnwrapperEditDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
     render() {
-        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} saveButtonText="Save Deed Packet" officeNames={this.props.offices.data.map(office => office.name)} />;
+        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} saveButtonText="Save Deed Packet" offices={this.props.offices.data} />;
     }
 }
 
@@ -68,11 +68,16 @@ interface DeedRecordFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
-    officeNames: string[];
+    offices: EL.Office[];
 }
 
 class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
     render() {
+        const officeOptions = [
+            { value: null, text: '' },
+            ...this.props.offices.map(office => ({ value: office.id, text: office.name }))
+        ];
+
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <InputField name="documentName" label="Document Name" type="text" />
@@ -80,7 +85,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <InputField name="parties" label="Parties" type="text" />
                 <InputField name="matterId" label="Matter ID" type="text" />
                 <DatePicker name="destructionDate" label="Destruction Date" />
-                <Combobox name="officeLocationId" label="Location" data={this.props.officeNames} />
+                <SelectField name="officeLocationId" label="Office Locations" options={officeOptions} />
 
                 <hr />
 
