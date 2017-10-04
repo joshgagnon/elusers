@@ -30,23 +30,6 @@ const data = [{
     createdBy: 'testing',
 }];
 
-interface PacketProps {
-    packet: EL.DeedPacket;
-    users: EL.User[];
-}
-
-class Packet extends React.PureComponent<PacketProps> {
-    render() {
-        return (
-            <div>
-                {this.props.packet.title}
-
-                
-            </div>
-        )
-    }
-}
-
 
 @connect(undefined, {
     deleteDeedPacket: (deedPacketId: number) => deleteResource(`deed-packets/${deedPacketId}`)
@@ -124,7 +107,6 @@ interface CreateDeedPacketProps {
 interface DeedPacketFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
-    clientTitles: string[];
     saveButtonText: string;
 }
 
