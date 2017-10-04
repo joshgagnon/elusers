@@ -6,11 +6,12 @@ import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
 import { DeedPacketsHOC, DeedPacketHOC, UsersHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
-import { createResource, deleteResource, createNotification } from '../../actions';
+import { createResource, deleteResource, createNotification, updateResource } from '../../actions';
 import { name, formatDate } from '../utils';
 import { Combobox, DatePicker, InputField } from '../form-fields';
 import { validate } from '../utils/validation';
 import { reduxForm } from 'redux-form';
+import { push } from 'react-router-redux';
 
 interface DeedPacketsProps {
     users: EL.Resource<EL.User[]>;
@@ -199,7 +200,6 @@ interface UnwrapperEditDeedPacketProps {
 @PanelHOC('Edit Deed Packet', [(props: UnwrapperEditDeedPacketProps) => props.deedPacket])
 class UnwrapperEditDeedPacket extends React.PureComponent<UnwrapperEditDeedPacketProps> {
     render() {
-        const clientTitles = this.props.clients.data.map(client => client.title)
         return <EditDeedPacketForm onSubmit={this.props.submit} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
     }
 }
