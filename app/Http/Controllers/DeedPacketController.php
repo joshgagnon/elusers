@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Client;
 use App\DeedPacket;
 use App\Library\SQLFile;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DeedPacketController extends Controller
@@ -73,31 +72,31 @@ class DeedPacketController extends Controller
      * Update a deed packet.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\DeedPacket          $deedPacket
+     * @param \App\DeedPacket          $packet
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, DeedPacket $deedPacket)
+    public function update(Request $request, DeedPacket $packet)
     {
         $this->validate($request, DeedPacket::$validationRules);
 
         $data = $request->all();
 
-        $deedPacket->update([
+        $packet->update([
             'title' => $data['title'],
         ]);
 
-        return response()->json(['message' => 'Deed packet updated', 'deed_packet_id' => $deedPacket->id], 200);
+        return response()->json(['message' => 'Deed packet updated', 'deed_packet_id' => $packet->id], 200);
     }
 
     /**
-     * Delete a deed packet
+     * Delete a deed packet.
      *
-     * @param \App\DeedPacket $deedPacket
+     * @param \App\DeedPacket $packet
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeedPacket $deedPacket)
+    public function delete(DeedPacket $packet)
     {
-        $deedPacket->delete();
+        $packet->delete();
         return response()->json(['message' => 'Deed packet deleted.'], 200);
     }
 }
