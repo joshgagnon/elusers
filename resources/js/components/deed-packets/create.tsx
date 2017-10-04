@@ -11,7 +11,6 @@ import { ClientsHOC } from '../hoc/resourceHOCs';
 
 interface CreateDeedPacketProps {
     submit: (data: React.FormEvent<Form>) => void;
-    clients: EL.Resource<EL.Client[]>;
 }
 
 interface DeedPacketFormProps {
@@ -22,20 +21,14 @@ interface DeedPacketFormProps {
 }
 
 export const deedPacketValidationRules: EL.IValidationFields = {
-    clientTitle: { name: 'Client title', required: true },
-    documentDate: { name: 'Document date', required: true, isDate: true },
-    parties: { name: 'Parties', required: true },
-    matter: { name: 'Matter', required: true },
+    title: { name: 'title', required: true },
 };
 
 export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <Combobox name="clientTitle" label="Client Title" data={this.props.clientTitles} />
-                <DatePicker name="documentDate" label="Document Date" />
-                <InputField name="parties" label="Parties" type="text" />
-                <InputField name="matter" label="Matter" type="text" />
+                <InputField name="title" label="Title" type="text" />
 
                 <hr />
 
@@ -52,9 +45,6 @@ const CreateDeedPacketForm = (reduxForm({
     validate: values => validate(deedPacketValidationRules, values)
 })(DeedPacketForm) as any);
 
-
-
-
 @(connect(
     undefined,
     {
@@ -69,11 +59,9 @@ const CreateDeedPacketForm = (reduxForm({
         }
     }
 ) as any)
-@ClientsHOC()
-@PanelHOC('Create Deed Packet', [(props: CreateDeedPacketProps) => props.clients])
+@PanelHOC('Create Deed Packet')
 export default class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps> {
     render() {
-        const clientTitles = this.props.clients.data.map(client => client.title)
-        return <CreateDeedPacketForm onSubmit={this.props.submit} clientTitles={clientTitles} saveButtonText="Create Deed Packet" />;
+        return <CreateDeedPacketForm onSubmit={this.props.submit} saveButtonText="Create Deed Packet" />;
     }
 }
