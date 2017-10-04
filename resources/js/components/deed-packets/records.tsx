@@ -6,7 +6,7 @@ import { push } from 'react-router-redux';
 import { createResource, createNotification, updateResource } from '../../actions';
 import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { DeedPacketRecordHOC, OfficesHOC } from '../hoc/resourceHOCs';
+import { DeedPacketRecordHOC, OfficesHOC, DeedPacketsHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
 
 interface UnwrapperEditDeedRecordProps {
@@ -14,10 +14,13 @@ interface UnwrapperEditDeedRecordProps {
     recordId: number;
     record?: EL.Resource<EL.DeedRecord>;
     offices?: EL.Resource<EL.Office[]>;
+    deedPackets?: EL.Resource<EL.DeedPacket[]>;
 }
 
 interface CreateDeedRecordProps {
-
+    submit?: (data: React.FormEvent<Form>) => void;
+    offices?: EL.Resource<EL.Office[]>;
+    deedPackets?: EL.Resource<EL.DeedPacket[]>;
 }
 
 interface DeedRecordFormProps {
@@ -41,11 +44,16 @@ interface DeedRecordFormProps {
     })
 )
 @DeedPacketRecordHOC()
+@DeedPacketsHOC()
 @OfficesHOC()
-@PanelHOC('Edit Deed Packet Record', [(props: UnwrapperEditDeedRecordProps) => props.record, (props: UnwrapperEditDeedRecordProps) => props.offices])
+@PanelHOC('Edit Deed Record', [
+    (props: UnwrapperEditDeedRecordProps) => props.record,
+    (props: UnwrapperEditDeedRecordProps) => props.offices,
+    (props: UnwrapperEditDeedRecordProps) => props.deedPackets
+])
 class UnwrapperEditDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
     render() {
-        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} saveButtonText="Save Deed Packet" offices={this.props.offices.data} />;
+        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} deedPackets={this.props.deedPackets.data} saveButtonText="Save Deed Packet" offices={this.props.offices.data} />;
     }
 }
 
@@ -56,6 +64,7 @@ export class EditDeedRecord extends React.PureComponent<{params: {recordId: numb
 }
 
 const deedRecordValidationRules: EL.IValidationFields = {
+    deedPacketId: { name: 'Deed packet', required: true },
     documentName: { name: 'Document name', required: true },
     documentDate: { name: 'Document date', required: true, isDate: true },
     parties: { name: 'Parties', required: true },
@@ -69,10 +78,13 @@ interface DeedRecordFormProps {
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
     offices: EL.Office[];
+    deedPackets: EL.DeedPacket[];
 }
 
 class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
     render() {
+        const packetOptions = this.props.deedPackets.map(packet => ({ value: packet.id, text: packet.title }));
+
         const officeOptions = [
             { value: null, text: '' },
             ...this.props.offices.map(office => ({ value: office.id, text: office.name }))
@@ -80,6 +92,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
+                <SelectField name="deedPacketId" label="Deed Packet" options={packetOptions} />
                 <InputField name="documentName" label="Document Name" type="text" />
                 <DatePicker name="documentDate" label="Document Date" />
                 <InputField name="parties" label="Parties" type="text" />
@@ -101,3 +114,34 @@ const EditDeedRecordForm = reduxForm({
     form: 'edit-deed-record-form',
     validate: values => validate(deedRecordValidationRules, values)
 })(DeedRecordForm);
+
+const CreateDeedRecordForm = reduxForm({
+    form: 'create-deed-record-form',
+    validate: values => validate(deedRecordValidationRules, values)
+})(DeedRecordForm);
+
+@connect(
+    undefined,
+    {
+        submit: (data: React.FormEvent<Form>) => {
+            const url = `deed-packet-records`;
+            const meta: EL.Actions.Meta = {
+                onSuccess: [createNotification('Deed record created.'), (response) => push('/deeds')],
+                onFailure: [createNotification('Deed record creation failed. Please try again.', true)],
+            };
+
+            return createResource(url, data, meta)
+        }
+    }
+)
+@OfficesHOC()
+@DeedPacketsHOC()
+@PanelHOC('Create Deed Record', [
+    (props: UnwrapperEditDeedRecordProps) => props.offices,
+    (props: UnwrapperEditDeedRecordProps) => props.deedPackets
+])
+export class CreateDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
+    render() {
+        return <CreateDeedRecordForm onSubmit={this.props.submit} deedPackets={this.props.deedPackets.data} saveButtonText="Create Deed Record" offices={this.props.offices.data} />;
+    }
+}

@@ -49,9 +49,13 @@ class DeedPacketRecordController extends Controller
         $data = $request->all();
 
         $record = DeedPacketRecord::create([
+            'deed_packet_id'     => $data['deed_packet_id'],
             'document_date'      => Carbon::parse($data['document_date']),
+            'destruction_date'   => !empty($data['destruction_date']) ? Carbon::parse($data['destruction_date']) : null,
+            'document_name'      => $data['document_name'],
             'parties'            => $data['parties'],
-            'matter'             => $data['matter'],
+            'matter_id'          => $data['matter_id'],
+            'office_location_id' => !empty($data['office_location_id']) ? $data['office_location_id'] : null,
             'created_by_user_id' => $user->id,
         ]);
 
@@ -72,12 +76,13 @@ class DeedPacketRecordController extends Controller
         $data = $request->all();
 
         $record->update([
+            'deed_packet_id'     => $data['deed_packet_id'],
             'document_date'      => Carbon::parse($data['document_date']),
-            'destruction_date'   => Carbon::parse($data['destruction_date']),
+            'destruction_date'   => !empty($data['destruction_date']) ? Carbon::parse($data['destruction_date']) : null,
             'document_name'      => $data['document_name'],
             'parties'            => $data['parties'],
             'matter_id'          => $data['matter_id'],
-            'office_location_id' => $data['office_location_id'],
+            'office_location_id' => !empty($data['office_location_id']) ? $data['office_location_id'] : null,
         ]);
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $record->id], 200);

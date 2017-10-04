@@ -38,20 +38,21 @@ const data = [{
 @DeedPacketsHOC()
 @PanelHOC('Deed Packets', [(props: DeedPacketsProps) => props.deedPackets, (props: DeedPacketsProps) => props.users])
 export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: string}> {
-
     constructor(props: DeedPacketsProps) {
         super(props);
         this.state = {
             searchValue: ''
         };
     }
+
     render() {
         const packets = this.props.deedPackets.data;
 
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/deeds/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed Packet</Link>
+                    <Link to="/deeds/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed Packet</Link>
+                    <Link to="/deeds/records/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed Record</Link>
                 </ButtonToolbar>
 
                 <div>

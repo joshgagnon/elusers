@@ -16,7 +16,7 @@ class DeedPacket extends Model
     ];
 
     /**
-     * Created by relationship: a deed file was created by a user.
+     * Created by relationship: a deed packet was created by a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

@@ -9,21 +9,22 @@ class DeedPacketRecord extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['deed_file_id', 'created_by_user_id', 'document_name', 'document_date', 'destruction_date', 'parties', 'matter_id', 'archive_date', 'office_location_id', 'organisation_id'];
+    protected $fillable = ['deed_packet_id', 'created_by_user_id', 'document_name', 'document_date', 'destruction_date', 'parties', 'matter_id', 'archive_date', 'office_location_id', 'organisation_id'];
 
     protected $dates = ['document_date'];
 
     public static $validationRules = [
-        'document_name' => 'required',
-        'document_date' => 'required|date',
-        'parties' => 'required',
-        'matter_id' => 'required',
-        'destruction_date' => 'nullable|date',
+        'deed_packet_id'     => 'required|exists:deed_packets,id',
+        'document_name'      => 'required',
+        'document_date'      => 'required|date',
+        'parties'            => 'required',
+        'matter_id'          => 'required',
+        'destruction_date'   => 'nullable|date',
         'office_location_id' => 'nullable|exists:office_locations,id',
     ];
 
     /**
-     * Created by relationship: a deed file record was created by a user.
+     * Created by relationship: a deed packet record was created by a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
