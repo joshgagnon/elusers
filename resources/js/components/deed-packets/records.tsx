@@ -6,13 +6,14 @@ import { push } from 'react-router-redux';
 import { createResource, createNotification, updateResource } from '../../actions';
 import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { DeedPacketRecordHOC } from '../hoc/resourceHOCs';
+import { DeedPacketRecordHOC, OfficesHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
 
 interface UnwrapperEditDeedRecordProps {
     submit?: (data: React.FormEvent<Form>) => void;
     recordId: number;
     record?: EL.Resource<EL.DeedRecord>;
+    offices?: EL.Resource<EL.Office[]>;
 }
 
 interface CreateDeedRecordProps {
@@ -40,10 +41,11 @@ interface DeedRecordFormProps {
     })
 )
 @DeedPacketRecordHOC()
-@PanelHOC('Edit Deed Packet Record', [(props: UnwrapperEditDeedRecordProps) => props.record])
+@OfficesHOC()
+@PanelHOC('Edit Deed Packet Record', [(props: UnwrapperEditDeedRecordProps) => props.record, (props: UnwrapperEditDeedRecordProps) => props.offices])
 class UnwrapperEditDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
     render() {
-        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} saveButtonText="Save Deed Packet" />;
+        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} saveButtonText="Save Deed Packet" officeNames={this.props.offices.data.map(office => office.name)} />;
     }
 }
 
@@ -66,6 +68,7 @@ interface DeedRecordFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
+    officeNames: string[];
 }
 
 class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
@@ -77,7 +80,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <InputField name="parties" label="Parties" type="text" />
                 <InputField name="matterId" label="Matter ID" type="text" />
                 <DatePicker name="destructionDate" label="Destruction Date" />
-                <InputField name="officeLocationId" label="Office Location" type="text" />
+                <Combobox name="officeLocationId" label="Location" data={this.props.officeNames} />
 
                 <hr />
 

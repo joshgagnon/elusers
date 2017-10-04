@@ -70,6 +70,11 @@ declare global {
             phone: string;
         }
 
+        interface Office {
+            id: number;
+            name: string;
+        }
+
         export interface Resource<T> {
             status?: RequestStatus;
             data?: T;

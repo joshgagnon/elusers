@@ -91,4 +91,6 @@ export const DeedPacketHOC = () => HOCFactory({ location: (props) => `deed-packe
 
 export const DeedPacketRecordHOC = () => HOCFactory({ location: (props) => `deed-packet-records/${props.recordId}`, propsName: 'record' });
 
+export const OfficesHOC = () => HOCFactory({ location: (props) => 'office-locations', propsName: 'offices' });
+
 export const ContactsHOC = () => HOCFactory({ location: (props) => 'contacts', propsName: 'contacts' });
