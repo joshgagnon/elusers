@@ -84,7 +84,7 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {sear
                                     <td>{name(createdBy)}</td>
                                     <td>
                                         <ButtonToolbar>
-                                            <Link to={`/deeds/${packet.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
+                                            <Link to={`/deeds/records/${record.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
                                             <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(packet.id)}>Delete</Button>
                                         </ButtonToolbar>
                                     </td>

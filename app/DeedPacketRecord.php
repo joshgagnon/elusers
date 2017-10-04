@@ -14,13 +14,12 @@ class DeedPacketRecord extends Model
     protected $dates = ['document_date'];
 
     public static $validationRules = [
-        'created_by_user_id' => 'required|exists:users',
         'document_name' => 'required',
         'document_date' => 'required|date',
         'parties' => 'required',
         'matter_id' => 'required',
         'destruction_date' => 'nullable|date',
-        'office_location_id' => 'nullable|exists:office_locations',
+        'office_location_id' => 'nullable|exists:office_locations,id',
     ];
 
     /**

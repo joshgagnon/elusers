@@ -29,8 +29,8 @@ class DeedPacketRecordController extends Controller
         }
 
         $record = $result[0];
-        $record->document_date = Carbon::parse($record->document_date)->format('d M Y');
-        $record->destruction_date = Carbon::parse($record->destruction_date)->format('d M Y');
+        $record->document_date = $record->document_date ? Carbon::parse($record->document_date)->format('d M Y') : null;
+        $record->destruction_date = $record->destruction_date ? Carbon::parse($record->destruction_date)->format('d M Y') : null;
 
         return response()->json($record, 200);
     }
@@ -72,9 +72,12 @@ class DeedPacketRecordController extends Controller
         $data = $request->all();
 
         $record->update([
-            'document_date' => Carbon::parse($data['document_date']),
-            'parties'       => $data['parties'],
-            'matter'        => $data['matter'],
+            'document_date'      => Carbon::parse($data['document_date']),
+            'destruction_date'   => Carbon::parse($data['destruction_date']),
+            'document_name'      => $data['document_name'],
+            'parties'            => $data['parties'],
+            'matter_id'          => $data['matter_id'],
+            'office_location_id' => $data['office_location_id'],
         ]);
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $record->id], 200);

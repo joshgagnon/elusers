@@ -44,8 +44,7 @@ interface DeedRecordFormProps {
 @PanelHOC('Edit Deed Packet Record', [(props: UnwrapperEditDeedRecordProps) => props.record])
 class UnwrapperEditDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
     render() {
-        return <h1>here</h1>;
-        // return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
+        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} saveButtonText="Save Deed Packet" />;
     }
 }
 
@@ -74,6 +73,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <InputField name="parties" label="Parties" type="text" />
                 <InputField name="matterId" label="Matter ID" type="text" />
                 <DatePicker name="destructionDate" label="Destruction Date" />
+                <InputField name="officeLocationId" label="Office Location" type="text" />
 
                 <hr />
 
