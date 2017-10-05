@@ -6,8 +6,8 @@ import Users from '../components/users';
 
 import Contacts from '../components/contacts';
 
-import { ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deed-packets';
-import { EditDeedRecord, CreateDeedRecord } from '../components/deed-packets/records';
+import { ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
+import { EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
 
 import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
