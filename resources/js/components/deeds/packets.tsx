@@ -188,7 +188,7 @@ interface UnwrapperEditDeedPacketProps {
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-packets/${ownProps.deedPacketId}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed packet updated.')/*, (response) => push('/deeds')*/],
+                onSuccess: [createNotification('Deed packet updated.'), (response) => push('/deeds')],
                 onFailure: [createNotification('Deed packet update failed. Please try again.', true)],
             };
 
