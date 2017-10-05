@@ -194,7 +194,7 @@ interface UnwrapperEditDeedPacketProps {
                 onFailure: [createNotification('Deed packet update failed. Please try again.', true)],
             };
 
-            return dispatch(updateResource(url, data, meta))
+            return dispatch(updateResource(url, data, meta));
         }
     })
 ) as any)

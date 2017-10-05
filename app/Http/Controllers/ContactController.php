@@ -63,4 +63,32 @@ class ContactController extends Controller
 
         return response()->json(['message' => 'Contact created.', 'contact_id' => $contact->id], 201);
     }
+
+    /**
+     * Update a contact.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Contact             $contact
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, Contact $contact)
+    {
+        $this->validate($request, Contact::$validationRules);
+
+        $data = $request->all();
+
+        $contact->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+        ]);
+
+        return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
+    }
+
+    public function delete(Contact $contact)
+    {
+        $contact->delete();
+        return response()->json(['message' => 'Contact deleted.']);
+    }
 }

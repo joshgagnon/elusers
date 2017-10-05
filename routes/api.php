@@ -67,6 +67,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('contacts', 'ContactController@all');
     Route::get('contacts/{contactId}', 'ContactController@get');
     Route::post('contacts', 'ContactController@create');
+    Route::put('contacts/{contact}', 'ContactController@update');
+    Route::delete('contacts/{contact}', 'ContactController@delete');
 
     /**
      * CPDPR
