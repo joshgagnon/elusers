@@ -19,6 +19,15 @@ interface InputFieldProps extends FieldProps {
     type: string;
 }
 
+export interface SelectOption {
+    value: number | string;
+    text: string;
+}
+
+interface SelectFieldProps extends FieldProps {
+    options: SelectOption[];
+}
+
 export class Combobox extends React.PureComponent<ComboboxProps> {
     render() {
         return <ReduxField {...this.props} component={ComboboxComponent} />;
@@ -43,7 +52,7 @@ export class InputField extends React.PureComponent<InputFieldProps> {
     }
 }
 
-export class SelectField extends React.PureComponent<InputFieldProps> {
+export class SelectField extends React.PureComponent<SelectFieldProps> {
     render() {
         return <ReduxField {...this.props} component={SelectFieldComponent} />;
     }
