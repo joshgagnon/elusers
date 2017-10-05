@@ -9,6 +9,8 @@ import SelectFieldComponent from './selectFieldComponent';
 interface FieldProps {
     name: string;
     label: string;
+    showRemoveButton?: boolean;
+    onRemoveButtonClick?: () => void;
 }
 
 interface ComboboxProps extends FieldProps {

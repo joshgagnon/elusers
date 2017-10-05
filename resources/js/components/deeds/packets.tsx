@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { ButtonToolbar, Form, FormControl, Button } from 'react-bootstrap';
+import { ButtonToolbar, Form, FormControl, Button, Col, Row } from 'react-bootstrap';
 import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
-import { DeedPacketsHOC, DeedPacketHOC, UsersHOC } from '../hoc/resourceHOCs';
+import { DeedPacketsHOC, DeedPacketHOC, UsersHOC, ContactsHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { createResource, deleteResource, createNotification, updateResource } from '../../actions';
 import { name, formatDate } from '../utils';
-import { Combobox, DatePicker, InputField } from '../form-fields';
+import { Combobox, DatePicker, InputField, SelectField } from '../form-fields';
 import { validate } from '../utils/validation';
-import { reduxForm } from 'redux-form';
+import { reduxForm, FieldArray } from 'redux-form';
 import { push } from 'react-router-redux';
 
 interface DeedPacketsProps {
@@ -109,17 +109,33 @@ interface DeedPacketFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
+    contacts: EL.Contact[];
 }
 
 export const deedPacketValidationRules: EL.IValidationFields = {
     title: { name: 'title', required: true },
 };
 
+const renderContactsList = ({fields, meta, contactOptions}) => 
+    <div className="clearfix">
+        {fields.map((field, index) => <SelectField name={field} label={`Contact #${index + 1}`} options={contactOptions} showRemoveButton={true} onRemoveButtonClick={() => fields.remove(index)} />)}
+        
+        <Row>
+            <Col md={9} mdOffset={3}>
+                <Button onClick={() => fields.push(1)}>Add Contact</Button>
+            </Col>
+        </Row>
+    </div>
+
 export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
     render() {
+        const contactOptions = this.props.contacts.map(contact => ({ value: contact.id, text: contact.name }));
+
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <InputField name="title" label="Title" type="text" />
+
+                <FieldArray name="contactIds" label="Contacts" component={renderContactsList} contactOptions={contactOptions} />
 
                 <hr />
 
@@ -159,31 +175,36 @@ export class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps>
 
 
 interface UnwrapperEditDeedPacketProps {
-    submit: (data: React.FormEvent<Form>) => void;
-    clients: EL.Resource<EL.Client[]>;
+    submit?: (data: React.FormEvent<Form>) => void;
+    clients?: EL.Resource<EL.Client[]>;
     deedPacketId: number;
-    deedPacket: EL.Resource<EL.DeedPacket>;
+    deedPacket?: EL.Resource<EL.DeedPacket>;
+    contacts?: EL.Resource<EL.Contact[]>;
 }
 
-@connect(
+@(connect(
     undefined,
     (dispatch: Function, ownProps: { deedPacketId: number }) => ({
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-packets/${ownProps.deedPacketId}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed packet updated.'), (response) => push('/deeds')],
+                onSuccess: [createNotification('Deed packet updated.')/*, (response) => push('/deeds')*/],
                 onFailure: [createNotification('Deed packet update failed. Please try again.', true)],
             };
 
             return dispatch(updateResource(url, data, meta))
         }
     })
-)
+) as any)
 @DeedPacketHOC()
-@PanelHOC('Edit Deed Packet', [(props: UnwrapperEditDeedPacketProps) => props.deedPacket])
+@ContactsHOC()
+@PanelHOC('Edit Deed Packet', [
+    (props: UnwrapperEditDeedPacketProps) => props.deedPacket,
+    (props: UnwrapperEditDeedPacketProps) => props.contacts
+])
 class UnwrapperEditDeedPacket extends React.PureComponent<UnwrapperEditDeedPacketProps> {
     render() {
-        return <EditDeedPacketForm onSubmit={this.props.submit} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
+        return <EditDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
     }
 }
 

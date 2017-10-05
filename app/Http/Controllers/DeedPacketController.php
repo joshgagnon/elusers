@@ -87,6 +87,8 @@ class DeedPacketController extends Controller
             'title' => $data['title'],
         ]);
 
+        $packet->contacts()->sync($data['contact_ids']);
+
         return response()->json(['message' => 'Deed packet updated', 'deed_packet_id' => $packet->id], 200);
     }
 
