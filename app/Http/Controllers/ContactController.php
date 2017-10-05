@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    /**
+     * Get all contacts.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
     public function all(Request $request)
     {
         $orgId = $request->user()->organisation_id;
@@ -14,5 +20,47 @@ class ContactController extends Controller
         $contacts = Contact::where('organisation_id', $orgId)->get();
 
         return $contacts;
+    }
+
+    /**
+     * Get a contact.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function get(Request $request, $contactId)
+    {
+        $orgId = $request->user()->organisation_id;
+
+        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->first();
+
+        if (!$contact) {
+            abort(404);
+        }
+
+        return $contact;
+    }
+
+    /**
+     * Create a contact.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(Request $request)
+    {
+        $this->validate($request, Contact::$validationRules);
+
+        $user = $request->user();
+        $data = $request->all();
+
+        $contact = Contact::create([
+            'organisation_id' => $user->organisation_id,
+            'name'            => $data['name'],
+            'email'           => $data['email'],
+            'phone'           => $data['phone'],
+        ]);
+
+        return response()->json(['message' => 'Contact created.', 'contact_id' => $contact->id], 201);
     }
 }

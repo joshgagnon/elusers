@@ -8,6 +8,12 @@ class Contact extends Model
 {
     protected $fillable = ['name', 'email', 'phone', 'organisation_id'];
 
+    public static $validationRules = [
+        'name' => 'required',
+        'email' => 'required|email',
+        'phone' => 'required',
+    ];
+
     /**
      * Organisation relationship: a contact belongs to an organisation.
      *

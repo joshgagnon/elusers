@@ -4,7 +4,7 @@ import { Route, IndexRoute, RouteComponent } from 'react-router';
 import Home from '../components/home';
 import Users from '../components/users';
 
-import Contacts from '../components/contacts';
+import { Contacts, CreateContact } from '../components/contacts';
 
 import { ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
 import { EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
@@ -51,6 +51,7 @@ const routes = (routeComponent: RouteComponent) => (
         </Route>
 
         <Route path="contacts" component={Contacts} />
+        <Route path="contacts/create" component={CreateContact} />
 
         <Route path="deeds" component={ListDeedPackets} />
         <Route path="deeds/create" component={CreateDeedPacket} />
