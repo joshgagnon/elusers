@@ -12,7 +12,8 @@ WITH records AS (
         -- todo, remove packets where destruction date is before today
 )
 
-SELECT array_to_json(array_agg(row_to_json(q))) AS packets
+SELECT
+    CASE WHEN COUNT(q.*) > 0 THEN array_to_json(array_agg(row_to_json(q))) ELSE '[]'::json END AS packets
 FROM (
     SELECT
         packets.id,
