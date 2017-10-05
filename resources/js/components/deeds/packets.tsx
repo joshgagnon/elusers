@@ -46,7 +46,41 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {sear
     }
 
     render() {
-        const packets = this.props.deedPackets.data;
+        const searchValue = this.state.searchValue;
+
+        function isSearchMatch(value) {
+            return value.toLowerCase().includes(searchValue.toLowerCase());
+        }
+
+        const packets = this.props.deedPackets.data.filter(packet => {
+            if (searchValue === '') {
+                return true;
+            }
+
+            if (isSearchMatch(packet.title)) {
+                return true;
+            }
+
+            const records = packet.records;
+
+            for (let index = 0; index < records.length; index++) {
+                const record = records[index];
+
+                if (isSearchMatch(record.documentName)) {
+                    return true;
+                }
+
+                if (isSearchMatch(record.matterId)) {
+                    return true;
+                }
+
+                if (isSearchMatch(record.parties)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
 
         return (
             <div>
