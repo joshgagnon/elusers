@@ -67,6 +67,9 @@ class DeedPacketController extends Controller
             'created_by_user_id' => $user->id,
         ]);
 
+        $contactIds = !empty($data['contact_ids']) ? $data['contact_ids'] : [];
+        $deedPacket->contacts()->sync($contactIds);
+
         return response()->json(['message' => 'Deed packet created', 'deed_packet_id' => $deedPacket->id], 201);
     }
 
@@ -87,7 +90,8 @@ class DeedPacketController extends Controller
             'title' => $data['title'],
         ]);
 
-        $packet->contacts()->sync($data['contact_ids']);
+        $contactIds = !empty($data['contact_ids']) ? $data['contact_ids'] : [];
+        $packet->contacts()->sync($contactIds);
 
         return response()->json(['message' => 'Deed packet updated', 'deed_packet_id' => $packet->id], 200);
     }

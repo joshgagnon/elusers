@@ -103,6 +103,7 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {sear
 
 interface CreateDeedPacketProps {
     submit: (data: React.FormEvent<Form>) => void;
+    contacts?: EL.Resource<EL.Contact[]>;
 }
 
 interface DeedPacketFormProps {
@@ -118,7 +119,7 @@ export const deedPacketValidationRules: EL.IValidationFields = {
 
 const renderContactsList = ({fields, meta, contactOptions}) => 
     <div className="clearfix">
-        {fields.map((field, index) => <SelectField name={field} label={`Contact #${index + 1}`} options={contactOptions} showRemoveButton={true} onRemoveButtonClick={() => fields.remove(index)} />)}
+        {fields.map((field, index) => <SelectField key={index} name={field} label={`Contact #${index + 1}`} options={contactOptions} showRemoveButton={true} onRemoveButtonClick={() => fields.remove(index)} />)}
         
         <Row>
             <Col md={9} mdOffset={3}>
@@ -166,10 +167,11 @@ const CreateDeedPacketForm = (reduxForm({
         }
     }
 ) as any)
-@PanelHOC('Create Deed Packet')
+@ContactsHOC()
+@PanelHOC('Create Deed Packet', [(props: CreateDeedPacketProps) => props.contacts])
 export class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps> {
     render() {
-        return <CreateDeedPacketForm onSubmit={this.props.submit} saveButtonText="Create Deed Packet" />;
+        return <CreateDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} saveButtonText="Create Deed Packet" />;
     }
 }
 
