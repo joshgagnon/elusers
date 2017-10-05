@@ -39,12 +39,14 @@ class DeedPacketController extends Controller
         $query = new SQLFile('get_deed_packet', ['org_id' => $orgId, 'deed_packet_id' => $deedPacketId]);
         $result = $query->get();
 
+        $packet = json_decode($result[0]->packet)[0];
+
         // 404 if no record
-        if (count($result) === 0) {
+        if (count($packet) === 0) {
             abort(404);
         }
 
-        return $result[0]->packet;
+        return response()->json($packet);
     }
 
     /**
