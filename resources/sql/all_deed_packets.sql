@@ -1,10 +1,10 @@
 WITH records AS (
     SELECT
-        records.id, records.deed_packet_id, records.document_name, records.document_date, records.parties, records.matter_id, records.destruction_date, records.office_location_id, records.created_by_user_id
+        records.id, records.deed_packet_id, records.document_name, records.document_date, records.parties, records.matter_id, records.destruction_date, records.office_location_id, records.created_by_user_id, records.notes
 
     FROM deed_packet_records records
 
-        LEFT JOIN deed_packets packets ON records.deed_packet_id = packets.id
+    LEFT JOIN deed_packets packets ON records.deed_packet_id = packets.id
 
     WHERE
         packets.created_by_user_id IN (SELECT user_ids_in_org(:org_id))
