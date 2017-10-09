@@ -70,9 +70,9 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <InputField name="name" label="Name" type="text" required />
-                <InputField name="email" label="Email" type="email" required />
-                <InputField name="phone" label="Phone" type="text" required />
+                <InputField name="name" label="Name" type="text" />
+                <InputField name="email" label="Email" type="email" />
+                <InputField name="phone" label="Phone" type="text" />
 
                 <hr />
 
@@ -86,8 +86,8 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
 
 const contactValidationRules: EL.IValidationFields = {
     name: { name: 'Name', required: true },
-    email: { name: 'Email', required: true },
-    phone: { name: 'Phone', required: true },
+    email: { name: 'Email' },
+    phone: { name: 'Phone' },
 }
 
 const CreateContactForm = (reduxForm({

@@ -10,8 +10,7 @@ class Contact extends Model
 
     public static $validationRules = [
         'name' => 'required',
-        'email' => 'required|email',
-        'phone' => 'required',
+        'email' => 'nullable|email',
     ];
 
     /**
