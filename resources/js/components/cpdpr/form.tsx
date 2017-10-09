@@ -14,10 +14,10 @@ class CPDPRForm extends React.PureComponent<ICPDPRFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <DatePicker name="date" label="Date" />
-                <DurationField name="minutes" label="Duration" />
-                <InputField name="title" label="Title" type="text" />
-                <InputField name="reflection" label="Reflection" type="textarea" />
+                <DatePicker name="date" label="Date" required />
+                <DurationField name="minutes" label="Duration" required />
+                <InputField name="title" label="Title" type="text" required />
+                <InputField name="reflection" label="Reflection" type="textarea" required />
             </Form>
         );
     }
