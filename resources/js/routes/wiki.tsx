@@ -146,7 +146,7 @@ class WikiPageDetailsForm extends React.PureComponent<WrappedWikiPageEditFormPro
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <InputField name="title" label="Title" type="text" />
+                <InputField name="title" label="Title" type="text" required />
                 <InputField name="keywords" label="Keywords" type="text" />
                 <InputField name="categories" label="Categories" type="text"/>
                 <div className="text-center">
