@@ -12,7 +12,7 @@ class OfficeLocationSeeder extends Seeder
      */
     public function run()
     {
-        OfficeLocation::create(['name' => 'Silverdale', 'organisation_id' => 2]);
+        OfficeLocation::create(['name' => 'Silverdale', 'organisation_id' => 1]);
         OfficeLocation::create(['name' => 'Sandringham', 'organisation_id' => 1]);
     }
 }
