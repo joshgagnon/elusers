@@ -44,8 +44,8 @@ export class Contacts extends React.PureComponent<ContactsProps> {
                             <td>{contact.phone}</td>
                             <td>
                                 <ButtonToolbar>
-                                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-default">Edit</Link>
-                                    <Button bsStyle="danger" onClick={() => this.props.deleteContact(contact.id)}>Delete</Button>
+                                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
+                                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}>Delete</Button>
                                 </ButtonToolbar>
                             </td>
                         </tr>
