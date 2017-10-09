@@ -35,7 +35,7 @@ export class Contacts extends React.PureComponent<ContactsProps> {
                     <Link to="/contacts/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Create Contact</Link>
                 </ButtonToolbar>
 
-                <Table headings={HEADINGS}>
+                <Table headings={HEADINGS} lastColIsActions>
                     { this.props.contacts.data.map(contact => (
                         <tr key={contact.id}>
                             <td>{contact.id}</td>

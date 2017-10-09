@@ -152,6 +152,12 @@ table.table>tbody>tr>td {
     vertical-align: middle;
 }
 
+table.table {
+    th.actions {
+        min-width: 180px;
+    }
+}
+
 .panel h3 {
     margin: 5px 0;
     font-weight: 300;
