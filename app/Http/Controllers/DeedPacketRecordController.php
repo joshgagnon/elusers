@@ -57,6 +57,7 @@ class DeedPacketRecordController extends Controller
             'matter_id'          => $data['matter_id'],
             'office_location_id' => !empty($data['office_location_id']) ? $data['office_location_id'] : null,
             'created_by_user_id' => $user->id,
+            'notes'              => !empty($data['notes']) ? $data['notes'] : null,
         ]);
 
         return response()->json(['message' => 'Deed packet record created', 'record_id' => $record->id], 201);
@@ -83,6 +84,7 @@ class DeedPacketRecordController extends Controller
             'parties'            => $data['parties'],
             'matter_id'          => $data['matter_id'],
             'office_location_id' => !empty($data['office_location_id']) ? $data['office_location_id'] : null,
+            'notes'              => !empty($data['notes']) ? $data['notes'] : null,
         ]);
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $record->id], 200);
