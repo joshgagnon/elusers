@@ -70,9 +70,9 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <InputField name="name" label="Name" type="text" />
-                <InputField name="email" label="Email" type="email" />
-                <InputField name="phone" label="Phone" type="text" />
+                <InputField name="name" label="Name" type="text" required />
+                <InputField name="email" label="Email" type="email" required />
+                <InputField name="phone" label="Phone" type="text" required />
 
                 <hr />
 
