@@ -154,7 +154,7 @@ export const deedPacketValidationRules: EL.IValidationFields = {
 
 const renderContactsList = ({fields, meta, contactOptions}) => 
     <div className="clearfix">
-        {fields.map((field, index) => <SelectField key={index} name={field} label={`Contact #${index + 1}`} options={contactOptions} showRemoveButton={true} onRemoveButtonClick={() => fields.remove(index)} />)}
+        {fields.map((field, index) => <SelectField key={index} required name={field} label={`Contact #${index + 1}`} options={contactOptions} showRemoveButton={true} onRemoveButtonClick={() => fields.remove(index)} />)}
         
         <Row>
             <Col md={9} mdOffset={3}>
@@ -169,7 +169,7 @@ export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <InputField name="title" label="Title" type="text" />
+                <InputField name="title" label="Title" type="text" required />
 
                 <FieldArray name="contactIds" label="Contacts" component={renderContactsList} contactOptions={contactOptions} />
 

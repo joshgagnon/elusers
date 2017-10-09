@@ -92,11 +92,11 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <SelectField name="deedPacketId" label="Deed Packet" options={packetOptions} />
-                <InputField name="documentName" label="Document Name" type="text" />
-                <DatePicker name="documentDate" label="Document Date" />
-                <InputField name="parties" label="Parties" type="text" />
-                <InputField name="matterId" label="Matter ID" type="text" />
+                <SelectField name="deedPacketId" label="Deed Packet" options={packetOptions} required />
+                <InputField name="documentName" label="Document Name" type="text" required />
+                <DatePicker name="documentDate" label="Document Date" required />
+                <InputField name="parties" label="Parties" type="text" required />
+                <InputField name="matterId" label="Matter ID" type="text" required />
                 <DatePicker name="destructionDate" label="Destruction Date" />
                 <SelectField name="officeLocationId" label="Office Locations" options={officeOptions} />
                 <TextArea name="notes" label="Notes" />
