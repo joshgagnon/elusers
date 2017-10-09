@@ -60,7 +60,8 @@ declare global {
             matterId: string;
             destructionDate: string;
             createdByUserId: number;
-            office_location_id: number;
+            officeLocationId: number;
+            notes: string;
         }
 
         interface Contact {

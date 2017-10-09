@@ -99,6 +99,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <InputField name="matterId" label="Matter ID" type="text" />
                 <DatePicker name="destructionDate" label="Destruction Date" />
                 <SelectField name="officeLocationId" label="Office Locations" options={officeOptions} />
+                <InputField name="notes" label="Notes" type="textfield" />
 
                 <hr />
 
