@@ -12,6 +12,7 @@ interface FieldProps {
     label: string;
     showRemoveButton?: boolean;
     onRemoveButtonClick?: () => void;
+    required?: boolean;
 }
 
 interface ComboboxProps extends FieldProps {

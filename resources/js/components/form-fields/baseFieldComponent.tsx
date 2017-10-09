@@ -13,6 +13,7 @@ export interface IBaseFieldComponentProps extends IFieldComponentProps {
     children: any;
     showRemoveButton?: boolean;
     onRemoveButtonClick?: () => void;
+    required?: boolean;
 }
 
 export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps, EL.Stateless> {
@@ -29,7 +30,7 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
         const displayError = touched && error;
 
         return (
-            <FormGroup validationState={this.validationState(touched, error)}>
+            <FormGroup validationState={this.validationState(touched, error)} className={this.props.required ? 'required' : null}>
                 <Col componentClass={ControlLabel} md={3}>
                     {label}
                 </Col>
