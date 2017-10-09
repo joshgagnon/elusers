@@ -59,9 +59,9 @@ class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps, E
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit}  horizontal>
-                <InputField name="currentPassword" label="Current Password" type="password" />
-                <InputField name="newPassword" label="New Password" type="password" />
-                <InputField name="newPasswordConfirmation" label="New Password Confirmation" type="password" />
+                <InputField name="currentPassword" label="Current Password" type="password" required />
+                <InputField name="newPassword" label="New Password" type="password" required />
+                <InputField name="newPasswordConfirmation" label="New Password Confirmation" type="password" required />
 
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Change Password</Button>

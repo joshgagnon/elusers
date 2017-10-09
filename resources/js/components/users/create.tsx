@@ -32,8 +32,8 @@ class CreateUserForm extends React.PureComponent<ICreateUserFormProps> {
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <BasicDetailsFormFields />
 
-                <InputField name="password" label="Password" type="password" />
-                <InputField name="passwordConfirmation" label="Password Confirmation" type="password" />
+                <InputField name="password" label="Password" type="password" required />
+                <InputField name="passwordConfirmation" label="Password Confirmation" type="password" required />
 
                 <hr />
 
