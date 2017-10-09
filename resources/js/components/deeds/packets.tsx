@@ -97,7 +97,8 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {sear
                     {packets.map(packet => {
                         const titleRow = (
                             <tr>
-                                <th colSpan={5}>{packet.title}</th>
+                                <th>{packet.id}</th>
+                                <th colSpan={4}>{packet.title}</th>
                                     <td>
                                         <ButtonToolbar>
                                             <Link to={`/deeds/${packet.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
