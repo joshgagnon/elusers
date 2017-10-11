@@ -203,7 +203,7 @@ export class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps>
 }
 
 
-interface UnwrapperEditDeedPacketProps {
+interface EditDeedPacketProps {
     submit?: (data: React.FormEvent<Form>) => void;
     clients?: EL.Resource<EL.Client[]>;
     deedPacketId: number;
@@ -211,6 +211,7 @@ interface UnwrapperEditDeedPacketProps {
     contacts?: EL.Resource<EL.Contact[]>;
 }
 
+@MapParamsToProps(['deedPacketId'])
 @(connect(
     undefined,
     (dispatch: Function, ownProps: { deedPacketId: number }) => ({
@@ -228,18 +229,12 @@ interface UnwrapperEditDeedPacketProps {
 @DeedPacketHOC()
 @ContactsHOC()
 @PanelHOC('Edit Deed Packet', [
-    (props: UnwrapperEditDeedPacketProps) => props.deedPacket,
-    (props: UnwrapperEditDeedPacketProps) => props.contacts
+    (props: EditDeedPacketProps) => props.deedPacket,
+    (props: EditDeedPacketProps) => props.contacts
 ])
-class UnwrapperEditDeedPacket extends React.PureComponent<UnwrapperEditDeedPacketProps> {
+export class EditDeedPacket extends React.PureComponent<EditDeedPacketProps> {
     render() {
         return <EditDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
-    }
-}
-
-export class EditDeedPacket extends React.PureComponent<{params: {deedPacketId: number}}> {
-    render() {
-        return <UnwrapperEditDeedPacket deedPacketId={this.props.params.deedPacketId} />;
     }
 }
 
