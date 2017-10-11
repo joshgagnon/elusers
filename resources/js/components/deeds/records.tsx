@@ -4,7 +4,7 @@ import { validate } from '../utils/validation';
 import { reduxForm } from 'redux-form';
 import { push } from 'react-router-redux';
 import { createResource, createNotification, updateResource } from '../../actions';
-import { Form, Button, ButtonToolbar } from 'react-bootstrap';
+import { Form, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { DeedPacketRecordHOC, OfficesHOC, DeedPacketsHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
@@ -79,6 +79,7 @@ interface DeedRecordFormProps {
     saveButtonText: string;
     offices: EL.Office[];
     deedPackets: EL.DeedPacket[];
+    delete?: () => void;
 }
 
 class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
@@ -103,9 +104,13 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
 
                 <hr />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">{this.props.saveButtonText}</Button>
-                </ButtonToolbar>
+                <Row>
+                    <Col md={11}>
+                        <ButtonToolbar className="pull-right">
+                            <Button bsStyle="primary" type="submit">{this.props.saveButtonText}</Button>
+                        </ButtonToolbar>
+                    </Col>
+                </Row>
             </Form>
         );
     }

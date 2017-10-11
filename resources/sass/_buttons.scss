@@ -1,0 +1,18 @@
+.btn-secondary {
+    background: none;
+    font-weight: bold;
+    border-width: 0px;
+    margin: 1px;
+
+    &:hover {
+        background: none;
+        margin: 0px;
+        border-width: 1px;
+    }
+
+    &.btn-primary { color: $brand-primary; }
+    &.btn-success { color: $brand-success; }
+    &.btn-info { color: $brand-info; }
+    &.btn-warning { color: $brand-warning; }
+    &.btn-danger { color: $brand-danger; }
+}

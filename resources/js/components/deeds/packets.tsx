@@ -12,11 +12,11 @@ import { Combobox, DatePicker, InputField, SelectField } from '../form-fields';
 import { validate } from '../utils/validation';
 import { reduxForm, FieldArray } from 'redux-form';
 import { push } from 'react-router-redux';
+import MapParamsToProps from '../hoc/mapParamsToProps';
 
 interface DeedPacketsProps {
     users: EL.Resource<EL.User[]>;
     deedPackets: EL.Resource<EL.DeedPacket[]>;
-    deleteDeedPacket: (deedPacketId: number) => void;
 }
 
 const HEADINGS = ['ID', 'Document Name', 'Document Date', 'Matter ID', 'Created By', 'Actions'];
@@ -30,10 +30,6 @@ const data = [{
     createdBy: 'testing',
 }];
 
-
-@connect(undefined, {
-    deleteDeedPacket: (deedPacketId: number) => deleteResource(`deed-packets/${deedPacketId}`)
-})
 @UsersHOC()
 @DeedPacketsHOC()
 @PanelHOC('Deed Packets', [(props: DeedPacketsProps) => props.deedPackets, (props: DeedPacketsProps) => props.users])
@@ -99,12 +95,10 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {sear
                             <tr>
                                 <th>{packet.id}</th>
                                 <th colSpan={4}>{packet.title}</th>
-                                    <td>
-                                        <ButtonToolbar>
-                                            <Link to={`/deeds/${packet.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
-                                            <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(packet.id)}>Delete</Button>
-                                        </ButtonToolbar>
-                                    </td>
+                                <td className="actions">
+                                    <Link to={`/deeds/${packet.id}`}>View</Link>
+                                    <Link to={`/deeds/${packet.id}/edit`}>Edit</Link>
+                                </td>
                             </tr>
                         );
 
@@ -118,11 +112,9 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {sear
                                     <td>{formatDate(record.documentDate)}</td>
                                     <td>{record.matterId}</td>
                                     <td>{name(createdBy)}</td>
-                                    <td>
-                                        <ButtonToolbar>
-                                            <Link to={`/deeds/records/${record.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
-                                            <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteDeedPacket(packet.id)}>Delete</Button>
-                                        </ButtonToolbar>
+                                    <td className="actions">
+                                        <Link to={`/deeds/records/${record.id}`}>View</Link>
+                                        <Link to={`/deeds/records/${record.id}/edit`}>Edit</Link>
                                     </td>
                                 </tr>
                             );
@@ -255,3 +247,20 @@ const EditDeedPacketForm = reduxForm({
     form: 'edit-deed-packet-form',
     validate: values => validate(deedPacketValidationRules, values)
 })(DeedPacketForm);
+
+interface DeedPacketProps {
+    deedPacket: EL.Resource<EL.DeedPacket>;
+}
+
+@MapParamsToProps(['deedPacketId'])
+@DeedPacketHOC()
+@PanelHOC('Deed Packet', [(props: DeedPacketProps) => props.deedPacket])
+export class DeedPacket extends React.PureComponent<DeedPacketProps> {
+    render() {
+        return (
+            <div>
+                <h2>{this.props.deedPacket.data.title}</h2>
+            </div>
+        );
+    }
+}
