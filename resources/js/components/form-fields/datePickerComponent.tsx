@@ -7,7 +7,7 @@ import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 
 momentLocaliser(moment);
 
-export default class DatePickerField extends React.PureComponent<IFieldComponentProps, EL.Stateless> {
+export default class DatePickerField extends React.PureComponent<IFieldComponentProps> {
     render() {
         const { input: { onChange, onBlur, value } } = this.props;
 

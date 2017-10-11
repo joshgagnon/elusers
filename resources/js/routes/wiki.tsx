@@ -103,7 +103,7 @@ interface WrappedWikiPageEditFormProps extends WikiPageEditFormProps{
 }
 
 
-class Wiki extends React.PureComponent<WikiProps, EL.Stateless> {
+class Wiki extends React.PureComponent<WikiProps> {
     static readonly FLUID_CONTAINER = true;
     render() {
         return <div>
@@ -113,7 +113,7 @@ class Wiki extends React.PureComponent<WikiProps, EL.Stateless> {
 }
 
 
-class WikiRootPanel extends React.PureComponent<WikiRootProps, EL.Stateless> {
+class WikiRootPanel extends React.PureComponent<WikiRootProps> {
     render() {
         return <div>
             { (this.props.wiki.data || []).map((e: WikiData, i: number) => {
@@ -173,7 +173,7 @@ class WikiPageBodyForm extends React.PureComponent<{}> {
     }
 }
 
-class RenderMarkdown extends React.PureComponent<{ input: {value: string} }, EL.Stateless>{
+class RenderMarkdown extends React.PureComponent<{ input: {value: string} }>{
     render() {
         return <div className="markdown"><Markdown markup={ this.props.input.value } /></div>
     }
@@ -244,7 +244,7 @@ class EditWikiPageWithPath extends React.PureComponent<EditPageProps> {
 
 
 
-class Categories extends React.PureComponent<CategoryProps, EL.Stateless> {
+class Categories extends React.PureComponent<CategoryProps> {
     render() {
         return <Panel title={this.props.title}>
 
@@ -304,7 +304,7 @@ class WikiPageWithPath extends React.PureComponent<InjectedWikiPageWithPathProps
     }
 }
 
-class WikiPage extends React.PureComponent<WikiPageProps, EL.Stateless> {
+class WikiPage extends React.PureComponent<WikiPageProps> {
     render() {
         return <WikiPageWithPath wikiPath={this.props.routeParams.splat} edit={this.props.location.query.edit === 'true'} />
     }

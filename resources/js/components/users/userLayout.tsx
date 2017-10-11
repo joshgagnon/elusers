@@ -10,7 +10,7 @@ interface IUserLayoutProps {
     };
 }
 
-export default class UserLayout extends React.PureComponent<IUserLayoutProps, EL.Propless> {
+export default class UserLayout extends React.PureComponent<IUserLayoutProps> {
     render() {
         return (
             <Row>
@@ -31,7 +31,7 @@ interface IUserNavigationProps {
 }
 
 
-class UserNavigation extends React.Component<IUserNavigationProps, EL.Stateless> {
+class UserNavigation extends React.Component<IUserNavigationProps> {
     render() {
         const userId = this.props.userId;
 

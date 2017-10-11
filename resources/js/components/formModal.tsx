@@ -11,7 +11,7 @@ interface IFormModalProps {
     dispatch: Function;
 }
 
-class FormModal extends React.PureComponent<IFormModalProps, EL.Stateless> {
+class FormModal extends React.PureComponent<IFormModalProps> {
     render() {
         return (
             <Modal show={true} onHide={this.props.hide} backdrop="static">

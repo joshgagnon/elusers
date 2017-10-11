@@ -7,7 +7,7 @@ import { fullname } from '../utils';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import Panel from '../panel';
 
-export default class MyProfile extends React.PureComponent<EL.Propless, EL.Stateless> {
+export default class MyProfile extends React.PureComponent {
     render() {
         return (
             <Row>
@@ -26,7 +26,7 @@ export default class MyProfile extends React.PureComponent<EL.Propless, EL.State
     }
 }
 
-class MyProfileNavigation extends React.Component<EL.Propless, EL.Stateless> { // Cannot be pure component - or links wont update their ective state
+class MyProfileNavigation extends React.Component { // Cannot be pure component - or links wont update their ective state
     render() {
         return (
             <Panel title="Profile">
@@ -52,7 +52,7 @@ class MyProfileNavigation extends React.Component<EL.Propless, EL.Stateless> { /
     }
 }
 
-class MyOrganisationNavigation extends React.Component<EL.Propless, EL.Stateless> {
+class MyOrganisationNavigation extends React.Component {
     render() {
         return (
             <Panel title="Organisation">

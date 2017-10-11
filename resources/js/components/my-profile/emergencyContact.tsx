@@ -43,7 +43,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 @UserEmergencyContactHOC()
 @PanelHOC<IEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
-export default class EmergencyContact extends React.PureComponent<IEmergencyContactProps, EL.Stateless> {
+export default class EmergencyContact extends React.PureComponent<IEmergencyContactProps> {
     render() {
         return (
             <EmergencyContactForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.emergencyContact.data)} initialValues={this.props.emergencyContact.data} />
@@ -52,7 +52,7 @@ export default class EmergencyContact extends React.PureComponent<IEmergencyCont
 }
 
 @(reduxForm({ form: 'emergency-contact-form', validate: (values) => validate(emergencyContactValidationRules, values) }) as any)
-class EmergencyContactForm extends React.PureComponent<IEmergencyContactFormProps, EL.Stateless> {
+class EmergencyContactForm extends React.PureComponent<IEmergencyContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>

@@ -34,7 +34,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 @(connect((state: EL.State) => ({ user: state.user }), mapDispatchToProps) as any)
 @PanelHOC<IBasicDetailsProps>('Basic Details')
-export default class BasicDetails extends React.PureComponent<IBasicDetailsProps, EL.Stateless> {
+export default class BasicDetails extends React.PureComponent<IBasicDetailsProps> {
     render() {
         return (
             <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.user)} initialValues={this.props.user} />
@@ -43,7 +43,7 @@ export default class BasicDetails extends React.PureComponent<IBasicDetailsProps
 }
 
 @(reduxForm({ form: 'user-form', validate: values => validate(basicDetailsValidationRules, values) }) as any)
-class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps, EL.Stateless> {
+class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps> {
     render() {
         return (
             <Form onSubmit={ this.props.handleSubmit } horizontal>

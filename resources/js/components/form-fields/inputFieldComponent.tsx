@@ -6,7 +6,7 @@ interface IInputFieldComponentProps extends IFieldComponentProps {
     type: string;
 }
 
-export default class InputFieldComponent extends React.PureComponent<IInputFieldComponentProps, EL.Stateless> {
+export default class InputFieldComponent extends React.PureComponent<IInputFieldComponentProps> {
     render() {
         return (
             <BaseFieldComponent {...this.props}>

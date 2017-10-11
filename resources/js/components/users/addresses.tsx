@@ -50,7 +50,7 @@ export class ViewAddresses extends React.PureComponent<IViewAddressesProps> {
     }
 }
 
-class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
+class Address extends React.PureComponent<IAddressProps> {
     render() {
         const { address } = this.props;
 
@@ -109,7 +109,7 @@ export class EditAddress extends React.PureComponent<IEditAddressProps> {
     }
 ) as any)
 @PanelHOC<ICreateAddressProps>('Add Address')
-export class CreateAddress extends React.PureComponent<ICreateAddressProps, EL.Stateless> {
+export class CreateAddress extends React.PureComponent<ICreateAddressProps> {
     render() {
         return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.userId)} />;
     }

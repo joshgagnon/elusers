@@ -161,9 +161,6 @@ declare global {
             ERROR = 'ERROR'
         }
 
-        export interface Stateless { }
-        export interface Propless { }
-
         export interface ValidationErrors {
             [key: string]: string
         }

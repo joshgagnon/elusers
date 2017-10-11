@@ -35,7 +35,7 @@ interface ICPDPRTableRowProps {
     deleteRecord: () => void;
 }
 
-class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EL.Stateless> {
+class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps> {
     renderButtons() {
         if (this.props.record.editable) {
             const editLink = `cpdpr/${this.props.record.id}/edit`;
@@ -63,7 +63,7 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps, EL.Stateles
     }
 }
 
-class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EL.Stateless> {
+class CPDPRTable extends React.PureComponent<ICPDPRTableProps> {
     render() {
         const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours', 'Actions'];
 
@@ -94,7 +94,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EL.Stateless> {
 
 @UserCPDPRHOC()
 @PanelHOC<ICPDPRProps>('Professional Development Records', props => props.cpdpr)
-class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
+class UserCPDPR extends React.PureComponent<ICPDPRProps> {
     render() {
         const { cpdpr, yearEndingIndex, nextYear, prevYear } = this.props;
 
@@ -145,7 +145,7 @@ const ConnectedUserCPDPR = (connect(
 ) as any)(UserCPDPR);
 
 
-export default class CPDPRPage extends React.PureComponent<EL.Propless, EL.Stateless> {
+export default class CPDPRPage extends React.PureComponent {
     render() {
         return (
             <div>

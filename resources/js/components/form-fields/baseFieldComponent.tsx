@@ -16,7 +16,7 @@ export interface IBaseFieldComponentProps extends IFieldComponentProps {
     required?: boolean;
 }
 
-export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps, EL.Stateless> {
+export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
     validationState(touched: boolean, error: string) {
         if (!touched) {
             return null;

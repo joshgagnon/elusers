@@ -13,7 +13,7 @@ interface AddressesProps {
 @(connect((state: EL.State) => ({ user: state.user })) as any)
 @UserAddressesHOC()
 @PanelHOC<AddressesProps>('Addresses', props => props.addresses)
-export default class Addresses extends React.PureComponent<AddressesProps, EL.Stateless> {
+export default class Addresses extends React.PureComponent<AddressesProps> {
     render() {
         return (
             <div>
@@ -30,7 +30,7 @@ interface IAddressProps {
     address: EL.IAddress;
 }
 
-class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
+class Address extends React.PureComponent<IAddressProps> {
     render() {
         const { address } = this.props;
 

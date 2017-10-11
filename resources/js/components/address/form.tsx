@@ -19,7 +19,7 @@ const validationRules: EL.IValidationFields = {
 };
 
 @(reduxForm({ form: 'address-form', validate: (values) => validate(validationRules, values) }) as any)
-export default class AddressForm extends React.PureComponent<IAddressFormProps, EL.Stateless> {
+export default class AddressForm extends React.PureComponent<IAddressFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit}  horizontal>

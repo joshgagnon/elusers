@@ -15,7 +15,7 @@ export const basicDetailsValidationRules: EL.IValidationFields = {
     lawAdmissionDate: { name: 'Law admission date', isDate: true },
 };
 
-export class BasicDetailsFormFields extends React.PureComponent<EL.Propless, EL.Stateless> {
+export class BasicDetailsFormFields extends React.PureComponent {
     render() {
         return (
             <div>
@@ -46,7 +46,7 @@ export const emergencyContactValidationRules: EL.IValidationFields = {
     phone: { name: 'Phone', required: true }
 };
 
-export class EmergencyContactFormFields extends React.PureComponent<EL.Propless, EL.Stateless> {
+export class EmergencyContactFormFields extends React.PureComponent {
     render() {
         return (
             <div>

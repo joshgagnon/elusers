@@ -38,7 +38,7 @@ interface INotificationProps {
     children: string;
 }
 
-class Notification extends React.PureComponent<INotificationProps, EL.Stateless> {
+class Notification extends React.PureComponent<INotificationProps> {
     render() {
         return (
             <div className={`alert ${this.props.isError ? 'alert-danger' : 'alert-success'}`}>

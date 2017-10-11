@@ -39,7 +39,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 @PanelHOC<IChangePasswordProps>('Change Password')
-export default class ChangePassword extends React.PureComponent<IChangePasswordProps, EL.Stateless> {
+export default class ChangePassword extends React.PureComponent<IChangePasswordProps> {
     render() {
         return (
             <ChangePasswordForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.user)} />
@@ -55,7 +55,7 @@ const validationRules: EL.IValidationFields = {
 };
 
 @(reduxForm({ form: 'change-password-form', validate: (values) => validate(validationRules, values) }) as any)
-class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps, EL.Stateless> {
+class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit}  horizontal>

@@ -6,7 +6,7 @@ interface IComboboxComponentProps extends IFieldComponentProps {
     data: string[];
 }
 
-export default class ComboboxComponent extends React.PureComponent<IComboboxComponentProps, EL.Stateless> {
+export default class ComboboxComponent extends React.PureComponent<IComboboxComponentProps> {
     render() {
         const { data, ...baseFieldComponentProps } = this.props;
         return (

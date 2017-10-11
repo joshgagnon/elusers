@@ -34,7 +34,7 @@ interface IChangePasswordFormProps {
     }
 ) as any)
 @PanelHOC<IChangePasswordProps>('Change Password')
-export class ChangePassword extends React.PureComponent<IChangePasswordProps, EL.Stateless> {
+export class ChangePassword extends React.PureComponent<IChangePasswordProps> {
     render() {
         return <ChangePasswordForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.userId)} />;
     }
@@ -48,7 +48,7 @@ const validationRules: EL.IValidationFields = {
 };
 
 @(reduxForm({ form: 'change-password-form', validate: (values) => validate(validationRules, values) }) as any)
-class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps, EL.Stateless> {
+class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit}  horizontal>

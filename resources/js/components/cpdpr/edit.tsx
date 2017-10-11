@@ -18,7 +18,7 @@ interface IInjectedEditCPDPRRecordProps extends IEditCPDPRRecordProps {
 }
 
 @CPDPRHOC()
-class EditCPDPRRecord extends React.PureComponent<IInjectedEditCPDPRRecordProps, EL.Stateless> {
+class EditCPDPRRecord extends React.PureComponent<IInjectedEditCPDPRRecordProps> {
     render() {
         return (
             <FormModal title="Edit CPDPR Record" formName="cpdpr-form" hide={this.props.close}>

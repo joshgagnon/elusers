@@ -37,7 +37,7 @@ interface IEditBasicDetailsFormProps {
     initialValues: any
 }
 
-export class ViewBasicDetails extends React.PureComponent<IViewBasicDetailsProps, EL.Stateless> {
+export class ViewBasicDetails extends React.PureComponent<IViewBasicDetailsProps> {
     render() {
         return (
             <ViewBasicDetailsContents userId={this.props.params.userId} />
@@ -47,7 +47,7 @@ export class ViewBasicDetails extends React.PureComponent<IViewBasicDetailsProps
 
 @UserHOC()
 @PanelHOC<IViewBasicDetailsContentsProps>('Basic Details', props => props.user)
-export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDetailsContentsProps, EL.Stateless> {
+export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDetailsContentsProps> {
     render() {
         const user = this.props.user.data;
 
@@ -96,7 +96,7 @@ export class EditBasicDetails extends React.PureComponent<{params: {userId: numb
 ) as any)
 @UserHOC()
 @PanelHOC<IEditBasicDetailsProps>('Basic Details', props => props.user)
-class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps, EL.Stateless> {
+class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps> {
     render() {
         return (
             <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.userId)} initialValues={this.props.user.data} />
@@ -105,7 +105,7 @@ class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProp
 }
 
 @(reduxForm({ form: 'user-form', validate: values => validate(basicDetailsValidationRules, values) }) as any)
-class BasicDetailsForm extends React.PureComponent<IEditBasicDetailsFormProps, EL.Stateless> {
+class BasicDetailsForm extends React.PureComponent<IEditBasicDetailsFormProps> {
     render() {
         return (
             <Form onSubmit={ this.props.handleSubmit } horizontal>
