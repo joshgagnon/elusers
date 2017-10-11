@@ -36,7 +36,7 @@ interface ICreateAddressProps {
 
 @mapParamsToProps(['userId'])
 @UserAddressesHOC()
-@PanelHOC('Addresses', [props => props.addresses])
+@PanelHOC<IViewAddressesProps>('Addresses', props => props.addresses)
 export class ViewAddresses extends React.PureComponent<IViewAddressesProps> {
     render() {
         return (
@@ -84,7 +84,7 @@ class Address extends React.PureComponent<IAddressProps, EL.Stateless> {
 ) as any)
 @UserHOC()
 @UserAddressHOC()
-@PanelHOC('Edit Address', [props => props.address])
+@PanelHOC<IEditAddressProps>('Edit Address', props => props.address)
 export class EditAddress extends React.PureComponent<IEditAddressProps> {
     render() {
         return <AddressForm
@@ -108,7 +108,7 @@ export class EditAddress extends React.PureComponent<IEditAddressProps> {
         }
     }
 ) as any)
-@PanelHOC('Add Address')
+@PanelHOC<ICreateAddressProps>('Add Address')
 export class CreateAddress extends React.PureComponent<ICreateAddressProps, EL.Stateless> {
     render() {
         return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.userId)} />;

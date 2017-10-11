@@ -38,7 +38,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
-@PanelHOC('Change Password')
+@PanelHOC<IChangePasswordProps>('Change Password')
 export default class ChangePassword extends React.PureComponent<IChangePasswordProps, EL.Stateless> {
     render() {
         return (

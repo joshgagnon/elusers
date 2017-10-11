@@ -93,7 +93,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps, EL.Stateless> {
 
 
 @UserCPDPRHOC()
-@PanelHOC('Professional Development Records', [props => props.cpdpr])
+@PanelHOC<ICPDPRProps>('Professional Development Records', props => props.cpdpr)
 class UserCPDPR extends React.PureComponent<ICPDPRProps, EL.Stateless> {
     render() {
         const { cpdpr, yearEndingIndex, nextYear, prevYear } = this.props;

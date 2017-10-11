@@ -33,7 +33,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 @(connect((state: EL.State) => ({ user: state.user }), mapDispatchToProps) as any)
-@PanelHOC('Basic Details')
+@PanelHOC<IBasicDetailsProps>('Basic Details')
 export default class BasicDetails extends React.PureComponent<IBasicDetailsProps, EL.Stateless> {
     render() {
         return (

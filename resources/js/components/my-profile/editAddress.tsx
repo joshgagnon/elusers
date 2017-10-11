@@ -17,9 +17,7 @@ interface IEditAddressRouteMapperProps {
 
 interface IEditAddressProps {
     addressId: number;
-    address?: {
-        data: EL.IAddress
-    };
+    address?: EL.Resource<EL.IAddress>;
     submit?: (data: any, addressId: number) => void
 }
 
@@ -49,7 +47,7 @@ const mapDispatchToProps = {
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 @UserAddressHOC()
-@PanelHOC('Edit Address', [props => props.address])
+@PanelHOC<IEditAddressProps>('Edit Address', props => props.address)
 class EditAddress extends React.PureComponent<IEditAddressProps, EL.Stateless> {
     render() {
         return <AddressForm

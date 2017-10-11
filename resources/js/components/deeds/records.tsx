@@ -49,11 +49,7 @@ interface DeedRecordFormProps {
 @DeedPacketRecordHOC()
 @DeedPacketsHOC()
 @OfficesHOC()
-@PanelHOC('Edit Deed Record', [
-    (props: EditDeedRecordProps) => props.record,
-    (props: EditDeedRecordProps) => props.offices,
-    (props: EditDeedRecordProps) => props.deedPackets
-])
+@PanelHOC<EditDeedRecordProps>('Edit Deed Record', props => [props.record, props.offices, props.deedPackets])
 export class EditDeedRecord extends React.PureComponent<EditDeedRecordProps> {
     render() {
         return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} deedPackets={this.props.deedPackets.data} saveButtonText="Save Deed Packet" offices={this.props.offices.data} />;
@@ -139,10 +135,7 @@ const CreateDeedRecordForm = reduxForm({
 )
 @OfficesHOC()
 @DeedPacketsHOC()
-@PanelHOC('Create Deed Record', [
-    (props: CreateDeedRecordProps) => props.offices,
-    (props: CreateDeedRecordProps) => props.deedPackets
-])
+@PanelHOC<CreateDeedRecordProps>('Create Deed Record', props => [props.offices, props.deedPackets])
 export class CreateDeedRecord extends React.PureComponent<CreateDeedRecordProps> {
     render() {
         return <CreateDeedRecordForm onSubmit={this.props.submit} deedPackets={this.props.deedPackets.data} saveButtonText="Create Deed Record" offices={this.props.offices.data} />;

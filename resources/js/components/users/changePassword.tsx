@@ -33,7 +33,7 @@ interface IChangePasswordFormProps {
         }
     }
 ) as any)
-@PanelHOC('Change Password')
+@PanelHOC<IChangePasswordProps>('Change Password')
 export class ChangePassword extends React.PureComponent<IChangePasswordProps, EL.Stateless> {
     render() {
         return <ChangePasswordForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.userId)} />;

@@ -46,7 +46,7 @@ class CreateUserForm extends React.PureComponent<ICreateUserFormProps> {
 }
 
 
-@PanelHOC('Create User')
+@PanelHOC<ICreateUserProps>('Create User')
 class CreateUser extends React.PureComponent<ICreateUserProps> {
     render() {
         return <CreateUserForm onSubmit={this.props.submit} />;

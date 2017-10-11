@@ -2,17 +2,29 @@ import * as React from 'react';
 import Panel from '../panel';
 import Loading from '../loading';
 
-function PanelHOC(title?: string, resources?: any[]) {
-    return function<T extends React.Component<any, any>>(ComposedComponent: () => T) {
-        function PanelContent(props: T) {
+type ResourceObjectOrArray = EL.Resource<any>[] | EL.Resource<any>;
+
+function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TProps) => ResourceObjectOrArray) {
+    return function(ComposedComponent) {
+        function some(arrayOrObject, func) {
+            if (Array.isArray(arrayOrObject)) {
+                return arrayOrObject.some(func);
+            }
+
+            return func(arrayOrObject)
+        }
+
+        function PanelContent(props: TProps) {
             let status;
 
-            if (resources) {
-                if (resources.some(r => r(props).hasErrored)) {
+            if (checkResources) {
+                const resources = checkResources(props);
+                
+                if (some(resources, r => r.hasErrored)) {
                     return <h1>Error</h1>;
                 }
 
-                if (resources.some(r => r(props).isFetching)) {
+                if (some(resources, r => r.isFetching)) {
                     return <Loading />;
                 }
             }
@@ -20,7 +32,7 @@ function PanelHOC(title?: string, resources?: any[]) {
             return <ComposedComponent {...props} />;
         }
 
-        class PanelWithContent extends React.PureComponent<any, any> {
+        class PanelWithContent extends React.PureComponent<TProps, TState> {
             render() {
                 return (
                     <Panel title={title}>
@@ -31,7 +43,7 @@ function PanelHOC(title?: string, resources?: any[]) {
         }
 
         return PanelWithContent;
-    } as any
+    }
 }
 
 export default PanelHOC;

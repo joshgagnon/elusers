@@ -42,7 +42,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 @UserEmergencyContactHOC()
-@PanelHOC('Emergency Contact', [props => props.emergencyContact])
+@PanelHOC<IEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
 export default class EmergencyContact extends React.PureComponent<IEmergencyContactProps, EL.Stateless> {
     render() {
         return (

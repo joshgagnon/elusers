@@ -13,7 +13,7 @@ interface IUsersTableProps {
 
 const HEADINGS = ['Full Name', 'Preferred Name', 'Email', 'Actions'];
 
-@(PanelHOC('Users', [(props: IUsersTableProps) => props.users]) as any)
+PanelHOC<IUsersTableProps>('Users', props => props.users)
 class UsersTable extends React.PureComponent<IUsersTableProps, EL.Stateless> {
     render() {
         return (

@@ -19,6 +19,10 @@ interface DeedPacketsProps {
     deedPackets: EL.Resource<EL.DeedPacket[]>;
 }
 
+interface ListDeedPacketsState {
+    searchValue: string
+}
+
 const HEADINGS = ['ID', 'Document Name', 'Document Date', 'Matter ID', 'Created By', 'Actions'];
 
 const data = [{
@@ -32,8 +36,8 @@ const data = [{
 
 @UsersHOC()
 @DeedPacketsHOC()
-@PanelHOC('Deed Packets', [(props: DeedPacketsProps) => props.deedPackets, (props: DeedPacketsProps) => props.users])
-export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, {searchValue: string}> {
+@PanelHOC<DeedPacketsProps, ListDeedPacketsState>('Deed Packets', props => [props.deedPackets, props.users])
+export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListDeedPacketsState> {
     constructor(props: DeedPacketsProps) {
         super(props);
         this.state = {
@@ -195,7 +199,7 @@ const CreateDeedPacketForm = (reduxForm({
     }
 ) as any)
 @ContactsHOC()
-@PanelHOC('Create Deed Packet', [(props: CreateDeedPacketProps) => props.contacts])
+@PanelHOC<CreateDeedPacketProps>('Create Deed Packet', props => props.contacts)
 export class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps> {
     render() {
         return <CreateDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} saveButtonText="Create Deed Packet" />;
@@ -228,10 +232,7 @@ interface EditDeedPacketProps {
 ) as any)
 @DeedPacketHOC()
 @ContactsHOC()
-@PanelHOC('Edit Deed Packet', [
-    (props: EditDeedPacketProps) => props.deedPacket,
-    (props: EditDeedPacketProps) => props.contacts
-])
+@PanelHOC<EditDeedPacketProps>('Edit Deed Packet', props => [props.deedPacket, props.contacts])
 export class EditDeedPacket extends React.PureComponent<EditDeedPacketProps> {
     render() {
         return <EditDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
@@ -249,7 +250,7 @@ interface DeedPacketProps {
 
 @MapParamsToProps(['deedPacketId'])
 @DeedPacketHOC()
-@PanelHOC('Deed Packet', [(props: DeedPacketProps) => props.deedPacket])
+@PanelHOC<DeedPacketProps>('Deed Packet', props => props.deedPacket)
 export class DeedPacket extends React.PureComponent<DeedPacketProps> {
     render() {
         return (

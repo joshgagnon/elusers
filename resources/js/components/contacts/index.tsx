@@ -26,7 +26,7 @@ const HEADINGS = ['ID', 'Name', 'Email', 'Phone', 'Actions'];
     }
 ) as any)
 @ContactsHOC()
-@(PanelHOC('Contacts', [(props: ContactsProps) => props.contacts]) as any)
+@PanelHOC<ContactsProps>('Contacts', props => props.contacts)
 export class Contacts extends React.PureComponent<ContactsProps> {
     render() {
         return (
@@ -114,7 +114,7 @@ const EditContactForm = (reduxForm({
         }
     }
 ) as any)
-@PanelHOC('Create Contact')
+@PanelHOC<CreateContactProps>('Create Contact')
 export class CreateContact extends React.PureComponent<CreateContactProps> {
     render() {
         return <CreateContactForm onSubmit={this.props.submit} saveButtonText="Create Contact" />
@@ -148,7 +148,7 @@ interface UnwrappedEditContactProps {
     }
 ) as any)
 @ContactHOC()
-@PanelHOC('Edit Contact', [(props: UnwrappedEditContactProps) => props.contact])
+@PanelHOC<UnwrappedEditContactProps>('Edit Contact', props => props.contact)
 class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
     render() {
         return <EditContactForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, data)} saveButtonText="Save Contact" />

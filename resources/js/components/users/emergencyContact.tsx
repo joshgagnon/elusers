@@ -33,7 +33,7 @@ interface IEditEmergencyContactFormProps {
 
 @mapParamsToProps(['userId'])
 @UserEmergencyContactHOC()
-@PanelHOC('Emergency Contact', [props => props.emergencyContact])
+@PanelHOC<IViewEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
 export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyContactProps> {
     render() {
         const emergencyContact = this.props.emergencyContact.data;
@@ -80,7 +80,7 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
     }
 ) as any)
 @UserEmergencyContactHOC()
-@PanelHOC('Emergency Contact', [props => props.emergencyContact])
+@PanelHOC<IEditEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
 export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps> {
     render() {
         return (

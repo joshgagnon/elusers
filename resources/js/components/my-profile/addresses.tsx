@@ -6,14 +6,14 @@ import Icon from '../icon';
 import { Link } from 'react-router';
 import { formatAddress } from '../utils';
 
-interface IAddressesProps {
+interface AddressesProps {
     addresses: EL.Resource<EL.IAddress[]>;
 }
 
 @(connect((state: EL.State) => ({ user: state.user })) as any)
 @UserAddressesHOC()
-@PanelHOC('Addresses', [props => props.addresses])
-export default class Addresses extends React.PureComponent<IAddressesProps, EL.Stateless> {
+@PanelHOC<AddressesProps>('Addresses', props => props.addresses)
+export default class Addresses extends React.PureComponent<AddressesProps, EL.Stateless> {
     render() {
         return (
             <div>

@@ -15,7 +15,7 @@ interface ICreateAddressProps {
 }
 
 
-@PanelHOC('Add Address')
+@PanelHOC<ICreateAddressProps>('Add Address')
 class CreateAddress extends React.PureComponent<ICreateAddressProps, EL.Stateless> {
     render() {
         return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.user.id)} />;

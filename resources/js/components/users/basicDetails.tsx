@@ -46,7 +46,7 @@ export class ViewBasicDetails extends React.PureComponent<IViewBasicDetailsProps
 }
 
 @UserHOC()
-@PanelHOC('Basic Details', [props => props.user])
+@PanelHOC<IViewBasicDetailsContentsProps>('Basic Details', props => props.user)
 export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDetailsContentsProps, EL.Stateless> {
     render() {
         const user = this.props.user.data;
@@ -95,7 +95,7 @@ export class EditBasicDetails extends React.PureComponent<{params: {userId: numb
     }
 ) as any)
 @UserHOC()
-@PanelHOC('Basic Details', [props => props.user])
+@PanelHOC<IEditBasicDetailsProps>('Basic Details', props => props.user)
 class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps, EL.Stateless> {
     render() {
         return (
