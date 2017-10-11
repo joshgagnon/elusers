@@ -8,8 +8,9 @@ import { Form, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { DeedPacketRecordHOC, OfficesHOC, DeedPacketsHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
+import MapParamsToProps from '../hoc/mapParamsToProps';
 
-interface UnwrapperEditDeedRecordProps {
+interface EditDeedRecordProps {
     submit?: (data: React.FormEvent<Form>) => void;
     recordId: number;
     record?: EL.Resource<EL.DeedRecord>;
@@ -29,6 +30,7 @@ interface DeedRecordFormProps {
     saveButtonText: string;
 }
 
+
 @connect(
     undefined,
     (dispatch: Function, ownProps: { recordId: number }) => ({
@@ -43,23 +45,18 @@ interface DeedRecordFormProps {
         }
     })
 )
+@MapParamsToProps(['recordId'])
 @DeedPacketRecordHOC()
 @DeedPacketsHOC()
 @OfficesHOC()
 @PanelHOC('Edit Deed Record', [
-    (props: UnwrapperEditDeedRecordProps) => props.record,
-    (props: UnwrapperEditDeedRecordProps) => props.offices,
-    (props: UnwrapperEditDeedRecordProps) => props.deedPackets
+    (props: EditDeedRecordProps) => props.record,
+    (props: EditDeedRecordProps) => props.offices,
+    (props: EditDeedRecordProps) => props.deedPackets
 ])
-class UnwrapperEditDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
+export class EditDeedRecord extends React.PureComponent<EditDeedRecordProps> {
     render() {
         return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} deedPackets={this.props.deedPackets.data} saveButtonText="Save Deed Packet" offices={this.props.offices.data} />;
-    }
-}
-
-export class EditDeedRecord extends React.PureComponent<{params: {recordId: number}}> {
-    render() {
-        return <UnwrapperEditDeedRecord recordId={this.props.params.recordId} />;
     }
 }
 
@@ -143,10 +140,10 @@ const CreateDeedRecordForm = reduxForm({
 @OfficesHOC()
 @DeedPacketsHOC()
 @PanelHOC('Create Deed Record', [
-    (props: UnwrapperEditDeedRecordProps) => props.offices,
-    (props: UnwrapperEditDeedRecordProps) => props.deedPackets
+    (props: CreateDeedRecordProps) => props.offices,
+    (props: CreateDeedRecordProps) => props.deedPackets
 ])
-export class CreateDeedRecord extends React.PureComponent<UnwrapperEditDeedRecordProps> {
+export class CreateDeedRecord extends React.PureComponent<CreateDeedRecordProps> {
     render() {
         return <CreateDeedRecordForm onSubmit={this.props.submit} deedPackets={this.props.deedPackets.data} saveButtonText="Create Deed Record" offices={this.props.offices.data} />;
     }
