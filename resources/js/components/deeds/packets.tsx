@@ -220,7 +220,7 @@ interface EditDeedPacketProps {
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-packets/${ownProps.deedPacketId}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed packet updated.'), (response) => push('/deeds')],
+                onSuccess: [createNotification('Deed packet updated.'), (response) => push(`/deeds/${ownProps.deedPacketId}`)],
                 onFailure: [createNotification('Deed packet update failed. Please try again.', true)],
             };
 
@@ -245,8 +245,19 @@ const EditDeedPacketForm = reduxForm({
 interface DeedPacketProps {
     deedPacket: EL.Resource<EL.DeedPacket>;
     contacts: EL.Resource<EL.Contact[]>;
+    delete: (deedPacketId: number) => void;
 }
 
+@(connect(
+    undefined,
+    {
+        delete: (deedPacketId: number) =>
+            deleteResource(`deed-packets/${deedPacketId}`, {
+                onSuccess: [createNotification('Deed packet deleted.'), (response) => push('/deeds')],
+                onFailure: [createNotification('Deed packet deletion failed. Please try again.', true)],
+            })
+    }
+) as any)
 @MapParamsToProps(['deedPacketId'])
 @DeedPacketHOC()
 @ContactsHOC()
@@ -259,7 +270,10 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
 
         return (
             <div>
-                <Link to={`/deeds/${deedPacket.id}/edit`} className="btn btn-sm btn-default pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <ButtonToolbar className="pull-right">
+                    <Link to={`/deeds/${deedPacket.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
+                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.delete(deedPacket.id)}><Icon iconName="trash" />Delete</Button>
+                </ButtonToolbar>
                 <h3>{deedPacket.title} (#{deedPacket.id})</h3>
 
                 <h4>Contacts</h4>
