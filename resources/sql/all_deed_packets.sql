@@ -9,6 +9,7 @@ WITH records AS (
     WHERE
         packets.created_by_user_id IN (SELECT user_ids_in_org(:org_id))
         AND packets.deleted_at IS NULL
+        AND records.deleted_at IS NULL
         -- todo, remove packets where destruction date is before today
 )
 
@@ -19,9 +20,11 @@ FROM (
         packets.id,
         packets.title,
         packets.created_by_user_id,
-        CASE WHEN COUNT(records.*) > 0 THEN json_agg(records.*) ELSE '[]'::json END AS records
+        CASE WHEN COUNT(records.*) > 0 THEN json_agg(DISTINCT records.*) ELSE '[]'::json END AS records,
+        CASE WHEN COUNT(cdp.*) > 0 THEN array_agg(DISTINCT cdp.contact_id) ELSE '{}' END AS contact_ids
     FROM deed_packets packets
         LEFT JOIN records ON packets.id = records.deed_packet_id
+        LEFT JOIN contact_deed_packet cdp ON packets.id = cdp.deed_packet_id
     WHERE
         packets.deleted_at IS NULL
     GROUP BY packets.id, packets.title, packets.created_by_user_id
