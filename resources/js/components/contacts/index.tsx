@@ -11,6 +11,7 @@ import { push } from 'react-router-redux';
 import Icon from '../icon';
 import { connect } from 'react-redux';
 import { createNotification, createResource, updateResource, deleteResource } from '../../actions';
+import MapParamsToProps from '../hoc/mapParamsToProps';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
@@ -51,6 +52,34 @@ export class Contacts extends React.PureComponent<ContactsProps> {
                         </tr>
                     )) }
                 </Table>
+            </div>
+        );
+    }
+}
+
+interface ContactProps {
+    contact: EL.Resource<EL.Contact>;
+}
+
+@MapParamsToProps(['contactId'])
+@ContactHOC()
+@PanelHOC<ContactProps>('Contact', props => props.contact)
+export class Contact extends React.PureComponent<ContactProps> {
+    render() {
+        const contact = this.props.contact.data;
+
+        return (
+            <div>
+                <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <h3>{contact.name}</h3>
+
+                <dl>
+                    <dt>Email</dt>
+                    <dd>{contact.email}</dd>
+
+                    <dt>Phone</dt>
+                    <dd>{contact.phone}</dd>
+                </dl>
             </div>
         );
     }
