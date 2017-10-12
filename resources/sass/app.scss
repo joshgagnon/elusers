@@ -209,3 +209,13 @@ fieldset {
 td.actions a:not(:first-child) {
     margin-left: 8px;
 }
+
+.link-toolbar {
+    a:hover {
+        cursor: pointer;
+    }
+
+    a:not(:first-child) {
+        margin-left: 12px;
+    }
+}

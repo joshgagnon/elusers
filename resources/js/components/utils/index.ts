@@ -1,5 +1,7 @@
 import * as moment from 'moment';
 
+export const DATE_FORMAT = 'D MMM YYYY';
+
 // Infer the users full name
 export function fullname(user: EL.User) {
     return user.title // title
@@ -33,7 +35,7 @@ export function minutesToHoursString(minutes: number) {
 }
 
 export function formatDate(date: string) {
-    return moment(date).format('D MMM YYYY')
+    return moment(date).format(DATE_FORMAT)
 }
 
 export function getAddressSegments(address: EL.IAddress): string[] {

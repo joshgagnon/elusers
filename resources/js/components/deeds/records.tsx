@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Combobox, DatePicker, InputField, SelectField, TextArea } from '../form-fields';
 import { validate } from '../utils/validation';
-import { reduxForm } from 'redux-form';
+import { reduxForm, change } from 'redux-form';
 import { push } from 'react-router-redux';
 import { createResource, createNotification, updateResource, deleteResource } from '../../actions';
 import { Form, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
@@ -11,6 +11,8 @@ import PanelHOC from '../hoc/panelHOC';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { Link } from 'react-router';
 import Icon from '../icon';
+import { DATE_FORMAT } from '../utils';
+import * as moment from 'moment';
 
 interface EditDeedRecordProps {
     submit?: (data: React.FormEvent<Form>) => void;
@@ -75,9 +77,34 @@ interface DeedRecordFormProps {
     offices: EL.Office[];
     deedPackets: EL.DeedPacket[];
     delete?: () => void;
+    changeDestructionDate: (newDate: string) => void;
 }
 
+@(connect(
+    undefined,
+    (dispatch, ownProps: { form: string }) => ({
+        changeDestructionDate: (newDate: string) => dispatch(change(ownProps.form, 'destructionDate', newDate))
+    })
+) as any)
 class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
+    constructor(props: DeedRecordFormProps) {
+        super(props);
+        this.renderDestructionDateHelp = this.renderDestructionDateHelp.bind(this);
+    }
+
+    renderDestructionDateHelp() {
+        const sevenYears = moment().add(7, 'years').format(DATE_FORMAT);
+        const twelveYears = moment().add(12, 'years').format(DATE_FORMAT);
+
+        return (
+            <div className="link-toolbar">
+                <a onClick={() => this.props.changeDestructionDate(null)}>DND</a>
+                <a onClick={() => this.props.changeDestructionDate(sevenYears)}>7 years</a>
+                <a onClick={() => this.props.changeDestructionDate(twelveYears)}>12 years</a>
+            </div>
+        )
+    }
+
     render() {
         const packetOptions = this.props.deedPackets.map(packet => ({ value: packet.id, text: packet.title }));
 
@@ -93,7 +120,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <DatePicker name="documentDate" label="Document Date" required />
                 <InputField name="parties" label="Parties" type="text" required />
                 <InputField name="matterId" label="Matter ID" type="text" required />
-                <DatePicker name="destructionDate" label="Destruction Date" />
+                <DatePicker name="destructionDate" label="Destruction Date" help={this.renderDestructionDateHelp()} />
                 <SelectField name="officeLocationId" label="Office Locations" options={officeOptions} />
                 <TextArea name="notes" label="Notes" />
 

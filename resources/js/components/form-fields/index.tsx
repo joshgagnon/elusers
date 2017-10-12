@@ -13,6 +13,7 @@ interface FieldProps {
     showRemoveButton?: boolean;
     onRemoveButtonClick?: () => void;
     required?: boolean;
+    help?: JSX.Element;
 }
 
 interface ComboboxProps extends FieldProps {

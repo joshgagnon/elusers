@@ -14,6 +14,7 @@ export interface IBaseFieldComponentProps extends IFieldComponentProps {
     showRemoveButton?: boolean;
     onRemoveButtonClick?: () => void;
     required?: boolean;
+    help?: JSX.Element;
 }
 
 export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
@@ -37,6 +38,7 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
                 <Col md={8}>
                     {this.props.children}
                     { displayError && <HelpBlock>{error}</HelpBlock>}
+                    <HelpBlock>{this.props.help}</HelpBlock>
                 </Col>
                 {!!this.props.showRemoveButton &&
                     <Col md={1}>
