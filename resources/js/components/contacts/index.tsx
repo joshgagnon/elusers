@@ -15,17 +15,10 @@ import MapParamsToProps from '../hoc/mapParamsToProps';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
-    deleteContact: (contactId: number) => void;
 }
 
 const HEADINGS = ['ID', 'Name', 'Email', 'Phone', 'Actions'];
 
-@(connect(
-    undefined,
-    {
-        deleteContact: (contactId: number) => deleteResource(`contacts/${contactId}`)
-    }
-) as any)
 @ContactsHOC()
 @PanelHOC<ContactsProps>('Contacts', props => props.contacts)
 export class Contacts extends React.PureComponent<ContactsProps> {
@@ -43,11 +36,9 @@ export class Contacts extends React.PureComponent<ContactsProps> {
                             <td>{contact.name}</td>
                             <td><a href={ 'mailto:' + contact.email }>{contact.email}</a></td>
                             <td>{contact.phone}</td>
-                            <td>
-                                <ButtonToolbar>
-                                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-default btn-sm">Edit</Link>
-                                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}>Delete</Button>
-                                </ButtonToolbar>
+                            <td className="actions">
+                                <Link to={`/contacts/${contact.id}`}>View</Link>
+                                <Link to={`/contacts/${contact.id}/edit`}>Edit</Link>
                             </td>
                         </tr>
                     )) }
@@ -59,8 +50,19 @@ export class Contacts extends React.PureComponent<ContactsProps> {
 
 interface ContactProps {
     contact: EL.Resource<EL.Contact>;
+    deleteContact: (contactId: number) => void;
 }
 
+@(connect(
+    undefined,
+    {
+        deleteContact: (contactId: number) =>
+            deleteResource(`contacts/${contactId}`, {
+                onSuccess: [createNotification('Contact deleted.'), (response) => push('/contacts')],
+                onFailure: [createNotification('Contact deletion failed. Please try again.', true)],
+            })
+    }
+) as any)
 @MapParamsToProps(['contactId'])
 @ContactHOC()
 @PanelHOC<ContactProps>('Contact', props => props.contact)
@@ -70,7 +72,11 @@ export class Contact extends React.PureComponent<ContactProps> {
 
         return (
             <div>
-                <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <ButtonToolbar className="pull-right">
+                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />&nbsp;&nbsp;Delete</Button>
+                </ButtonToolbar>
+                
                 <h3>{contact.name}</h3>
 
                 <dl>
