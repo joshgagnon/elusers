@@ -140,7 +140,7 @@ const EditContactForm = (reduxForm({
         submit: (data: React.FormEvent<Form>) => {
             const url = 'contacts';
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Contact created.'), (response) => push('/contacts')],
+                onSuccess: [createNotification('Contact created.'), (response) => push(`/contacts/${response.contactId}`)],
                 onFailure: [createNotification('Contact creation failed. Please try again.', true)],
             };
 
