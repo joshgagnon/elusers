@@ -7,7 +7,7 @@ import Users from '../components/users';
 import { Contact, Contacts, CreateContact, EditContact } from '../components/contacts';
 
 import { DeedPacket, ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
-import { EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
+import { DeedRecord, EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
 
 import UserLayout from '../components/users/userLayout';
 import CreateUser from '../components/users/create';
@@ -60,8 +60,9 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="deeds/:deedPacketId" component={DeedPacket} />
         <Route path="deeds/:deedPacketId/edit" component={EditDeedPacket} />
 
-        <Route path="deeds/records/:recordId/edit" component={EditDeedRecord} />
         <Route path="deeds/records/create" component={CreateDeedRecord} />
+        <Route path="deeds/records/:recordId" component={DeedRecord} />
+        <Route path="deeds/records/:recordId/edit" component={EditDeedRecord} />
 
         <Route path='cpdpr' component={ CPDPRIndex }>
             <Route path='create' component={ CreateCPDPRRecord } />

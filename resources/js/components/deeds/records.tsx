@@ -3,12 +3,14 @@ import { Combobox, DatePicker, InputField, SelectField, TextArea } from '../form
 import { validate } from '../utils/validation';
 import { reduxForm } from 'redux-form';
 import { push } from 'react-router-redux';
-import { createResource, createNotification, updateResource } from '../../actions';
+import { createResource, createNotification, updateResource, deleteResource } from '../../actions';
 import { Form, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { DeedPacketRecordHOC, OfficesHOC, DeedPacketsHOC } from '../hoc/resourceHOCs';
 import PanelHOC from '../hoc/panelHOC';
 import MapParamsToProps from '../hoc/mapParamsToProps';
+import { Link } from 'react-router';
+import Icon from '../icon';
 
 interface EditDeedRecordProps {
     submit?: (data: React.FormEvent<Form>) => void;
@@ -31,7 +33,8 @@ interface DeedRecordFormProps {
 }
 
 
-@connect(
+@MapParamsToProps(['recordId'])
+@(connect(
     undefined,
     (dispatch: Function, ownProps: { recordId: number }) => ({
         submit: (data: React.FormEvent<Form>) => {
@@ -44,8 +47,7 @@ interface DeedRecordFormProps {
             return dispatch(updateResource(url, data, meta))
         }
     })
-)
-@MapParamsToProps(['recordId'])
+) as any)
 @DeedPacketRecordHOC()
 @DeedPacketsHOC()
 @OfficesHOC()
@@ -139,5 +141,69 @@ const CreateDeedRecordForm = reduxForm({
 export class CreateDeedRecord extends React.PureComponent<CreateDeedRecordProps> {
     render() {
         return <CreateDeedRecordForm onSubmit={this.props.submit} deedPackets={this.props.deedPackets.data} saveButtonText="Create Deed Record" offices={this.props.offices.data} />;
+    }
+}
+
+interface DeedRecordProps {
+    deedPackets: EL.Resource<EL.DeedPacket[]>;
+    record: EL.Resource<EL.DeedRecord>;
+    delete: (recordId: number, packetId: number) => void;
+    offices: EL.Resource<EL.Office[]>;
+}
+
+@(connect(
+    undefined,
+    {
+        delete: (recordId: number, packetId: number) =>
+            deleteResource(`deed-packet-records/${recordId}`, {
+                onSuccess: [createNotification('Deed record deleted.'), (response) => push(`/deeds/${packetId}`)],
+                onFailure: [createNotification('Deed record deletion failed. Please try again.', true)],
+            })
+    }
+) as any)
+@MapParamsToProps(['recordId'])
+@DeedPacketRecordHOC()
+@DeedPacketsHOC()
+@OfficesHOC()
+@PanelHOC<DeedRecordProps>('Deed Record', props => [props.record, props.deedPackets, props.offices])
+export class DeedRecord extends React.PureComponent<DeedRecordProps> {
+    render() {
+        const deedRecord = this.props.record.data;
+        const deedPackets = this.props.deedPackets.data;
+        const offices = this.props.offices.data;
+
+        return (
+            <div>
+                <ButtonToolbar className="pull-right">
+                    <Link to={`/deeds/records/${deedRecord.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
+                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.delete(deedRecord.id, deedRecord.deedPacketId)}><Icon iconName="trash" />Delete</Button>
+                </ButtonToolbar>
+
+                <h3>{deedRecord.documentName}</h3>
+
+                <dl>
+                    <dt>Deed Packet</dt>
+                    <dd>{deedPackets.find(packet => packet.id === deedRecord.deedPacketId).title}</dd>
+
+                    <dt>Document Date</dt>
+                    <dd>{deedRecord.documentDate}</dd>
+
+                    <dt>Parties</dt>
+                    <dd>{deedRecord.parties}</dd>
+
+                    <dt>Matter ID</dt>
+                    <dd>{deedRecord.matterId}</dd>
+
+                    <dt>Destruction Date</dt>
+                    <dd>{deedRecord.destructionDate || '—'}</dd>
+
+                    <dt>Location</dt>
+                    <dd>{(offices.find(office => office.id === deedRecord.officeLocationId) || { name: '—' }).name}</dd>
+
+                    <dt>Notes</dt>
+                    <dd>{deedRecord.notes || '—'}</dd>
+                </dl>
+            </div>
+        );
     }
 }

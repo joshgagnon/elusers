@@ -54,7 +54,7 @@ declare global {
 
         interface DeedRecord {
             id: number;
-            deedPacketId: string;
+            deedPacketId: number;
             documentName: string;
             documentDate: string;
             parties: string;
