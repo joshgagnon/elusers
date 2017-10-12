@@ -53,7 +53,7 @@ export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDeta
 
         return (
             <div>
-                <Link to={`/users/${user.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <Link to={`/users/${user.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />Edit</Link>
                 <h3>{fullname(user)} { user.preferredName ? `(${user.preferredName})` : '' }</h3>
 
                 <dl>

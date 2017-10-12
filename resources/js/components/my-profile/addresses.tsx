@@ -17,7 +17,7 @@ export default class Addresses extends React.PureComponent<AddressesProps> {
     render() {
         return (
             <div>
-                <Link to="/my-profile/addresses/create" className="btn btn-success"><Icon iconName="plus" />&nbsp;&nbsp;Add Address</Link>
+                <Link to="/my-profile/addresses/create" className="btn btn-success btn-icon-only"><Icon iconName="plus" />Add Address</Link>
                 <hr />
 
                 {this.props.addresses.data.map(address => <Address key={address.id} address={address} />)}
@@ -36,7 +36,7 @@ class Address extends React.PureComponent<IAddressProps> {
 
         return (
             <div>
-                <h3>{address.addressName} <Link to={`/my-profile/addresses/${address.id}/edit`}><Icon iconName="pencil-square-o" /></Link></h3>
+                <h3>{address.addressName} <Link className="btn-icon-only" to={`/my-profile/addresses/${address.id}/edit`}><Icon iconName="pencil-square-o" /></Link></h3>
 
                 <p>{formatAddress(address)}</p>
 

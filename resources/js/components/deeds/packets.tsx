@@ -85,8 +85,8 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/deeds/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed Packet</Link>
-                    <Link to="/deeds/records/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Create Deed Record</Link>
+                    <Link to="/deeds/create" className="btn btn-default"><Icon iconName="plus" />Create Deed Packet</Link>
+                    <Link to="/deeds/records/create" className="btn btn-default"><Icon iconName="plus" />Create Deed Record</Link>
                 </ButtonToolbar>
 
                 <div>

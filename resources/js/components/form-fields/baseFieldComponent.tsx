@@ -40,7 +40,7 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
                 </Col>
                 {!!this.props.showRemoveButton &&
                     <Col md={1}>
-                        <Button onClick={this.props.onRemoveButtonClick}><Icon iconName="trash-o" /></Button>
+                        <Button className="btn-icon-only" onClick={this.props.onRemoveButtonClick}><Icon iconName="trash-o" /></Button>
                     </Col>
                 }
             </FormGroup>

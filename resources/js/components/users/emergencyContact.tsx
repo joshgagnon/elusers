@@ -41,7 +41,7 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
         if (!emergencyContact.name && !emergencyContact.email && !emergencyContact.phone) {
             return (
                 <div>
-                    <Link to={`/users/${this.props.userId}/emergency-contact/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Create</Link>
+                    <Link to={`/users/${this.props.userId}/emergency-contact/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />Create</Link>
                     <h3>No Emergency Contact</h3>
                 </div>
             );
@@ -49,7 +49,7 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
 
         return (
             <div>
-                <Link to={`/users/${this.props.userId}/emergency-contact/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <Link to={`/users/${this.props.userId}/emergency-contact/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />Edit</Link>
                 <h3>{emergencyContact.name}</h3>
 
                 <dl>

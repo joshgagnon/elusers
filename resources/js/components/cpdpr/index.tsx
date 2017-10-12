@@ -112,10 +112,10 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps> {
                 <div className="row title-row">
                     <div className="col-xs-12">
                         <ButtonToolbar className="pull-right">
-                            <Link to="cpdpr/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Add</Link>
+                            <Link to="cpdpr/create" className="btn btn-default"><Icon iconName="plus" />Add</Link>
                             <ButtonGroup>
-                                <Button disabled={disablePrevButton} onClick={() => prevYear(yearEndingIndex)}><Icon iconName="arrow-left" /></Button>
-                                <Button disabled={disableNextButton} onClick={() => nextYear(yearEndingIndex)}><Icon iconName="arrow-right" /></Button>
+                                <Button className="btn-icon-only" disabled={disablePrevButton} onClick={() => prevYear(yearEndingIndex)}><Icon iconName="arrow-left" /></Button>
+                                <Button className="btn-icon-only" disabled={disableNextButton} onClick={() => nextYear(yearEndingIndex)}><Icon iconName="arrow-right" /></Button>
                             </ButtonGroup>
                         </ButtonToolbar>
 

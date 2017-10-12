@@ -26,7 +26,7 @@ export class Contacts extends React.PureComponent<ContactsProps> {
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/contacts/create" className="btn btn-default"><Icon iconName="plus" />&nbsp;&nbsp;Create Contact</Link>
+                    <Link to="/contacts/create" className="btn btn-default"><Icon iconName="plus" />Create Contact</Link>
                 </ButtonToolbar>
 
                 <Table headings={HEADINGS} lastColIsActions>
@@ -72,8 +72,8 @@ export class Contact extends React.PureComponent<ContactProps> {
         return (
             <div>
                 <ButtonToolbar className="pull-right">
-                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
-                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />&nbsp;&nbsp;Delete</Button>
+                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
+                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 
                 <h3>{contact.name}</h3>

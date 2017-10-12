@@ -17,6 +17,6 @@
     &.btn-danger { color: $brand-danger; }
 }
 
-.btn i.fa {
+.btn:not(.btn-icon-only) i.fa {
     margin-right: 8px;
 }
