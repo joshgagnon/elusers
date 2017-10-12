@@ -285,6 +285,12 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
 
                 <h4>Contacts</h4>
                 {contacts.map((contact, index) => <span key={contact.id}><Link to={`/contacts/${contact.id}`}>{contact.name}</Link>{(index !== contacts.length - 1) ? ',' : ''} </span>)}
+                {!contacts.length &&
+                    <div>
+                        <span>No contacts, </span>
+                        <Link to={`/deeds/${deedPacket.id}/edit`}>add some</Link>.
+                    </div>
+                }
 
                 <h4>Records</h4>
                 
