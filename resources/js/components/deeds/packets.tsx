@@ -283,6 +283,8 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
                 </ButtonToolbar>
                 <h3>{deedPacket.title} (#{deedPacket.id})</h3>
 
+                <hr />
+
                 <h4>Contacts</h4>
                 {contacts.map((contact, index) => <span key={contact.id}><Link to={`/contacts/${contact.id}`}>{contact.name}</Link>{(index !== contacts.length - 1) ? ',' : ''} </span>)}
                 {!contacts.length &&
@@ -292,26 +294,30 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
                     </div>
                 }
 
-                <h4>Records</h4>
-                
-                <Table headings={HEADINGS}>
-                        {deedPacket.records.map(record => {
-                            const createdBy = this.props.users.data.find(u => u.id === record.createdByUserId);
+                <hr />
 
-                            return (
-                                <tr key={record.id}>
-                                    <td>{record.id}</td>
-                                    <td>{record.documentName}</td>
-                                    <td>{formatDate(record.documentDate)}</td>
-                                    <td>{record.matterId}</td>
-                                    <td>{name(createdBy)}</td>
-                                    <td className="actions">
-                                        <Link to={`/deeds/records/${record.id}`}>View</Link>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                </Table>
+                <div>
+                    <h4>Records</h4>
+                    
+                    <Table headings={HEADINGS}>
+                            {deedPacket.records.map(record => {
+                                const createdBy = this.props.users.data.find(u => u.id === record.createdByUserId);
+
+                                return (
+                                    <tr key={record.id}>
+                                        <td>{record.id}</td>
+                                        <td>{record.documentName}</td>
+                                        <td>{formatDate(record.documentDate)}</td>
+                                        <td>{record.matterId}</td>
+                                        <td>{name(createdBy)}</td>
+                                        <td className="actions">
+                                            <Link to={`/deeds/records/${record.id}`}>View</Link>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                    </Table>
+                </div>
             </div>
         );
     }
