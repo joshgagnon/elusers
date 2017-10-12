@@ -49,6 +49,7 @@ declare global {
             title: string;
             createdByUserId: number;
             records: DeedRecord[];
+            contactIds: number[];
         }
 
         interface DeedRecord {

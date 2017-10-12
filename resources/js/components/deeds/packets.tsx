@@ -246,16 +246,26 @@ const EditDeedPacketForm = reduxForm({
 
 interface DeedPacketProps {
     deedPacket: EL.Resource<EL.DeedPacket>;
+    contacts: EL.Resource<EL.Contact[]>;
 }
 
 @MapParamsToProps(['deedPacketId'])
 @DeedPacketHOC()
-@PanelHOC<DeedPacketProps>('Deed Packet', props => props.deedPacket)
+@ContactsHOC()
+@PanelHOC<DeedPacketProps>('Deed Packet', props => [props.deedPacket, props.contacts])
 export class DeedPacket extends React.PureComponent<DeedPacketProps> {
     render() {
+        const deedPacket = this.props.deedPacket.data;
+
+        const contacts = deedPacket.contactIds.map(contactId => this.props.contacts.data.find(contact => contact.id === contactId))
+
         return (
             <div>
-                <h2>{this.props.deedPacket.data.title}</h2>
+                <Link to={`/deeds/${deedPacket.id}/edit`} className="btn btn-sm btn-default pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <h3>{deedPacket.title} (#{deedPacket.id})</h3>
+
+                <h4>Contacts</h4>
+                {contacts.map((contact, index) => <span key={contact.id}><Link to={`/contacts/${contact.id}`}>{contact.name}</Link>{(index !== contacts.length - 1) ? ',' : ''} </span>)}
             </div>
         );
     }
