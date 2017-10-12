@@ -125,7 +125,7 @@ const CreateDeedRecordForm = reduxForm({
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-packet-records`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed record created.'), (response) => push('/deeds')],
+                onSuccess: [createNotification('Deed record created.'), (response) => push(`/deeds/records/${response.recordId}`)],
                 onFailure: [createNotification('Deed record creation failed. Please try again.', true)],
             };
 
