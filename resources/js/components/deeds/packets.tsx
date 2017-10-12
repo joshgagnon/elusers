@@ -268,6 +268,11 @@ interface DeedPacketProps {
 export class DeedPacket extends React.PureComponent<DeedPacketProps> {
     render() {
         const deedPacket = this.props.deedPackets.data.find(packet => packet.id.toString() === this.props.deedPacketId);
+
+        if (!deedPacket) {
+            return <h1>Not Found</h1>
+        }
+
         const contacts = deedPacket.contactIds.map(contactId => this.props.contacts.data.find(contact => contact.id === contactId))
 
         return (
