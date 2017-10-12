@@ -70,7 +70,7 @@ export class Contact extends React.PureComponent<ContactProps> {
 
         return (
             <div>
-                <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
+                <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default pull-right"><Icon iconName="pencil-square-o" />&nbsp;&nbsp;Edit</Link>
                 <h3>{contact.name}</h3>
 
                 <dl>
