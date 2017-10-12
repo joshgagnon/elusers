@@ -299,24 +299,27 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
                 <div>
                     <h4>Records</h4>
                     
-                    <Table headings={HEADINGS}>
-                            {deedPacket.records.map(record => {
-                                const createdBy = this.props.users.data.find(u => u.id === record.createdByUserId);
+                    {!!deedPacket.records.length && 
+                        <Table headings={HEADINGS}>
+                                {deedPacket.records.map(record => {
+                                    const createdBy = this.props.users.data.find(u => u.id === record.createdByUserId);
 
-                                return (
-                                    <tr key={record.id}>
-                                        <td>{record.id}</td>
-                                        <td>{record.documentName}</td>
-                                        <td>{formatDate(record.documentDate)}</td>
-                                        <td>{record.matterId}</td>
-                                        <td>{name(createdBy)}</td>
-                                        <td className="actions">
-                                            <Link to={`/deeds/records/${record.id}`}>View</Link>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                    </Table>
+                                    return (
+                                        <tr key={record.id}>
+                                            <td>{record.id}</td>
+                                            <td>{record.documentName}</td>
+                                            <td>{formatDate(record.documentDate)}</td>
+                                            <td>{record.matterId}</td>
+                                            <td>{name(createdBy)}</td>
+                                            <td className="actions">
+                                                <Link to={`/deeds/records/${record.id}`}>View</Link>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                        </Table>
+                    }
+                    {!deedPacket.records.length && 'No records.'}
                 </div>
             </div>
         );
