@@ -37,7 +37,7 @@ interface DeedRecordFormProps {
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-packet-records/${ownProps.recordId}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Deed packet record updated.'), (response) => push('/deeds')],
+                onSuccess: [createNotification('Deed packet record updated.'), (response) => push(`/deeds/records/${ownProps.recordId}`)],
                 onFailure: [createNotification('Deed packet record update failed. Please try again.', true)],
             };
 
