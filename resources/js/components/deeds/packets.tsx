@@ -101,7 +101,6 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
                                 <th colSpan={4}>{packet.title}</th>
                                 <td className="actions">
                                     <Link to={`/deeds/${packet.id}`}>View</Link>
-                                    <Link to={`/deeds/${packet.id}/edit`}>Edit</Link>
                                 </td>
                             </tr>
                         );
@@ -118,7 +117,6 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
                                     <td>{name(createdBy)}</td>
                                     <td className="actions">
                                         <Link to={`/deeds/records/${record.id}`}>View</Link>
-                                        <Link to={`/deeds/records/${record.id}/edit`}>Edit</Link>
                                     </td>
                                 </tr>
                             );
