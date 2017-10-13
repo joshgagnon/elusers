@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Navbar from './navbar';
 import { connect } from 'react-redux';
+import Modals from './modals';
 
 interface ILayoutProps {
     user: EL.User;
@@ -9,7 +10,7 @@ interface ILayoutProps {
 }
 
 @(connect((state: EL.State) => ({ notifications: state.notifications, user: state.user })) as any)
-export default class Layout extends React.PureComponent<ILayoutProps, {}> {
+export default class Layout extends React.PureComponent<ILayoutProps> {
     render() {
         const fluid = this.props.routes.some(c => c.component.FLUID_CONTAINER);
 
@@ -28,6 +29,8 @@ export default class Layout extends React.PureComponent<ILayoutProps, {}> {
                         </Notification>)
                     }
                 </div>
+
+                <Modals />
             </div>
         );
     }

@@ -110,6 +110,7 @@ declare global {
             resources: StateResources;
             cpdpr: CPDPRState;
             notifications: INotifications;
+            modals: Modals;
         }
 
         export const enum ActionTypes {
@@ -151,6 +152,12 @@ declare global {
             REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION',
 
             /**
+             * Modals
+             */
+            SHOW_CONFIRM_ACTION_MODAL = 'SHOW_CONFIRM_ACTION_MODAL',
+            CLOSE_MODAL = 'CLOSE_MODAL',
+
+            /**
              * Initial testing
              */
             TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
@@ -184,6 +191,23 @@ declare global {
         interface ObjectOf<T> {
             [key: string]: T;
         }
+
+        export const enum ModalNames {
+            CONFIRM_ACTION = 'CONFIRM_ACTION',
+        }
+
+        interface ConfirmActionModal {
+            title: string;
+            content: string;
+            acceptButtonText: string;
+            declineButtonText: string;
+            onAccept: EL.Actions.Action;
+        }
+
+        interface Modals {
+            visible: string;
+            confirmActionModal?: ConfirmActionModal;
+        }
     }
 
     namespace EL.Actions {
@@ -198,7 +222,25 @@ declare global {
             [key: string]: any;
         }
 
+        interface ShowConfirmActionModalPayload {
+            title: string;
+            content: string;
+            acceptButtonText: string;
+            declineButtonText: string;
+            onAccept: EL.Actions.Action;
+        }
 
+        interface ShowConfirmActionModal extends Action {
+            payload: ShowConfirmActionModalPayload;
+        }
+
+        interface CloseModalPayload {
+            modalName: string;
+        }
+
+        interface CloseModal extends Action {
+            payload: CloseModalPayload;
+        }
 
         export interface CreateResourceAction extends Action {
             payload: {

@@ -71,3 +71,21 @@ export function createNotification(message: string, isError?: boolean): EL.Actio
         }
     }
 }
+
+/**
+ * Modals
+ */
+
+export function closeModal(payload: EL.Actions.CloseModalPayload): EL.Actions.CloseModal {
+    return {
+        type: EL.ActionTypes.CLOSE_MODAL,
+        payload
+    };
+}
+
+export function confirmAction(payload: EL.Actions.ShowConfirmActionModalPayload): EL.Actions.ShowConfirmActionModal {
+    return {
+        type: EL.ActionTypes.SHOW_CONFIRM_ACTION_MODAL,
+        payload
+    };
+}

@@ -3,7 +3,7 @@ import { Combobox, DatePicker, InputField, SelectField, TextArea } from '../form
 import { validate } from '../utils/validation';
 import { reduxForm, change } from 'redux-form';
 import { push } from 'react-router-redux';
-import { createResource, createNotification, updateResource, deleteResource } from '../../actions';
+import { createResource, createNotification, updateResource, deleteResource, confirmAction } from '../../actions';
 import { Form, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { DeedPacketRecordHOC, OfficesHOC, DeedPacketsHOC } from '../hoc/resourceHOCs';
@@ -181,11 +181,20 @@ interface DeedRecordProps {
 @(connect(
     undefined,
     {
-        delete: (recordId: number, packetId: number) =>
-            deleteResource(`deed-packet-records/${recordId}`, {
+        delete: (recordId: number, packetId: number) => {
+            const deleteAction = deleteResource(`deed-packet-records/${recordId}`, {
                 onSuccess: [createNotification('Deed record deleted.'), (response) => push(`/deeds/${packetId}`)],
                 onFailure: [createNotification('Deed record deletion failed. Please try again.', true)],
-            })
+            });
+
+            return confirmAction({
+                title: 'Confirm Delete Record',
+                content: 'Are you sure you want to delete this deed record?',
+                acceptButtonText: 'Delete',
+                declineButtonText: 'Cancel',
+                onAccept: deleteAction
+            });
+        }
     }
 ) as any)
 @MapParamsToProps(['recordId'])

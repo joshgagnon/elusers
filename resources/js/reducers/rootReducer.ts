@@ -6,6 +6,7 @@ import resourcesReducer from './resourcesReducer';
 import userReducer from './userReducer';
 import cpdprReducer from './cpdprReducer';
 import notificationsReducer from './notificationsReducer';
+import modals from './modalsReducer';
 
 const rootReducer = combineReducers({    
     routing,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     user: userReducer,
     cpdpr: cpdprReducer,
     notifications: notificationsReducer,
+    modals
 });
 
 export default rootReducer;
