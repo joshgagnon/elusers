@@ -139,12 +139,12 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
 }
 
 const EditDeedRecordForm = reduxForm({
-    form: 'edit-deed-record-form',
+    form: EL.FormNames.EDIT_DEED_RECORD,
     validate: values => validate(deedRecordValidationRules, values)
 })(DeedRecordForm);
 
 const CreateDeedRecordForm = reduxForm({
-    form: 'create-deed-record-form',
+    form: EL.FormNames.CREATE_DEED_RECORD,
     validate: values => validate(deedRecordValidationRules, values)
 })(DeedRecordForm);
 
