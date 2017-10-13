@@ -6,7 +6,7 @@ import Icon from '../icon';
 import PanelHOC from '../hoc/panelHOC';
 import { DeedPacketsHOC, DeedPacketHOC, UsersHOC, ContactsHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
-import { createResource, deleteResource, createNotification, updateResource } from '../../actions';
+import { createResource, deleteResource, createNotification, updateResource, confirmAction } from '../../actions';
 import { name, formatDate } from '../utils';
 import { Combobox, DatePicker, InputField, SelectField } from '../form-fields';
 import { validate } from '../utils/validation';
@@ -253,11 +253,20 @@ interface DeedPacketProps {
 @(connect(
     undefined,
     {
-        delete: (deedPacketId: number) =>
-            deleteResource(`deed-packets/${deedPacketId}`, {
+        delete: (deedPacketId: number) => {
+            const deleteAction = deleteResource(`deed-packets/${deedPacketId}`, {
                 onSuccess: [createNotification('Deed packet deleted.'), (response) => push('/deeds')],
                 onFailure: [createNotification('Deed packet deletion failed. Please try again.', true)],
-            })
+            });
+
+            return confirmAction({
+                title: 'Confirm Delete Deed Packet',
+                content: 'Are you sure you want to delete this deed packet?',
+                acceptButtonText: 'Delete',
+                declineButtonText: 'Cancel',
+                onAccept: deleteAction
+            });
+        }
     }
 ) as any)
 @MapParamsToProps(['deedPacketId'])

@@ -188,7 +188,7 @@ interface DeedRecordProps {
             });
 
             return confirmAction({
-                title: 'Confirm Delete Record',
+                title: 'Confirm Delete Deed Record',
                 content: 'Are you sure you want to delete this deed record?',
                 acceptButtonText: 'Delete',
                 declineButtonText: 'Cancel',

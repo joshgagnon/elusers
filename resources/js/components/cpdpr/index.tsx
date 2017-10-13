@@ -5,7 +5,7 @@ import { UserCPDPRHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHoursString } from '../utils';
 import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
-import { updateCPDPRYearIndex, deleteResource } from '../../actions/index';
+import { updateCPDPRYearIndex, deleteResource, confirmAction } from '../../actions/index';
 import * as moment from 'moment';
 import Icon from '../icon';
 import { Link } from 'react-router';
@@ -140,7 +140,17 @@ const ConnectedUserCPDPR = (connect(
     {
         prevYear: (currentIndex) => updateCPDPRYearIndex(currentIndex + 1),
         nextYear: (currentIndex) => updateCPDPRYearIndex(currentIndex - 1),
-        deleteRecord: (recordId: number) => deleteResource(`cpdpr/${recordId}`)
+        deleteRecord: (recordId: number) => {
+            const deleteAction = deleteResource(`cpdpr/${recordId}`);
+            
+            return confirmAction({
+                title: 'Confirm Delete CPDPR Record',
+                content: 'Are you sure you want to delete this CPDPR Record?',
+                acceptButtonText: 'Delete',
+                declineButtonText: 'Cancel',
+                onAccept: deleteAction
+            });
+        }
     }
 ) as any)(UserCPDPR);
 

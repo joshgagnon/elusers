@@ -10,7 +10,7 @@ import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
 import { connect } from 'react-redux';
-import { createNotification, createResource, updateResource, deleteResource } from '../../actions';
+import { createNotification, createResource, updateResource, deleteResource, confirmAction } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 
 interface ContactsProps {
@@ -55,11 +55,20 @@ interface ContactProps {
 @(connect(
     undefined,
     {
-        deleteContact: (contactId: number) =>
-            deleteResource(`contacts/${contactId}`, {
+        deleteContact: (contactId: number) => {
+            const deleteAction = deleteResource(`contacts/${contactId}`, {
                 onSuccess: [createNotification('Contact deleted.'), (response) => push('/contacts')],
                 onFailure: [createNotification('Contact deletion failed. Please try again.', true)],
-            })
+            });
+            
+            return confirmAction({
+                title: 'Confirm Delete Contact',
+                content: 'Are you sure you want to delete this contact?',
+                acceptButtonText: 'Delete',
+                declineButtonText: 'Cancel',
+                onAccept: deleteAction
+            });
+        }
     }
 ) as any)
 @MapParamsToProps(['contactId'])
