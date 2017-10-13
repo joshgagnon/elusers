@@ -134,12 +134,12 @@ const contactValidationRules: EL.IValidationFields = {
 }
 
 const CreateContactForm = (reduxForm({
-    form: 'create-contact-form',
+    form: EL.FormNames.CREATE_CONTACT_FORM,
     validate: values => validate(contactValidationRules, values)
 })(ContactForm) as any);
 
 const EditContactForm = (reduxForm({
-    form: 'edit-contact-form',
+    form: EL.FormNames.EDIT_CONTACT_FORM,
     validate: values => validate(contactValidationRules, values)
 })(ContactForm) as any);
 
