@@ -148,7 +148,7 @@ const CreateDeedRecordForm = reduxForm({
     validate: values => validate(deedRecordValidationRules, values)
 })(DeedRecordForm);
 
-@connect(
+@(connect(
     undefined,
     {
         submit: (data: React.FormEvent<Form>) => {
@@ -161,7 +161,7 @@ const CreateDeedRecordForm = reduxForm({
             return createResource(url, data, meta)
         }
     }
-)
+) as any)
 @OfficesHOC()
 @DeedPacketsHOC()
 @PanelHOC<CreateDeedRecordProps>('Create Deed Record', props => [props.offices, props.deedPackets])
