@@ -199,6 +199,8 @@ declare global {
         export const enum FormNames {
             CREATE_DEED_RECORD = 'CREATE_DEED_RECORD',
             EDIT_DEED_RECORD = 'EDIT_DEED_RECORD',
+            CREATE_DEED_PACKET = 'CREATE_DEED_PACKET',
+            EDIT_DEED_PACKET = 'EDIT_DEED_PACKET',
         }
 
         interface ConfirmActionModal {

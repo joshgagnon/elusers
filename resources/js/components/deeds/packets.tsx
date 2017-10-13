@@ -178,7 +178,7 @@ export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
 }
 
 const CreateDeedPacketForm = (reduxForm({
-    form: 'create-deed-packet-form',
+    form: EL.FormNames.CREATE_DEED_PACKET,
     validate: values => validate(deedPacketValidationRules, values)
 })(DeedPacketForm) as any);
 
@@ -238,7 +238,7 @@ export class EditDeedPacket extends React.PureComponent<EditDeedPacketProps> {
 }
 
 const EditDeedPacketForm = reduxForm({
-    form: 'edit-deed-packet-form',
+    form: EL.FormNames.EDIT_DEED_PACKET,
     validate: values => validate(deedPacketValidationRules, values)
 })(DeedPacketForm);
 
