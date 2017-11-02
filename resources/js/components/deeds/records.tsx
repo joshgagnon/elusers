@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Combobox, DatePicker, InputField, SelectField, TextArea } from '../form-fields';
+import { Combobox, DatePicker, InputField, SelectField, TextArea, DocumentList } from '../form-fields';
 import { validate } from '../utils/validation';
 import { reduxForm, change } from 'redux-form';
 import { push } from 'react-router-redux';
@@ -123,7 +123,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <DatePicker name="destructionDate" label="Destruction Date" help={this.renderDestructionDateHelp()} />
                 <SelectField name="officeLocationId" label="Office Locations" options={officeOptions} />
                 <TextArea name="notes" label="Notes" />
-
+                <DocumentList name="documents" label="Documents" />
                 <hr />
 
                 <Row>

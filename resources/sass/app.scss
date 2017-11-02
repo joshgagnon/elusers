@@ -219,3 +219,25 @@ td.actions a:not(:first-child) {
         margin-left: 12px;
     }
 }
+
+.dropzone{
+    border-width: 2px;
+    border-color: black;
+    border-style: dashed;
+    border-radius: 4px;
+    padding: 30px;
+    transition: all 0.5s;
+    &.accept{
+        border-style: solid;
+        border-color: #18BC9C;
+
+    }
+    &.reject{
+        border-style: solid;
+        background-color: #ffdddd;
+    }
+}
+
+.file-row{
+    margin-bottom:8px;
+}

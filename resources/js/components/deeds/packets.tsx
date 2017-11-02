@@ -146,10 +146,10 @@ export const deedPacketValidationRules: EL.IValidationFields = {
     title: { name: 'title', required: true },
 };
 
-const renderContactsList = ({fields, meta, contactOptions}) => 
+const renderContactsList = ({fields, meta, contactOptions}) =>
     <div className="clearfix">
         {fields.map((field, index) => <SelectField key={index} required name={field} label={`Contact #${index + 1}`} options={contactOptions} showRemoveButton={true} onRemoveButtonClick={() => fields.remove(index)} />)}
-        
+
         <Row>
             <Col md={9} mdOffset={3}>
                 <Button onClick={() => fields.push(1)}>Add Contact</Button>
@@ -237,7 +237,7 @@ export class EditDeedPacket extends React.PureComponent<EditDeedPacketProps> {
     }
 }
 
-const EditDeedPacketForm = reduxForm({
+const EditDeedPacketForm = reduxForm<any>({
     form: EL.FormNames.EDIT_DEED_PACKET,
     validate: values => validate(deedPacketValidationRules, values)
 })(DeedPacketForm);
@@ -307,8 +307,8 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
 
                 <div>
                     <h4>Records</h4>
-                    
-                    {!!deedPacket.records.length && 
+
+                    {!!deedPacket.records.length &&
                         <Table headings={HEADINGS}>
                                 {deedPacket.records.map(record => {
                                     const createdBy = this.props.users.data.find(u => u.id === record.createdByUserId);

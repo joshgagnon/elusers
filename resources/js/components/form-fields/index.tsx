@@ -6,6 +6,7 @@ import DurationComponent from './durationComponent';
 import InputFieldComponent from './inputFieldComponent';
 import SelectFieldComponent from './selectFieldComponent';
 import TextAreaComponent from './textArea';
+import DocumentComponent from './documents';
 
 interface FieldProps {
     name: string;
@@ -68,3 +69,11 @@ export class TextArea extends React.PureComponent<FieldProps> {
         return <ReduxField {...this.props} component={TextAreaComponent} />
     }
 }
+
+
+export class DocumentList extends React.PureComponent<FieldProps> {
+    render() {
+        return <ReduxField {...this.props} component={DocumentComponent} />
+    }
+}
+

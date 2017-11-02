@@ -2,6 +2,10 @@ import * as React from 'react';
 import Navbar from './navbar';
 import { connect } from 'react-redux';
 import Modals from './modals';
+import * as HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext, DropTarget } from 'react-dnd';
+
+
 
 interface ILayoutProps {
     user: EL.User;
@@ -9,6 +13,7 @@ interface ILayoutProps {
     routes: any
 }
 
+@DragDropContext(HTML5Backend)
 @(connect((state: EL.State) => ({ notifications: state.notifications, user: state.user })) as any)
 export default class Layout extends React.PureComponent<ILayoutProps> {
     render() {
@@ -17,11 +22,9 @@ export default class Layout extends React.PureComponent<ILayoutProps> {
         return (
             <div>
                 <Navbar />
-
                 <div className={fluid ? 'container-fluid' : 'container'}>
                     { this.props.children }
                 </div>
-
                 <div className="notifications">
                     {Object.keys(this.props.notifications).map(notificationKey =>
                         <Notification key={notificationKey} isError={this.props.notifications[notificationKey].isError}>
