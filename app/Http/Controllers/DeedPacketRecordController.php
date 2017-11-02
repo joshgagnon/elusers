@@ -63,13 +63,17 @@ class DeedPacketRecordController extends Controller
         ]);
 
         // Create records for any files uploaded
-//        $files = $request->file('file');
-//
-//        foreach ($files as $file) {
-//            $path = $file->store('deed-record-files');
-//
-//            // create file
-//        }
+        $files = $request->file('file');
+
+        foreach ($files as $file) {
+            $path = $file->store('deed-record-files');
+
+            // Create file
+            $deedRecord->files()->create([
+                'path'     => $path,
+                'filename' => $file->getClientOriginalName(),
+            ]);
+        }
 
         // Return successful response
         return response()->json(['message' => 'Deed packet record created', 'record_id' => $deedRecord->id], 201);
