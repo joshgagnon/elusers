@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
 Route::group(['middleware' => 'auth'], function() {
     /**
      * Users
@@ -57,8 +55,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('deed-packet-records', 'DeedPacketRecordController@create');
     Route::put('deed-packet-records/{record}', 'DeedPacketRecordController@update');
     Route::delete('deed-packet-records/{record}', 'DeedPacketRecordController@delete');
-
-    Route::post('deed-packet-records/{deedRecordId}/files', 'DeedRecordFileController@create');
 
     /**
      * Office locations

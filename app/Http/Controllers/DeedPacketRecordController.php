@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DeedPacketRecord;
+use App\DeedRecordFile;
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ class DeedPacketRecordController extends Controller
         $user = $request->user();
         $data = $request->all();
 
-        $record = DeedPacketRecord::create([
+        $deedRecord = DeedPacketRecord::create([
             'deed_packet_id'     => $data['deed_packet_id'],
             'document_date'      => Carbon::parse($data['document_date']),
             'destruction_date'   => !empty($data['destruction_date']) ? Carbon::parse($data['destruction_date']) : null,
@@ -60,7 +61,18 @@ class DeedPacketRecordController extends Controller
             'notes'              => !empty($data['notes']) ? $data['notes'] : null,
         ]);
 
-        return response()->json(['message' => 'Deed packet record created', 'record_id' => $record->id], 201);
+        $files = $request->file('file');
+
+        foreach ($files as $file) {
+            $path = $file->store('deed-record-files');
+
+            DeedRecordFile::create([
+                'deed_packet_record_id' => $deedRecord->id,
+                'path'                  => $path,
+            ]);
+        }
+
+        return response()->json(['message' => 'Deed packet record created', 'record_id' => $deedRecord->id], 201);
     }
 
     /**
@@ -98,7 +110,16 @@ class DeedPacketRecordController extends Controller
      */
     public function delete(DeedPacketRecord $record)
     {
+        // Delete all files
+        $files = DeedRecordFile::where('deed_packet_record_id', $record->id)->get();
+
+        foreach ($files as $file) {
+            $file->delete();
+        }
+
+        // Delete the record itself
         $record->delete();
+
         return response()->json(['message' => 'Deed packet record deleted.'], 200);
     }
 }
