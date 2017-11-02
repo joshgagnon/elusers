@@ -13,7 +13,7 @@ import { Link } from 'react-router';
 import Icon from '../icon';
 import { DATE_FORMAT } from '../utils';
 import * as moment from 'moment';
-import * as FormData from 'form-data';
+
 
 interface EditDeedRecordProps {
     submit?: (data: React.FormEvent<Form>) => void;
@@ -113,7 +113,6 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
             { value: null, text: '' },
             ...this.props.offices.map(office => ({ value: office.id, text: office.name }))
         ];
-
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <SelectField name="deedPacketId" label="Deed Packet" options={packetOptions} required />
@@ -167,7 +166,11 @@ const CreateDeedRecordForm = reduxForm({
 @PanelHOC<CreateDeedRecordProps>('Create Deed Record', props => [props.offices, props.deedPackets])
 export class CreateDeedRecord extends React.PureComponent<CreateDeedRecordProps> {
     render() {
-        return <CreateDeedRecordForm onSubmit={this.props.submit} deedPackets={this.props.deedPackets.data} saveButtonText="Create Deed Record" offices={this.props.offices.data} />;
+        const initialValues : any = {};
+        if(this.props.deedPackets.data && this.props.deedPackets.data.length){
+            initialValues.deedPacketId = this.props.deedPackets.data[0].id;
+        }
+        return <CreateDeedRecordForm onSubmit={this.props.submit} deedPackets={this.props.deedPackets.data} saveButtonText="Create Deed Record" offices={this.props.offices.data} initialValues={initialValues}/>;
     }
 }
 
