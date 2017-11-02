@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DeedPacketRecord;
+use App\DeedRecordFile;
 use Illuminate\Http\Request;
 
 class DeedRecordFileController extends Controller
@@ -11,6 +11,11 @@ class DeedRecordFileController extends Controller
     {
         $path = $request->file('file')->store('deed-record-files');
 
-        return $path;
+        $deedRecordFile = DeedRecordFile::create([
+            'deed_packet_record_id' => $deedRecordId,
+            'path' => $path
+        ]);
+
+        return response()->json(['message' => 'Deed packet record created', 'deed_record_file_id' => $deedRecordFile->id], 201);
     }
 }
