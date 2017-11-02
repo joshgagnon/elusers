@@ -49,6 +49,7 @@ class DeedPacketRecordController extends Controller
         $user = $request->user();
         $data = $request->all();
 
+        // Create the deed record
         $deedRecord = DeedPacketRecord::create([
             'deed_packet_id'     => $data['deed_packet_id'],
             'document_date'      => Carbon::parse($data['document_date']),
@@ -61,17 +62,19 @@ class DeedPacketRecordController extends Controller
             'notes'              => !empty($data['notes']) ? $data['notes'] : null,
         ]);
 
-        $files = $request->file('file');
+        // Create records for any files uploaded
+//        $files = $request->file('file');
+//
+//        foreach ($files as $file) {
+//            $path = $file->store('deed-record-files');
+//
+//            DeedRecordFile::create([
+//                'deed_packet_record_id' => $deedRecord->id,
+//                'path'                  => $path,
+//            ]);
+//        }
 
-        foreach ($files as $file) {
-            $path = $file->store('deed-record-files');
-
-            DeedRecordFile::create([
-                'deed_packet_record_id' => $deedRecord->id,
-                'path'                  => $path,
-            ]);
-        }
-
+        // Return successful response
         return response()->json(['message' => 'Deed packet record created', 'record_id' => $deedRecord->id], 201);
     }
 
@@ -79,16 +82,16 @@ class DeedPacketRecordController extends Controller
      * Update a deed packet record.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\DeedPacketRecord    $record
+     * @param \App\DeedPacketRecord    $deedRecord
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, DeedPacketRecord $record)
+    public function update(Request $request, DeedPacketRecord $deedRecord)
     {
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->all();
 
-        $record->update([
+        $deedRecord->update([
             'deed_packet_id'     => $data['deed_packet_id'],
             'document_date'      => Carbon::parse($data['document_date']),
             'destruction_date'   => !empty($data['destruction_date']) ? Carbon::parse($data['destruction_date']) : null,
@@ -99,7 +102,23 @@ class DeedPacketRecordController extends Controller
             'notes'              => !empty($data['notes']) ? $data['notes'] : null,
         ]);
 
-        return response()->json(['message' => 'Deed packet record updated', 'record_id' => $record->id], 200);
+        // Delete files exist, but
+//        $existingFileIds = $request->input('existing_file_ids');
+//        DeedRecordFile::whereNotIn('id', $existingFileIds)->delete();
+//
+//        // Create records for any files uploaded
+//        $filesToBeCreated = $request->file('file');
+//
+//        foreach ($filesToBeCreated as $file) {
+//            $path = $file->store('deed-record-files');
+//
+//            DeedRecordFile::create([
+//                'deed_packet_record_id' => $deedRecord->id,
+//                'path'                  => $path,
+//            ]);
+//        }
+
+        return response()->json(['message' => 'Deed packet record updated', 'record_id' => $deedRecord->id], 200);
     }
 
     /**
