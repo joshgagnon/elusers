@@ -23,6 +23,6 @@ class CreateDeedRecordFilesTable extends Migration
 
     public function down()
     {
-        //
+        Schema::dropIfExists('deed_record_files');
     }
 }
