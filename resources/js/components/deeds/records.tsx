@@ -57,7 +57,12 @@ interface DeedRecordFormProps {
 @PanelHOC<EditDeedRecordProps>('Edit Deed Record', props => [props.record, props.offices, props.deedPackets])
 export class EditDeedRecord extends React.PureComponent<EditDeedRecordProps> {
     render() {
-        return <EditDeedRecordForm onSubmit={this.props.submit} initialValues={this.props.record.data} deedPackets={this.props.deedPackets.data} saveButtonText="Save Deed Packet" offices={this.props.offices.data} />;
+        return <EditDeedRecordForm
+            onSubmit={this.props.submit}
+            initialValues={this.props.record.data}
+            deedPackets={this.props.deedPackets.data}
+            saveButtonText="Save Deed Packet"
+            offices={this.props.offices.data} />;
     }
 }
 
@@ -108,7 +113,6 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
 
     render() {
         const packetOptions = this.props.deedPackets.map(packet => ({ value: packet.id, text: packet.title }));
-
         const officeOptions = [
             { value: null, text: '' },
             ...this.props.offices.map(office => ({ value: office.id, text: office.name }))
@@ -123,7 +127,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <DatePicker name="destructionDate" label="Destruction Date" help={this.renderDestructionDateHelp()} />
                 <SelectField name="officeLocationId" label="Office Locations" options={officeOptions} />
                 <TextArea name="notes" label="Notes" />
-                <DocumentList name="documents" label="Documents" />
+                <DocumentList name="files" label="Documents" />
                 <hr />
 
                 <Row>
@@ -241,6 +245,11 @@ export class DeedRecord extends React.PureComponent<DeedRecordProps> {
 
                     <dt>Notes</dt>
                     <dd>{deedRecord.notes || '—'}</dd>
+
+                    <dt>Documents</dt>
+                    <dd>{ deedRecord.files.map((file, i) => {
+                        return <a key={file.id} href={`/api/files/${file.id}`}>{file.filename}</a>
+                    }) } </dd>
                 </dl>
             </div>
         );

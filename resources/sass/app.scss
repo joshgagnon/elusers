@@ -221,6 +221,7 @@ td.actions a:not(:first-child) {
 }
 
 .dropzone{
+    cursor: pointer;
     border-width: 2px;
     border-color: black;
     border-style: dashed;
