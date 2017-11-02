@@ -149,15 +149,14 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
     try {
         // Make the update PUT request
         let data = humps.decamelizeKeys(action.payload.data);
-        const response = yield call(axios.put, '/api/' + action.payload.url, data);
-        if(action.payload.postData.files){
+        if(action.payload.data.files){
             const body = new FormData();
             Object.keys(data).filter((key: string) => key !== 'files').map((key: string) => {
                 body.append(key, data[key])
             });
-            action.payload.postData.files.map((d: File) => {
+            action.payload.data.files.map((d: any) => {
                 if(d.id){
-                    body.append('existingFiles[]', d.id);
+                    body.append('existing_files[]', d.id);
                 }
                 else{
                     body.append('file[]', d, d.name);
@@ -165,6 +164,7 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
             });
             data = body;
         }
+        const response = yield call(axios.put, '/api/' + action.payload.url, data);
         // Fire a update resource success action
         yield put({
             type: EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
