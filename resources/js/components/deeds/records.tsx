@@ -13,6 +13,7 @@ import { Link } from 'react-router';
 import Icon from '../icon';
 import { DATE_FORMAT } from '../utils';
 import * as moment from 'moment';
+import * as FormData from 'form-data';
 
 interface EditDeedRecordProps {
     submit?: (data: React.FormEvent<Form>) => void;
@@ -157,7 +158,6 @@ const CreateDeedRecordForm = reduxForm({
                 onSuccess: [createNotification('Deed record created.'), (response) => push(`/deeds/records/${response.recordId}`)],
                 onFailure: [createNotification('Deed record creation failed. Please try again.', true)],
             };
-
             return createResource(url, data, meta)
         }
     }

@@ -13,7 +13,7 @@ interface ILayoutProps {
     routes: any
 }
 
-@DragDropContext(HTML5Backend)
+@(DragDropContext(HTML5Backend) as any)
 @(connect((state: EL.State) => ({ notifications: state.notifications, user: state.user })) as any)
 export default class Layout extends React.PureComponent<ILayoutProps> {
     render() {

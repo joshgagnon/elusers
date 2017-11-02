@@ -76,7 +76,7 @@ class DocumentBase extends React.PureComponent<any> {
                 {(documents).map((file, i) => {
                     return <div key={i} className="file-row">
                     <InputGroup>
-                    <FormControl type="static" value={file.name || file.filename}/>
+                    <FormControl type="static" defaultValue={file.name || file.filename}/>
                         <InputGroup.Addon>
                               <Glyphicon glyph="trash" onClick={(e) => {
                                 e.preventDefault();

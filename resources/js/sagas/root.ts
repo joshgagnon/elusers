@@ -2,6 +2,7 @@ import { select, takeEvery, put, call } from 'redux-saga/effects';
 import { SagaMiddleware, delay } from 'redux-saga';
 import axios from 'axios';
 import * as humps from 'humps';
+import * as FormData from 'form-data';
 
 function* rootSagas() {
     yield [
@@ -115,7 +116,17 @@ function *checkAndRequest(action: EL.Actions.Action) {
 function *createResource(action: EL.Actions.CreateResourceAction) {
     try {
         // Make the create request
-        const data = humps.decamelizeKeys(action.payload.postData);
+        let data = humps.decamelizeKeys(action.payload.postData);
+        if(data.documents){
+            const body = new FormData();
+            Object.keys(data).filter((key: string) => key !== 'documents').map((key: string) => {
+                body.append(key, data[key])
+            });
+            data.documents.map((d: File) => {
+                body.append('file[]', d, d.name);
+            });
+            data = body;
+        }
         const response = yield call(axios.post, '/api/' + action.payload.url, data);
 
         // Fire a create resources success action
@@ -130,16 +141,25 @@ function *createResource(action: EL.Actions.CreateResourceAction) {
             type: EL.ActionTypes.CREATE_RESOURCE_FAILURE,
             payload: { response: e },
             meta: action.meta
-        }); 
+        });
     }
 }
 
 function *updateResource(action: EL.Actions.UpdateResourceAction) {
     try {
         // Make the update PUT request
-        const data = humps.decamelizeKeys(action.payload.data);
+        let data = humps.decamelizeKeys(action.payload.data);
         const response = yield call(axios.put, '/api/' + action.payload.url, data);
-
+        if(data.documents){
+            const body = new FormData();
+            Object.keys(data).filter((key: string) => key !== 'documents').map((key: string) => {
+                body.append(key, data[key])
+            });
+            data.documents.map((d: File) => {
+                body.append('file[]', d, d.name);
+            });
+            data = body;
+        }
         // Fire a update resource success action
         yield put({
             type: EL.ActionTypes.UPDATE_RESOURCE_SUCCESS,
