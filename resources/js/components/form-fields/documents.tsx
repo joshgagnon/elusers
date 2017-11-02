@@ -31,7 +31,7 @@ class DocumentBase extends React.PureComponent<any> {
     }
 
     onDrop(e) {
-        const droppedFiles = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+        const droppedFiles = e.dataTransfer ? e.dataTransfer.files : Array.from(e.target.files);
         this.props.input.onChange([...(this.props.input.value || []), ...droppedFiles]);
     }
 
