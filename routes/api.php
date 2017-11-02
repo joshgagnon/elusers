@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Auth::loginUsingId(3);
+
 Route::group(['middleware' => 'auth'], function() {
     /**
      * Users
