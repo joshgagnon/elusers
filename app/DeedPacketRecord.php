@@ -36,10 +36,20 @@ class DeedPacketRecord extends Model
     /**
      * Location relationship: a deed packet record has a location.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function location()
     {
         return $this->belongsTo(OfficeLocation::class);
+    }
+
+    /**
+     * Deed record file relationship: a deed record has many files.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function files()
+    {
+        return $this->hasMany(DeedRecordFile::class);
     }
 }
