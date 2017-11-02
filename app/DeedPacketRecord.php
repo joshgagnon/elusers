@@ -44,12 +44,12 @@ class DeedPacketRecord extends Model
     }
 
     /**
-     * Deed record file relationship: a deed record has many files.
+     * Deed record file relationship: a deed record belongs to many files.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function files()
     {
-        return $this->hasMany(DeedRecordFile::class);
+        return $this->belongsToMany(File::class);
     }
 }
