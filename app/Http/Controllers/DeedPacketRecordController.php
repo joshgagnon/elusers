@@ -23,13 +23,14 @@ class DeedPacketRecordController extends Controller
 
         $query = new SQLFile('get_deed_record', ['org_id' => $orgId, 'record_id' => $recordId]);
         $result = $query->get();
+        $result = $result[0]->record;
 
         // 404 if no record
         if (count($result) === 0) {
             abort(404);
         }
 
-        $record = $result[0];
+        $record = json_decode($result)[0];
         $record->document_date = $record->document_date ? Carbon::parse($record->document_date)->format('d M Y') : null;
         $record->destruction_date = $record->destruction_date ? Carbon::parse($record->destruction_date)->format('d M Y') : null;
 
