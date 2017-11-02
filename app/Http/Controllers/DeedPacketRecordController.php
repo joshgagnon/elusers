@@ -65,8 +65,6 @@ class DeedPacketRecordController extends Controller
         // Create records for any files uploaded
         $files = $request->file('file');
 
-        \Log::info($files);
-
         foreach ($files as $file) {
             $path = $file->store('deed-record-files');
 
