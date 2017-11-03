@@ -71,6 +71,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('contacts/{contact}', 'ContactController@delete');
 
     /**
+     * Files
+     */
+    Route::get('files/{file}', 'FileController@get');
+
+    /**
      * CPDPR
      */
     Route::get('users/{user}/cpdpr', 'ProfessionalDevelopmentController@forUser');
