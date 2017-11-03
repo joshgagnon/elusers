@@ -4,7 +4,7 @@ import * as PropTypes from 'prop-types';
 import { NativeTypes } from 'react-dnd-html5-backend';
 import { DropTarget } from 'react-dnd';
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
-import { FormControl, FormGroup, InputGroup, Glyphicon } from 'react-bootstrap';
+import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';
 
 
 
@@ -74,17 +74,19 @@ class DocumentBase extends React.PureComponent<any> {
         return <BaseFieldComponent {...this.props}>
                 <div>
                 {(documents).map((file, i) => {
-                    return <div key={i} className="file-row">
+                    return <div key={`${file.name || file.filename}-${i}`} className="file-row">
                     <InputGroup>
                     <FormControl type="static" defaultValue={file.name || file.filename}/>
-                        <InputGroup.Addon>
-                              <Glyphicon glyph="trash" onClick={(e) => {
+                        <InputGroup.Button>
+                            <Button onClick={(e) => {
                                 e.preventDefault();
                                 const clone = documents.slice();
                                 clone.splice(i, 1);
                                 this.props.input.onChange(clone);
-                              }}/>
-                            </InputGroup.Addon>
+                              }}>
+                              <Glyphicon glyph="trash"/>
+                              </Button>
+                            </InputGroup.Button>
                     </InputGroup>
                     </div>
                 }) }
