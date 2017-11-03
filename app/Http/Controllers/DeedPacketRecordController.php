@@ -88,7 +88,7 @@ class DeedPacketRecordController extends Controller
      */
     public function update(Request $request, DeedPacketRecord $deedRecord)
     {
-//        dd($request);
+        dd($request->all());
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->all();
@@ -122,7 +122,7 @@ class DeedPacketRecordController extends Controller
 
 
         // loop on deedRecord files, if not in existing_files list then removed it
-//        $deedRecord->files()->sync($fileIds);
+        $deedRecord->files()->sync($fileIds);
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $deedRecord->id], 200);
     }
