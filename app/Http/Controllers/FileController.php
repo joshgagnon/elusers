@@ -8,6 +8,6 @@ class FileController extends Controller
 {
     public function get(File $file)
     {
-        return response()->file(storage_path('app/' . $file->path));
+        return response()->download(storage_path('app/' . $file->path), $file->filename);
     }
 }
