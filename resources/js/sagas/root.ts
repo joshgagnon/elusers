@@ -119,7 +119,9 @@ function *createResource(action: EL.Actions.CreateResourceAction) {
         let data = humps.decamelizeKeys(action.payload.postData);
         if(action.payload.postData.files){
             const body = new FormData();
-            Object.keys(data).filter((key: string) => key !== 'files').map((key: string) => {
+            Object.keys(data).filter((key: string) => key !== 'files')
+                .filter((key: string) => data[key] !== null)
+                .map((key: string) => {
                 body.append(key, data[key])
             });
             action.payload.postData.files.map((d: File) => {
@@ -151,7 +153,10 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
         let data = humps.decamelizeKeys(action.payload.data);
         if(action.payload.data.files){
             const body = new FormData();
-            Object.keys(data).filter((key: string) => key !== 'files').map((key: string) => {
+            Object.keys(data)
+            .filter((key: string) => key !== 'files')
+            .filter((key: string) => data[key] !== null)
+            .map((key: string) => {
                 body.append(key, data[key])
             });
             action.payload.data.files.map((d: any) => {
