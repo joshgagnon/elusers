@@ -117,6 +117,7 @@ class DeedPacketRecordController extends Controller
                 'filename' => $file->getClientOriginalName(),
             ]);
 
+
             $fileIds[] = $newFile->id;
         }
 
