@@ -106,7 +106,7 @@ class DeedPacketRecordController extends Controller
 
         // Create records for any files uploaded
         $files = $request->file('file', []);
-        $fileIds = $data['existing_files'];
+        $fileIds = !empty($data['existing_files']) ? $data['existing_files'] : [];
 
         foreach ($files as $file) {
             $path = $file->store('deed-record-files');
