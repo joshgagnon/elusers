@@ -88,6 +88,7 @@ class DeedPacketRecordController extends Controller
      */
     public function update(Request $request, DeedPacketRecord $deedRecord)
     {
+//        dd($request);
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->all();
@@ -105,21 +106,23 @@ class DeedPacketRecordController extends Controller
 
         // Create records for any files uploaded
         $files = $request->file('file');
+        $fileIds = $data['existing_files'];
 
         foreach ($files as $file) {
             $path = $file->store('deed-record-files');
 
             // Create file
-            $deedRecord->files()->create([
+            $newFile = $deedRecord->files()->create([
                 'path'     => $path,
                 'filename' => $file->getClientOriginalName(),
             ]);
+
+            $fileIds[] = $newFile->id;
         }
 
 
         // loop on deedRecord files, if not in existing_files list then removed it
-        //$deedRecord
-        //$data['existing_files']
+//        $deedRecord->files()->sync($fileIds);
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $deedRecord->id], 200);
     }
