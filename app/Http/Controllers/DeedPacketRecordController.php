@@ -88,7 +88,6 @@ class DeedPacketRecordController extends Controller
      */
     public function update(Request $request, DeedPacketRecord $deedRecord)
     {
-        dd($request->all());
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->all();
