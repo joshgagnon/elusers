@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DeedPacketRecord;
+use App\File;
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class DeedPacketRecordController extends Controller
         ]);
 
         // Create records for any files uploaded
-        $files = $request->file('file');
+        $files = $request->file('file', []);
 
         foreach ($files as $file) {
             $path = $file->store('deed-record-files');
@@ -88,7 +89,6 @@ class DeedPacketRecordController extends Controller
      */
     public function update(Request $request, DeedPacketRecord $deedRecord)
     {
-        dd($request->all());
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->all();
@@ -105,7 +105,7 @@ class DeedPacketRecordController extends Controller
         ]);
 
         // Create records for any files uploaded
-        $files = $request->file('file');
+        $files = $request->file('file', []);
         $fileIds = $data['existing_files'];
 
         foreach ($files as $file) {
@@ -120,9 +120,14 @@ class DeedPacketRecordController extends Controller
             $fileIds[] = $newFile->id;
         }
 
+        $allFiles = $deedRecord->files()->get();
 
-        // loop on deedRecord files, if not in existing_files list then removed it
-        $deedRecord->files()->sync($fileIds);
+        foreach ($allFiles as $file) {
+            if (!in_array($file->id, $fileIds)) {
+                $deedRecord->files()->detach($file->id);
+            }
+        }
+
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $deedRecord->id], 200);
     }
@@ -135,11 +140,7 @@ class DeedPacketRecordController extends Controller
      */
     public function delete(DeedPacketRecord $record)
     {
-        // TODO: Delete all files
-
-        // Delete the record itself
         $record->delete();
-
         return response()->json(['message' => 'Deed packet record deleted.'], 200);
     }
 }
