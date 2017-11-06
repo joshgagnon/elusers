@@ -248,7 +248,7 @@ export class DeedRecord extends React.PureComponent<DeedRecordProps> {
 
                     <dt>Documents</dt>
                     <dd>{ (deedRecord.files || []).map((file, i) => {
-                        return <a key={file.id} href={`/api/files/${file.id}`}>{file.filename}</a>
+                        return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
                     }) } </dd>
                 </dl>
             </div>
