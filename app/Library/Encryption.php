@@ -12,7 +12,7 @@ class Encryption
      *
      * @param string $key
      */
-    function __construct(string $key)
+    public function __construct(string $key)
     {
         $this->key = $key;
         $this->cipher = config('app.cipher');
