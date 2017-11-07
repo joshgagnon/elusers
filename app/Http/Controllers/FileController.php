@@ -23,7 +23,7 @@ class FileController extends Controller
         // Get the file and return it
         $content = Storage::get($file->path);
         $headers = [
-            'Content-Type' => 'application/pdf',
+            'Content-Type' => $file->mime_type,
             'Content-Disposition' => 'attachment; filename="' . $file->filename . '"',
         ];
 
