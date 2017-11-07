@@ -123,11 +123,11 @@ class DeedPacketRecordController extends Controller
 
         $allFiles = $deedRecord->files()->get();
 
-        foreach ($allFiles as $file) {
+        /*foreach ($allFiles as $file) {
             if (!in_array($file->id, $fileIds)) {
                 $deedRecord->files()->detach($file->id);
             }
-        }
+        }*/
 
 
         return response()->json(['message' => 'Deed packet record updated', 'record_id' => $deedRecord->id], 200);
