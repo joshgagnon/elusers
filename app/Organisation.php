@@ -11,6 +11,8 @@ class Organisation extends Model
 
     protected $fillable = ['legal_name', 'trading_name'];
 
+    protected $hidden = ['encryption_key'];
+
     /**
      * Users relationship: an organisation has many users
      *
