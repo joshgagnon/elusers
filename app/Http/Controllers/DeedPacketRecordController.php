@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DeedPacketRecord;
-use App\File;
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -113,8 +112,9 @@ class DeedPacketRecordController extends Controller
 
             // Create file
             $newFile = $deedRecord->files()->create([
-                'path'     => $path,
-                'filename' => $file->getClientOriginalName(),
+                'path'      => $path,
+                'filename'  => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
             ]);
 
 
