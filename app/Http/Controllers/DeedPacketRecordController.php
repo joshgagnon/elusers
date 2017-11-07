@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\DeedPacketRecord;
+use App\Library\Encryption;
+use App\Library\EncryptionKey;
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DeedPacketRecordController extends Controller
 {
@@ -108,13 +111,26 @@ class DeedPacketRecordController extends Controller
         $fileIds = !empty($data['existing_files']) ? $data['existing_files'] : [];
 
         foreach ($files as $file) {
-            $path = $file->store('deed-record-files');
+            $uploadedFilePath = $file->getRealPath();
+            $contents = file_get_contents($uploadedFilePath);
+
+            $user = $request->user();
+            $encryptionKey = $user->organisation()->first()->encryption_key;
+            $encryption = new Encryption($encryptionKey);
+
+            $encryptedContents = $encryption->encrypt($contents);
+
+            $storageName = EncryptionKey::create();
+            $storagePath = storage_path('app/deed-record-files/' . $storageName);
+
+            Storage::put($storagePath, $encryptedContents);
 
             // Create file
             $newFile = $deedRecord->files()->create([
-                'path'      => $path,
+                'path'      => $storagePath,
                 'filename'  => $file->getClientOriginalName(),
                 'mime_type' => $file->getMimeType(),
+                'encrypted' => true,
             ]);
 
 
