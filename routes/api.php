@@ -73,7 +73,7 @@ Route::group(['middleware' => 'auth'], function() {
     /**
      * Files
      */
-    Route::get('files/{file}', 'FileController@get');
+    Route::get('files/{file}', 'FileController@get')->name('file');
 
     /**
      * CPDPR

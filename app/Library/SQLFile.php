@@ -10,6 +10,12 @@ class SQLFile
     public $filename;
     public $parameters;
 
+    public static function run(string $filename, array $parameters = [])
+    {
+        $query = new static($filename, $parameters);
+        return $query->get();
+    }
+
     function __construct(string $filename, array $parameters = [])
     {
         $this->filename = $filename;
