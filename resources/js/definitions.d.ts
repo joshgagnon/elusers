@@ -52,6 +52,12 @@ declare global {
             contactIds: number[];
         }
 
+        interface Document {
+            filename?: string;
+            name?: string;
+            id: number;
+        }
+
         interface DeedRecord {
             id: number;
             deedPacketId: number;
@@ -63,6 +69,7 @@ declare global {
             createdByUserId: number;
             officeLocationId: number;
             notes: string;
+            files: Document[]
         }
 
         interface Contact {
@@ -199,7 +206,7 @@ declare global {
         export const enum FormNames {
             CREATE_DEED_RECORD = 'CREATE_DEED_RECORD',
             EDIT_DEED_RECORD = 'EDIT_DEED_RECORD',
-            
+
             CREATE_DEED_PACKET = 'CREATE_DEED_PACKET',
             EDIT_DEED_PACKET = 'EDIT_DEED_PACKET',
 
@@ -256,14 +263,14 @@ declare global {
         export interface CreateResourceAction extends Action {
             payload: {
                 url: string;
-                postData: object;
+                postData: any;
             }
         }
 
         export interface UpdateResourceAction extends Action {
             payload: {
                 url: string;
-                data: object;
+                data: any;
             };
         }
 
