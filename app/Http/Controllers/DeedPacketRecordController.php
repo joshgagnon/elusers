@@ -69,13 +69,7 @@ class DeedPacketRecordController extends Controller
         $files = $request->file('file', []);
 
         foreach ($files as $file) {
-            $path = $file->store('deed-record-files');
-
-            // Create file
-            $deedRecord->files()->create([
-                'path'     => $path,
-                'filename' => $file->getClientOriginalName(),
-            ]);
+            $this->saveFile($file, $request->user(), $deedRecord);
         }
 
         // Return successful response
@@ -111,37 +105,8 @@ class DeedPacketRecordController extends Controller
         $fileIds = !empty($data['existing_files']) ? $data['existing_files'] : [];
 
         foreach ($files as $file) {
-            // Get the uploaded file contents
-            $uploadedFilePath = $file->getRealPath();
-            $contents = file_get_contents($uploadedFilePath);
-
-            // Get the user's organisation's encryption key
-            $user = $request->user();
-            $encryptionKey = $user->organisation()->first()->encryption_key;
-
-            // Encrypt the file contents
-            $encryption = new Encryption($encryptionKey);
-            $encryptedContents = $encryption->encrypt($contents);
-
-            // Create a unique path for the file
-            $storagePath = '';
-            do {
-                $storageName = uniqid('', true);
-                $storagePath = 'deed-record-files/' . $storageName;
-            } while (Storage::exists($storagePath));
-
-            // Store the file
-            Storage::put($storagePath, $encryptedContents);
-
-            // Create file record with encrypted set to true
-            $newFile = $deedRecord->files()->create([
-                'path'      => $storagePath,
-                'filename'  => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'encrypted' => true,
-            ]);
-
-            $fileIds[] = $newFile->id;
+            $fileRecord = $this->saveFile($file, $request->user(), $deedRecord);
+            $fileIds[] = $fileRecord->id;
         }
 
         $allFiles = $deedRecord->files()->get();
@@ -166,5 +131,45 @@ class DeedPacketRecordController extends Controller
     {
         $record->delete();
         return response()->json(['message' => 'Deed packet record deleted.'], 200);
+    }
+
+    /**
+     * Save a deed record file.
+     *
+     * @param $file
+     * @param $user
+     * @param $deedRecord
+     *
+     * @return mixed
+     */
+    private function saveFile($file, $user, $deedRecord)
+    {
+        // Get the uploaded file contents
+        $uploadedFilePath = $file->getRealPath();
+        $contents = file_get_contents($uploadedFilePath);
+
+        // Get the user's organisation's encryption key
+        $encryptionKey = $user->organisation()->first()->encryption_key;
+
+        // Encrypt the file contents
+        $encryption = new Encryption($encryptionKey);
+        $encryptedContents = $encryption->encrypt($contents);
+
+        // Create a unique path for the file
+        do {
+            $storageName = time() . uniqid();
+            $storagePath = 'deed-record-files/' . $storageName;
+        } while (Storage::exists($storagePath));
+
+        // Store the file
+        Storage::put($storagePath, $encryptedContents);
+
+        // Create file record with encrypted set to true
+        return $deedRecord->files()->create([
+            'path'      => $storagePath,
+            'filename'  => $file->getClientOriginalName(),
+            'mime_type' => $file->getMimeType(),
+            'encrypted' => true,
+        ]);
     }
 }
