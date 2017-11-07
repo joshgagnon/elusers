@@ -22,6 +22,7 @@ class FileControllerTest extends TestCase
         $userInOrg = $this->createUser(['organisation_id' => $org->id]);
         $userOutOfOrg = $this->createUser();
 
+        // Create a deed packet & record for the user, so we have something to attach the file to
         $packet = DeedPacket::create(['title' => 'abc', 'created_by_user_id' => $userInOrg->id]);
         $record = DeedPacketRecord::create([
             'deed_packet_id' => $packet->id,
@@ -32,6 +33,7 @@ class FileControllerTest extends TestCase
             'matter_id' => '123asd',
         ]);
 
+        // Create a file for the deed packet record
         $filePath = 'testing.txt';
         Storage::put($filePath, 'contents');
         $file = $record->files()->create(['filename' => 'asdf', 'path' => $filePath]);
