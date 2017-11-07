@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\File;
+use App\Library\Encryption;
 use App\Library\SQLFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,13 @@ class FileController extends Controller
 
         // Get the file and return it
         $content = Storage::get($file->path);
+
+        if ($file->encrypted) {
+            $key = $user->organisation->encryption_key;
+            $encryption = new Encryption($key);
+            $content = $encryption->decrypt($content);
+        }
+
         $headers = [
             'Content-Type' => $file->mime_type,
             'Content-Disposition' => 'attachment; filename="' . $file->filename . '"',
