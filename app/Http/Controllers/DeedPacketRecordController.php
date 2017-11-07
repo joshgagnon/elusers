@@ -123,10 +123,14 @@ class DeedPacketRecordController extends Controller
             $encryption = new Encryption($encryptionKey);
             $encryptedContents = $encryption->encrypt($contents);
 
-            // Store the file, use the encryption key generator for a unique name
-            $storageName = EncryptionKey::create();
-            $storagePath = storage_path('app/deed-record-files/' . $storageName);
+            // Create a unique path for the file
+            $storagePath = '';
+            do {
+                $storageName = uniqid('', true);
+                $storagePath = 'deed-record-files/' . $storageName;
+            } while (Storage::exists($storagePath));
 
+            // Store the file
             Storage::put($storagePath, $encryptedContents);
 
             // Create file record with encrypted set to true
