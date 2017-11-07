@@ -37,9 +37,12 @@ interface DeedRecordFormProps {
 
 
 @MapParamsToProps(['recordId'])
+@DeedPacketRecordHOC()
+@DeedPacketsHOC()
+@OfficesHOC()
 @(connect(
     undefined,
-    (dispatch: Function, ownProps: { recordId: number }) => ({
+    (dispatch: Function, ownProps: { recordId: number, record: EL.DeedRecord }) => ({
         submit: (data: React.FormEvent<Form>) => {
             const url = `deed-packet-records/${ownProps.recordId}`;
             const meta: EL.Actions.Meta = {
@@ -47,13 +50,26 @@ interface DeedRecordFormProps {
                 onFailure: [createNotification('Deed packet record update failed. Please try again.', true)],
             };
 
-            return dispatch(updateResource(url, data, meta))
+            const updateAction = updateResource(url, data, meta);
+            const existingFiles = ownProps.record.data.files || [];
+            const hasRemoved = existingFiles.some((file: EL.Document) => {
+                return !data.files.find((newFile: EL.Document) => newFile.id === file.id);
+            })
+            // if has removed files from deedrecord
+            if(hasRemoved){
+                return dispatch(confirmAction({
+                    title: 'Confirm Update Deed Record',
+                    content: 'Are you sure you want to update this deed record?  The removed documents will be permenately deleted',
+                    acceptButtonText: 'Delete',
+                    declineButtonText: 'Cancel',
+                    onAccept: updateAction
+                }));
+            }
+            return dispatch(updateAction);
+
         }
     })
 ) as any)
-@DeedPacketRecordHOC()
-@DeedPacketsHOC()
-@OfficesHOC()
 @PanelHOC<EditDeedRecordProps>('Edit Deed Record', props => [props.record, props.offices, props.deedPackets])
 export class EditDeedRecord extends React.PureComponent<EditDeedRecordProps> {
     render() {
@@ -196,7 +212,7 @@ interface DeedRecordProps {
 
             return confirmAction({
                 title: 'Confirm Delete Deed Record',
-                content: 'Are you sure you want to delete this deed record?',
+                content: 'Are you sure you want to delete this deed record?  All associated documents will be permenantly deleted.',
                 acceptButtonText: 'Delete',
                 declineButtonText: 'Cancel',
                 onAccept: deleteAction
