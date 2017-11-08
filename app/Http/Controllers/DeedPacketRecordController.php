@@ -113,9 +113,7 @@ class DeedPacketRecordController extends Controller
 
         foreach ($allFiles as $file) {
             if (!in_array($file->id, $fileIds)) {
-                Storage::delete($file->path);
-                $deedRecord->files()->detach($file->id);
-                $file->delete();
+                $file->delete(); // this will detach itself and permanently delete the file
             }
         }
 
@@ -131,7 +129,16 @@ class DeedPacketRecordController extends Controller
      */
     public function delete(DeedPacketRecord $record)
     {
+        // Delete all associated deed record files
+        $files = $record->files()->get();
+
+        foreach ($files as $file) {
+            $file->delete(); // this will detach itself and permanently delete the file
+        }
+
+        // Delete the deed record
         $record->delete();
+
         return response()->json(['message' => 'Deed packet record deleted.'], 200);
     }
 
