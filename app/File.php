@@ -12,10 +12,6 @@ class File extends Model
     public static function boot() {
         parent::boot();
 
-        static::creating(function ($organisation) {
-            $organisation->encryption_key = EncryptionKey::create();
-        });
-
         static::deleting(function ($file) {
             Storage::delete($file->path);
             $file->deedRecords()->detach();
