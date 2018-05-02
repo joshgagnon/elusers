@@ -48,6 +48,11 @@ return [
             'root' => storage_path('app'),
         ],
 
+        'test_assets' => [
+            'driver' => 'local',
+            'root' => base_path('tests/test-assets'),
+        ],
+
         'virtual' => [
             'driver' => 'vfs',
         ],

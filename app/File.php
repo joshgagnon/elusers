@@ -3,10 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class File extends Model
 {
     protected $fillable = ['path', 'filename', 'mime_type', 'encrypted'];
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function ($file) {
+            Storage::delete($file->path);
+            $file->deedRecords()->detach();
+        });
+    }
 
     /**
      * Deed records relationship: a file belongs to many deed records.

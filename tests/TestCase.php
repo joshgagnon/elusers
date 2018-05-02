@@ -2,8 +2,11 @@
 
 namespace Tests;
 
+use App\DeedPacket;
+use App\DeedPacketRecord;
 use App\Organisation;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Hash;
 
@@ -103,5 +106,38 @@ abstract class TestCase extends BaseTestCase
         }
 
         return true;
+    }
+
+    /**
+     * Create a deed packet record.
+     *
+     * @param array $overrides
+     *
+     * @return $this|\Illuminate\Database\Eloquent\Model
+     */
+    protected function createDeedRecord($userId, $overrides=[])
+    {
+        $defaults = [
+            'created_by_user_id' => $userId,
+            'document_name' => 'skdjfh',
+            'document_date' => Carbon::now(),
+            'parties' => 'asasd',
+            'matter_id' => '123asd',
+        ];
+
+        if (empty($overrides['deed_packet_id'])) {
+            $packet = DeedPacket::create([
+                'title'              => 'test',
+                'created_by_user_id' => $userId,
+            ]);
+
+            $overrides['deed_packet_id'] = $packet->id;
+        }
+
+        // Merge the defaults with the overrides
+        $orgData = array_merge($defaults, $overrides);
+
+        // Create and return the deed packet record
+        return DeedPacketRecord::create($orgData);
     }
 }
