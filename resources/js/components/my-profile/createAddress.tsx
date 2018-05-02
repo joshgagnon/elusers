@@ -36,4 +36,4 @@ export default  connect(
             return createResource(url, data, meta);
         }
     }
-)(CreateAddress);
+)(CreateAddress as any);

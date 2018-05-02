@@ -36,37 +36,37 @@ interface SelectFieldProps extends FieldProps {
 
 export class Combobox extends React.PureComponent<ComboboxProps> {
     render() {
-        return <ReduxField {...this.props} component={ComboboxComponent} />
+        return <ReduxField {...this.props} component={ComboboxComponent as any} />
     }
 }
 
 export class DatePicker extends React.PureComponent<FieldProps> {
     render() {
-        return <ReduxField {...this.props} component={DatePickerComponent} />
+        return <ReduxField  {...this.props} component={DatePickerComponent as any} />
     }
 }
 
 export class DurationField extends React.PureComponent<FieldProps> {
     render() {
-        return <ReduxField {...this.props} component={DurationComponent} />
+        return <ReduxField {...this.props} component={DurationComponent as any} />
     }
 }
 
 export class InputField extends React.PureComponent<InputFieldProps> {
     render() {
-        return <ReduxField {...this.props} component={InputFieldComponent} />
+        return <ReduxField {...this.props} component={InputFieldComponent as any} />
     }
 }
 
 export class SelectField extends React.PureComponent<SelectFieldProps> {
     render() {
-        return <ReduxField {...this.props} component={SelectFieldComponent} />
+        return <ReduxField {...this.props} component={SelectFieldComponent as any} />
     }
 }
 
 export class TextArea extends React.PureComponent<FieldProps> {
     render() {
-        return <ReduxField {...this.props} component={TextAreaComponent} />
+        return <ReduxField {...this.props} component={TextAreaComponent as any} />
     }
 }
 

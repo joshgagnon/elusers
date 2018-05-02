@@ -28,6 +28,8 @@ import EditOrganisation from '../components/my-profile/organisation';
 import Addresses from '../components/my-profile/addresses';
 import CreateAddress from '../components/my-profile/createAddress';
 import EditAddress from '../components/my-profile/editAddress';
+import Templates from '../components/templates';
+
 
 import WikiRoutes from './wiki';
 
@@ -39,10 +41,10 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path='users/:userId' component={UserLayout}>
             <IndexRoute component={ViewBasicDetails} />
             <Route path='edit' component={EditBasicDetails} />
-            
+
             <Route path='emergency-contact' component={ViewEmergencyContact} />
             <Route path='emergency-contact/edit' component={EditEmergencyContact} />
-            
+
             <Route path='addresses' component={ViewAddresses} />
             <Route path='addresses/create' component={CreateUserAddress} />
             <Route path='addresses/:addressId/edit' component={EditUserAddress} />
@@ -78,6 +80,10 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path="addresses/create" component={ CreateAddress } />
             <Route path="addresses/:addressId/edit" component={ EditAddress } />
         </Route>
+
+        <Route path="templates" component={ Templates } />
+
+
         { WikiRoutes }
     </Route>
 );

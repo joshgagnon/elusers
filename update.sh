@@ -13,7 +13,7 @@ php artisan down
 sudo -u $1 git pull
 rm -f vendor/compiled.php
 sudo -u $1 composer update
-sudo -u $1 npm update
+sudo -u $1 yarn update
 sudo -u $1 php artisan clear-compiled
 sudo -u $1 composer dump-autoload
 sudo -u $1 NODE_ENV=production node_modules/.bin/webpack

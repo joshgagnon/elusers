@@ -66,4 +66,4 @@ export default connect(
             return createResource(url, data, meta)
         }
     }
-)(CreateUser);
+)(CreateUser as any);

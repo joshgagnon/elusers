@@ -165,7 +165,7 @@ export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <InputField name="title" label="Title" type="text" required />
 
-                <FieldArray  name="contactIds"  component={renderContactsList as any} props={{contactOptions}} />
+                <FieldArray  name="contactIds"  component={renderContactsList as any} contactOptions={contactOptions} />
 
                 <hr />
 

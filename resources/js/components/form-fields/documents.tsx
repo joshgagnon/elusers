@@ -71,7 +71,8 @@ class DocumentBase extends React.PureComponent<any> {
             ref: el => this.fileInputEl = el,
             onChange: (e) => this.onDrop(e)
         };
-        return <BaseFieldComponent {...this.props}>
+        const { label, type, value, input, meta } = this.props;
+        return <BaseFieldComponent {...{ label, type, value, input, meta }}>
                 <div>
                 {(documents).map((file, i) => {
                     return <div key={`${file.name || file.filename}-${i}`} className="file-row">

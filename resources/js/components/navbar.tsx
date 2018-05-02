@@ -38,6 +38,11 @@ export default class NavMenu extends React.Component {
                             <NavItem>Knowledge Base</NavItem>
                         </LinkContainer>
 
+                        <LinkContainer to="/templates">
+                            <NavItem>Templates</NavItem>
+                        </LinkContainer>
+
+
                         <LinkContainer to="/my-profile">
                             <NavItem>My Profile</NavItem>
                         </LinkContainer>

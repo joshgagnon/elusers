@@ -33,7 +33,7 @@ const ConnectedEditCPDPRRecord = connect<{}, {}, IEditCPDPRRecordProps>(undefine
     (dispatch: Dispatch<any>, ownProps: { recordId: number }) => ({
         close: () => dispatch(push('/cpdpr')),
         submit: (data: EL.CPDPR.UpdateRecordData) => dispatch(updateResource(`cpdpr/${ownProps.recordId}`, data, { onSuccess: [push('/cpdpr')] }))
-}))(EditCPDPRRecord);
+}))(EditCPDPRRecord) as any;
 
 
 export default class EditCPDPRRecordRouteMapper extends React.PureComponent<{params: {cpdprId: number}}> {

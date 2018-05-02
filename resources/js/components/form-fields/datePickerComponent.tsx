@@ -2,10 +2,11 @@ import * as React from 'react';
 import * as moment from 'moment';
 import { WrappedFieldInputProps } from 'redux-form';
 import { DateTimePicker } from 'react-widgets';
-import * as momentLocaliser from 'react-widgets/lib/localizers/moment';
+import * as momentLocalizer from 'react-widgets-moment';
+
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 
-momentLocaliser(moment);
+momentLocalizer(moment);
 
 export default class DatePickerField extends React.PureComponent<IFieldComponentProps> {
     render() {
@@ -18,10 +19,10 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                     format="D MMM YYYY"
                     time={false}
                     value={!value ? null : new Date(value)}
-                    onBlur={onBlur}
-                    className="form-control"
+                    onBlur={() => onBlur(undefined)}
+                    //className="form-control"
                     ref="date"
-                    onFocus={(event: React.FocusEvent<any>) => {
+                    /*onFocus={(event: React.FocusEvent<any> as any) => {
                         const target : any = event.target;
                         const shouldOpen = target.tagName === 'INPUT' && !this.props.value;
                         const widgetInstance = this.refs.date && (this.refs.date as any).getControlledInstance();
@@ -29,7 +30,7 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                         if (shouldOpen && widgetInstance) {
                             widgetInstance.open("calendar");
                         }
-                    }}
+                    }}*/
                 />
             </BaseFieldComponent>
         );
