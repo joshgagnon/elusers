@@ -94,9 +94,9 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
                 </div>
 
                 <Table headings={HEADINGS}>
-                    {packets.map(packet => {
+                    {packets.map((packet, index: number) => {
                         const titleRow = (
-                            <tr>
+                            <tr key={index}>
                                 <th>{packet.id}</th>
                                 <th colSpan={4}>{packet.title}</th>
                                 <td className="actions">
