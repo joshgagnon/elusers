@@ -165,7 +165,7 @@ export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <InputField name="title" label="Title" type="text" required />
 
-                <FieldArray name="contactIds" label="Contacts" component={renderContactsList} contactOptions={contactOptions} />
+                <FieldArray  name="contactIds"  component={renderContactsList as any} props={{contactOptions}} />
 
                 <hr />
 
@@ -180,7 +180,7 @@ export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
 const CreateDeedPacketForm = (reduxForm({
     form: EL.FormNames.CREATE_DEED_PACKET,
     validate: values => validate(deedPacketValidationRules, values)
-})(DeedPacketForm) as any);
+})(DeedPacketForm as any) as any);
 
 @(connect(
     undefined,
@@ -240,7 +240,7 @@ export class EditDeedPacket extends React.PureComponent<EditDeedPacketProps> {
 const EditDeedPacketForm = reduxForm<any>({
     form: EL.FormNames.EDIT_DEED_PACKET,
     validate: values => validate(deedPacketValidationRules, values)
-})(DeedPacketForm);
+})(DeedPacketForm as any) as any;
 
 interface DeedPacketProps {
     deedPacketId: string;

@@ -12,7 +12,7 @@ class Modals extends React.PureComponent<ModalsProps> {
         switch (this.props.modalState.visible) {
             case EL.ModalNames.CONFIRM_ACTION:
                 return <ConfirmAction />;
-            
+
             default:
                 return false;
         }
@@ -21,4 +21,4 @@ class Modals extends React.PureComponent<ModalsProps> {
 
 export default connect(
     (state: EL.State) => ({ modalState: state.modals })
-)(Modals);
+)(Modals as any);

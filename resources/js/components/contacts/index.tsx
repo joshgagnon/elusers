@@ -60,7 +60,7 @@ interface ContactProps {
                 onSuccess: [createNotification('Contact deleted.'), (response) => push('/contacts')],
                 onFailure: [createNotification('Contact deletion failed. Please try again.', true)],
             });
-            
+
             return confirmAction({
                 title: 'Confirm Delete Contact',
                 content: 'Are you sure you want to delete this contact?',
@@ -136,12 +136,12 @@ const contactValidationRules: EL.IValidationFields = {
 const CreateContactForm = (reduxForm({
     form: EL.FormNames.CREATE_CONTACT_FORM,
     validate: values => validate(contactValidationRules, values)
-})(ContactForm) as any);
+})(ContactForm as any) as any);
 
 const EditContactForm = (reduxForm({
     form: EL.FormNames.EDIT_CONTACT_FORM,
     validate: values => validate(contactValidationRules, values)
-})(ContactForm) as any);
+})(ContactForm as any) as any);
 
 @(connect(
     undefined,

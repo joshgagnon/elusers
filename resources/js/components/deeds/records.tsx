@@ -42,8 +42,8 @@ interface DeedRecordFormProps {
 @OfficesHOC()
 @(connect(
     undefined,
-    (dispatch: Function, ownProps: { recordId: number, record: EL.DeedRecord }) => ({
-        submit: (data: React.FormEvent<Form>) => {
+    (dispatch: Function, ownProps: { recordId: number, record: { data: EL.DeedRecord }}) => ({
+        submit: (data: React.FormEvent<Form> | any) => {
             const url = `deed-packet-records/${ownProps.recordId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deed packet record updated.'), (response) => push(`/deeds/records/${ownProps.recordId}`)],
@@ -161,12 +161,12 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
 const EditDeedRecordForm = reduxForm({
     form: EL.FormNames.EDIT_DEED_RECORD,
     validate: values => validate(deedRecordValidationRules, values)
-})(DeedRecordForm);
+})(DeedRecordForm as any) as any;
 
 const CreateDeedRecordForm = reduxForm({
     form: EL.FormNames.CREATE_DEED_RECORD,
     validate: values => validate(deedRecordValidationRules, values)
-})(DeedRecordForm);
+})(DeedRecordForm as any) as any;
 
 @(connect(
     undefined,

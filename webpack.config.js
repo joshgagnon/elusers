@@ -5,6 +5,8 @@ var WebpackNotifierPlugin = require('webpack-notifier');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var autoprefixer = require('autoprefixer');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 
 module.exports = {
     entry: path.resolve(__dirname, 'resources/js/index.tsx'),
@@ -76,6 +78,8 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json']
     },
     plugins: [
+          new CopyWebpackPlugin([{ from: 'resources/images', to: 'images' }]),
+
         new WebpackNotifierPlugin({ title: 'Evolution Users' }),
         new ExtractTextPlugin('css/[name].css'),
         DEV ? function(){} : new webpack.optimize.UglifyJsPlugin(),
