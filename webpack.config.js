@@ -75,7 +75,11 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.json'],
+          alias: {
+            react: path.resolve('./node_modules/react'),
+            redux: path.resolve('./node_modules/redux'),
+          }
     },
     plugins: [
           new CopyWebpackPlugin([{ from: 'resources/images', to: 'images' }]),
