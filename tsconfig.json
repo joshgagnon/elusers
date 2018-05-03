@@ -9,5 +9,5 @@
     "lib": ["es2017", "dom"],
     "experimentalDecorators": true
   },
-  "include": ["./resources/js/**/*"],
+  "include": ["./resources/js/**/*", "node_modules/jasons-formal/src/js/definitions.d.ts"]
 }
