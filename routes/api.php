@@ -90,4 +90,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('wiki/{url}', 'WikiController@get')->where('url', '.*');
     Route::post('wiki/{url}', 'WikiController@create')->where('url', '.*');
     Route::put('wiki/{url}', 'WikiController@update')->where('url', '.*');
+
+
+    Route::post('render', 'RenderController@render');
 });

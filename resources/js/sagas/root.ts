@@ -3,6 +3,7 @@ import { SagaMiddleware, delay } from 'redux-saga';
 import axios from 'axios';
 import * as humps from 'humps';
 import * as FormData from 'form-data';
+import { downloadSaga, renderSaga } from 'jasons-formal/lib/sagas';
 
 function* rootSagas() {
     yield [
@@ -15,6 +16,9 @@ function* rootSagas() {
         resourceFailure(),
 
         notificationTimeout(),
+
+        renderSaga(),
+        downloadSaga()
     ];
 }
 

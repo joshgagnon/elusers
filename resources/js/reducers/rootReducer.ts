@@ -7,14 +7,23 @@ import userReducer from './userReducer';
 import cpdprReducer from './cpdprReducer';
 import notificationsReducer from './notificationsReducer';
 import modals from './modalsReducer';
+import {
+    dialogs,
+    saved,
+    document,
+    wizard } from 'jasons-formal/lib/reducers/reducers';
 
-const rootReducer = combineReducers({    
+const rootReducer = combineReducers({
     routing,
     form: formReducer,
     resources: resourcesReducer,
     user: userReducer,
     cpdpr: cpdprReducer,
     notifications: notificationsReducer,
+    dialogs,
+    saved,
+    document,
+    wizard,
     modals
 });
 
