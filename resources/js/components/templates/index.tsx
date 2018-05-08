@@ -1,5 +1,5 @@
 import * as React from 'react';
-import FormLoader from 'jasons-formal/lib/components/formLoader';
+import { SimpleFormLoader as FormLoader } from 'jasons-formal/lib/components/formLoader';
 import Modals from 'jasons-formal/lib/components/modals';
 
 export default class Templates extends React.PureComponent<any> {
