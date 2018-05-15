@@ -26,10 +26,12 @@ export default class AddressForm extends React.PureComponent<IAddressFormProps> 
                 <InputField name="addressName" label="Address Name" type="text" required />
                 <InputField name="addressOne" label="Address One" type="text" required />
                 <InputField name="addressTwo" label="Address Two" type="text" />
-                <InputField name="addressThree" label="Address Three" type="text" />
+                <InputField name="city" label="City" type="text" />
+                <InputField name="county" label="County" type="text" />
+                <InputField name="state" label="State" type="text" />
                 <InputField name="addressType" label="Address Type" type="text" required />
                 <InputField name="postCode" label="Post Code" type="text" required />
-                <InputField name="countryCode" label="Country Code" type="text" required />
+                <InputField name="country" label="Country" type="text" required />
 
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Save Address</Button>

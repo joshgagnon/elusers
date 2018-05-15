@@ -43,7 +43,7 @@ class UserAddressController extends Controller
             'address_one' => 'required',
             'address_type' => 'required',
             'post_code' => 'required',
-            'country_code' => 'required',
+            'country' => 'required',
         ]);
 
         $user->addresses()->create($request->all());
@@ -64,7 +64,7 @@ class UserAddressController extends Controller
             'address_one' => 'required',
             'address_type' => 'required',
             'post_code' => 'required',
-            'country_code' => 'required',
+            'country' => 'required',
         ]);
 
         $address->update($request->all());

@@ -9,7 +9,7 @@ export const basicDetailsValidationRules: EL.IValidationFields = {
 
     firstName: { name: 'First name', required: true },
     surname: { name: 'Surname', required: true },
-    
+
     email: { name: 'Email', required: true },
 
     lawAdmissionDate: { name: 'Law admission date', isDate: true },
@@ -20,7 +20,7 @@ export class BasicDetailsFormFields extends React.PureComponent {
         return (
             <div>
                 <Combobox name="title" label="Title" data={["Mr", "Mrs", "Ms"]} required />
-                    
+
                 <InputField name="firstName" label="First Name" type="text" required />
                 <InputField name="middleName" label="Middle Name" type="text" />
                 <InputField name="surname" label="Surname" type="text" required />
@@ -28,6 +28,8 @@ export class BasicDetailsFormFields extends React.PureComponent {
                 <InputField name="preferredName" label="Preferred Name" type="text" />
 
                 <InputField name="email" label="Email" type="email" required />
+                <InputField name="phone" label="Phone" type="text" required />
+                <InputField name="mobile" label="Mobile" type="text" required />
 
                 <DatePicker name="lawAdmissionDate" label="Law Admission Date" />
                 <InputField name="irdNumber" label="IRD Number" type="text" />

@@ -11,16 +11,16 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
-    protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number'];
+    protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number', 'phone', 'mobile'];
 
-    protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number'];
+    protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number', 'phone', 'mobile'];
 
     public static $validationRules = [
         'title'               => 'required',
         'first_name'          => 'required',
         'surname'             => 'required',
         'email'               => 'required|email',
-        'law_admission_date'  => 'nullable|date',
+        'law_admission_date'  => 'nullable|date'
     ];
 
     /**

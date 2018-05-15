@@ -39,21 +39,14 @@ export function formatDate(date: string) {
 }
 
 export function getAddressSegments(address: EL.IAddress): string[] {
-    const lineKeys = ['addressOne', 'addressTwo', 'addressThree', 'postCode', 'countryCode'];
-
-    return lineKeys.reduce((lines: string[], nextKey: string) => {
-        if (address[nextKey]) {
-            return [...lines, address[nextKey]];
-        }
-
-        return lines;
-    }, [])
+    const lineKeys = ['addressOne', 'addressTwo', 'city', 'county', 'state', 'postCode', 'country'];
+    return lineKeys.map((key: string) => address[key]).filter((value: string) => !!value);
 }
 
 export function formatAddress(address: EL.IAddress): string {
     const addressSegments = getAddressSegments(address);
     let formattedAddress = '';
-    
+
     for (let index = 0; index < addressSegments.length; index++) {
         formattedAddress += addressSegments[index];
 
