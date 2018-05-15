@@ -23,6 +23,11 @@ class Contact extends Model
         return $this->belongsTo(Organisation::class);
     }
 
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
+
     /**
      * Deed packet relationship: a contact belongs to many deed packets.
      *

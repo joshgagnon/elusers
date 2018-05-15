@@ -39,6 +39,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('addresses/{address}', 'UserAddressController@update');
     Route::delete('addresses/{address}', 'UserAddressController@delete');
 
+
+
     /**
      * Deed packets
      */
@@ -69,6 +71,16 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('contacts', 'ContactController@create');
     Route::put('contacts/{contact}', 'ContactController@update');
     Route::delete('contacts/{contact}', 'ContactController@delete');
+
+    /**
+     * Addresses
+     */
+    Route::get('contacts/{contact}/addresses', 'ContactAddressController@all');
+    Route::post('contacts/{contact}/addresses', 'ContactAddressController@create');
+    Route::get('contacts/{contact}/addresses/{address}', 'ContactAddressController@get');
+    Route::put('contacts/{contact}/addresses/{address}', 'ContactAddressController@update');
+    Route::delete('contacts/{contact}/addresses/{address}', 'ContactAddressController@delete');
+
 
     /**
      * Files

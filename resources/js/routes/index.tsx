@@ -14,6 +14,7 @@ import CreateUser from '../components/users/create';
 import { ViewBasicDetails, EditBasicDetails } from '../components/users/basicDetails';
 import { ViewEmergencyContact, EditEmergencyContact } from '../components/users/emergencyContact';
 import { ViewAddresses, EditAddress as EditUserAddress, CreateAddress as CreateUserAddress } from '../components/users/addresses';
+import { ViewAddresses as ViewContactAddresses, EditAddress as EditContactAddress, CreateAddress as CreateContactAddress } from '../components/contacts/addresses';
 import { ChangePassword as ChangeUserPassword } from '../components/users/changePassword';
 
 import CPDPRIndex from '../components/cpdpr';
@@ -56,6 +57,9 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="contacts/create" component={CreateContact} />
         <Route path="contacts/:contactId" component={Contact} />
         <Route path="contacts/:contactId/edit" component={EditContact} />
+        <Route path="contacts/:contactId/addresses" component={ViewContactAddresses} />
+        <Route path="contacts/:contactId/addresses/create" component={CreateContactAddress} />
+        <Route path="contacts/:contactId/addresses/:addressId/edit" component={EditContactAddress} />
 
         <Route path="deeds" component={ListDeedPackets} />
         <Route path="deeds/create" component={CreateDeedPacket} />

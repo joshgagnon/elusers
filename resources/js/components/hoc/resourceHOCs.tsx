@@ -95,3 +95,6 @@ export const OfficesHOC = () => HOCFactory({ location: (props) => 'office-locati
 
 export const ContactsHOC = () => HOCFactory({ location: (props) => 'contacts', propsName: 'contacts' });
 export const ContactHOC = () => HOCFactory({ location: (props) => `contacts/${props.contactId}`, propsName: 'contact' });
+
+export const ContactAddressesHOC = () => HOCFactory({ location: (props) => `contacts/${props.contactId}/addresses`, propsName: 'addresses' });
+export const ContactAddressHOC = () => HOCFactory({ location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
