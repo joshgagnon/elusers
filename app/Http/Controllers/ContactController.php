@@ -17,7 +17,7 @@ class ContactController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $contacts = Contact::where('organisation_id', $orgId)->get();
+        $contacts = Contact::where('organisation_id', $orgId)->with('addresses')->get();
 
         return $contacts;
     }
@@ -57,8 +57,13 @@ class ContactController extends Controller
         $contact = Contact::create([
             'organisation_id' => $user->organisation_id,
             'name'            => $data['name'],
+            'first_name'      => $data['first_name'],
+            'middle_name'     => $data['middle_name'],
+            'surname'         => $data['surname'],
+            'type'            => $data['type'],
+            'name'            => $data['name'],
             'email'           => $data['email'],
-            'phone'           => $data['phone'],
+            'phone'           => $data['phone']
         ]);
 
         return response()->json(['message' => 'Contact created.', 'contact_id' => $contact->id], 201);
@@ -78,9 +83,14 @@ class ContactController extends Controller
         $data = $request->all();
 
         $contact->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
+            'name'            => $data['name'],
+            'first_name'      => $data['first_name'],
+            'middle_name'     => $data['middle_name'],
+            'surname'         => $data['surname'],
+            'type'            => $data['type'],
+            'name'            => $data['name'],
+            'email'           => $data['email'],
+            'phone'           => $data['phone']
         ]);
 
         return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
