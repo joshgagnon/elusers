@@ -80,6 +80,7 @@ $input-color-placeholder: lighten($text-color, 30%);
 // Utility classes
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
+@import "~jasons-formal/src/style/form";
 
 
 
@@ -315,28 +316,6 @@ input.checkbox.form-control {
     }
 }
 
-form fieldset{
-    fieldset {
-        fieldset{
-
-        }
-    }
-
-    fieldset.list{
-        & > legend {
-                font-size: 1em;
-            text-align: center;
-                font-style: italic;
-        }
-    }
-}
-
-.dropdown-menu > li > a {
-    max-width: 300px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
 
 .preview{
     canvas{

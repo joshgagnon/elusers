@@ -10,9 +10,24 @@
     position: relative;
     text-indent: -9999em;
     border: .9em solid rgba(150, 150, 150, 0.2);
-    border-left-color: $brand-primary;
+    border-left-color: #ccc;
     transform: translateZ(0);
     animation: spinner 1s infinite linear;
+    opacity: 1;
+    transition: opacity 250ms ease;
+}
+
+.static-loading-container{
+    min-height:100px;
+}
+
+.loading-container.finished {
+    pointer-events: none;
+
+    .loading{
+        opacity: 0;
+
+    }
 }
 
 @keyframes spinner {
@@ -23,6 +38,37 @@
         transform: rotate(360deg);
     }
 }
+
+.basic-modal {
+    position: fixed;
+    z-index: 1040;
+    top: 0;
+    bottom: 0; left: 0; right: 0;
+}
+
+.loading-modal{
+    position:absolute;
+        width: 300px;
+    background-color: white;
+
+
+    padding: 40px;
+    border-radius: 32px;
+    margin: 0 auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+        transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+     z-index: $zindex-modal;
+    &:focus{
+        outline:none;
+    }
+    .message{
+        font-size: 2em;
+        text-align:center;
+    }
+}
+
 .modal-backdrop{
     opacity: 0.5;
 }
