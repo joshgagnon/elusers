@@ -27,7 +27,7 @@
         <title>Evolution Lawyers</title>
 
         <!-- CSS -->
-        <link href="/css/main.css" rel="stylesheet">
+        <link href="{{ mix('main.css') }}" rel="stylesheet">
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700" rel="stylesheet">
@@ -45,6 +45,6 @@
     <body>
         <div id="main"></div>
 
-        <script type="text/javascript" src="/js/app.js"></script>
+        <script type="text/javascript" src="{{ mix('main.js') }}"></script>
     </body>
 </html>

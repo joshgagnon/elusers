@@ -1,17 +1,17 @@
-var webpack = require("webpack");
-var path = require('path');
-var DEV = process.env.NODE_ENV !== 'production';
-var WebpackNotifierPlugin = require('webpack-notifier');
-var CleanWebpackPlugin = require('clean-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var autoprefixer = require('autoprefixer');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-
+const webpack = require("webpack");
+const path = require('path');
+const DEV = process.env.NODE_ENV !== 'production';
+const WebpackNotifierPlugin = require('webpack-notifier');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
     entry: path.resolve(__dirname, 'resources/js/index.tsx'),
     output: {
-        filename: 'js/app.js',
+        filename: DEV ? 'js/app.js' : 'js/app.[hash].js',
         path: path.resolve(__dirname, 'public')
     },
     devtool: DEV ? "source-map" : false,
@@ -89,7 +89,7 @@ module.exports = {
           new CopyWebpackPlugin([{ from: 'resources/images', to: 'images' }]),
 
         new WebpackNotifierPlugin({ title: 'Evolution Users' }),
-        new ExtractTextPlugin('css/[name].css'),
+        new ExtractTextPlugin(DEV ? 'css/[name].css' : 'css/[name].[hash].css'),
         DEV ? function(){} : new webpack.optimize.UglifyJsPlugin(),
 
         // Using define pluggin makes sure we are using the production build
@@ -102,5 +102,9 @@ module.exports = {
                 "NODE_ENV": JSON.stringify(process.env.NODE_ENV)
             }
         }),
+        new ManifestPlugin({
+            fileName: 'mix-manifest.json',
+            basePath: '/'
+        })
     ]
 };
