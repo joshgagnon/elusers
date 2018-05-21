@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contact extends Model
 {
 
-    protected $fillable = ['name', 'email', 'phone', 'organisation_id', 'first_name', 'middle_name', 'surname', 'type'];
+    protected $fillable = ['name', 'email', 'phone', 'organisation_id', 'first_name', 'middle_name', 'surname', 'type', 'metadata'];
 
     public static $validationRules = [
         'name' => 'required',

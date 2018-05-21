@@ -20,14 +20,14 @@ class ImportContacts extends Command
         while ($csvLine = fgetcsv($handle, $delimiter = ",")) {
             //$this->info(join($csvLine, ', '));
             //$this->info(count($csvLine));
-            if(count($csvLine) > 2){
+            if(count($csvLine) > 2 && $csvLine[0] != 'ID'){
                 $name = trim($csvLine[2]);
                 $type = $csvLine[10];
                 if($type == 'Company'){
                     $fields = [
                         'name' => $name,
                         'type' => 'organisation',
-                        'metadata' => ['actionstepId' => $csvLine[0]],
+                        'metadata' => json_encode(['actionstepId' => $csvLine[0]]),
                         'email' => trim($csvLine[8]),
                         'phone' => trim($csvLine[9]),
                         'organisation_id' => $orgId
@@ -47,7 +47,7 @@ class ImportContacts extends Command
                         'middle_name' => $middle,
                         'surname' => trim($names[count($names) - 1]),
                         'type' => 'individual',
-                        'metadata' => ['actionstepId' => $csvLine[0]],
+                        'metadata' => json_encode(['actionstepId' => $csvLine[0]]),
                         'email' => trim($csvLine[8]),
                         'phone' => trim($csvLine[9]),
                         'organisation_id' => $orgId
