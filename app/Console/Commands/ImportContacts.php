@@ -34,7 +34,7 @@ class ImportContacts extends Command
                     ];
                 }
                 else{
-                    $names = explode('/ +/', trim($csvLine[2]));
+                    $names = explode(" ", trim($csvLine[2]));
                     $middle = null;
                     if(count($names) > 2){
                         $middle = array_slice($names, 1, count($names) - 2);
