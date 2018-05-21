@@ -21,6 +21,7 @@ export class BasicDetailsFormFields extends React.PureComponent {
             <div>
                 <Combobox name="title" label="Title" data={["Mr", "Mrs", "Ms"]} required />
 
+                <InputField name="position" label="Position" type="text" />
                 <InputField name="firstName" label="First Name" type="text" required />
                 <InputField name="middleName" label="Middle Name" type="text" />
                 <InputField name="surname" label="Surname" type="text" required />

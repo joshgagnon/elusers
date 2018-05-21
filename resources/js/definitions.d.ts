@@ -2,7 +2,13 @@ import * as ReduxForm from 'redux-form';
 
 
 declare global {
+
     namespace EL {
+        export const enum Constants {
+            INDIVIDUAL = 'individual',
+            ORGANISATION = 'organistaion'
+        }
+
         interface User {
             id: number;
             title: string;
@@ -78,6 +84,10 @@ declare global {
             name: string;
             email: string;
             phone: string;
+            firstName: string;
+            middleName: string;
+            surname: string;
+            type: EL.Constants.INDIVIDUAL | EL.Constants.ORGANISATION
         }
 
         interface Office {

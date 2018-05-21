@@ -3,7 +3,7 @@ import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button } from 'react-bootstrap';
-import { InputField } from '../form-fields';
+import { InputField, SelectField } from '../form-fields';
 import { reduxForm } from 'redux-form';
 import { validate } from '../utils/validation';
 import { Link } from 'react-router';
@@ -81,12 +81,13 @@ export class Contact extends React.PureComponent<ContactProps> {
         return (
             <div>
                 <ButtonToolbar className="pull-right">
-                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit Phone</Link>
+                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
                     <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
                     <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 
                 <h3>{contact.name}</h3>
+                <h4>{contact.type}</h4>
 
                 <dl>
                     <dt>Email</dt>
@@ -110,11 +111,16 @@ interface CreateContactProps {
     submit: (data: React.FormEvent<Form>) => void;
 }
 
+
 class ContactForm extends React.PureComponent<ContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
+                <SelectField name="type" label="Type" options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.ORGANISATION, text: 'Organistion'}]} required />
                 <InputField name="name" label="Name" type="text" required />
+                <InputField name="firstName" label="First Name" type="text" />
+                <InputField name="middleName" label="Middle Name" type="text" />
+                <InputField name="surname" label="Surname" type="text" />
                 <InputField name="email" label="Email" type="email" />
                 <InputField name="phone" label="Phone" type="text" />
 
