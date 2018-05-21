@@ -6,7 +6,7 @@ declare global {
     namespace EL {
         export const enum Constants {
             INDIVIDUAL = 'individual',
-            ORGANISATION = 'organistaion'
+            ORGANISATION = 'organisation'
         }
 
         interface User {

@@ -116,7 +116,7 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <SelectField name="type" label="Type" options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.ORGANISATION, text: 'Organistion'}]} required />
+                <SelectField name="type" label="Type" options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.ORGANISATION, text: 'Organisation'}]} required />
                 <InputField name="name" label="Name" type="text" required />
                 <InputField name="firstName" label="First Name" type="text" />
                 <InputField name="middleName" label="Middle Name" type="text" />
