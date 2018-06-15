@@ -79,12 +79,37 @@ class DocumentBase extends React.PureComponent<any> {
                     <InputGroup>
                     <FormControl type="static" defaultValue={file.name || file.filename}/>
                         <InputGroup.Button>
+                             <Button disabled={!(documents.length > 1 && i > 0)} onClick={(e) => {
+                                e.preventDefault();
+                                if(documents.length > 1 && i > 0){
+                                    const clone = documents.slice();
+                                    const temp = clone[i-1];
+                                    clone[i-1] = clone[i];
+                                    clone[i] = temp;
+                                    this.props.input.onChange(clone);
+                                }
+                              }}>
+                              <Glyphicon glyph="arrow-up"/>
+                              </Button>
+                             <Button disabled={!(documents.length > 1 && i < documents.length - 1)} onClick={(e) => {
+                                e.preventDefault();
+                                if(documents.length > 1 && i < documents.length - 1){
+                                    const clone = documents.slice();
+                                    const temp = clone[i+1];
+                                    clone[i+1] = clone[i];
+                                    clone[i] = temp;
+                                    this.props.input.onChange(clone);
+                                }
+                              }}>
+                              <Glyphicon glyph="arrow-down"/>
+                              </Button>
                             <Button onClick={(e) => {
                                 e.preventDefault();
                                 const clone = documents.slice();
                                 clone.splice(i, 1);
                                 this.props.input.onChange(clone);
                               }}>
+
                               <Glyphicon glyph="trash"/>
                               </Button>
                             </InputGroup.Button>

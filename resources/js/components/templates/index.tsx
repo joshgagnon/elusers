@@ -4,7 +4,17 @@ import { SimpleFormLoader as FormLoader } from 'jasons-formal/lib/components/for
 import Modals from 'jasons-formal/lib/components/modals';
 import { UsersHOC, UserHOC, ContactsHOC } from '../hoc/resourceHOCs';
 import Loading from '../loading';
+import { Field as ReduxField } from 'redux-form';
+import DocumentComponent from '../form-fields/documents';
 
+class FileList extends React.PureComponent<{values: any}> {
+    render() {
+        if((this.props.values || {}).fileType === 'pdf'){
+            return <ReduxField label="Documents to Append" name="documentsToAppend" component={DocumentComponent} />
+        }
+        return false;
+    }
+}
 
 @(connect((state: EL.State) => ({user: state.user})) as any)
 @UsersHOC()
@@ -38,7 +48,7 @@ export default class Templates extends React.PureComponent<any> {
                             })
 
                     }} />
-                <Modals />
+                <Modals fileFormatExtras={FileList} />
             </div>
         );
     }
