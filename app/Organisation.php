@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Organisation extends Model
 {
+    protected $table = 'organisations';
     use SoftDeletes;
 
     protected $fillable = ['legal_name', 'trading_name'];
@@ -31,4 +32,11 @@ class Organisation extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function organisationFiles()
+    {
+        return $this->hasMany(OrganisationFile::class);
+    }
+
+
 }

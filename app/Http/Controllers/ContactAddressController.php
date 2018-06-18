@@ -80,7 +80,7 @@ class ContactAddressController extends Controller
      */
     public function delete(Contact $contact, Address $address)
     {
-        // address must be owned by contact
+        // address must be owned by contact // is this done?
         $address->delete();
         return response()->json(['message' => 'Address deleted.'], 200);
     }

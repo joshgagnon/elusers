@@ -62,7 +62,8 @@ declare global {
         interface Document {
             filename?: string;
             name?: string;
-            id: number;
+            id: number | string;
+            createdAt?: string;
         }
 
         interface DeedRecord {

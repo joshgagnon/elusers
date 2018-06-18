@@ -30,6 +30,7 @@ import Addresses from '../components/my-profile/addresses';
 import CreateAddress from '../components/my-profile/createAddress';
 import EditAddress from '../components/my-profile/editAddress';
 import Templates from '../components/templates';
+import Documents from '../components/documents';
 
 
 import WikiRoutes from './wiki';
@@ -53,6 +54,7 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path="password" component={ChangeUserPassword} />
         </Route>
 
+        <Route path="documents" component={Documents} />
         <Route path="contacts" component={Contacts} />
         <Route path="contacts/create" component={CreateContact} />
         <Route path="contacts/:contactId" component={Contact} />

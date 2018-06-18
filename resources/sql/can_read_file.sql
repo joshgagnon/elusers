@@ -1,4 +1,4 @@
-SELECT  EXISTS(
+SELECT  (EXISTS(
     SELECT *
     FROM deed_packet_record_file f
     JOIN deed_packet_records record ON f.deed_packet_record_id = record.id
@@ -7,4 +7,17 @@ SELECT  EXISTS(
     WHERE
         f.file_id = :file_id
         AND record.deleted_at IS NULL
-    );
+)
+
+OR EXISTS(
+    SELECT *
+    FROM users u
+    JOIN organisation_files of ON of.organisation_id = u.organisation_id
+    WHERE
+        u.id = :user_id AND
+        of.file_id = :file_id AND
+        of.deleted_at IS NULL
+
+
+
+)) as exists;

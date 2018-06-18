@@ -10,17 +10,11 @@ import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-boo
 
 const fileTarget = {
     drop(props, monitor) {
-        if(props.input.value){
-            props.input.onChange([...props.input.value, ...monitor.getItem().files]);
-        }
-        else{
-            props.input.onChange(monitor.getItem().files);
-        }
+        props.onDrop(monitor.getItem().files);
     }
 };
 
-
-class DocumentBase extends React.PureComponent<any> {
+class DropZone extends React.PureComponent<any> {
     isFileDialogActive;
     fileInputEl;
 
@@ -29,10 +23,8 @@ class DocumentBase extends React.PureComponent<any> {
         this.fileInputEl.value = null;
         this.fileInputEl.click();
     }
-
     onDrop(e) {
-        const droppedFiles = e.dataTransfer ? e.dataTransfer.files : Array.from(e.target.files);
-        this.props.input.onChange([...(this.props.input.value || []), ...droppedFiles]);
+        this.props.onDrop(e);
     }
 
     onFileDialogCancel() {
@@ -54,9 +46,13 @@ class DocumentBase extends React.PureComponent<any> {
         }
     }
 
+    onInput(e) {
+        const droppedFiles = e.dataTransfer ? e.dataTransfer.files : Array.from(e.target.files);
+        this.onDrop(droppedFiles);
+    }
+
     render() {
-        const documents = this.props.input.value || [];;
-        const { connectDropTarget, isOver, canDrop } = this.props;
+        const { connectDropTarget, isOver, canDrop, children } = this.props;
         let className="dropzone";
         if(isOver && !canDrop){
             className += ' reject';
@@ -69,8 +65,50 @@ class DocumentBase extends React.PureComponent<any> {
             style: { display: 'none' },
             multiple: true,
             ref: el => this.fileInputEl = el,
-            onChange: (e) => this.onDrop(e)
+            onChange: (e) => this.onInput(e)
         };
+
+        return connectDropTarget(<div className="dropzone" onClick={() => this.open()}>
+                { children }
+                <input {...inputAttributes} />
+                </div>);
+
+        }
+
+}
+
+export const DocumentDropZone = DropTarget(NativeTypes.FILE, fileTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop()
+}))(DropZone);
+
+
+class DocumentComponent extends React.PureComponent<any> {
+    isFileDialogActive;
+    fileInputEl;
+
+    constructor(props: any) {
+        super(props);
+        this.onDrop = this.onDrop.bind(this);
+    }
+
+
+
+    onDrop(droppedFiles) {
+        this.props.input.onChange([...(this.props.input.value || []), ...droppedFiles]);
+    }
+
+    render() {
+        const documents = this.props.input.value || [];;
+        const { connectDropTarget, isOver, canDrop } = this.props;
+        let className="dropzone";
+        if(isOver && !canDrop){
+            className += ' reject';
+        }
+        else if(isOver && canDrop){
+            className += ' accept';
+        }
         const { label, type, value, input, meta } = this.props;
         return <BaseFieldComponent {...{ label, type, value, input, meta }}>
                 <div>
@@ -117,10 +155,9 @@ class DocumentBase extends React.PureComponent<any> {
                     </div>
                 }) }
 
-                { connectDropTarget(<div className="dropzone" onClick={() => this.open()}>
-                     <div>Drop files here to upload or <span className="vanity-link">click to browse</span> your device</div>
-                      <input {...inputAttributes} />
-                </div>) }
+                <DocumentDropZone onDrop={this.onDrop}>
+                    <div>Drop files here to upload or <span className="vanity-link">click to browse</span> your device</div>
+                    </DocumentDropZone>
                 </div>
             </BaseFieldComponent>
 
@@ -128,11 +165,7 @@ class DocumentBase extends React.PureComponent<any> {
 }
 
 
-const DocumentComponent = DropTarget(NativeTypes.FILE, fileTarget, (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
-  canDrop: monitor.canDrop()
-}))(DocumentBase);
+
 
 
 export default DocumentComponent;

@@ -22,6 +22,10 @@ export default class NavMenu extends React.Component {
                             <NavItem>Users</NavItem>
                         </LinkContainer>
 
+                        <LinkContainer to="/documents">
+                            <NavItem>Documents</NavItem>
+                        </LinkContainer>
+
                         <LinkContainer to="/contacts">
                             <NavItem>Contacts</NavItem>
                         </LinkContainer>
