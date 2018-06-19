@@ -2,15 +2,16 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { SimpleFormLoader as FormLoader } from 'jasons-formal/lib/components/formLoader';
 import Modals from 'jasons-formal/lib/components/modals';
-import { UsersHOC, UserHOC, ContactsHOC } from '../hoc/resourceHOCs';
+import { UsersHOC, UserHOC, ContactsHOC, OrganisationDocumentsHOC } from '../hoc/resourceHOCs';
 import Loading from '../loading';
 import { Field as ReduxField } from 'redux-form';
 import DocumentComponent from '../form-fields/documents';
 
-class FileList extends React.PureComponent<{values: any}> {
+@OrganisationDocumentsHOC()
+class FileList extends React.PureComponent<{values: any, documents: EL.Resource<EL.Document[]>}> {
     render() {
         if((this.props.values || {}).fileType === 'pdf'){
-            return <ReduxField label="Documents to Append" name="documentsToAppend" component={DocumentComponent} />
+            return <ReduxField label="Documents to Append" name="documentsToAppend" component={DocumentComponent} existingDocuments={this.props.documents.data}/>
         }
         return false;
     }

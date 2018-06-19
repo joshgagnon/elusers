@@ -5,7 +5,7 @@ import { NativeTypes } from 'react-dnd-html5-backend';
 import { DropTarget } from 'react-dnd';
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';
-
+import * as DropdownList from 'react-widgets/lib/DropdownList';
 
 
 const fileTarget = {
@@ -93,15 +93,27 @@ class DocumentComponent extends React.PureComponent<any> {
         this.onDrop = this.onDrop.bind(this);
     }
 
-
-
     onDrop(droppedFiles) {
         this.props.input.onChange([...(this.props.input.value || []), ...droppedFiles]);
     }
 
+    existingDocuments(docs) {
+        return <div style={{paddingBottom: '20px'}}>
+             <DropdownList
+              filter
+              data={docs}
+              textField={'filename'}
+              value={''}
+              onSelect={(value) => {
+                  this.props.input.onChange([...(this.props.input.value || []), value]);
+              }}
+            />
+            </div>
+    }
+
     render() {
-        const documents = this.props.input.value || [];;
-        const { connectDropTarget, isOver, canDrop } = this.props;
+        const documents = this.props.input.value || [];
+        const { connectDropTarget, isOver, canDrop, existingDocuments } = this.props;
         let className="dropzone";
         if(isOver && !canDrop){
             className += ' reject';
@@ -111,6 +123,7 @@ class DocumentComponent extends React.PureComponent<any> {
         }
         const { label, type, value, input, meta } = this.props;
         return <BaseFieldComponent {...{ label, type, value, input, meta }}>
+                { existingDocuments && existingDocuments.length > 1 && this.existingDocuments(existingDocuments) }
                 <div>
                 {(documents).map((file, i) => {
                     return <div key={`${file.name || file.filename}-${i}`} className="file-row">
