@@ -108,4 +108,6 @@ Route::group(['middleware' => 'auth'], function() {
 
 
     Route::post('render', 'RenderController@render');
+
+    Route::get('version', 'VersionController@index');
 });

@@ -89,3 +89,20 @@ export function confirmAction(payload: EL.Actions.ShowConfirmActionModalPayload)
         payload
     };
 }
+
+
+export function mounted(): EL.Actions.MountedAction {
+    return {
+        type: EL.ActionTypes.MOUNTED,
+        payload: {}
+    };
+}
+
+export function showVersionWarningModal(): EL.Actions.ShowVersionWarningModal{
+    return {
+        type: EL.ActionTypes.SHOW_VERSION_WARNING_MODAL,
+        payload: {}
+    };
+}
+
+

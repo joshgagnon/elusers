@@ -1,9 +1,10 @@
-import { select, takeEvery, put, call } from 'redux-saga/effects';
+import { select, takeEvery, put, call, fork, take, race } from 'redux-saga/effects';
 import { SagaMiddleware, delay } from 'redux-saga';
 import axios from 'axios';
 import * as humps from 'humps';
 import * as FormData from 'form-data';
 import { downloadSaga, renderSaga } from 'jasons-formal/lib/sagas';
+import { mounted, showVersionWarningModal } from '../actions';
 
 function* rootSagas() {
     yield [
@@ -17,8 +18,11 @@ function* rootSagas() {
 
         notificationTimeout(),
 
+        longPollVersion(),
+
         renderSaga(),
         downloadSaga()
+
     ];
 }
 
@@ -215,3 +219,32 @@ function *deleteResource(action: EL.Actions.DeleteResourceAction) {
         })
     }
 }
+
+
+// Fetch data every 60 seconds
+function* pollVersion() {
+    try {
+        yield call(delay,60000);
+        const hash = yield select((state: EL.State) => state.version.ASSET_HASH);
+        const response = yield call(axios.get, `/api/version`);
+        if(true){ //hash && response.ASSET_HASH && hash !== response.ASSET_HASH){
+            yield put(showVersionWarningModal());
+        }
+        else{
+            yield put(mounted());
+        }
+    } catch (error) {
+      yield put(mounted())
+      return;
+    }
+}
+export function* longPollVersion() {
+    while (true) {
+        yield take(EL.ActionTypes.MOUNTED);
+        yield race([
+          fork(pollVersion)
+          //take(EL.ActionTypes.LOGOUT)
+        ])
+    }
+}
+

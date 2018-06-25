@@ -130,6 +130,9 @@ declare global {
             cpdpr: CPDPRState;
             notifications: INotifications;
             modals: Modals;
+            version: {
+                ASSET_HASH: string;
+            }
         }
 
         export const enum ActionTypes {
@@ -175,11 +178,14 @@ declare global {
              */
             SHOW_CONFIRM_ACTION_MODAL = 'SHOW_CONFIRM_ACTION_MODAL',
             CLOSE_MODAL = 'CLOSE_MODAL',
+            SHOW_VERSION_WARNING_MODAL = 'SHOW_VERSION_WARNING_MODAL',
 
             /**
              * Initial testing
              */
             TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
+
+            MOUNTED =  'MOUNTED'
         }
 
         export const enum RequestStatus {
@@ -213,6 +219,7 @@ declare global {
 
         export const enum ModalNames {
             CONFIRM_ACTION = 'CONFIRM_ACTION',
+            VERSION_WARNING = 'VERSION_WARNING'
         }
 
         export const enum FormNames {
@@ -300,6 +307,13 @@ declare global {
             payload: {
                 id: string;
             }
+        }
+
+        interface ShowVersionWarningModal extends Action {
+            payload: {}
+        }
+        interface MountedAction extends Action {
+            payload: {}
         }
     }
 

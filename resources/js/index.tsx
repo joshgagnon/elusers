@@ -14,13 +14,20 @@ import 'react-widgets/dist/css/react-widgets.css';
 
 
 // Get the page load data injected when the app is served
-let initialState = {};
+let initialState = {} as any;
 try {
     const loadData = JSON.parse(document.getElementById("load-data").textContent);
     initialState = humps.camelizeKeys(loadData);
 } catch(e) {
     // Do nothing
 }
+try {
+    const version = JSON.parse(document.getElementById("version").textContent);
+    initialState.version = version;
+} catch(e) {
+    // Do nothing
+}
+
 
 const store = configureStore(browserHistory, initialState);
 const history = syncHistoryWithStore(browserHistory, store);

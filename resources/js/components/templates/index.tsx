@@ -11,7 +11,11 @@ import DocumentComponent from '../form-fields/documents';
 class FileList extends React.PureComponent<{values: any, documents: EL.Resource<EL.Document[]>}> {
     render() {
         if((this.props.values || {}).fileType === 'pdf'){
-            return <ReduxField label="Documents to Append" name="documentsToAppend" component={DocumentComponent} existingDocuments={this.props.documents.data}/>
+            return <ReduxField
+                label="Documents to Append"
+                name="documentsToAppend"
+                component={DocumentComponent}
+                existingDocuments={this.props.documents.data} />
         }
         return false;
     }

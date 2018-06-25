@@ -6,10 +6,13 @@ export default function(state: EL.Modals = DEFAULT_STATE, action: any) {
     switch (action.type) {
         case EL.ActionTypes.CLOSE_MODAL:
             return closeModal(state, action);
-        
+
         case EL.ActionTypes.SHOW_CONFIRM_ACTION_MODAL:
             return showConfirmActionModal(state, action);
-        
+
+        case EL.ActionTypes.SHOW_VERSION_WARNING_MODAL:
+            return showVersionWarningModal(state, action);
+
         default:
             return state;
     }
@@ -33,5 +36,13 @@ function showConfirmActionModal(state: EL.Modals, action: EL.Actions.ShowConfirm
         ...state,
         visible: EL.ModalNames.CONFIRM_ACTION,
         [EL.ModalNames.CONFIRM_ACTION]: action.payload
+    };
+}
+
+function showVersionWarningModal(state: EL.Modals, action: EL.Actions.ShowVersionWarningModal) {
+    return {
+        ...state,
+        visible: EL.ModalNames.VERSION_WARNING,
+        [EL.ModalNames.VERSION_WARNING]: action.payload
     };
 }

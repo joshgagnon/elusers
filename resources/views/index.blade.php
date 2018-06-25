@@ -41,6 +41,7 @@
         <![endif]-->
 
         <script type="application/json" id="load-data">{!! $loadData !!}</script>
+        <script type="application/json" id="version">{ "ASSET_HASH": "{{mix('main.js')}}"}</script>
     </head>
     <body>
         <div id="main"></div>

@@ -13,6 +13,8 @@ import {
     document,
     wizard } from 'jasons-formal/lib/reducers/reducers';
 
+const version = (state={}) => state;
+
 const rootReducer = combineReducers({
     routing,
     form: formReducer,
@@ -24,7 +26,8 @@ const rootReducer = combineReducers({
     saved,
     document,
     wizard,
-    modals
+    modals,
+    version
 });
 
 export default rootReducer;
