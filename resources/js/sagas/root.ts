@@ -227,7 +227,7 @@ function* pollVersion() {
         yield call(delay,60000);
         const hash = yield select((state: EL.State) => state.version.ASSET_HASH);
         const response = yield call(axios.get, `/api/version`);
-        if(true){ //hash && response.ASSET_HASH && hash !== response.ASSET_HASH){
+        if(hash && response.ASSET_HASH && hash !== response.ASSET_HASH){
             yield put(showVersionWarningModal());
         }
         else{
