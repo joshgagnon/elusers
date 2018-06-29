@@ -10,12 +10,12 @@ interface IDurationFieldState {
 const numberRegex = /^$|^(\d+(\.)?(\d{1,2})?)$/;
 
 export default class DurationFieldComponent extends React.PureComponent<IFieldComponentProps & {input: any}, IDurationFieldState> {
+
+    readonly state = {fractionalHours: minutesToFractionalHours(this.props.input.value) + ''};
+
     constructor(props: IFieldComponentProps) {
         super(props);
 
-        this.state = {
-            fractionalHours: minutesToFractionalHours(this.props.input.value) + ''
-        };
 
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);

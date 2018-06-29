@@ -39,4 +39,4 @@ const mapDispatchToProps = {
 export default connect(
     undefined,
     mapDispatchToProps,
-)(VersionWarning);
+)(VersionWarning as any);

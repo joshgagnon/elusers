@@ -241,10 +241,10 @@ function* pollVersion() {
 export function* longPollVersion() {
     while (true) {
         yield take(EL.ActionTypes.MOUNTED);
-        yield race([
-          fork(pollVersion)
+        yield race({
+          poll: fork(pollVersion)
           //take(EL.ActionTypes.LOGOUT)
-        ])
+        })
     }
 }
 

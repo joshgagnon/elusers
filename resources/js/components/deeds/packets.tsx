@@ -38,11 +38,9 @@ const data = [{
 @DeedPacketsHOC()
 @PanelHOC<DeedPacketsProps, ListDeedPacketsState>('Deed Packets', props => [props.deedPackets, props.users])
 export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListDeedPacketsState> {
-    constructor(props: DeedPacketsProps) {
-        super(props);
-        this.state = {
-            searchValue: ''
-        };
+
+    public readonly state: ListDeedPacketsState = {
+        searchValue: ''
     }
 
     render() {
