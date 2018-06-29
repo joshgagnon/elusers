@@ -24,7 +24,7 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
                 refresh = refresh !== undefined ? refresh : false;
 
                 // Only fetch if we need to, or refresh is true
-                if (refresh || (!this.props[propsName] || !this.props[propsName].status)) {
+                if (refresh || (!this.props[propsName] || !this.props[propsName].hasStarted)) {
                     // Call the props fetch function
                     this.props.fetch(refresh)
                 }
@@ -50,17 +50,18 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
             // Dig the resource out of state
             const resource = state.resources[location(ownProps)] || null;
 
-            const isFetching = !resource || resource.status === EL.RequestStatus.FETCHING;
+            const hasStarted = !!resource;
+            const isFetching = resource && resource.status === EL.RequestStatus.FETCHING;
             const hasErrored = resource && resource.status === EL.RequestStatus.ERROR;
 
-            return { [propsName]: { isFetching, hasErrored, ...resource} };
+            return { [propsName]: { isFetching, hasErrored, hasStarted, ...resource} };
         }
 
         function actions(dispatch: Dispatch<any>, ownProps: any) {
             return {
-                fetch: () => {
+                fetch: (refresh) => {
                     const resource = location(ownProps);
-                    return dispatch(requestResource(resource));
+                    return dispatch(requestResource(resource, { refresh }));
                 }
             };
         }

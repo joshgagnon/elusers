@@ -88,7 +88,8 @@ declare global {
             firstName: string;
             middleName: string;
             surname: string;
-            type: EL.Constants.INDIVIDUAL | EL.Constants.ORGANISATION
+            type: EL.Constants.INDIVIDUAL | EL.Constants.ORGANISATION;
+            files: Document[]
         }
 
         interface Office {
@@ -231,6 +232,7 @@ declare global {
 
             CREATE_CONTACT_FORM = 'CREATE_CONTACT_FORM',
             EDIT_CONTACT_FORM = 'EDIT_CONTACT_FORM',
+            EDIT_CONTACT_AMLCFT_FORM = 'EDIT_CONTACT_AMLCFT_FORM',
         }
 
         interface ConfirmActionModal {
@@ -251,6 +253,7 @@ declare global {
         export interface Meta {
             onSuccess?: (Action | Function | ReduxForm.FormAction)[];
             onFailure?: (Action | Function | ReduxForm.FormAction)[];
+            refresh?: boolean;
         }
 
         export interface Action {

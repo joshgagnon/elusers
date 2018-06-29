@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Field as ReduxField } from 'redux-form';
 import ComboboxComponent from './comboboxComponent';
+import DropdownComponent from './dropdownComponent';
 import DatePickerComponent from './datePickerComponent';
 import DurationComponent from './durationComponent';
 import InputFieldComponent from './inputFieldComponent';
 import SelectFieldComponent from './selectFieldComponent';
 import TextAreaComponent from './textArea';
 import DocumentComponent from './documents';
+
 
 interface FieldProps {
     name: string;
@@ -77,3 +79,14 @@ export class DocumentList extends React.PureComponent<FieldProps> {
     }
 }
 
+interface DrodownListProps extends FieldProps {
+    data: any;
+    textField: string | ((any) => string);
+    valueField: string | ((any) => string);
+}
+
+export class DropdownListField extends React.PureComponent<DrodownListProps> {
+    render() {
+        return <ReduxField {...this.props} component={DropdownComponent as any} />
+    }
+}

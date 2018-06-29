@@ -19,12 +19,12 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
 
             if (checkResources) {
                 const resources = checkResources(props);
-                
+
                 if (some(resources, r => r.hasErrored)) {
                     return <h1>Error</h1>;
                 }
 
-                if (some(resources, r => r.isFetching)) {
+                if (some(resources, r => r.isFetching || !r.hasStarted)) {
                     return <Loading />;
                 }
             }

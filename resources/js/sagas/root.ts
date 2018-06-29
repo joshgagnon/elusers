@@ -31,7 +31,7 @@ export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
 }
 
 function *resourceRequests() {
-    yield takeEvery(EL.ActionTypes.RESOURCE_REQUEST, checkAndRequest);
+    yield takeFirstRequests(EL.ActionTypes.RESOURCE_REQUEST, checkAndRequest);
 }
 
 function *createResourceRequests() {
@@ -90,6 +90,18 @@ function *fireOnFailureActions(action: EL.Actions.Action) {
     }
 }
 
+
+const takeFirstRequests = (pattern, saga) => fork(function*() {
+  let requests = {};
+  while (true) {
+    const action = yield take(pattern)
+    if (!requests[action.payload.key]) {
+        requests[action.payload.key] = yield saga(action);
+        delete requests[action.payload.key];
+    }
+  }
+})
+
 function *checkAndRequest(action: EL.Actions.Action) {
     // Check to see if this resource exists in state already
     const existing = yield select((state: EL.State) => state.resources[action.payload.key]);
@@ -97,8 +109,9 @@ function *checkAndRequest(action: EL.Actions.Action) {
     if (existing) {
         return;
     }
-
+    console.log('request - ', action.payload.key)
     yield put({ type: EL.ActionTypes.RESOURCE_FETCHING, payload: action.payload });
+    console.log('put - ', action.payload.key)
 
     try {
         const response = yield call(axios.get, '/api/' + action.payload.key);

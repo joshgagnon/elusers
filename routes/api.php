@@ -69,6 +69,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('contacts', 'ContactController@all');
     Route::get('contacts/{contactId}', 'ContactController@get');
     Route::post('contacts', 'ContactController@create');
+    Route::post('contacts/{contact}', 'ContactController@update'); // needs to be post as it is multipart/form-data
+    Route::delete('deed-packet-records/{record}', 'DeedPacketRecordController@delete');
     Route::put('contacts/{contact}', 'ContactController@update');
     Route::delete('contacts/{contact}', 'ContactController@delete');
 

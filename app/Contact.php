@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contact extends Model
 {
 
-    protected $fillable = ['name', 'email', 'phone', 'organisation_id', 'first_name', 'middle_name', 'surname', 'type', 'metadata'];
+    protected $fillable = ['name', 'email', 'phone', 'organisation_id', 'first_name', 'middle_name', 'surname', 'type', 'metadata', 'agent_id'];
 
     public static $validationRules = [
         'name' => 'required',
@@ -38,4 +38,10 @@ class Contact extends Model
     {
         return $this->belongsToMany(DeedPacket::class);
     }
+
+    public function files()
+    {
+        return $this->hasMany(ContactFile::class);
+    }
+
 }

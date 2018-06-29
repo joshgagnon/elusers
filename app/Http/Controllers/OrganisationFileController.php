@@ -26,7 +26,7 @@ class OrganisationFileController extends Controller
             return $n->files;
         };
         return $request->user()->organisation()->first()->organisationFiles()->with('file')->get()->map(function ($i) {
-        return $i->file;
+            return $i->file;
         });
     }
 
@@ -98,7 +98,7 @@ class OrganisationFileController extends Controller
             'mime_type' => $file->getMimeType(),
             'encrypted' => true,
         ]);
-       $orgFile = new OrganisationFile;
+        $orgFile = new OrganisationFile;
 
         $orgFile->file_id = $file->id;
         $orgFile->organisation_id  = $organisation->id;
