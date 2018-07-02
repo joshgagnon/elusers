@@ -5,6 +5,7 @@ import { SelectOption } from './index';
 
 interface SelectFieldComponentProps extends IFieldComponentProps {
     options: SelectOption[];
+    prompt?: boolean;
 }
 
 export default class SelectFieldComponent extends React.PureComponent<SelectFieldComponentProps> {
@@ -12,7 +13,9 @@ export default class SelectFieldComponent extends React.PureComponent<SelectFiel
         return (
             <BaseFieldComponent {...this.props}>
                 <FormControl componentClass="select" placeholder="select" {...this.props.input}>
+                { this.props.prompt && <option value="" disabled>Please Select...</option> }
                     {this.props.options.map((option, index) => <option key={index} value={option.value}>{option.text}</option>)}
+
                 </FormControl>
             </BaseFieldComponent>
         );

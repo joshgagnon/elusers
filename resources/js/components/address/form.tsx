@@ -10,20 +10,20 @@ interface IAddressFormProps {
     initialValues?: any
 }
 
-const validationRules: EL.IValidationFields = {
+export const validationRules: EL.IValidationFields = {
     addressName: { name: 'Address name',  required: true },
     addressOne: { name: 'Address one',  required: true },
     addressType: { name: 'Address type',  required: true },
     postCode: { name: 'Post code',  required: true },
-    countryCode: { name: 'Country code',  required: true },
+    country: { name: 'Country',  required: true },
 };
 
 
 export class AddressFields extends React.PureComponent<IAddressFormProps> {
     render(){
         return [
-                <InputField key={"addressOne"} name="addressOne" label="Address One" type="text" required />,
-                <InputField key={"addressTwo"} name="addressTwo" label="Address Two" type="text" />,
+                <InputField key={"addressOne"} name="addressOne" label="Address Line One" type="text" required />,
+                <InputField key={"addressTwo"} name="addressTwo" label="Address Line Two" type="text" />,
                 <InputField key={"city"} name="city" label="City" type="text" />,
                 <InputField key={"county"} name="county" label="County" type="text" />,
                 <InputField key={"state"} name="state" label="State" type="text" />,

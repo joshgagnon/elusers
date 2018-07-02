@@ -16,7 +16,6 @@ class AddContactToContactFile extends Migration
         Schema::table('contact_files', function (Blueprint $table) {
             $table->integer('contact_id')->unsigned();
             $table->foreign('contact_id')->references('id')->on('files')->onDelete('cascade');
-
         });
     }
 

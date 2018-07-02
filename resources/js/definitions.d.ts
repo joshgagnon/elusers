@@ -205,6 +205,7 @@ declare global {
             maxLength?: number;
             minValue?: number;
             maxValue?: number;
+            minItems?: number;
             isDate?: boolean;
             sameAs?: {
                 fieldName: string;

@@ -4,7 +4,8 @@ import { Route, IndexRoute, RouteComponent } from 'react-router';
 import Home from '../components/home';
 import Users from '../components/users';
 
-import { Contact, Contacts, CreateContact, EditContact, EditContactAMLCFT } from '../components/contacts';
+import { Contact, Contacts, CreateContact, EditContact } from '../components/contacts';
+import { EditContactAMLCFT, ExternalAMLCFT  } from '../components/contacts/amlcft';
 
 import { DeedPacket, ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
 import { DeedRecord, EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
@@ -90,6 +91,7 @@ const routes = (routeComponent: RouteComponent) => (
 
         <Route path="templates" component={ Templates } />
 
+        <Route path="amlcft/:token" component={ ExternalAMLCFT } />
 
         { WikiRoutes }
     </Route>

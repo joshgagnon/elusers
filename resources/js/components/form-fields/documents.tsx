@@ -121,8 +121,9 @@ class DocumentComponent extends React.PureComponent<any> {
         else if(isOver && canDrop){
             className += ' accept';
         }
-        const { label, type, value, input, meta } = this.props;
-        return <BaseFieldComponent {...{ label, type, value, input, meta }}>
+        const { label, type, value, input, meta, help } = this.props;
+
+        return <BaseFieldComponent {...{ label, type, value, input, meta, help }}>
                 { existingDocuments && existingDocuments.length > 1 && this.existingDocuments(existingDocuments) }
                 <div>
                 {(documents).map((file, i) => {

@@ -36,6 +36,12 @@ export function validate(fields: EL.IValidationFields, values: any): EL.Validati
                 return `${field.name} must match ${field.sameAs.fieldDisplayName}.`;
             }
         }
+        // Fields have same value
+        if (field.minItems !== undefined) {
+            if (!value || value.length < field.minItems) {
+                return `At least ${field.minItems} ${field.name} required.`;
+            }
+        }
 
         return undefined;
     }

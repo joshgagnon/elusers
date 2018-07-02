@@ -34,6 +34,7 @@ export interface SelectOption {
 
 interface SelectFieldProps extends FieldProps {
     options: SelectOption[];
+    prompt?: boolean;
 }
 
 export class Combobox extends React.PureComponent<ComboboxProps> {
@@ -91,7 +92,7 @@ export class DropdownListField extends React.PureComponent<DrodownListProps> {
     }
 }
 
-export class CheckboxField extends React.PureComponent<ComboboxProps> {
+export class CheckboxField extends React.PureComponent<FieldProps> {
     render() {
         return <ReduxField {...this.props} component={CheckboxComponent as any} />
     }

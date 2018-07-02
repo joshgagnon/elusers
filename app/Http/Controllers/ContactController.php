@@ -182,4 +182,16 @@ class ContactController extends Controller
 
     }
 
+
+    public function amlcft(Request $request)
+    {
+
+        $loadData = [];
+        $loadData['user'] = false;
+
+        return view('index')->with([
+            'loadData' => json_encode($loadData)
+        ]);
+    }
+
 }
