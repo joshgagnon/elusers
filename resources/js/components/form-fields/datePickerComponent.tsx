@@ -8,7 +8,7 @@ import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 
 momentLocalizer(moment);
 
-export default class DatePickerField extends React.PureComponent<IFieldComponentProps> {
+export default class DatePickerField extends React.PureComponent<IFieldComponentProps & {defaultView?: string}> {
     render() {
         const { input: { onChange, onBlur, value } } = this.props;
 
@@ -22,6 +22,7 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                     onBlur={() => onBlur(undefined)}
                     //className="form-control"
                     ref="date"
+                    defaultView={this.props.defaultView}
                     /*onFocus={(event: React.FocusEvent<any> as any) => {
                         const target : any = event.target;
                         const shouldOpen = target.tagName === 'INPUT' && !this.props.value;

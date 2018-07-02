@@ -3,8 +3,8 @@ import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button } from 'react-bootstrap';
-import { InputField, SelectField, DropdownListField, DocumentList  } from '../form-fields';
-import { reduxForm } from 'redux-form';
+import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
+import { reduxForm, formValueSelector } from 'redux-form';
 import { validate } from '../utils/validation';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
@@ -12,7 +12,7 @@ import Icon from '../icon';
 import { connect } from 'react-redux';
 import { createNotification, createResource, updateResource, deleteResource, confirmAction } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
-
+import { AddressFields } from '../address/form';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
@@ -182,21 +182,35 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
     }
 }
 
-class ContactAMLCFTForm extends React.PureComponent<ContactFormProps> {
+@(connect((state: EL.State) => {
+return {
+    capacity: formValueSelector(EL.FormNames.EDIT_CONTACT_AMLCFT_FORM)(state, 'capacity')
+}}) as any)
+class ContactAMLCFTForm extends React.PureComponent<ContactFormProps & {capacity: string}> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <SelectField name="type" label="Type" options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.ORGANISATION, text: 'Organisation'}]} required />
+                <h4 className={"text-center"}>Name & Date of Birth</h4>
                 <InputField name="firstName" label="First Name" type="text" required/>
                 <InputField name="middleName" label="Middle Name" type="text" />
                 <InputField name="surname" label="Surname" type="text" required />
-                <InputField name="dateOfBirth" label="Date of Birth" type="date" />
-
-
+                <DatePicker name="dateOfBirth" label="Date of Birth" defaultView="decade"/>
+                <h4 className={"text-center"}>Address</h4>
+                <AddressFields />
+                <h4 className={"text-center"}>Supporting Documents</h4>
+                <DocumentList name="files" label="Documents" />
+                <h4 className={"text-center"}>Capacity</h4>
+                <SelectField name="capacity" label="Are we acting for a trust or another entity holding personal assets?"
+                options={[{value: 'no', text: 'No'}, {value: 'trust', text: 'Yes - Trust'}, {value: 'company', text: 'Yes - Company'}]}
+                required>
+                </SelectField>
+                { this.props.capacity === 'trust' && <DocumentList name="trust_deed_files" label="Trust Deed" /> }
+                { this.props.capacity === 'company' && <CheckboxField name="confirmation">
+                    <strong>I confirm I am the person acting on behalf of the company in this matter</strong>
+                    </CheckboxField> }
                 <hr />
-
                 <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">{this.props.saveButtonText}</Button>
+                    <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
                 </ButtonToolbar>
             </Form>
         );
@@ -287,10 +301,10 @@ interface UnwrappedEditContactAMLCFTProps {
 }
 
 @(connect(
-    undefined,
+          undefined,
     {
         submit: (contactId: number, data: React.FormEvent<Form>) => {
-            const url = `contacts/${contactId}`;
+            const url = `contacts/amlcft/${contactId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push('/contacts')],
                 onFailure: [createNotification('Contact update failed. Please try again.', true)],
@@ -301,10 +315,10 @@ interface UnwrappedEditContactAMLCFTProps {
     }
 ) as any)
 @ContactHOC()
-@PanelHOC<UnwrappedEditContactProps>('Edit Contact', props => props.contact)
+@PanelHOC<UnwrappedEditContactProps>('AML/CFT Due Diligence Form', props => props.contact)
 class UnwrappedEditContactAMLCFT extends React.PureComponent<UnwrappedEditContactAMLCFTProps> {
     render() {
-        return <EditContactAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, data)} saveButtonText="Save Contact" />
+        return <EditContactAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, data)}  />
     }
 }
 

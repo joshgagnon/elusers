@@ -8,7 +8,7 @@ import InputFieldComponent from './inputFieldComponent';
 import SelectFieldComponent from './selectFieldComponent';
 import TextAreaComponent from './textArea';
 import DocumentComponent from './documents';
-
+import CheckboxComponent from './checkboxComponent';
 
 interface FieldProps {
     name: string;
@@ -42,7 +42,7 @@ export class Combobox extends React.PureComponent<ComboboxProps> {
     }
 }
 
-export class DatePicker extends React.PureComponent<FieldProps> {
+export class DatePicker extends React.PureComponent<FieldProps & {defaultView?: string}> {
     render() {
         return <ReduxField  {...this.props} component={DatePickerComponent as any} />
     }
@@ -88,5 +88,11 @@ interface DrodownListProps extends FieldProps {
 export class DropdownListField extends React.PureComponent<DrodownListProps> {
     render() {
         return <ReduxField {...this.props} component={DropdownComponent as any} />
+    }
+}
+
+export class CheckboxField extends React.PureComponent<ComboboxProps> {
+    render() {
+        return <ReduxField {...this.props} component={CheckboxComponent as any} />
     }
 }

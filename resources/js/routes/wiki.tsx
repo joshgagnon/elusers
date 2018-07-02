@@ -269,7 +269,7 @@ class WikiPageWithPath extends React.PureComponent<InjectedWikiPageWithPathProps
     }
 
     render() {
-        if(this.props.wikiPage.isFetching){
+        if(!this.props.wikiPage.data){
             return false;
         }
         let values : WikiPageForm = {title: this.props.wikiPage.data.title, data: this.props.wikiPage.data.data};
