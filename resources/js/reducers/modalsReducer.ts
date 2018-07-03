@@ -13,6 +13,8 @@ export default function(state: EL.Modals = DEFAULT_STATE, action: any) {
         case EL.ActionTypes.SHOW_VERSION_WARNING_MODAL:
             return showVersionWarningModal(state, action);
 
+        case EL.ActionTypes.SHOW_AMLCFT_MODAL:
+            return showAMLCFTModal(state, action);
         default:
             return state;
     }
@@ -44,5 +46,12 @@ function showVersionWarningModal(state: EL.Modals, action: EL.Actions.ShowVersio
         ...state,
         visible: EL.ModalNames.VERSION_WARNING,
         [EL.ModalNames.VERSION_WARNING]: action.payload
+    };
+}
+function showAMLCFTModal(state: EL.Modals, action: EL.Actions.ShowAMLCFTToken) {
+    return {
+        ...state,
+        visible: EL.ModalNames.AMLCFT_TOKEN,
+        [EL.ModalNames.AMLCFT_TOKEN]: action.payload
     };
 }

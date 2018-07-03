@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import ConfirmAction from './confirmAction';
 import VersionWarning from './versionWarning';
+import AMLCFTToken from './amlcftToken';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -15,7 +16,8 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <ConfirmAction />;
             case EL.ModalNames.VERSION_WARNING:
                 return <VersionWarning />;
-
+            case EL.ModalNames.AMLCFT_TOKEN:
+                return <AMLCFTToken />
             default:
                 return false;
         }

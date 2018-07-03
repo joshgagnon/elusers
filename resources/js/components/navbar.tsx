@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+import { connect } from 'react-redux';
 
-export default class NavMenu extends React.Component {
+
+export class NavMenu extends React.PureComponent {
     render() {
         return (
             <Navbar collapseOnSelect staticTop>
@@ -59,6 +61,20 @@ export default class NavMenu extends React.Component {
     }
 }
 
+export class NavMenuPublic extends React.PureComponent {
+    render() {
+        return (
+            <Navbar staticTop  className="public-navbar">
+                <Navbar.Header>
+                    <Navbar.Brand>
+                        Evolution Lawyers
+                    </Navbar.Brand>
+                </Navbar.Header>
+            </Navbar>
+        );
+    }
+}
+
 class LogoutButton extends React.PureComponent {
     render() {
         return (
@@ -67,4 +83,17 @@ class LogoutButton extends React.PureComponent {
             </li>
         );
     }
+}
+
+@(connect((state: EL.State) => {
+    return {user: state.user};
+}) as any)
+export default class NavMenuCheck extends React.PureComponent<{user?: EL.User}> {
+    render() {
+        if(this.props.user){
+            return <NavMenu />;
+        }
+        return <NavMenuPublic />
+    }
+
 }

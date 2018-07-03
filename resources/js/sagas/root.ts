@@ -109,10 +109,7 @@ function *checkAndRequest(action: EL.Actions.Action) {
     if (existing) {
         return;
     }
-    console.log('request - ', action.payload.key)
     yield put({ type: EL.ActionTypes.RESOURCE_FETCHING, payload: action.payload });
-    console.log('put - ', action.payload.key)
-
     try {
         const response = yield call(axios.get, '/api/' + action.payload.key);
         const camelCaseResponseData = humps.camelizeKeys(response.data);

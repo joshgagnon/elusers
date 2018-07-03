@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 use App\ContactFile;
 use App\File;
 use App\Contact;
+use App\AccessToken;
 use Illuminate\Http\Request;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Str;
 
 class ContactController extends Controller
 {
@@ -39,7 +40,7 @@ class ContactController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('files.file')->first();
+        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('files.file', 'accessTokens')->first();
 
         if (!$contact) {
             abort(404);
@@ -180,6 +181,15 @@ class ContactController extends Controller
         $contactFile->save();
         return $contactFile;
 
+    }
+
+    public function createAccessToken(Contact $contact)
+    {
+
+        foreach($contact->accessTokens as $token) {
+            $token->delete();
+        }
+        return $contact->accessTokens()->create(['token' => Str::random(40)]);
     }
 
 

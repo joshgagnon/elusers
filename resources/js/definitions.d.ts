@@ -180,7 +180,7 @@ declare global {
             SHOW_CONFIRM_ACTION_MODAL = 'SHOW_CONFIRM_ACTION_MODAL',
             CLOSE_MODAL = 'CLOSE_MODAL',
             SHOW_VERSION_WARNING_MODAL = 'SHOW_VERSION_WARNING_MODAL',
-
+            SHOW_AMLCFT_MODAL = 'SHOW_AMLCFT_MODAL',
             /**
              * Initial testing
              */
@@ -221,7 +221,8 @@ declare global {
 
         export const enum ModalNames {
             CONFIRM_ACTION = 'CONFIRM_ACTION',
-            VERSION_WARNING = 'VERSION_WARNING'
+            VERSION_WARNING = 'VERSION_WARNING',
+            AMLCFT_TOKEN = 'AMLCFT_TOKEN'
         }
 
         export const enum FormNames {
@@ -318,6 +319,15 @@ declare global {
         }
         interface MountedAction extends Action {
             payload: {}
+        }
+
+        interface ShowAMLCFTTokenPayload {
+            contactId: number;
+            token: string;
+        }
+
+        interface ShowAMLCFTToken extends Action {
+            payload: ShowAMLCFTTokenPayload
         }
     }
 

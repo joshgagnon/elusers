@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('deed-packet-records/{record}', 'DeedPacketRecordController@delete');
     Route::put('contacts/{contact}', 'ContactController@update');
     Route::delete('contacts/{contact}', 'ContactController@delete');
+    Route::post('contacts/{contact}/access_token', 'ContactController@createAccessToken');
 
     /**
      * Addresses

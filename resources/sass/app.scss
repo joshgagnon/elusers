@@ -90,7 +90,16 @@ $img-path: '~react-widgets/lib/img';
 @import 'buttons';
 
 
-
+.public-navbar{
+    background-image: url(/images/cropped-evologo.png);
+        background-color: transparent;
+    background-position: center center;
+    background-color: #d3e0e9;
+     background-repeat: no-repeat;
+    .navbar-brand{
+        display:none;
+    }
+}
 
 .sea {
     position: relative;
@@ -337,3 +346,4 @@ input.checkbox.form-control {
         max-height: 300px;
     overflow: auto;
 }
+

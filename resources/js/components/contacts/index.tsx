@@ -10,7 +10,7 @@ import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
 import { connect } from 'react-redux';
-import { createNotification, createResource, updateResource, deleteResource, confirmAction } from '../../actions';
+import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken  } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields } from '../address/form';
 
@@ -52,6 +52,7 @@ interface ContactProps {
     contact: EL.Resource<EL.Contact>;
     contactId: string;
     deleteContact: (contactId: number) => void;
+    requestAMLCFT: (contactId: number) => void;
 }
 
 @ContactHOC()
@@ -82,7 +83,24 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
                 declineButtonText: 'Cancel',
                 onAccept: deleteAction
             });
-        }
+        },
+        requestAMLCFT: (contactId: number) => {
+            const createAction = createResource(`contacts/${contactId}/access_token`, {}, {
+                onSuccess: [createNotification('Contact AML/CFT request send.'), (response) => {
+                    return showAMLCFTToken({contactId, token: response.token});
+                }],
+                onFailure: [createNotification('Contact AML/CFT request failed. Please try again.', true)],
+            });
+
+            return confirmAction({
+                title: 'Confirm Send AML/CFT Request to Contact',
+                content: 'Are you sure you want send a AML/CFT to this contact?',
+                acceptButtonText: 'Send',
+                declineButtonText: 'Cancel',
+                onAccept: createAction
+            });
+        },
+
     }
 ) as any)
 @MapParamsToProps(['contactId'])
@@ -98,6 +116,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
                     <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
                     <Link to={`/contacts/${contact.id}/amlcft`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />AML/CFT</Link>
+                    <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil-square-o" />Send AML/CFT Request</Button>
                     <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 

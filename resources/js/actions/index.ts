@@ -105,4 +105,10 @@ export function showVersionWarningModal(): EL.Actions.ShowVersionWarningModal{
     };
 }
 
+export function showAMLCFTToken(payload: EL.Actions.ShowAMLCFTTokenPayload): EL.Actions.ShowAMLCFTToken{
+    return {
+        type: EL.ActionTypes.SHOW_AMLCFT_MODAL,
+        payload
+    };
+}
 

@@ -44,4 +44,9 @@ class Contact extends Model
         return $this->hasMany(ContactFile::class);
     }
 
+    public function accessTokens()
+    {
+        return $this->morphMany(AccessToken::class, 'model');
+    }
+
 }

@@ -134,7 +134,7 @@ class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: num
     }
 
     render() {
-        const Page =  this.pages[this.state.page];
+        const Page =  this.pages[this.state.page] as any;
         const onSubmit = this.state.page == this.pages.length - 1 ? this.submit : () => this.setState({page: this.state.page+1});
         return <div>
             <ProgressBar striped bsStyle="success"
