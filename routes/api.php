@@ -48,6 +48,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('deed-packets/{packetId}', 'DeedPacketController@get');
     Route::post('deed-packets', 'DeedPacketController@create');
     Route::put('deed-packets/{packet}', 'DeedPacketController@update');
+    Route::post('deed-packets/{packet}', 'DeedPacketController@update');
     Route::delete('deed-packets/{packet}', 'DeedPacketController@delete');
 
     /**
@@ -56,6 +57,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('deed-packet-records/{recordId}', 'DeedPacketRecordController@get');
     Route::post('deed-packet-records', 'DeedPacketRecordController@create');
     Route::post('deed-packet-records/{deedRecord}', 'DeedPacketRecordController@update');// needs to be post as it is multipart/form-data
+    Route::put('deed-packet-records/{deedRecord}', 'DeedPacketRecordController@update');// needs to be post as it is multipart/form-data
     Route::delete('deed-packet-records/{record}', 'DeedPacketRecordController@delete');
 
     /**
@@ -114,3 +116,9 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::get('version', 'VersionController@index');
 });
+
+
+
+Route::get('access_token/{token}', 'AccessTokenController@get')->name('AccessToken.get');
+Route::put('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
+Route::post('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');

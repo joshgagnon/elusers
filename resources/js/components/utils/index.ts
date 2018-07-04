@@ -3,11 +3,11 @@ import * as moment from 'moment';
 export const DATE_FORMAT = 'D MMM YYYY';
 
 // Infer the users full name
-export function fullname(user: EL.User) {
-    return user.title // title
-        + ' ' + user.firstName // first name
-        + ( user.middleName ? ' ' + user.middleName : '' ) // middle name
-        + ' ' + user.surname; // last name
+export function fullname(user: EL.User | EL.Contact) {
+    if(!('type' in user) ||  user.type === EL.Constants.INDIVIDUAL){
+        return [user.title, user.firstName, user.middleName, user.surname].filter(x => !!x).join(' ');
+    }
+    return user.name;
 }
 
 export function name(user: EL.User) {

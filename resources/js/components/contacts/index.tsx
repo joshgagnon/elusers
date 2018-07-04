@@ -4,8 +4,10 @@ import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
+import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector } from 'redux-form';
 import { validate } from '../utils/validation';
+import { fullname } from '../utils';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
@@ -13,6 +15,8 @@ import { connect } from 'react-redux';
 import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken  } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields } from '../address/form';
+import { ContactCapacity } from './amlcft';
+
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
@@ -60,11 +64,22 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
     render() {
         if(this.props.contact.data) {
             const contact = this.props.contact.data;
-            return `${contact.firstName} ${contact.surname}`
+            return fullname(this.props.contact.data);
         }
         return false;
     }
 
+}
+
+
+const IndividualDisplayFields = (props: {contact: EL.Contact}) => {
+    const { contact } = props;
+    return <React.Fragment>
+    <dt>Date of Birth</dt>
+    <dd>{ contact.dateOfBirth }</dd>
+    <dt>Capacity</dt>
+    <dd>{ contact.capacity }</dd>
+    </React.Fragment>
 }
 
 @(connect(
@@ -107,20 +122,20 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
 @ContactHOC()
 @PanelHOC<ContactProps>('Contact', props => props.contact)
 export class Contact extends React.PureComponent<ContactProps> {
+
     render() {
         const contact = this.props.contact.data;
-
+        const individual = contact.type === EL.Constants.INDIVIDUAL;
         return (
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
                     <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
-                    <Link to={`/contacts/${contact.id}/amlcft`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />AML/CFT</Link>
                     <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil-square-o" />Send AML/CFT Request</Button>
                     <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 
-                <h3>{contact.name}</h3>
+                <h3>{fullname(contact)}</h3>
                 <h4>{contact.type}</h4>
 
                 <dl>
@@ -131,8 +146,11 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <dd>{contact.phone}</dd>
                     <dt>Agent</dt>
 
-                    <dd><Agent contactId={this.props.contactId} /></dd>
+                    <dd><Agent contactId={contact.agentId} /></dd>
+                    { individual  && <IndividualDisplayFields contact={contact} /> }
+                    <dt>AML/CFT Complete</dt>
 
+                    <dd>{ contact.amlcftComplete ? 'Yes' : 'No'}</dd>
                     <dt>Documents</dt>
                     <dd>{ (contact.files || []).map((file, i) => {
                         return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
@@ -164,11 +182,47 @@ class AgentSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Conta
 
 
 
+class ContactName extends React.PureComponent<{'type':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
+    render() {
+        if(this.props.type === EL.Constants.INDIVIDUAL){
+            return <div>
+                    <ReadOnlyComponent label="Full Name" value={fullname(this.props as EL.Contact)} />
+
+                    <InputField name="firstName" label="First Name" type="text" required/>
+                    <InputField name="middleName" label="Middle Name" type="text" />
+                    <InputField name="surname" label="Surname" type="text" required />
+            </div>
+        }
+        return <InputField name="name" label="Name" type="text" required />
+
+    }
+}
+const ConnectedContactName = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
+    return props.selector(state, 'type', 'firstName', 'middleName', 'surname');
+})(ContactName as any);
+
+
+class IndividualFields extends React.PureComponent<{'type':string}> {
+    render() {
+        if(this.props.type === EL.Constants.INDIVIDUAL){
+            return <React.Fragment>
+                    <DatePicker name="dateOfBirth" label="Date of Birth" defaultView="year"/>
+                    <ContactCapacity required={false}/>
+            </React.Fragment>
+        }
+        return false;
+
+    }
+}
+const ConnectedIndividualFields = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
+    return {type: props.selector(state, 'type')};
+})(IndividualFields as any);
 
 interface ContactFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
+    form: string;
 }
 
 interface CreateContactProps {
@@ -182,17 +236,19 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <SelectField name="type" label="Type" options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.ORGANISATION, text: 'Organisation'}]} required />
-                <InputField name="name" label="Name" type="text" required />
-                <InputField name="firstName" label="First Name" type="text" />
-                <InputField name="middleName" label="Middle Name" type="text" />
-                <InputField name="surname" label="Surname" type="text" />
+
+                <ConnectedContactName selector={formValueSelector(this.props.form)} />
+
                 <InputField name="email" label="Email" type="email" />
                 <InputField name="phone" label="Phone" type="text" />
+                <ConnectedIndividualFields selector={formValueSelector(this.props.form)} />
                 <AgentSelector />
                 <DocumentList name="files" label="Documents" />
+                <CheckboxField name="amlcftComplete" label="AML/CFT Complete" />
                 <hr />
 
                 <ButtonToolbar>
+                    { /*<Link className="btn btn-default pull-right" to="/contacts">Back</Link> */ }
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
                 </ButtonToolbar>
             </Form>

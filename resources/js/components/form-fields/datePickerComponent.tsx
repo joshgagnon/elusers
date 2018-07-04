@@ -11,11 +11,10 @@ momentLocalizer(moment);
 export default class DatePickerField extends React.PureComponent<IFieldComponentProps & {defaultView?: string}> {
     render() {
         const { input: { onChange, onBlur, value } } = this.props;
-
         return (
             <BaseFieldComponent {...this.props}>
                 <DateTimePicker
-                    onChange={onChange as any}
+                    onChange={(date, string) => onChange(string)}
                     format="D MMM YYYY"
                     time={false}
                     value={!value ? null : new Date(value)}

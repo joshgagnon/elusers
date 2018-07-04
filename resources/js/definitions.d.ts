@@ -81,13 +81,18 @@ declare global {
         }
 
         interface Contact {
-            id: number;
+            id?: number;
+            title?: string;
             name: string;
             email: string;
             phone: string;
             firstName: string;
             middleName: string;
             surname: string;
+            agentId?: string;
+            dateOfBirth?: string;
+            capacity?: string;
+            amlcftComplete: boolean;
             type: EL.Constants.INDIVIDUAL | EL.Constants.ORGANISATION;
             files: Document[]
         }

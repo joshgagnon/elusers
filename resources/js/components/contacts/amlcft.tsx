@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
+import { ContactsHOC, ContactHOC, TokenHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
-import { reduxForm, formValueSelector, InjectedFormProps } from 'redux-form';
+import { reduxForm, formValueSelector, InjectedFormProps, FormSection } from 'redux-form';
 import { validate } from '../utils/validation';
+import { fullname } from '../utils';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
@@ -58,7 +59,9 @@ class AMLCFTPage2 extends React.PureComponent<InjectedFormProps & { previousPage
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         return <Form onSubmit={handleSubmit}>
             <h4 className={"text-center"}>Address</h4>
+            <FormSection name="addresses[0]">
             <AddressFields />
+            </FormSection>
             { this.props.children }
         </Form>
     }
@@ -83,6 +86,14 @@ class AMLCFTPage3 extends React.PureComponent<InjectedFormProps & { previousPage
     }
 }
 
+export const ContactCapacity = (props: {required?: boolean}) => {
+    return         <SelectField prompt={true} name="capacity" label="Are we acting for a trust or another entity holding personal assets?"
+    options={[{value: 'no', text: 'No'}, {value: 'trust', text: 'Yes - Trust'}, {value: 'company', text: 'Yes - Company'}]}
+    required={props.required}>
+    </SelectField>
+}
+
+
 @(reduxForm({
     form: EL.FormNames.EDIT_CONTACT_AMLCFT_FORM,
     validate: (values) => validate({capacity: { name: 'Capacity', required: true}}, values),
@@ -98,10 +109,7 @@ class AMLCFTPage4 extends React.PureComponent<InjectedFormProps & { previousPage
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         return <Form onSubmit={handleSubmit}>
         <h4 className={"text-center"}>Capacity</h4>
-        <SelectField prompt={true} name="capacity" label="Are we acting for a trust or another entity holding personal assets?"
-        options={[{value: 'no', text: 'No'}, {value: 'trust', text: 'Yes - Trust'}, {value: 'company', text: 'Yes - Company'}]}
-        required>
-        </SelectField>
+        <ContactCapacity required/>
         { this.props.capacity === 'trust' && <DocumentList name="trust_deed_files" label="Trust Deed" /> }
         { this.props.capacity === 'company' && <CheckboxField name="confirmation" label="">
             <strong>I confirm I am the person acting on behalf of the company in this matter</strong>
@@ -112,14 +120,41 @@ class AMLCFTPage4 extends React.PureComponent<InjectedFormProps & { previousPage
 }
 
 
+@(reduxForm({
+    form: EL.FormNames.EDIT_CONTACT_AMLCFT_FORM,
+    validate: (values) => validate({authority_confirm: { name: 'Confirmation', required: true}}, values),
+      destroyOnUnmount: false,
+      forceUnregisterOnUnmount: true,
+}) as any)
+@(connect((state: EL.State) => {
+return formValueSelector(EL.FormNames.EDIT_CONTACT_AMLCFT_FORM)(state, 'firstName', 'middleName', 'surname')
+}) as any)
+class AMLCFTPage5 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void; capacity: string }> {
+    render(){
+        const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const name = fullname(this.props as any);
+        return <Form onSubmit={handleSubmit}>
+            <CheckboxField name="authority_confirm" label="" >
+            <strong>I confirm that I am {name} or, if I am not {name}, that I am submitting this form on behalf of, and with the authority of, {name}.</strong>
+            </CheckboxField>
+            { this.props.children }
+        </Form>
+    }
+}
+
+
+
+
+
 
 class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: number}> {
     state = {page: 0};
     pages=[
-        AMLCFTPage1,
-        AMLCFTPage2,
-        AMLCFTPage3,
-        AMLCFTPage4,
+      //  AMLCFTPage1,
+    //    AMLCFTPage2,
+     //   AMLCFTPage3,
+     //   AMLCFTPage4,
+        AMLCFTPage5
     ];
     controls() {
         return <div className="button-row">
@@ -130,12 +165,12 @@ class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: num
     }
 
     submit(values) {
-
+        this.props.onSubmit(values);
     }
 
     render() {
         const Page =  this.pages[this.state.page] as any;
-        const onSubmit = this.state.page == this.pages.length - 1 ? this.submit : () => this.setState({page: this.state.page+1});
+        const onSubmit = this.state.page == this.pages.length - 1 ? (values) => this.submit(values) : () => this.setState({page: this.state.page+1});
         return <div>
             <ProgressBar striped bsStyle="success"
                 label={` Step ${this.state.page+1} of ${this.pages.length} `}
@@ -156,68 +191,49 @@ const EditContactAMLCFTForm= (reduxForm({
 
 
 
-interface UnwrappedEditContactAMLCFTProps {
-    submit?: (contactId: number, data: React.FormEvent<Form>) => void;
-    contactId: number;
-    contact?: EL.Resource<EL.Contact>;
+interface UnwrappedExternalContactAMLCFTProps {
+    submit?: (token: string, data: React.FormEvent<Form>) => void;
+    contact?: EL.Resource<EL.Contact & {addresses: EL.IAddress[]}>;
+    token?: string;
 }
 
 
 @(connect(
           undefined,
     {
-        submit: (contactId: number, data: React.FormEvent<Form>) => {
-            const url = `contacts/amlcft/${contactId}`;
+        submit: (token: string, data: React.FormEvent<Form>) => {
+           const url = `access_token/${token}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Contact updated.'), (response) => push('/contacts')],
-                onFailure: [createNotification('Contact update failed. Please try again.', true)],
+                onSuccess: [createNotification('Information updated.'), (response) => push('/amlcft_complete')],
+                onFailure: [createNotification('Update failed. Please try again.', true)],
             };
 
             return updateResource(url, data, meta);
         }
     }
 ) as any)
-@ContactHOC()
-@PanelHOC<UnwrappedEditContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact)
-class UnwrappedEditContactAMLCFT extends React.PureComponent<UnwrappedEditContactAMLCFTProps> {
+@TokenHOC('contact')
+@PanelHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact)
+class UnwrappedExternalContactAMLCFT extends React.PureComponent<UnwrappedExternalContactAMLCFTProps> {
     render() {
-        return <EditContactAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, data)}  />
+        let values = this.props.contact.data;
+        return <EditContactAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.token, data)}  />
     }
 }
 
 
-
-
-export class EditContactAMLCFT extends React.PureComponent<{ params: { contactId: number; } }> {
+export class ExternalAMLCFT extends React.PureComponent<{ params: { token: string; } }> {
     render() {
-        return <UnwrappedEditContactAMLCFT contactId={this.props.params.contactId} />
-    }
-}
-
-@(connect(
-          undefined,
-    {
-        submit: (contactId: number, data: React.FormEvent<Form>) => {
-            const url = `contacts/amlcft/${contactId}`;
-            const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Contact updated.'), (response) => push('/contacts')],
-                onFailure: [createNotification('Contact update failed. Please try again.', true)],
-            };
-
-            return updateResource(url, data, meta);
-        }
-    }
-) as any)
-@PanelHOC<UnwrappedEditContactAMLCFTProps>('AML/CFT Due Diligence Form')
-class UnwrappedExternalContactAMLCFT extends React.PureComponent<UnwrappedEditContactAMLCFTProps> {
-    render() {
-        return <EditContactAMLCFTForm initialValues={{}} onSubmit={data => this.props.submit(this.props.contactId, data)}  />
+        return <UnwrappedExternalContactAMLCFT token={this.props.params.token} />
     }
 }
 
 
-export class ExternalAMLCFT extends React.PureComponent<{ params: { contactId: number; } }> {
+@PanelHOC('AML/CFT Due Diligence Form')
+export class ExternalAMLCFTComplete extends React.PureComponent {
     render() {
-        return <UnwrappedExternalContactAMLCFT contactId={this.props.params.contactId} />
+        return <div>
+        <p>Thank you for your submission.</p>
+        </div>
     }
 }

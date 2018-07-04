@@ -170,7 +170,7 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
         // Make the update PUT request
         let response = null;
         let data = humps.decamelizeKeys(action.payload.data);
-        if(action.payload.data.files){
+        if(action.payload.data.files && action.payload.data.files.length){
             const body = new FormData();
             Object.keys(data)
             .filter((key: string) => key !== 'files')

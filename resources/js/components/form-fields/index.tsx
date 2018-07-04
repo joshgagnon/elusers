@@ -25,6 +25,7 @@ interface ComboboxProps extends FieldProps {
 
 interface InputFieldProps extends FieldProps {
     type: string;
+    readOnly?: boolean;
 }
 
 export interface SelectOption {

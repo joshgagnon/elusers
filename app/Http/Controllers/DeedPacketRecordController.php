@@ -56,8 +56,8 @@ class DeedPacketRecordController extends Controller
         // Create the deed record
         $deedRecord = DeedPacketRecord::create([
             'deed_packet_id'     => $data['deed_packet_id'],
-            'document_date'      => Carbon::parse($data['document_date']),
-            'destruction_date'   => !empty($data['destruction_date']) ? Carbon::parse($data['destruction_date']) : null,
+            'document_date'      => $data['document_date'],
+            'destruction_date'   => $data['destruction_date'] ?? null,
             'document_name'      => $data['document_name'],
             'parties'            => $data['parties'],
             'matter_id'          => $data['matter_id'],
@@ -89,11 +89,10 @@ class DeedPacketRecordController extends Controller
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->all();
-
         $deedRecord->update([
             'deed_packet_id'     => $data['deed_packet_id'],
-            'document_date'      => Carbon::parse($data['document_date']),
-            'destruction_date'   => !empty($data['destruction_date']) ? Carbon::parse($data['destruction_date']) : null,
+            'document_date'      => $data['document_date'],
+            'destruction_date'   => $data['destruction_date'] ?? null,
             'document_name'      => $data['document_name'],
             'parties'            => $data['parties'],
             'matter_id'          => $data['matter_id'],

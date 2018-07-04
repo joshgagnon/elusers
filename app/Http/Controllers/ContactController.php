@@ -50,6 +50,7 @@ class ContactController extends Controller
         $contact['files'] = array_map(function ($i) {
             return $i['file'];
         }, $contact['files']);
+        $contact['date_of_birth'] = $contact['date_of_birth'] ? Carbon::parse($contact['date_of_birth'])->format('d M Y') : null;
 
         return $contact;
     }
@@ -84,9 +85,12 @@ class ContactController extends Controller
             'surname'         => $data['surname'],
             'type'            => $data['type'] ?? 'individual',
             'name'            => $data['name'],
-            'email'           => $data['email'] ?? '',
+            'email'           => $data['email'] ?? null,
             'phone'           => $data['phone'] ?? '',
-            'agent_id'        => $data['agent_id'] ?? null
+            'capacity'        => $data['capacity'] ?? null,
+            'date_of_birth'   => $data['date_of_birth'] ?? null,
+            'agent_id'        => $data['agent_id'] ?? null,
+            'amlcft_complete' => $data['amlcft_complete'] ?? null
         ]);
 
 
@@ -114,7 +118,7 @@ class ContactController extends Controller
         $data = $request->all();
 
         $orgId = $user->organisation_id;
-        if($data['agent_id']){
+        if(isset($data['agent_id'])){
             $agent = Contact::where('organisation_id', $orgId)->where('id', $data['agent_id'])->first();
             if(!$agent) {
                 abort(403);
@@ -123,14 +127,17 @@ class ContactController extends Controller
 
         $contact->update([
             'name'            => $data['name']  ?? '',
-            'first_name'      => $data['first_name'],
+            'first_name'      => $data['first_name']  ?? '',
             'middle_name'     => $data['middle_name'] ?? '',
-            'surname'         => $data['surname'],
+            'surname'         => $data['surname']  ?? '',
             'type'            => $data['type'] ?? 'individual',
-            'name'            => $data['name'],
-            'email'           => $data['email']?? '',
+            'name'            => $data['name']  ?? '',
+            'email'           => $data['email']?? null,
             'phone'           => $data['phone'] ?? '',
-            'agent_id'        => $data['agent_id'] ?? null
+            'capacity'        => $data['capacity'] ?? null,
+            'date_of_birth'   => $data['date_of_birth'] ?? null,
+            'agent_id'        => $data['agent_id'] ?? null,
+            'amlcft_complete' => $data['amlcft_complete'] ?? null
         ]);
         $files = $request->file('file', []);
 
@@ -163,7 +170,7 @@ class ContactController extends Controller
         // Create a unique path for the file
         do {
             $storageName = time() . uniqid();
-            $storagePath = 'deed-record-files/' . $storageName;
+            $storagePath = 'contact-files/' . $storageName;
         } while (Storage::exists($storagePath));
 
         // Store the file
@@ -198,7 +205,6 @@ class ContactController extends Controller
 
         $loadData = [];
         $loadData['user'] = false;
-
         return view('index')->with([
             'loadData' => json_encode($loadData)
         ]);

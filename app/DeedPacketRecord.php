@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class DeedPacketRecord extends Model
 {
@@ -52,4 +53,25 @@ class DeedPacketRecord extends Model
     {
         return $this->belongsToMany(File::class);
     }
+
+    public function setDocumentDateAttribute($value)
+    {
+        $this->attributes['document_date'] = $this->parseDate($value);
+    }
+
+    public function setDestructionDateAttribute($value)
+    {
+        $this->attributes['destruction_date'] = $this->parseDate($value);
+    }
+
+    public function parseDate($date=null)
+    {
+        if(isset($date))
+        {
+            return Carbon::createFromFormat('d M Y',$date);
+        }
+        return null;
+    }
+
+
 }
