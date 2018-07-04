@@ -30,7 +30,7 @@ class EmergencyContactController extends Controller
     {
         $this->validate($request, EmergencyContact::$validationRules);
 
-        $contact->update($request->all());
+        $contact->update($request->allJson());
 
         return response()->json(['message' => 'Emergency contact updated.'], 200);
     }

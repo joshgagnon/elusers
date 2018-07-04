@@ -46,7 +46,7 @@ class ContactAddressController extends Controller
             'country' => 'required',
         ]);
 
-        $contact->addresses()->create($request->all());
+        $contact->addresses()->create($request->allJson());
 
         return response()->json(['message' => 'Address created.'], 201);
     }
@@ -68,7 +68,7 @@ class ContactAddressController extends Controller
             'country' => 'required',
         ]);
 
-        $address->update($request->all());
+        $address->update($request->allJson());
         return response()->json(['message' => 'Address updated.'], 200);
     }
 

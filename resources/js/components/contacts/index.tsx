@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
-import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, ProgressBar, Alert } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector } from 'redux-form';
@@ -126,6 +126,7 @@ export class Contact extends React.PureComponent<ContactProps> {
     render() {
         const contact = this.props.contact.data;
         const individual = contact.type === EL.Constants.INDIVIDUAL;
+        const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
         return (
             <div>
                 <ButtonToolbar className="pull-right">
@@ -157,6 +158,11 @@ export class Contact extends React.PureComponent<ContactProps> {
                     }) } </dd>
 
                 </dl>
+                { hasSubmitted && <Alert  bsStyle="success">
+                <p className="text-center">
+                This contact has submitted their AML/CFT information. <Link className="btn btn-success" to={`/contacts/${contact.id}/merge`}>View</Link>
+                </p>
+                </Alert> }
             </div>
         );
     }
@@ -296,11 +302,6 @@ export class CreateContact extends React.PureComponent<CreateContactProps> {
     }
 }
 
-export class EditContact extends React.PureComponent<{ params: { contactId: number; } }> {
-    render() {
-        return <UnwrappedEditContact contactId={this.props.params.contactId} />
-    }
-}
 
 interface UnwrappedEditContactProps {
     submit?: (contactId: number, data: React.FormEvent<Form>) => void;
@@ -331,4 +332,9 @@ class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps
 }
 
 
+export class EditContact extends React.PureComponent<{ params: { contactId: number; } }> {
+    render() {
+        return <UnwrappedEditContact contactId={this.props.params.contactId} />
+    }
+}
 

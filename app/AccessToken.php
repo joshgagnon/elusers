@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccessToken extends Model
 {
-    protected $fillable = ['token', 'data'];
-    protected $visible = ['token', 'data'];
+    protected $fillable = ['token', 'data', 'submitted'];
+    protected $visible = ['token', 'data', 'submitted'];
+    protected $casts = [
+        'data' => 'array',
+    ];
 
    public function model()
     {

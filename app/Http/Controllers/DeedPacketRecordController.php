@@ -51,7 +51,7 @@ class DeedPacketRecordController extends Controller
         $this->validate($request, DeedPacketRecord::$validationRules);
 
         $user = $request->user();
-        $data = $request->all();
+        $data = $request->allJson();
 
         // Create the deed record
         $deedRecord = DeedPacketRecord::create([
@@ -88,7 +88,7 @@ class DeedPacketRecordController extends Controller
     {
         $this->validate($request, DeedPacketRecord::$validationRules);
 
-        $data = $request->all();
+        $data = $request->allJson();
         $deedRecord->update([
             'deed_packet_id'     => $data['deed_packet_id'],
             'document_date'      => $data['document_date'],

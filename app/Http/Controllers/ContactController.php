@@ -46,6 +46,7 @@ class ContactController extends Controller
             abort(404);
         }
 
+
         $contact = $contact->toArray();
         $contact['files'] = array_map(function ($i) {
             return $i['file'];
@@ -66,7 +67,7 @@ class ContactController extends Controller
         $this->validate($request, Contact::$validationRules);
 
         $user = $request->user();
-        $data = $request->all();
+        $data = $request->allJson();
 
         $orgId = $user->organisation_id;
         if($data['agent_id']){
@@ -115,7 +116,7 @@ class ContactController extends Controller
         $this->validate($request, Contact::$validationRules);
 
         $user = $request->user();
-        $data = $request->all();
+        $data = $request->allJson();
 
         $orgId = $user->organisation_id;
         if(isset($data['agent_id'])){

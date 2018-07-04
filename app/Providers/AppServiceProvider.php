@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Http\Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Request::macro('allJson', function () {
+            $data = $this->all();
+            if(isset($data['__json'])){
+                $data = array_merge($data, json_decode($data['__json'], true));
+                unset($data['__json']);
+            }
+            return $data;
+
+        });
     }
 }

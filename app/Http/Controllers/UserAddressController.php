@@ -46,7 +46,7 @@ class UserAddressController extends Controller
             'country' => 'required',
         ]);
 
-        $user->addresses()->create($request->all());
+        $user->addresses()->create($request->allJson());
 
         return response()->json(['message' => 'Address created.'], 201);
     }
@@ -67,7 +67,7 @@ class UserAddressController extends Controller
             'country' => 'required',
         ]);
 
-        $address->update($request->all());
+        $address->update($request->allJson());
         return response()->json(['message' => 'Address updated.'], 200);
     }
 

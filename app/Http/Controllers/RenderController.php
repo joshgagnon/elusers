@@ -16,7 +16,7 @@ class RenderController extends Controller
     {
         $user = $request->user();
         $client = new Client();
-        $input = $request->all();
+        $input = $request->allJson();
         $newDocs = [];
         $existingDocs = [];
         if(isset($input["documentsToAppend"])) {

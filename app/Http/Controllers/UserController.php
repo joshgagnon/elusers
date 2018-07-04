@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         $this->validate($request, User::$validationRules);
 
-        $user->update($request->all());
+        $user->update($request->allJson());
 
         return response()->json(['message' => 'User updated.'], 200);
     }
@@ -68,7 +68,7 @@ class UserController extends Controller
         $validationRules = array_merge(User::$validationRules, ['password' => 'required']);
         $this->validate($request, $validationRules);
 
-        $data = $request->all();
+        $data = $request->allJson();
         $user = new User($data);
 
         $user->organisation_id = $request->user()->organisation_id;
@@ -96,7 +96,7 @@ class UserController extends Controller
             'new_password_confirmation' => 'required|same:new_password',
         ]);
 
-        $data = $request->all();
+        $data = $request->allJson();
 
         $currentPasswordMatches = Hash::check($data['current_password'], $user->password);
 

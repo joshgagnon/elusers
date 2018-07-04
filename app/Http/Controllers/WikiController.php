@@ -28,7 +28,7 @@ class WikiController extends Controller
      */
     public function create(Request $request, $url)
     {
-        $values = array_merge($request->all(), ['path' => $url]);
+        $values = array_merge($request->allJson(), ['path' => $url]);
         if(!$values['data']) {
             $values['data'] = '';
         }
@@ -66,7 +66,7 @@ class WikiController extends Controller
      */
     public function update(Request $request, $url)
     {
-        $values = array_merge($request->all(), ['path' => $url]);
+        $values = array_merge($request->allJson(), ['path' => $url]);
         if(!$values['data']) {
             $values['data'] = '';
         }

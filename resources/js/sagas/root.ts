@@ -137,13 +137,20 @@ function *createResource(action: EL.Actions.CreateResourceAction) {
         let data = humps.decamelizeKeys(action.payload.postData);
         if(action.payload.postData.files){
             const body = new FormData();
-            Object.keys(data).filter((key: string) => key !== 'files')
+            /*Object.keys(data).filter((key: string) => key !== 'files')
                 .filter((key: string) => data[key] !== null)
                 .map((key: string) => {
                 body.append(key, data[key])
-            });
-            action.payload.postData.files.map((d: File) => {
-                body.append('file[]', d);
+            });*/
+            const { files, ...rest} = data;
+            body.append('__json', JSON.stringify(rest));
+            files.map((d: any) => {
+                if(d.id){
+                    body.append('existing_files[]', d.id);
+                }
+                else{
+                    body.append('file[]', d, d.name);
+                }
             });
             data = body;
         }
@@ -172,13 +179,9 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
         let data = humps.decamelizeKeys(action.payload.data);
         if(action.payload.data.files && action.payload.data.files.length){
             const body = new FormData();
-            Object.keys(data)
-            .filter((key: string) => key !== 'files')
-            .filter((key: string) => data[key] !== null)
-            .map((key: string) => {
-                body.append(key, data[key])
-            });
-            action.payload.data.files.map((d: any) => {
+            const { files, ...rest} = data;
+            body.append('__json', JSON.stringify(rest));
+           files.map((d: any) => {
                 if(d.id){
                     body.append('existing_files[]', d.id);
                 }

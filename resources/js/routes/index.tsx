@@ -5,7 +5,7 @@ import Home from '../components/home';
 import Users from '../components/users';
 
 import { Contact, Contacts, CreateContact, EditContact } from '../components/contacts';
-import {  ExternalAMLCFT, ExternalAMLCFTComplete  } from '../components/contacts/amlcft';
+import {  ExternalAMLCFT, ExternalAMLCFTComplete, MergeContact  } from '../components/contacts/amlcft';
 
 import { DeedPacket, ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
 import { DeedRecord, EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
@@ -60,6 +60,7 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="contacts/create" component={CreateContact} />
         <Route path="contacts/:contactId" component={Contact} />
         <Route path="contacts/:contactId/edit" component={EditContact} />
+        <Route path="contacts/:contactId/merge" component={MergeContact} />
         <Route path="contacts/:contactId/addresses" component={ViewContactAddresses} />
         <Route path="contacts/:contactId/addresses/create" component={CreateContactAddress} />
         <Route path="contacts/:contactId/addresses/:addressId/edit" component={EditContactAddress} />

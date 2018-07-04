@@ -4,13 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\AccessToken;
-
+use App\File;
+use App\AccessTokenFile;
+use Illuminate\Support\Facades\Storage;
 
 class AccessTokenController extends Controller
 {
     public function get(Request $request, $token)
     {
         $accessToken = AccessToken::where('token', $token)->first();
+        if(!$accessToken){
+            abort(404);
+        }
+        if($accessToken['submitted']){
+            return $accessToken['data'];
+        }
         return $accessToken->model->tokenExtras();
     }
 
@@ -19,7 +27,8 @@ class AccessTokenController extends Controller
 
         $accessToken = AccessToken::where('token', $token)->first();
 
-        $accessToken->update(['data' => json_encode($request->all()), 'submitted' => true]);
+        $accessToken->update(['data' => $request->allJson(), 'submitted' => true]);
+
         $files = $request->file('file', []);
         foreach ($files as $file) {
             $this->saveFile($file, $accessToken);

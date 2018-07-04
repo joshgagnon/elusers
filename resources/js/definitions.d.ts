@@ -80,6 +80,13 @@ declare global {
             files: Document[]
         }
 
+        interface AccessToken {
+            token?: string;
+            data: any;
+            submitted: boolean;
+            files: any;
+        }
+
         interface Contact {
             id?: number;
             title?: string;
@@ -95,6 +102,7 @@ declare global {
             amlcftComplete: boolean;
             type: EL.Constants.INDIVIDUAL | EL.Constants.ORGANISATION;
             files: Document[]
+            accessTokens?: AccessToken[]
         }
 
         interface Office {

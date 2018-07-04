@@ -60,7 +60,7 @@ class DeedPacketController extends Controller
         $this->validate($request, DeedPacket::$validationRules);
 
         $user = $request->user();
-        $data = $request->all();
+        $data = $request->allJson();
 
         $deedPacket = DeedPacket::create([
             'title'              => $data['title'],
@@ -84,7 +84,7 @@ class DeedPacketController extends Controller
     {
         $this->validate($request, DeedPacket::$validationRules);
 
-        $data = $request->all();
+        $data = $request->allJson();
 
         $packet->update([
             'title' => $data['title'],

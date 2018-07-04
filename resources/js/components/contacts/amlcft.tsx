@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ContactsHOC, ContactHOC, TokenHOC } from '../hoc/resourceHOCs';
+import WaitForResource from '../hoc/waitForResource';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
@@ -23,6 +24,43 @@ interface ContactFormProps {
 }
 
 
+const AMLCFTFields = [
+    () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Name & Date of Birth</h4>
+            <InputField name="firstName" label="First Name" type="text" required/>
+            <InputField name="middleName" label="Middle Name" type="text" />
+            <InputField name="surname" label="Surname" type="text" required />
+            <DatePicker name="dateOfBirth" label="Date of Birth" defaultView="decade" />
+        </React.Fragment>
+    },
+
+    () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Residential Address</h4>
+            <FormSection name="addresses[0]">
+                <AddressFields />
+            </FormSection>
+        </React.Fragment>
+    },
+
+    () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Supporting Documents</h4>
+            <DocumentList name="files" label="Documents" help={
+                <span>Please provide a certified copy of your Photo ID and a proof of address</span>
+            }/>
+        </React.Fragment>
+    },
+
+    () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Capacity</h4>
+            <ContactCapacity required/>
+        </React.Fragment>
+    }
+
+]
 
 
 @(reduxForm({
@@ -35,14 +73,12 @@ interface ContactFormProps {
       forceUnregisterOnUnmount: true,
 }) as any)
 class AMLCFTPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+    fields = AMLCFTFields[0]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
         return <Form onSubmit={handleSubmit}>
-            <h4 className={"text-center"}>Name & Date of Birth</h4>
-            <InputField name="firstName" label="First Name" type="text" required/>
-            <InputField name="middleName" label="Middle Name" type="text" />
-            <InputField name="surname" label="Surname" type="text" required />
-            <DatePicker name="dateOfBirth" label="Date of Birth" defaultView="decade"/>
+            <Fields/>
             { this.props.children }
         </Form>
     }
@@ -55,13 +91,12 @@ class AMLCFTPage1 extends React.PureComponent<InjectedFormProps & { previousPage
       forceUnregisterOnUnmount: true,
 }) as any)
 class AMLCFTPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+    fields = AMLCFTFields[1]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
         return <Form onSubmit={handleSubmit}>
-            <h4 className={"text-center"}>Address</h4>
-            <FormSection name="addresses[0]">
-            <AddressFields />
-            </FormSection>
+             <Fields/>
             { this.props.children }
         </Form>
     }
@@ -74,13 +109,12 @@ class AMLCFTPage2 extends React.PureComponent<InjectedFormProps & { previousPage
       forceUnregisterOnUnmount: true,
 }) as any)
 class AMLCFTPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+    fields = AMLCFTFields[2];
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
         return <Form onSubmit={handleSubmit}>
-            <h4 className={"text-center"}>Supporting Documents</h4>
-            <DocumentList name="files" label="Documents" help={
-                <span>Please provide a certified copy of your Photo ID and a proof of address</span>
-            }/>
+             <Fields/>
             { this.props.children }
         </Form>
     }
@@ -105,10 +139,11 @@ return {
     capacity: formValueSelector(EL.FormNames.EDIT_CONTACT_AMLCFT_FORM)(state, 'capacity')
 }}) as any)
 class AMLCFTPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void; capacity: string }> {
+    fields = AMLCFTFields[3];
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
         return <Form onSubmit={handleSubmit}>
-        <h4 className={"text-center"}>Capacity</h4>
         <ContactCapacity required/>
         { this.props.capacity === 'trust' && <DocumentList name="trust_deed_files" label="Trust Deed" /> }
         { this.props.capacity === 'company' && <CheckboxField name="confirmation" label="">
@@ -145,15 +180,13 @@ class AMLCFTPage5 extends React.PureComponent<InjectedFormProps & { previousPage
 
 
 
-
-
 class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: number}> {
     state = {page: 0};
     pages=[
-      //  AMLCFTPage1,
-    //    AMLCFTPage2,
-     //   AMLCFTPage3,
-     //   AMLCFTPage4,
+        AMLCFTPage1,
+        AMLCFTPage2,
+        AMLCFTPage3,
+        AMLCFTPage4,
         AMLCFTPage5
     ];
     controls() {
@@ -186,10 +219,21 @@ class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: num
 
 const EditContactAMLCFTForm= (reduxForm({
     form: EL.FormNames.EDIT_CONTACT_AMLCFT_FORM,
-    //validate: values => validate(contactValidationRules, values)
 })(ContactAMLCFTForm as any) as any);
 
 
+class FullAMLCFTForm extends React.PureComponent<ContactFormProps> {
+
+    render() {
+        return <div>
+                { AMLCFTFields.map((Fields, i) => <Fields key={i} /> )}
+            </div>
+    }
+}
+
+const EditFullAMLCFTForm= (reduxForm({
+    form: EL.FormNames.EDIT_CONTACT_AMLCFT_FORM,
+})(FullAMLCFTForm as any) as any);
 
 interface UnwrappedExternalContactAMLCFTProps {
     submit?: (token: string, data: React.FormEvent<Form>) => void;
@@ -204,7 +248,7 @@ interface UnwrappedExternalContactAMLCFTProps {
         submit: (token: string, data: React.FormEvent<Form>) => {
            const url = `access_token/${token}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Information updated.'), (response) => push('/amlcft_complete')],
+                onSuccess: [createNotification('Information updated.'), (response) => push('/amlcft/complete')],
                 onFailure: [createNotification('Update failed. Please try again.', true)],
             };
 
@@ -235,5 +279,48 @@ export class ExternalAMLCFTComplete extends React.PureComponent {
         return <div>
         <p>Thank you for your submission.</p>
         </div>
+    }
+}
+
+interface UnwrappedEditContactProps {
+    submit?: (contactId: number, data: React.FormEvent<Form>) => void;
+    contactId: number;
+    contact?: EL.Resource<EL.Contact>;
+}
+
+@TokenHOC('contact')
+@WaitForResource(props => props.contact)
+class TokenContactAMLCFTForm extends React.PureComponent<any> {
+    render() {
+
+        return <EditFullAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.token, data)}  />
+    }
+}
+
+@(connect(
+    undefined,
+    {
+        submit: (contactId: number, data: React.FormEvent<Form>) => {
+            const url = `contacts/${contactId}/merge`;
+            const meta: EL.Actions.Meta = {
+                onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
+                onFailure: [createNotification('Contact update failed. Please try again.', true)],
+            };
+
+            return updateResource(url, data, meta);
+        }
+    }
+) as any)
+@ContactHOC()
+@PanelHOC<UnwrappedEditContactProps>('Merge Information', props => props.contact)
+class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
+    render() {
+      return <TokenContactAMLCFTForm token={this.props.contact.data.accessTokens[0].token} submit={this.props.submit}  />
+    }
+}
+
+export class MergeContact extends React.PureComponent<{ params: { contactId: number; } }> {
+    render() {
+        return <UnwrappedEditContact contactId={this.props.params.contactId} />
     }
 }
