@@ -147,7 +147,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <dd>{contact.phone}</dd>
                     <dt>Agent</dt>
 
-                    <dd><Agent contactId={contact.agentId} /></dd>
+                    { contact.agentId && <dd><Agent contactId={contact.agentId} /></dd> }
                     { individual  && <IndividualDisplayFields contact={contact} /> }
                     <dt>AML/CFT Complete</dt>
 
