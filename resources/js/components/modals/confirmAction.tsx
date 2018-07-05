@@ -44,7 +44,7 @@ function mergeProps(stateProps: EL.ConfirmActionModal, dispatchProps): ConfirmAc
     return {
         ...stateProps,
         ...dispatchProps,
-        accept: () => dispatchProps.accept(stateProps.onAccept)
+        accept: () => Array.isArray(stateProps.onAccept) ? stateProps.onAccept.map(onAccept => dispatchProps.accept(onAccept)) : dispatchProps.accept(stateProps.onAccept)
     };
 }
 

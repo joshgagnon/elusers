@@ -255,7 +255,7 @@ declare global {
             content: string;
             acceptButtonText: string;
             declineButtonText: string;
-            onAccept: EL.Actions.Action;
+            onAccept: EL.Actions.Action | EL.Actions.Action[];
         }
 
         interface Modals {
@@ -282,7 +282,7 @@ declare global {
             content: string;
             acceptButtonText: string;
             declineButtonText: string;
-            onAccept: EL.Actions.Action;
+            onAccept: EL.Actions.Action  | EL.Actions.Action[];
         }
 
         interface ShowConfirmActionModal extends Action {

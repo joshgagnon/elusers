@@ -14,7 +14,13 @@ class Contact extends Model
     ];
     protected $dates = [
         'date_of_birth',
-        'created_at', 'updated_at', 'deleted_at'
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
+    protected $casts = [
+        'date_of_birth' => 'datetime:d M Y',
     ];
     /**
      * Organisation relationship: a contact belongs to an organisation.
@@ -65,7 +71,12 @@ class Contact extends Model
     {
         if(isset($date))
         {
-            return Carbon::createFromFormat('d M Y',$date);
+            try{
+                return Carbon::createFromFormat('d M Y',$date);
+            }
+            catch (\Exception $e) {
+                return Carbon::parse($date);
+            }
         }
         return null;
     }

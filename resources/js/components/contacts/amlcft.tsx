@@ -229,6 +229,7 @@ class FullAMLCFTForm extends React.PureComponent<ContactFormProps> {
         const name = fullname(this.props as any);
         return <Form onSubmit={handleSubmit}>
                 { AMLCFTFields.map((Fields, i) => <Fields key={i} /> )}
+                <CheckboxField name="amlcftComplete" label="AML/CFT Complete" />
                 { this.props.children }
             </Form>
     }
@@ -292,7 +293,7 @@ interface UnwrappedEditContactProps {
 }
 
 @TokenHOC('contact')
-@WaitForResource(props => props.contact)
+@WaitForResource((props: any) => props.contact)
 class TokenContactAMLCFTForm extends React.PureComponent<any> {
     render() {
         return <EditFullAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, this.props.token, this.props.originalContact, data)}>
@@ -306,19 +307,31 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
 @(connect(
     undefined,
     {
-        submit: (contactId: number, token: string, originalContact: EL.Contact, data: React.FormEvent<Form>) => {
+        submit: (contactId: number, token: string, originalContact: EL.Contact, data: any) => {
             const url = `contacts/${contactId}`;
             const merged = {...originalContact, ...data};
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
                 onFailure: [createNotification('Contact update failed. Please try again.', true)],
             };
+            let addressAction;
+            if(data.addresses[0].id){
+                // update address
+                const addressId = data.addresses[0].id;
+                addressAction = updateResource(`contacts/${contactId}/addresses/${addressId}`, data.addresses[0]);
+            }
+            else{
+                //they never had an address, create it
+                addressAction = createResource(`contacts/${contactId}/addresses`, data.addresses[0]);
+            }
+
+            const deleteAction = deleteResource(`access_token/${token}`);
             return confirmAction({
                 title: 'Merge Information',
                 content: 'Selecting merge will update this contact with the information and documents given.',
                 acceptButtonText: 'Merge',
                 declineButtonText: 'Cancel',
-                onAccept: updateResource(url, merged, meta)
+                onAccept: [updateResource(url, merged, meta), addressAction, deleteAction]
             });
         }
     }

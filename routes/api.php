@@ -123,3 +123,4 @@ Route::group(['middleware' => 'auth'], function() {
 Route::get('access_token/{token}', 'AccessTokenController@get')->name('AccessToken.get');
 Route::put('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
 Route::post('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
+Route::delete('access_token/{token}', 'AccessTokenController@delete')->name('AccessToken.delete');

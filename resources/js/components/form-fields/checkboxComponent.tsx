@@ -10,7 +10,7 @@ export default class InputFieldComponent extends React.PureComponent<IInputField
     render() {
         return (
             <BaseFieldComponent {...this.props}>
-                <Checkbox {...this.props.input}>
+                <Checkbox {...this.props.input} checked={this.props.input.value ? true : false}>
                     { this.props.children }
                 </Checkbox>
             </BaseFieldComponent>

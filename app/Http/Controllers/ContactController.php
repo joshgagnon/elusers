@@ -141,7 +141,6 @@ class ContactController extends Controller
             'amlcft_complete' => $data['amlcft_complete'] ?? null
         ]);
         $files = $request->file('file', []);
-        dd($request->file('file'));
         foreach ($files as $file) {
             $this->saveFile($file, $request->user(), $contact);
         }

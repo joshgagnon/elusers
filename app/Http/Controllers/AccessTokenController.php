@@ -72,4 +72,10 @@ class AccessTokenController extends Controller
 
     }
 
+    public function delete(Request $request, $token)
+    {
+        $accessToken = AccessToken::where('token', $token)->with('files.file')->first();
+        $accessToken->delete();
+        return response()->json(['message' => 'Resource deleted.'], 200);
+    }
 }
