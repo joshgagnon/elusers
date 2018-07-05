@@ -46,7 +46,6 @@ class ContactController extends Controller
             abort(404);
         }
 
-
         $contact = $contact->toArray();
         $contact['files'] = array_map(function ($i) {
             return $i['file'];
@@ -97,7 +96,7 @@ class ContactController extends Controller
 
         $files = $request->file('file', []);
         foreach ($files as $file) {
-            $this->saveFile($file, $request->user(), $contact);
+            $this->saveUploadedFile($file, $request->user(), $contact);
         }
 
         //agent_id, must be owned by org, can't be self
@@ -141,8 +140,30 @@ class ContactController extends Controller
             'amlcft_complete' => $data['amlcft_complete'] ?? null
         ]);
         $files = $request->file('file', []);
+
         foreach ($files as $file) {
-            $this->saveFile($file, $request->user(), $contact);
+            $this->saveUploadedFile($file, $request->user(), $contact);
+        }
+
+        # if not in this list we get rid of
+        $existingFileIds = array_map(function ($i) {
+            return (int)$i;
+        }, $data['existing_files'] ?? []);
+
+        foreach($contact->files as $file) {
+            if(!in_array($file->file_id, $existingFileIds)){
+                $file->delete();
+            }
+        }
+
+
+        if(isset($data['files_to_copy'])){
+            // can read file
+            foreach ($data['files_to_copy'] as $file) {
+                if(isset($file['id']) && File::canRead($file['id'], $user)){
+                    $this->copyFile(File::find($file['id']), $request->user(), $contact);
+                }
+            }
         }
 
         return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
@@ -154,7 +175,7 @@ class ContactController extends Controller
         return response()->json(['message' => 'Contact deleted.']);
     }
 
-    private function saveFile($file, $user, $contact)
+    private function saveUploadedFile($file, $user, $contact)
     {
         // Get the uploaded file contents
         $uploadedFilePath = $file->getRealPath();
@@ -179,6 +200,44 @@ class ContactController extends Controller
             'path'      => $storagePath,
             'filename'  => $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType(),
+            'encrypted' => true
+        ]);
+        $contactFile = new ContactFile;
+
+        $contactFile->file_id = $file->id;
+        $contactFile->contact_id  = $contact->id;
+        $contactFile->save();
+        return $contactFile;
+    }
+
+
+
+    private function copyFile(File $file, $user, $contact)
+    {
+        // Get the user's organisation's encryption key
+        $encryptionKey = $user->organisation()->first()->encryption_key;
+        // Get the file and return it
+        $contents = Storage::get($file->path);
+
+        if ($file->encrypted) {
+            $key = $user->organisation->encryption_key;
+            $encryption = new Encryption($key);
+            $content = $encryption->decrypt($content);
+        }
+        // Encrypt the file contents
+        $encryption = new Encryption($encryptionKey);
+        $encryptedContents = $encryption->encrypt($contents);
+        // Create a unique path for the file
+        do {
+            $storageName = time() . uniqid();
+            $storagePath = 'contact-files/' . $storageName;
+        } while (Storage::exists($storagePath));
+        // Store the file
+        Storage::put($storagePath, $encryptedContents);
+        $file = File::create([
+            'path'      => $storagePath,
+            'filename'  => $file->filename,
+            'mime_type' => $file->mime_type,
             'encrypted' => true,
         ]);
         $contactFile = new ContactFile;
@@ -187,7 +246,6 @@ class ContactController extends Controller
         $contactFile->contact_id  = $contact->id;
         $contactFile->save();
         return $contactFile;
-
     }
 
     public function createAccessToken(Contact $contact)

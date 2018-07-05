@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Library\SQLFile;
 
 class File extends Model
 {
@@ -27,4 +28,15 @@ class File extends Model
     {
         return $this->belongsToMany(DeedPacketRecord::class);
     }
+
+    public static function canRead($id, $user) {
+        $canReadFile = SQLFile::run('can_read_file', ['user_id' => $user->id, 'file_id' => $id]);
+        $canReadFile = $canReadFile[0]->exists;
+        return !!$canReadFile;
+    }
+
+
 }
+
+
+

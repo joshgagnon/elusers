@@ -35,4 +35,16 @@ OR EXISTS(
 
 )
 
+OR EXISTS(
+    SELECT *
+    FROM users u
+    JOIN contacts c ON c.organisation_id = u.organisation_id
+    LEFT OUTER JOIN access_tokens ac on ac.model_id = c.id and ac.model_type = 'App\Contact'
+    LEFT OUTER JOIN access_token_files af ON af.access_token_id = c.id
+    WHERE
+        u.id = :user_id AND
+        af.file_id = :file_id
+
+)
+
 ) as exists;

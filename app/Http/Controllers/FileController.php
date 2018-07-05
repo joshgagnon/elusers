@@ -14,13 +14,10 @@ class FileController extends Controller
     {
         // Check if this user is allowed to read this file
         $user = $request->user();
-        $canReadFile = SQLFile::run('can_read_file', ['user_id' => $user->id, 'file_id' => $file->id]);
-        $canReadFile = $canReadFile[0]->exists;
 
-        if (!$canReadFile) {
+        if (!File::canRead($file->id, $user)) {
             abort(403);
         }
-
         // Get the file and return it
         $content = Storage::get($file->path);
 

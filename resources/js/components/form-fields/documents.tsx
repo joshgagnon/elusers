@@ -7,7 +7,6 @@ import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';
 import * as DropdownList from 'react-widgets/lib/DropdownList';
 
-
 const fileTarget = {
     drop(props, monitor) {
         props.onDrop(monitor.getItem().files);
@@ -131,6 +130,7 @@ class DocumentComponent extends React.PureComponent<any> {
                     <InputGroup>
                     <FormControl type="static" defaultValue={file.name || file.filename}/>
                         <InputGroup.Button>
+
                              <Button disabled={!(documents.length > 1 && i > 0)} onClick={(e) => {
                                 e.preventDefault();
                                 if(documents.length > 1 && i > 0){
@@ -164,6 +164,9 @@ class DocumentComponent extends React.PureComponent<any> {
 
                               <Glyphicon glyph="trash"/>
                               </Button>
+                             {file.id && <a target="_blank" className="btn btn-default" href={`/api/files/${file.id}`}>
+                              <Glyphicon glyph="new-window" />
+                              </a> }
                             </InputGroup.Button>
                     </InputGroup>
                     </div>

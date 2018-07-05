@@ -309,7 +309,7 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
     {
         submit: (contactId: number, token: string, originalContact: EL.Contact, data: any) => {
             const url = `contacts/${contactId}`;
-            const merged = {...originalContact, ...data};
+            const merged = {...originalContact, ...data, filesToCopy: data.files, files: originalContact.files};
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
                 onFailure: [createNotification('Contact update failed. Please try again.', true)],
