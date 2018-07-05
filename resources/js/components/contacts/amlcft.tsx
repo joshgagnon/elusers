@@ -257,7 +257,7 @@ interface UnwrappedExternalContactAMLCFTProps {
     }
 ) as any)
 @TokenHOC('contact')
-@PanelHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact)
+@PanelHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact, () => <div>Sorry, this link has expired</div>)
 class UnwrappedExternalContactAMLCFT extends React.PureComponent<UnwrappedExternalContactAMLCFTProps> {
     render() {
         let values = this.props.contact.data;
@@ -292,7 +292,6 @@ interface UnwrappedEditContactProps {
 @WaitForResource(props => props.contact)
 class TokenContactAMLCFTForm extends React.PureComponent<any> {
     render() {
-
         return <EditFullAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.token, data)}  />
     }
 }

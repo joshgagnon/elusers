@@ -11,7 +11,6 @@ class Contact extends Model
     protected $fillable = ['name', 'email', 'phone', 'organisation_id', 'first_name', 'middle_name', 'surname', 'type', 'metadata', 'agent_id', 'date_of_birth', 'capacity', 'amlcft_complete'];
 
     public static $validationRules = [
-        'name' => 'required',
     ];
     protected $dates = [
         'date_of_birth',

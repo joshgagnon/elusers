@@ -54,7 +54,7 @@ class WikiController extends Controller
                 $record['categoryGroup'] = DB::select('select title, path from wiki where categories->>0 = ? and deleted_at is null order by title', [$categories[0]]);
             }
         }
-        return $record;
+        return $record ?? [];
     }
 
     /**

@@ -12,12 +12,17 @@ class AccessTokenController extends Controller
 {
     public function get(Request $request, $token)
     {
-        $accessToken = AccessToken::where('token', $token)->first();
+        $accessToken = AccessToken::where('token', $token)->with('files.file')->first();
         if(!$accessToken){
             abort(404);
         }
         if($accessToken['submitted']){
-            return $accessToken['data'];
+            $data = $accessToken['data'];
+            $data['files'] = array_map(function ($i) {
+                return $i['file'];
+            }, $accessToken['files']->toArray());
+
+            return $data;
         }
         return $accessToken->model->tokenExtras();
     }

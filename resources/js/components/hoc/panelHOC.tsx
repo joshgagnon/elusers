@@ -4,7 +4,7 @@ import Loading from '../loading';
 
 type ResourceObjectOrArray = EL.Resource<any>[] | EL.Resource<any>;
 
-function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TProps) => ResourceObjectOrArray) {
+function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TProps) => ResourceObjectOrArray, errorComponent?: any) {
     return function(ComposedComponent) {
         function some(arrayOrObject, func) {
             if (Array.isArray(arrayOrObject)) {
@@ -21,6 +21,10 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
                 const resources = checkResources(props);
 
                 if (some(resources, r => r.hasErrored)) {
+                    if(errorComponent){
+                        const Error = errorComponent;
+                        return <Error />;
+                    }
                     return <h1>Error</h1>;
                 }
 

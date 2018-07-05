@@ -137,14 +137,9 @@ function *createResource(action: EL.Actions.CreateResourceAction) {
         let data = humps.decamelizeKeys(action.payload.postData);
         if(action.payload.postData.files){
             const body = new FormData();
-            /*Object.keys(data).filter((key: string) => key !== 'files')
-                .filter((key: string) => data[key] !== null)
-                .map((key: string) => {
-                body.append(key, data[key])
-            });*/
             const { files, ...rest} = data;
             body.append('__json', JSON.stringify(rest));
-            files.map((d: any) => {
+            action.payload.postData.files.map((d: any) => {
                 if(d.id){
                     body.append('existing_files[]', d.id);
                 }
@@ -181,7 +176,7 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
             const body = new FormData();
             const { files, ...rest} = data;
             body.append('__json', JSON.stringify(rest));
-           files.map((d: any) => {
+            action.payload.data.files.map((d: any) => {
                 if(d.id){
                     body.append('existing_files[]', d.id);
                 }
@@ -189,7 +184,6 @@ function *updateResource(action: EL.Actions.UpdateResourceAction) {
                     body.append('file[]', d, d.name);
                 }
             });
-
             response = yield call(axios.post, '/api/' + action.payload.url, body);
         }
         else {

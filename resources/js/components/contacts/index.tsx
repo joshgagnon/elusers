@@ -132,7 +132,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                 <ButtonToolbar className="pull-right">
                     <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
                     <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
-                    <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil-square-o" />Send AML/CFT Request</Button>
+                    <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil-square-o" />Get AML/CFT Token</Button>
                     <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 
