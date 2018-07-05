@@ -225,9 +225,12 @@ const EditContactAMLCFTForm= (reduxForm({
 class FullAMLCFTForm extends React.PureComponent<ContactFormProps> {
 
     render() {
-        return <div>
+        const { handleSubmit, } = this.props;
+        const name = fullname(this.props as any);
+        return <Form onSubmit={handleSubmit}>
                 { AMLCFTFields.map((Fields, i) => <Fields key={i} /> )}
-            </div>
+                { this.props.children }
+            </Form>
     }
 }
 
@@ -292,21 +295,31 @@ interface UnwrappedEditContactProps {
 @WaitForResource(props => props.contact)
 class TokenContactAMLCFTForm extends React.PureComponent<any> {
     render() {
-        return <EditFullAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.token, data)}  />
+        return <EditFullAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, this.props.token, this.props.originalContact, data)}>
+           <div className="button-row">
+            <Button bsStyle="primary" type="submit">Merge Information into Contact</Button>
+            </div>
+        </EditFullAMLCFTForm>
     }
 }
 
 @(connect(
     undefined,
     {
-        submit: (contactId: number, data: React.FormEvent<Form>) => {
-            const url = `contacts/${contactId}/merge`;
+        submit: (contactId: number, token: string, originalContact: EL.Contact, data: React.FormEvent<Form>) => {
+            const url = `contacts/${contactId}`;
+            const merged = {...originalContact, ...data};
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
                 onFailure: [createNotification('Contact update failed. Please try again.', true)],
             };
-
-            return updateResource(url, data, meta);
+            return confirmAction({
+                title: 'Merge Information',
+                content: 'Selecting merge will update this contact with the information and documents given.',
+                acceptButtonText: 'Merge',
+                declineButtonText: 'Cancel',
+                onAccept: updateResource(url, merged, meta)
+            });
         }
     }
 ) as any)
@@ -314,7 +327,11 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
 @PanelHOC<UnwrappedEditContactProps>('Merge Information', props => props.contact)
 class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
     render() {
-      return <TokenContactAMLCFTForm token={this.props.contact.data.accessTokens[0].token} submit={this.props.submit}  />
+      return <TokenContactAMLCFTForm
+          contactId={this.props.contactId}
+          originalContact={this.props.contact.data}
+          token={this.props.contact.data.accessTokens[0].token}
+          submit={this.props.submit}  />
     }
 }
 

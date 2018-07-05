@@ -109,7 +109,7 @@ const IndividualDisplayFields = (props: {contact: EL.Contact}) => {
 
             return confirmAction({
                 title: 'Confirm Send AML/CFT Request to Contact',
-                content: 'Are you sure you want send a AML/CFT to this contact?',
+                content: 'Are you sure you want generate a AML/CFT access token for this contact?',
                 acceptButtonText: 'Send',
                 declineButtonText: 'Cancel',
                 onAccept: createAction

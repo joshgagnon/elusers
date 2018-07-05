@@ -55,8 +55,12 @@ class Contact extends Model
     {
         $this->attributes['date_of_birth'] = $this->parseDate($value);
     }
-
-
+/*
+    public function getDateOfBirthAttribute()
+    {
+        return $this->parseDate($value);
+    }
+*/
     public function parseDate($date=null)
     {
         if(isset($date))
