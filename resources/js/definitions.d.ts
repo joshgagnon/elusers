@@ -66,6 +66,18 @@ declare global {
             createdAt?: string;
         }
 
+        interface Matter {
+            id?: number;
+            matterName?: string;
+            matterNumber: string;
+            matterType: string;
+            createdAt: string;
+            creator: EL.User;
+            referrer: EL.User | EL.Contact;
+            files: Document[];
+        }
+
+
         interface DeedRecord {
             id: number;
             deedPacketId: number;
@@ -248,6 +260,9 @@ declare global {
             CREATE_CONTACT_FORM = 'CREATE_CONTACT_FORM',
             EDIT_CONTACT_FORM = 'EDIT_CONTACT_FORM',
             EDIT_CONTACT_AMLCFT_FORM = 'EDIT_CONTACT_AMLCFT_FORM',
+
+            CREATE_MATTER_FORM = 'CREATE_MATTER_FORM',
+            EDIT_MATTER_FORM = 'EDIT_MATTER_FORM',
         }
 
         interface ConfirmActionModal {

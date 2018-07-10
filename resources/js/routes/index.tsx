@@ -32,7 +32,7 @@ import CreateAddress from '../components/my-profile/createAddress';
 import EditAddress from '../components/my-profile/editAddress';
 import Templates from '../components/templates';
 import Documents from '../components/documents';
-
+import { ListMatters, CreateMatter, ViewMatter, EditMatter } from '../components/matters';
 
 import WikiRoutes from './wiki';
 
@@ -56,6 +56,7 @@ const routes = (routeComponent: RouteComponent) => (
         </Route>
 
         <Route path="documents" component={Documents} />
+
         <Route path="contacts" component={Contacts} />
         <Route path="contacts/create" component={CreateContact} />
         <Route path="contacts/:contactId" component={Contact} />
@@ -74,6 +75,12 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="deeds/records/create" component={CreateDeedRecord} />
         <Route path="deeds/records/:recordId" component={DeedRecord} />
         <Route path="deeds/records/:recordId/edit" component={EditDeedRecord} />
+
+
+        <Route path="matters" component={ListMatters} />
+        <Route path="matters/create" component={CreateMatter} />
+        <Route path="matters/:matterId" component={ViewMatter} />
+        <Route path="matters/:matterId/edit" component={EditMatter} />
 
         <Route path='cpdpr' component={ CPDPRIndex }>
             <Route path='create' component={ CreateCPDPRRecord } />

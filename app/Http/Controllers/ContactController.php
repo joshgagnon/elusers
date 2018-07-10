@@ -150,6 +150,8 @@ class ContactController extends Controller
             return (int)$i;
         }, $data['existing_files'] ?? []);
 
+        # USE A PIVOT AND sync() INSTEAD@!!!!!!!!!
+
         foreach($contact->files as $file) {
             if(!in_array($file->file_id, $existingFileIds)){
                 $file->delete();

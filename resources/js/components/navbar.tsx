@@ -24,6 +24,10 @@ export class NavMenu extends React.PureComponent {
                             <NavItem>Users</NavItem>
                         </LinkContainer>
 
+                        <LinkContainer to="/matters">
+                            <NavItem>Matters</NavItem>
+                        </LinkContainer>
+
                         <LinkContainer to="/documents">
                             <NavItem>Documents</NavItem>
                         </LinkContainer>

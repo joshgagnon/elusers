@@ -47,4 +47,16 @@ OR EXISTS(
 
 )
 
+OR EXISTS(
+    SELECT *
+    FROM users u
+    JOIN matters m ON m.organisation_id = u.organisation_id
+    LEFT OUTER JOIN matter_files mf on m.id = mf.matter_id
+
+    WHERE
+        u.id = :user_id AND
+        mf.file_id = :file_id
+
+)
+
 ) as exists;

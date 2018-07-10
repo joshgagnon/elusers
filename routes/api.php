@@ -113,6 +113,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('wiki/{url}', 'WikiController@update')->where('url', '.*');
 
 
+
+    Route::apiResource('matters', 'MatterController');
+    Route::post('matters/{matter}', 'MatterController@update');
+
+
     Route::post('render', 'RenderController@render');
 
     Route::get('version', 'VersionController@index');
