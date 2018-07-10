@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Navbar from './navbar';
-import { connect } from 'react-redux';
+import { connect } from './utils/connect';
 import Modals from './modals';
 import * as HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext, DropTarget } from 'react-dnd';
@@ -14,7 +14,7 @@ interface ILayoutProps {
 }
 
 @(DragDropContext(HTML5Backend) as any)
-@(connect((state: EL.State) => ({ notifications: state.notifications, user: state.user })) as any)
+@connect((state: EL.State) => ({ notifications: state.notifications, user: state.user }))
 export default class Layout extends React.PureComponent<ILayoutProps> {
     render() {
         const fluid = this.props.routes.some(c => c.component.FLUID_CONTAINER);
