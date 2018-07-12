@@ -16,17 +16,19 @@ const defaultStyle = {
 
 const transitionStyles = {
   entering: { opacity: 0 },
-  entered:  { opacity: 1 },
+  entered:  { opacity: 1},
+  exited: {display:'none'}
 };
 
-const Fade = ({ in: inProp, children }) => {
+const Fade = (props) => {
+   const { in: inProp, children, ...rest} = props;
   return <Transition in={inProp} timeout={duration}>
     {(state) => (
       <div style={{
         ...defaultStyle,
         ...transitionStyles[state]
       }}>
-        {children}
+        { children }
       </div>
     )}
   </Transition>

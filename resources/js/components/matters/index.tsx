@@ -9,13 +9,13 @@ import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
-import { reduxForm, formValueSelector } from 'redux-form';
+import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
 import { fullname, name, guessName } from '../utils';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import Referrer from './referrer';
-
+import { ContactSelector } from '../contacts';
 
 
 interface  MattersProps {
@@ -168,7 +168,28 @@ interface EditMatterProps {
 }
 
 
+const Clients = ({ fields, meta: { error, submitFailed } }) => (
+  <div>
+    { fields.map((contact, index) => (
+      <div key={index}>
+        <div>
+            <h4 className="text-center">Client #{ index+1 }
+            <Button style={{marginLeft: 20}} className="btn-icon-only" bsSize="small" onClick={() => fields.remove(index)}>
+                    <Icon iconName="times" />
+            </Button>
+            </h4>
+        </div>
+        <ContactSelector name={`${contact}.contact_id`}  label="Contact" />
+      </div>
+    )) }
 
+      <div className="button-row">
+          <Button onClick={() => fields.push({})}>
+        Add Contact
+        </Button>
+      </div>
+  </div>
+)
 
 class MatterForm extends React.PureComponent<MatterFormProps> {
 
@@ -191,6 +212,7 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
 
                 <hr />
 
+                <FieldArray name="client" component={Clients} />
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
                 </ButtonToolbar>
@@ -233,7 +255,7 @@ const EditMatterForm = (reduxForm({
 @PanelHOC<CreateMatterProps>('Create Matter')
 export class CreateMatter extends React.PureComponent<CreateMatterProps> {
     render() {
-        return <CreateMatterForm onSubmit={this.props.submit} saveButtonText="Create Matter" />
+        return <CreateMatterForm initialValues={{client: [{}]}} onSubmit={this.props.submit} saveButtonText="Create Matter" />
     }
 }
 
@@ -268,7 +290,7 @@ class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> 
 
 export class EditMatter extends React.PureComponent<{ params: { matterId: number; } }> {
     render() {
-        return <UnwrappedEditMatter matterId={this.props.params.matterId} />
+        return <UnwrappedEditMatter  matterId={this.props.params.matterId} />
     }
 }
 
