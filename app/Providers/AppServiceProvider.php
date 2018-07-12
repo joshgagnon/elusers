@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Relations\Relation;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,7 +33,15 @@ class AppServiceProvider extends ServiceProvider
                 unset($data['__json']);
             }
             return $data;
-
         });
+
+
+
+        Relation::morphMap([
+            'User' => \App\User::class,
+            'Contact' => \App\Contact::class,
+        ]);
+
+
     }
 }

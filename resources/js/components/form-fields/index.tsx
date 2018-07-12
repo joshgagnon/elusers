@@ -85,6 +85,7 @@ interface DrodownListProps extends FieldProps {
     data: any;
     textField: string | ((any) => string);
     valueField: string | ((any) => string);
+    placeholder?: string;
 }
 
 export class DropdownListField extends React.PureComponent<DrodownListProps> {

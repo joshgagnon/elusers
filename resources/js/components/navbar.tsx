@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
-import { connect } from './utils/connect';
+import { connect } from 'react-redux';
 
 
 export class NavMenu extends React.PureComponent<{routing: any}> {
@@ -100,6 +100,6 @@ export class NavMenuCheck extends React.PureComponent<{user: EL.User, routing: a
 
 }
 
-export default connect<{user: EL.User, routing: any}, void, void>((state: EL.State) => {
+export default connect<{user: EL.User, routing: any}, {}, {}>((state: EL.State) => {
     return {user: state.user, routing: state.routing};
 })(NavMenuCheck);

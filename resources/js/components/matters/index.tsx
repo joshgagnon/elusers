@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from '../utils/connect';
+import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
@@ -12,9 +12,9 @@ import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, C
 import { reduxForm, formValueSelector } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
-import { fullname, name } from '../utils';
+import { fullname, name, guessName } from '../utils';
 import MapParamsToProps from '../hoc/mapParamsToProps';
-
+import Referrer from './referrer';
 
 
 
@@ -54,8 +54,6 @@ const HEADINGS = ['Matter Number', 'Name', 'Type', 'Created By', 'Actions'];
 
 class MattersTable extends React.PureComponent<MattersViewProps> {
     render() {
-
-
         return (
             <div>
                 <ButtonToolbar>
@@ -101,7 +99,7 @@ interface MatterProps {
     deleteMatter: (matterId: string) => any;
 }
 
-@connect(undefined, {
+@(connect(undefined, {
     deleteMatter: (matterId: string) => {
         const deleteAction = deleteResource(`matters/${matterId}`, {
             onSuccess: [createNotification('Matter deleted.'), (response) => push('/matters')],
@@ -116,7 +114,7 @@ interface MatterProps {
             onAccept: deleteAction
         });
     }
-})
+}) as any)
 @MapParamsToProps(['matterId'])
 @MatterHOC()
 @PanelHOC<MatterProps>('Matter', props => props.matter)
@@ -138,6 +136,8 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
                 <dl>
                     <dt>Creator</dt>
                     <dd>{ name(matter.creator) }</dd>
+                    <dt>Referrerr</dt>
+                    <dd>{ guessName(matter.referrer) }</dd>
 
                     <dt>Documents</dt>
                     <dd>{ (matter.files || []).map((file, i) => {
@@ -168,6 +168,8 @@ interface EditMatterProps {
 }
 
 
+
+
 class MatterForm extends React.PureComponent<MatterFormProps> {
 
     matterOptions = MATTER_TYPES.map(matter => {
@@ -180,7 +182,9 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
                 <InputField name="matterNumber" label="Matter Number" type="textl" required/>
                 <InputField name="matterName" label="Matter Name" type="text" required/>
 
-                <SelectField name="matterType" label="Type" options={this.matterOptions} required prompt/>
+                <SelectField name="matterType" label="Matter Type" options={this.matterOptions} required prompt/>
+
+                <Referrer selector={formValueSelector(this.props.form)}/>
 
 
                 <DocumentList name="files" label="Documents" />

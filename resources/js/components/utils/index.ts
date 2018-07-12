@@ -14,6 +14,11 @@ export function name(user: EL.User) {
     return user.preferredName || user.firstName;
 }
 
+export function guessName(user: EL.User | EL.Contact) {
+    return (<EL.User>user).preferredName ? name(user as EL.User) : fullname(user)
+}
+
+
 export function minutesToHoursAndMinutes(minutes: number): { hours: number; minutes: number } {
     return {
         hours: Math.floor(minutes / 60),

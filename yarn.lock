@@ -41,9 +41,9 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-bootstrap@0.32.10":
-  version "0.32.10"
-  resolved "https://registry.yarnpkg.com/@types/react-bootstrap/-/react-bootstrap-0.32.10.tgz#46473829e92687f0301cc8b4d14a92e4b28e6aaa"
+"@types/react-bootstrap@0.31.5":
+  version "0.31.5"
+  resolved "https://registry.yarnpkg.com/@types/react-bootstrap/-/react-bootstrap-0.31.5.tgz#b7423662b020ab250bd4e148dcfd3024c3c77146"
   dependencies:
     "@types/react" "*"
 
@@ -5571,7 +5571,7 @@ react-addons-shallow-compare@^0.14.0:
   version "0.14.8"
   resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-0.14.8.tgz#1f26533d78cadabf4639756ec0dae5ab45427a74"
 
-react-bootstrap@^0.31.5:
+react-bootstrap@0.31.5, react-bootstrap@^0.31.5:
   version "0.31.5"
   resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-0.31.5.tgz#57040fa8b1274e1e074803c21a1b895fdabea05a"
   dependencies:

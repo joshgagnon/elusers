@@ -7,6 +7,7 @@ interface IDropdownComponentProps extends IFieldComponentProps {
     data: any;
     textField: string | ((any) => string);
     valueField: string | ((any) => string);
+    placeholder?: string;
 }
 
 
@@ -16,7 +17,7 @@ export default class DropdownComponent extends React.PureComponent<IDropdownComp
         const List = DropdownList  as any;
         return (
             <BaseFieldComponent {...baseFieldComponentProps}>
-                <List {...this.props.input} data={this.props.data} textField={this.props.textField}
+                <List {...this.props.input} data={this.props.data} textField={this.props.textField} placeholder={this.props.placeholder}
                 valueField={this.props.valueField}
                 onChange={o => this.props.input.onChange(o[this.props.valueField as string] )}
                 filter/>

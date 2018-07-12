@@ -81,6 +81,7 @@ module.exports = {
             redux: path.resolve('./node_modules/redux'),
             'react-redux': path.resolve('./node_modules/react-redux'),
             'react-widgets': path.resolve('./node_modules/react-widgets'),
+            'react-bootstrap': path.resolve('./node_modules/react-bootstrap'),
             moment: path.resolve('./node_modules/moment'),
             'react-widgets-moment': path.resolve('./node_modules/react-widgets-moment'),
           }

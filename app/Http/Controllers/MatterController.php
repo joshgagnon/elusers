@@ -41,10 +41,12 @@ class MatterController extends Controller
             ]
         ));
 
+        // FILES
         $fileIds = array_map(function($file) use ($user) {
             return $this->saveUploadedFile($file, $user)->id;
         }, $request->file('file', []));
         $matter->files()->sync($fileIds);
+
 
         return response()->json(['message' => 'Matter created', 'id' => $matter->id], 201);
     }

@@ -169,24 +169,22 @@ export class Contact extends React.PureComponent<ContactProps> {
 }
 
 @ContactsHOC()
-class AgentSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Contact[]>;}> {
+class AgentSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Contact[]>; name?: string, label?: string}> {
     render() {
         if(!this.props.contacts.data){
             return false;
         }
-        const name = contact => {
-            if(!contact){
-                return 'None';
-            }
-           const title = contact.type === EL.Constants.INDIVIDUAL ? `${contact.firstName} ${contact.surname}` : contact.name;
+        const renderName = contact => {
+
+           const title = contact.type === EL.Constants.INDIVIDUAL ? fullname(contact) : contact.name;
            return title;
        };
-        return <DropdownListField name="agentId" label="Agent" data={[{}, ...this.props.contacts.data]} textField={name} valueField='id' />
+        return <DropdownListField name={this.props.name || "agentId"} label={this.props.label || "Agent"} placeholder="None" data={[...this.props.contacts.data]} textField={renderName} valueField='id' />
     }
 }
 
 
-
+export const ContactSelector = AgentSelector;
 
 class ContactName extends React.PureComponent<{'type':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
     render() {
