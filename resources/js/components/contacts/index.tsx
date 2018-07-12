@@ -175,7 +175,9 @@ class AgentSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Conta
             return false;
         }
         const renderName = contact => {
-
+            if(!contact){
+                return "None";
+            }
            const title = contact.type === EL.Constants.INDIVIDUAL ? fullname(contact) : contact.name;
            return title;
        };

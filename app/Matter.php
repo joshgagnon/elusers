@@ -9,7 +9,7 @@ class Matter extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['matter_number', 'matter_name', 'matter_type', 'created_by_user_id', 'referrer_id', 'organisation_id', 'referrer_type'];
+    protected $fillable = ['matter_number', 'matter_name', 'matter_type', 'created_by_user_id',  'organisation_id', 'referrer_id', 'referrer_type'];
    # protected $visible = ['id', 'matter_number', 'matter_name', 'matter_type', 'created_by_user_id', 'referrer_id', 'organisation_id', 'created_at', 'updated_at'];
 
     public static $validationRules = [
@@ -30,7 +30,7 @@ class Matter extends Model
 
     public function referrer()
     {
-        return $this->belongsTo(User::class, 'referrer_id');
+        return $this->morphTo();
     }
 
 }

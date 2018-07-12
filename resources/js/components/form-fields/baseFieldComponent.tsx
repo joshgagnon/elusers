@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { WrappedFieldProps } from 'redux-form';
-import { FormGroup, ControlLabel, HelpBlock, Col, FormControl, Button, Row } from 'react-bootstrap';
+import { FormGroup, ControlLabel, HelpBlock, Col, FormControl, Button } from 'react-bootstrap';
 import Icon from '../icon';
 
 export interface IFieldComponentProps extends WrappedFieldProps {
@@ -31,7 +31,6 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
         const displayError = touched && error;
 
         return (
-            <Row>
             <FormGroup validationState={this.validationState(touched, error)} className={this.props.required ? 'required' : null}>
                 <Col componentClass={ControlLabel} md={3}>
                     {label}
@@ -47,8 +46,7 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
                     </Col>
                 }
             </FormGroup>
-            </Row>
-        );
+     );
     }
 }
 

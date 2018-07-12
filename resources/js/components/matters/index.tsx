@@ -137,7 +137,7 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
                     <dt>Creator</dt>
                     <dd>{ name(matter.creator) }</dd>
                     <dt>Referrerr</dt>
-                    <dd>{ guessName(matter.referrer) }</dd>
+                    <dd>{ matter.referrer ? guessName(matter.referrer) : 'None'}</dd>
 
                     <dt>Documents</dt>
                     <dd>{ (matter.files || []).map((file, i) => {
