@@ -179,7 +179,7 @@ const Clients = ({ fields, meta: { error, submitFailed } }) => (
             </Button>
             </h4>
         </div>
-        <ContactSelector name={`${contact}.contact_id`}  label="Contact" />
+        <ContactSelector name={`${contact}.contact_id`}  label="Contact" required/>
       </div>
     )) }
 
@@ -212,7 +212,8 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
 
                 <hr />
 
-                <FieldArray name="client" component={Clients} />
+                <FieldArray name="clients" component={Clients as any} />
+
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
                 </ButtonToolbar>
@@ -225,6 +226,7 @@ const matterValidationRules: EL.IValidationFields = {
     matterNumber: { name: 'Matter Number', required: true },
     matterName: { name: 'Name', required: true },
     matterType: { name: 'Matter Type', required: true },
+    clients: { name: 'Client', minItems: 1},
 }
 
 const CreateMatterForm = (reduxForm({

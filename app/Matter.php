@@ -33,4 +33,9 @@ class Matter extends Model
         return $this->morphTo();
     }
 
+    public function clients()
+    {
+        return $this->belongsToMany(Contact::Class, 'matter_contacts', "matter_id", "contact_id")->withTimestamps();
+    }
+
 }
