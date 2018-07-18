@@ -29,7 +29,6 @@ export default class Templates extends React.PureComponent<any> {
         if(!this.props.users.data || !this.props.contacts.data){
              return <Loading />
         }
-
         return (
             <div>
                 <FormLoader
@@ -41,13 +40,15 @@ export default class Templates extends React.PureComponent<any> {
                         }),
 
                         'recipients.individuals': this.props.contacts.data
-                            .filter(contact => contact.type === 'individual')
+                            .filter(contact => contact.contactableType === 'Individual')
+                            .map(contact => ({...contact.contactable, ...contact}))
                             .map((contact) => {
                                 return {value: {...contact, "recipientType": "individuals"}, title: `${contact.firstName} ${contact.surname}`}
                             }),
 
                         'recipients.organisations': this.props.contacts.data
-                            .filter(contact => contact.type === 'organisation')
+                            .filter(contact => contact.contactableType !== 'Individual')
+                            .map(contact => ({...contact.contactable, ...contact}))
                             .map((contact) => {
                                 return {value: {...contact, "recipientType": "company", companyName: contact.name}, title: `${contact.name}`}
                             })

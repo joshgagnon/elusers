@@ -22,7 +22,7 @@ interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
 }
 
-const HEADINGS = ['ID', 'Name', 'Email', 'Phone', 'Actions'];
+const HEADINGS = ['ID', 'Name', 'contactableType', 'Email', 'Phone', 'Actions'];
 
 @ContactsHOC()
 @PanelHOC<ContactsProps>('Contacts', props => props.contacts)
@@ -39,6 +39,7 @@ export class Contacts extends React.PureComponent<ContactsProps> {
                         <tr key={contact.id}>
                             <td>{contact.id}</td>
                             <td>{contact.name}</td>
+                            <td>{contact.contactableType}</td>
                             <td><a href={ 'mailto:' + contact.email }>{contact.email}</a></td>
                             <td>{contact.phone}</td>
                             <td className="actions">
@@ -72,13 +73,18 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
 }
 
 
-const IndividualDisplayFields = (props: {contact: EL.Contact}) => {
+const IndividualDisplayFields = (props: {contact: EL.ContactIndividual}) => {
     const { contact } = props;
     return <React.Fragment>
+     <dt>Title</dt>
+    <dd>{ contact.title}</dd>
+     <dt>Preferred Name</dt>
+    <dd>{ contact.preferredName }</dd>
     <dt>Date of Birth</dt>
     <dd>{ contact.dateOfBirth }</dd>
-    <dt>Capacity</dt>
-    <dd>{ contact.capacity }</dd>
+    <dt>Date of Death</dt>
+    <dd>{ contact.dateOfDeath }</dd>
+
     </React.Fragment>
 }
 
@@ -125,7 +131,7 @@ export class Contact extends React.PureComponent<ContactProps> {
 
     render() {
         const contact = this.props.contact.data;
-        const individual = contact.type === EL.Constants.INDIVIDUAL;
+        const individual = contact.contactableType === EL.Constants.INDIVIDUAL;
         const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
         return (
             <div>
@@ -137,7 +143,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                 </ButtonToolbar>
 
                 <h3>{fullname(contact)}</h3>
-                <h4>{contact.type}</h4>
+                <h4>{contact.contactableType}</h4>
 
                 <dl>
                     <dt>Email</dt>
@@ -148,7 +154,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <dt>Agent</dt>
 
                     { contact.agentId && <dd><Agent contactId={contact.agentId} /></dd> }
-                    { individual  && <IndividualDisplayFields contact={contact} /> }
+                    { individual  && <IndividualDisplayFields contact={contact.contactable as EL.ContactIndividual} /> }
                     <dt>AML/CFT Complete</dt>
 
                     <dd>{ contact.amlcftComplete ? 'Yes' : 'No'}</dd>
@@ -188,15 +194,18 @@ class AgentSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Conta
 
 export const ContactSelector = AgentSelector;
 
-class ContactName extends React.PureComponent<{'type':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
+class ContactName extends React.PureComponent<{'contactableType':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
     render() {
-        if(this.props.type === EL.Constants.INDIVIDUAL){
+
+        if(this.props.contactableType === EL.Constants.INDIVIDUAL){
             return <div>
                     <ReadOnlyComponent label="Full Name" value={fullname(this.props as EL.Contact)} />
 
-                    <InputField name="firstName" label="First Name" type="text" required/>
-                    <InputField name="middleName" label="Middle Name" type="text" />
-                    <InputField name="surname" label="Surname" type="text" required />
+                    <InputField name="contactable.title" label="Title" type="text" />
+                    <InputField name="contactable.firstName" label="First Name" type="text" required/>
+                    <InputField name="contactable.middleName" label="Middle Name" type="text" />
+                    <InputField name="contactable.surname" label="Surname" type="text" required />
+                    <InputField name="contactable.preferredName" label="Title" type="text" />
             </div>
         }
         return <InputField name="name" label="Name" type="text" required />
@@ -204,25 +213,30 @@ class ContactName extends React.PureComponent<{'type':string; 'firstName':string
     }
 }
 const ConnectedContactName = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
-    return props.selector(state, 'type', 'firstName', 'middleName', 'surname');
+    return props.selector(state, 'contactableType', 'contactable.firstName', 'contactable.middleName', 'contactable.surname');
 })(ContactName as any);
 
 
-class IndividualFields extends React.PureComponent<{'type':string}> {
+class ContactTypeFields extends React.PureComponent<{'contactableType':string}> {
     render() {
-        if(this.props.type === EL.Constants.INDIVIDUAL){
+        if(this.props.contactableType === EL.Constants.INDIVIDUAL){
             return <React.Fragment>
-                    <DatePicker name="dateOfBirth" label="Date of Birth" defaultView="year"/>
-                    <ContactCapacity required={false}/>
+                    <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="year"/>
+                    <DatePicker name="contactable.dateOfDeath" label="Date of Death" defaultView="year"/>
+            </React.Fragment>
+        }
+        if(this.props.contactableType === EL.Constants.COMPANY){
+             return <React.Fragment>
+                <InputField type="text" name="contactable.companyNumber" label="Company Number"/>
             </React.Fragment>
         }
         return false;
 
     }
 }
-const ConnectedIndividualFields = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
-    return {type: props.selector(state, 'type')};
-})(IndividualFields as any);
+const ConnectedContactTypeFields = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
+    return {contactableType: props.selector(state, 'contactableType')};
+})(ContactTypeFields as any);
 
 interface ContactFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
@@ -241,13 +255,13 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <SelectField name="type" label="Type" options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.ORGANISATION, text: 'Organisation'}]} required />
+                <SelectField name='contactableType' label='Type' options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.COMPANY, text: 'Company'}]} required prompt />
 
                 <ConnectedContactName selector={formValueSelector(this.props.form)} />
 
                 <InputField name="email" label="Email" type="email" />
                 <InputField name="phone" label="Phone" type="text" />
-                <ConnectedIndividualFields selector={formValueSelector(this.props.form)} />
+                <ConnectedContactTypeFields selector={formValueSelector(this.props.form)} />
                 <AgentSelector />
                 <DocumentList name="files" label="Documents" />
                 <CheckboxField name="amlcftComplete" label="AML/CFT Complete" />

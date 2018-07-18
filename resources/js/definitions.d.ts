@@ -5,8 +5,8 @@ declare global {
 
     namespace EL {
         export const enum Constants {
-            INDIVIDUAL = 'individual',
-            ORGANISATION = 'organisation'
+            INDIVIDUAL = 'Individual',
+            COMPANY = 'Company'
         }
 
         interface User {
@@ -99,22 +99,37 @@ declare global {
             files: any;
         }
 
+
+        interface ContactIndividual {
+            firstName: string;
+            middleName?: string;
+            surname: string;
+            title?: string;
+            preferredName?: string;
+            dateOfBirth?: string;
+            dateOfDeath?: string;
+            occupation?: string;
+            gender?: string;
+            maritalStatus?: string;
+            countryOfCitizenship?: string;
+        }
+
+        interface ContactCompany {
+            companyNumber: string;
+        }
+
         interface Contact {
             id?: number;
-            title?: string;
             name: string;
+            contactable: ContactIndividual | ContactCompany;
+            title?: string;
             email: string;
             phone: string;
-            firstName: string;
-            middleName: string;
-            surname: string;
             agentId?: string;
-            dateOfBirth?: string;
-            capacity?: string;
             amlcftComplete: boolean;
-            type: EL.Constants.INDIVIDUAL | EL.Constants.ORGANISATION;
             files: Document[]
-            accessTokens?: AccessToken[]
+            accessTokens?: AccessToken[];
+            contactableType: string;
         }
 
         interface Office {

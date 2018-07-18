@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\ContactFile;
 use App\File;
 use App\Contact;
+use App\ContactIndividual;
+use App\ContactCompany;
 use App\AccessToken;
 use Illuminate\Http\Request;
 use App\Library\Encryption;
@@ -25,7 +27,7 @@ class ContactController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $contacts = Contact::where('organisation_id', $orgId)->with('addresses') ->orderBy('name', 'asc')->get();
+        $contacts = Contact::where('organisation_id', $orgId)->with('contactable') ->orderBy('name', 'asc')->get();
 
         return $contacts;
     }
@@ -40,7 +42,7 @@ class ContactController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('files.file', 'accessTokens')->first();
+        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('contactable', 'files.file', 'accessTokens')->first();
 
         if (!$contact) {
             abort(404);
@@ -50,7 +52,7 @@ class ContactController extends Controller
         $contact['files'] = array_map(function ($i) {
             return $i['file'];
         }, $contact['files']);
-        $contact['date_of_birth'] = $contact['date_of_birth'] ? Carbon::parse($contact['date_of_birth'])->format('d M Y') : null;
+
 
         return $contact;
     }
@@ -69,29 +71,26 @@ class ContactController extends Controller
         $data = $request->allJson();
 
         $orgId = $user->organisation_id;
-        if($data['agent_id']){
+        if(isset($data['agent_id'])){
             $agent = Contact::where('organisation_id', $orgId)->where('id', $data['agent_id'])->first();
             if(!$agent) {
                 abort(403);
             }
         }
 
+        $contact = Contact::create(array_merge([
+            'organisation_id' => $user->organisation_id
+        ], $data));
 
-        $contact = Contact::create([
-            'organisation_id' => $user->organisation_id,
-            'name'            => $data['name']  ?? '',
-            'first_name'      => $data['first_name'],
-            'middle_name'     => $data['middle_name'] ?? '',
-            'surname'         => $data['surname'],
-            'type'            => $data['type'] ?? 'individual',
-            'name'            => $data['name'],
-            'email'           => $data['email'] ?? null,
-            'phone'           => $data['phone'] ?? '',
-            'capacity'        => $data['capacity'] ?? null,
-            'date_of_birth'   => $data['date_of_birth'] ?? null,
-            'agent_id'        => $data['agent_id'] ?? null,
-            'amlcft_complete' => $data['amlcft_complete'] ?? null
-        ]);
+
+        if($data['contactable_type'] == 'Individual') {
+            ContactIndividual::create($data['contactable'])->contact()->save($contact);
+        }
+
+        if($data['contactable_type'] == 'Company') {
+             ContactCompany::create($data['contactable'])->contact()->save($contact);
+        }
+
 
 
         $files = $request->file('file', []);
@@ -125,20 +124,19 @@ class ContactController extends Controller
             }
         }
 
-        $contact->update([
-            'name'            => $data['name']  ?? '',
-            'first_name'      => $data['first_name']  ?? '',
-            'middle_name'     => $data['middle_name'] ?? '',
-            'surname'         => $data['surname']  ?? '',
-            'type'            => $data['type'] ?? 'individual',
-            'name'            => $data['name']  ?? '',
-            'email'           => $data['email']?? null,
-            'phone'           => $data['phone'] ?? '',
-            'capacity'        => $data['capacity'] ?? null,
-            'date_of_birth'   => $data['date_of_birth'] ?? null,
-            'agent_id'        => $data['agent_id'] ?? null,
-            'amlcft_complete' => $data['amlcft_complete'] ?? null
-        ]);
+        $contact->update(array_merge([
+            'organisation_id' => $user->organisation_id
+        ], $data));
+
+        if($data['contactable_type'] == 'Individual') {
+            ContactIndividual::create($data['contactable'])->contact()->save($contact);
+        }
+
+        if($data['contactable_type'] == 'Company') {
+             ContactCompany::create($data['contactable'])->contact()->save($contact);
+        }
+
+
         $files = $request->file('file', []);
 
         foreach ($files as $file) {
@@ -151,7 +149,6 @@ class ContactController extends Controller
         }, $data['existing_files'] ?? []);
 
         # USE A PIVOT AND sync() INSTEAD@!!!!!!!!!
-
         foreach($contact->files as $file) {
             if(!in_array($file->file_id, $existingFileIds)){
                 $file->delete();

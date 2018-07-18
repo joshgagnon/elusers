@@ -40,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'User' => \App\User::class,
             'Contact' => \App\Contact::class,
+            'Individual' => \App\ContactIndividual::class,
+            'Company' => \App\ContactCompany::class
         ]);
 
 

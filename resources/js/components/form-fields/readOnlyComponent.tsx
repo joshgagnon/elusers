@@ -11,8 +11,7 @@ interface IInputFieldComponentProps {
 
 export default class InputFieldComponent extends React.PureComponent<IInputFieldComponentProps> {
     render() {
-        return <Row>
-            <FormGroup>
+        return <FormGroup>
                 <Col componentClass={ControlLabel} md={3}>
                     {this.props.label}
                 </Col>
@@ -22,6 +21,5 @@ export default class InputFieldComponent extends React.PureComponent<IInputField
                 </Col>
 
             </FormGroup>
-            </Row>
     }
 }

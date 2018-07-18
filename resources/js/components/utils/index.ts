@@ -4,8 +4,13 @@ export const DATE_FORMAT = 'D MMM YYYY';
 
 // Infer the users full name
 export function fullname(user: EL.User | EL.Contact) {
-    if(!('type' in user) ||  user.type === EL.Constants.INDIVIDUAL){
-        return [user.title, user.firstName, user.middleName, user.surname].filter(x => !!x).join(' ');
+    if(!('contactable' in user)){
+         return [user.title, user.firstName, user.middleName, user.surname].filter(x => !!x).join(' ');
+    }
+    else if(user.contactableType === EL.Constants.INDIVIDUAL){
+        console.log(user)
+        const contactable = user.contactable as EL.ContactIndividual;
+        return [contactable.title, contactable.firstName, contactable.middleName, contactable.surname].filter(x => !!x).join(' ');
     }
     return user.name;
 }

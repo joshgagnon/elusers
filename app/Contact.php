@@ -8,20 +8,11 @@ use Carbon\Carbon;
 class Contact extends Model
 {
 
-    protected $fillable = ['name', 'email', 'phone', 'organisation_id', 'first_name', 'middle_name', 'surname', 'type', 'metadata', 'agent_id', 'date_of_birth', 'capacity', 'amlcft_complete'];
+    protected $fillable = ['name', 'email', 'phone', 'organisation_id',  'metadata', 'agent_id', 'amlcft_complete'];
 
     public static $validationRules = [
     ];
-    protected $dates = [
-        'date_of_birth',
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
 
-    protected $casts = [
-        'date_of_birth' => 'datetime:d M Y',
-    ];
     /**
      * Organisation relationship: a contact belongs to an organisation.
      *
@@ -57,33 +48,19 @@ class Contact extends Model
         return $this->morphMany(AccessToken::class, 'model');
     }
 
-    public function setDateOfBirthAttribute($value)
-    {
-        $this->attributes['date_of_birth'] = $this->parseDate($value);
-    }
-/*
-    public function getDateOfBirthAttribute()
-    {
-        return $this->parseDate($value);
-    }
-*/
-    public function parseDate($date=null)
-    {
-        if(isset($date))
-        {
-            try{
-                return Carbon::createFromFormat('d M Y',$date);
-            }
-            catch (\Exception $e) {
-                return Carbon::parse($date);
-            }
-        }
-        return null;
-    }
-
 
     public function tokenExtras() {
         $this->load('addresses');
         return $this;
     }
+
+
+    public function contactable()
+    {
+        return $this->morphTo();
+    }
+
+
 }
+
+
