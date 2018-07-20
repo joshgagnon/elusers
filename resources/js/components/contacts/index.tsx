@@ -22,7 +22,7 @@ interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
 }
 
-const HEADINGS = ['ID', 'Name', 'contactableType', 'Email', 'Phone', 'Actions'];
+const HEADINGS = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Actions'];
 
 @ContactsHOC()
 @PanelHOC<ContactsProps>('Contacts', props => props.contacts)

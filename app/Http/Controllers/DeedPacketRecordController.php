@@ -48,7 +48,7 @@ class DeedPacketRecordController extends Controller
      */
     public function create(Request $request)
     {
-        $this->validate($request, DeedPacketRecord::$validationRules);
+        //$this->validate($request, DeedPacketRecord::$validationRules);
 
         $user = $request->user();
         $data = $request->allJson();
@@ -86,7 +86,7 @@ class DeedPacketRecordController extends Controller
      */
     public function update(Request $request, DeedPacketRecord $deedRecord)
     {
-        $this->validate($request, DeedPacketRecord::$validationRules);
+        //$this->validate($request, DeedPacketRecord::$validationRules);
 
         $data = $request->allJson();
         $deedRecord->update([
