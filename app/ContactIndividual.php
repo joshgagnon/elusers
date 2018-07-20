@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class ContactIndividual extends Model
 {
 
-    protected $fillable = ['first_name', 'middle_name', 'surname', 'date_of_birth', 'date_of_death', 'occupation', 'gender', 'marital_status', 'county_of_citizenship', 'preferred_name'];
+    protected $fillable = ['first_name', 'middle_name', 'surname', 'date_of_birth', 'date_of_death', 'occupation', 'gender', 'marital_status', 'country_of_citizenship', 'preferred_name'];
 
     public static $validationRules = [
     ];

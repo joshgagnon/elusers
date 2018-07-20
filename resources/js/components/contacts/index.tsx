@@ -24,6 +24,35 @@ interface ContactsProps {
 
 const HEADINGS = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Actions'];
 
+
+
+/*
+Accountant
+ Attorney
+ Authorised Person
+ Beneficiary
+ Beneficial Owner
+ Child
+ De Facto Partner
+ Director
+ Employee
+ Employer
+ Grandchild
+ Grandparent
+ Guardian
+ Lawyer
+ Parent
+ Holding Company
+ Partner
+ Sibling
+ Shareholder
+ Spouse
+ Subsidiary
+ Trustee
+
+*/
+
+
 @ContactsHOC()
 @PanelHOC<ContactsProps>('Contacts', props => props.contacts)
 export class Contacts extends React.PureComponent<ContactsProps> {
@@ -84,6 +113,14 @@ const IndividualDisplayFields = (props: {contact: EL.ContactIndividual}) => {
     <dd>{ contact.dateOfBirth }</dd>
     <dt>Date of Death</dt>
     <dd>{ contact.dateOfDeath }</dd>
+    <dt>Occupation</dt>
+    <dd>{ contact.occupation }</dd>
+
+    <dt>Country of Citizenship</dt>
+    <dd>{ contact.countryOfCitizenship }</dd>
+    <dt>Marital Status</dt>
+    <dd>{ contact.maritalStatus }</dd>
+
 
     </React.Fragment>
 }
@@ -223,6 +260,11 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
             return <React.Fragment>
                     <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="year"/>
                     <DatePicker name="contactable.dateOfDeath" label="Date of Death" defaultView="year"/>
+                    <InputField name="contactable.occupation" label="Occupation" type="text" />
+                    <InputField name="contactable.countryOfCitizenship" label="Country of Citizenship" type="text" />
+                    <SelectField name="contactable.maritalStatus" label="Marital Status" options={
+                        ['', 'single', 'de facto', 'married', 'divorced', 'widow(er)'].map(k => ({text: k, value: k}))
+                        } />
             </React.Fragment>
         }
         if(this.props.contactableType === EL.Constants.COMPANY){

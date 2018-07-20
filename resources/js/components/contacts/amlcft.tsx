@@ -28,10 +28,10 @@ const AMLCFTFields = [
     () => {
         return <React.Fragment>
             <h4 className={"text-center"}>Name & Date of Birth</h4>
-            <InputField name="firstName" label="First Name" type="text" required/>
-            <InputField name="middleName" label="Middle Name" type="text" />
-            <InputField name="surname" label="Surname" type="text" required />
-            <DatePicker name="dateOfBirth" label="Date of Birth" defaultView="decade" />
+            <InputField name="contactable.firstName" label="First Name" type="text" required/>
+            <InputField name="contactable.middleName" label="Middle Name" type="text" />
+            <InputField name="contactable.surname" label="Surname" type="text" required />
+            <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
         </React.Fragment>
     },
 
@@ -162,7 +162,7 @@ class AMLCFTPage4 extends React.PureComponent<InjectedFormProps & { previousPage
       forceUnregisterOnUnmount: true,
 }) as any)
 @(connect((state: EL.State) => {
-return formValueSelector(EL.FormNames.EDIT_CONTACT_AMLCFT_FORM)(state, 'firstName', 'middleName', 'surname')
+    return formValueSelector(EL.FormNames.EDIT_CONTACT_AMLCFT_FORM)(state, 'contactableType', 'contactable.firstName', 'contactable.middleName', 'contactable.surname')
 }) as any)
 class AMLCFTPage5 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void; capacity: string }> {
     render(){

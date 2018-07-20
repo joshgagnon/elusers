@@ -51,6 +51,7 @@ class Contact extends Model
 
     public function tokenExtras() {
         $this->load('addresses');
+        $this->load('contactable');
         return $this;
     }
 
