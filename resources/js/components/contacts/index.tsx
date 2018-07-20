@@ -205,7 +205,7 @@ class ContactName extends React.PureComponent<{'contactableType':string; 'firstN
                     <InputField name="contactable.firstName" label="First Name" type="text" required/>
                     <InputField name="contactable.middleName" label="Middle Name" type="text" />
                     <InputField name="contactable.surname" label="Surname" type="text" required />
-                    <InputField name="contactable.preferredName" label="Title" type="text" />
+                    <InputField name="contactable.preferredName" label="Perferred Name" type="text" />
             </div>
         }
         return <InputField name="name" label="Name" type="text" required />
