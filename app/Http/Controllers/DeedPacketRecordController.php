@@ -34,15 +34,15 @@ class DeedPacketRecordController extends Controller
             abort(404);
         }
         $record = $record[0];
-        $record->document_date = $record->document_date ? Carbon::parse($record->document_date)->format('d M Y') : null;
-        $record->destruction_date = $record->destruction_date ? Carbon::parse($record->destruction_date)->format('d M Y') : null;
+        //$record->document_date = $record->document_date ? Carbon::parse($record->document_date)->format('d M Y') : null;
+        //$record->destruction_date = $record->destruction_date ? Carbon::parse($record->destruction_date)->format('d M Y') : null;
 
         return response()->json($record, 200);
     }
 
     /**
-     * Create a deed packet record.
      *
+     * Create a deed packet record.
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */

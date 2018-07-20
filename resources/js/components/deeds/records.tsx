@@ -254,7 +254,7 @@ export class DeedRecord extends React.PureComponent<DeedRecordProps> {
                     <dd>{deedRecord.matterId}</dd>
 
                     <dt>Destruction Date</dt>
-                    <dd>{deedRecord.destructionDate || '—'}</dd>
+                    <dd>{deedRecord.destructionDate || 'DND'}</dd>
 
                     <dt>Location</dt>
                     <dd>{(offices.find(office => office.id === deedRecord.officeLocationId) || { name: '—' }).name}</dd>

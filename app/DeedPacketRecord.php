@@ -12,7 +12,7 @@ class DeedPacketRecord extends Model
 
     protected $fillable = ['deed_packet_id', 'created_by_user_id', 'document_name', 'document_date', 'destruction_date', 'parties', 'matter_id', 'archive_date', 'office_location_id', 'organisation_id', 'notes'];
 
-    protected $dates = ['document_date'];
+    protected $dates = ['document_date', 'destruction_date'];
 
     public static $validationRules = [
         'deed_packet_id'     => 'required|exists:deed_packets,id',
@@ -22,6 +22,11 @@ class DeedPacketRecord extends Model
         'matter_id'          => 'required',
         'destruction_date'   => 'nullable|date',
         'office_location_id' => 'nullable|exists:office_locations,id',
+    ];
+
+    protected $casts = [
+        'document_date' => 'datetime:d M Y',
+        'destruction_date' => 'datetime:d M Y',
     ];
 
     /**
