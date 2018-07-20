@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class Contact extends Model
 {
 
-    protected $fillable = ['name', 'email', 'phone', 'organisation_id',  'metadata', 'agent_id', 'amlcft_complete'];
+    protected $fillable = ['name', 'email', 'phone', 'organisation_id',  'metadata', 'agent_id', 'amlcft_complete', 'bank_account_number', 'ird_number'];
 
     public static $validationRules = [
     ];

@@ -151,6 +151,7 @@ class ContactController extends Controller
             return $acc;
         }, []);
 
+        $this->removeInverseRelations($contact->id);
         $contact->relationshipsSyncable()->sync($relations);
         $this->inverseRelationships($contact->id, $data['relationships'] ?? []);
 
@@ -284,8 +285,7 @@ class ContactController extends Controller
         ]);
     }
 
-    private function inverseRelationships($contactId, $relationships) {
-        $opposites = [
+    public $opposites = [
             'Employee' => 'Employer',
             'Employer' => 'Employee',
             'Parent' => 'Child',
@@ -297,15 +297,23 @@ class ContactController extends Controller
             'Sibling' => 'Sibling',
             'Spouse' => 'Spouse',
             'Parent Company' => 'Subsidary',
-            'Subsidary' => 'Parent Company'
+            'Subsidary' => 'Parent Company',
+            'Trustee' => 'Trustee Of',
+            'Trustee Of' => 'Trustee'
         ];
+
+    private function removeInverseRelations($contactId) {
+        ContactRelationship::where('second_contact_id', $contactId)->whereIn('relationship_type', array_keys($this->opposites))->delete();
+    }
+
+    private function inverseRelationships($contactId, $relationships) {
         foreach($relationships as $relationship) {
-            if(isset($opposites[$relationship['relationship_type']])){
+            if(isset($this->opposites[$relationship['relationship_type']])){
 
                 ContactRelationship::firstOrCreate([
                     'first_contact_id' => $relationship['second_contact_id'],
                     'second_contact_id' => $contactId,
-                    'relationship_type' => $opposites[$relationship['relationship_type']]
+                    'relationship_type' => $this->opposites[$relationship['relationship_type']]
                 ]);
             }
         }

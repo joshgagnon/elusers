@@ -6,7 +6,8 @@ declare global {
     namespace EL {
         export const enum Constants {
             INDIVIDUAL = 'Individual',
-            COMPANY = 'Company'
+            COMPANY = 'Company',
+            TRUST = 'Trust'
         }
 
         interface User {
@@ -132,6 +133,8 @@ declare global {
             title?: string;
             email: string;
             phone: string;
+            irdNumber?: string;
+            bankAccountNumber?: string;
             agentId?: string;
             amlcftComplete: boolean;
             files: Document[]

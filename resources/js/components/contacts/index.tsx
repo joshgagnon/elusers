@@ -33,7 +33,7 @@ export class Contacts extends React.PureComponent<ContactsProps> {
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/contacts/create" className="btn btn-default"><Icon iconName="plus" />Create Contact</Link>
+                    <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
                 </ButtonToolbar>
 
                 <Table headings={HEADINGS} lastColIsActions>
@@ -157,12 +157,19 @@ export class Contact extends React.PureComponent<ContactProps> {
 
                 <dl>
                     <dt>Email</dt>
-                    <dd>{contact.email}</dd>
+                    <dd>{contact.email || '-'}</dd>
 
                     <dt>Phone</dt>
-                    <dd>{contact.phone}</dd>
-                    <dt>Agent</dt>
+                    <dd>{contact.phone || '-'}</dd>
 
+                    <dt>Bank Account Number</dt>
+                    <dd>{contact.bankAccountNumber || '-'}</dd>
+
+                    <dt>IRD Number</dt>
+                    <dd>{contact.irdNumber  || '-' }</dd>
+
+                    <br />
+                    { contact.agentId && <dt>Agent</dt> }
                     { contact.agentId && <dd><Agent contactId={contact.agentId} /></dd> }
                     { individual  && <IndividualDisplayFields contact={contact.contactable as EL.ContactIndividual} /> }
 
@@ -261,13 +268,24 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                 console.log(this.props); 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <SelectField name='contactableType' label='Type' options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.COMPANY, text: 'Company'}]} required prompt />
+                <SelectField name='contactableType' label='Type' options={[
+                    {value: EL.Constants.INDIVIDUAL, text: 'Individual'},
+                    {value: EL.Constants.COMPANY, text: 'Company'},
+                    {value: EL.Constants.TRUST, text: 'Trust'}
+
+                    ]} required prompt />
 
                 <ConnectedContactName selector={formValueSelector(this.props.form)} />
+                <ConnectedContactTypeFields selector={formValueSelector(this.props.form)} />
+
+
 
                 <InputField name="email" label="Email" type="email" />
                 <InputField name="phone" label="Phone" type="text" />
-                <ConnectedContactTypeFields selector={formValueSelector(this.props.form)} />
+                <InputField name="bankAccountNumber" label="Bank Account Number" type="text" />
+                <InputField name="irdNumber" label="IRD Number" type="text" />
+
+
                 <ContactSelector />
                 <Relationships />
                 <DocumentList name="files" label="Documents" />
