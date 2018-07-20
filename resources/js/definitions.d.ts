@@ -115,8 +115,19 @@ declare global {
             countryOfCitizenship?: string;
         }
 
+        interface ContactTrust {
+            trustType: string;
+            enhancedCcdRequired?: string;
+            enhancedCddReason?: string;
+            sourceOfFunds?: string;
+
+        }
+
         interface ContactCompany {
             companyNumber: string;
+            enhancedCcdRequired?: string;
+            enhancedCddReason?: string;
+            sourceOfFunds?: string;
         }
 
         interface ContactRelationship {
@@ -129,7 +140,7 @@ declare global {
         interface Contact {
             id?: number;
             name: string;
-            contactable: ContactIndividual | ContactCompany;
+            contactable: ContactIndividual | ContactCompany | ContactTrust;
             title?: string;
             email: string;
             phone: string;

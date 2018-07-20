@@ -94,6 +94,14 @@ const IndividualDisplayFields = (props: {contact: EL.ContactIndividual}) => {
     <dt>Marital Status</dt>
     <dd>{ contact.maritalStatus }</dd>
 
+    </React.Fragment>
+}
+
+const TrustDisplayFields = (props: {contact: EL.ContactTrust}) => {
+    const { contact } = props;
+    return <React.Fragment>
+     <dt>Type</dt>
+    <dd>{ contact.trustType}</dd>
 
     </React.Fragment>
 }
@@ -142,6 +150,7 @@ export class Contact extends React.PureComponent<ContactProps> {
     render() {
         const contact = this.props.contact.data;
         const individual = contact.contactableType === EL.Constants.INDIVIDUAL;
+        const trust = contact.contactableType === EL.Constants.TRUST;
         const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
         return (
             <div>
@@ -172,6 +181,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                     { contact.agentId && <dt>Agent</dt> }
                     { contact.agentId && <dd><Agent contactId={contact.agentId} /></dd> }
                     { individual  && <IndividualDisplayFields contact={contact.contactable as EL.ContactIndividual} /> }
+                    { trust && <TrustDisplayFields contact={contact.contactable as EL.ContactTrust} /> }
 
                      <br/>
                     <dt>Relationships</dt>
@@ -207,7 +217,6 @@ class ContactName extends React.PureComponent<{'contactableType':string; 'firstN
         if(this.props.contactableType === EL.Constants.INDIVIDUAL){
             return <div>
                     <ReadOnlyComponent label="Full Name" value={fullname(this.props as EL.Contact)} />
-
                     <InputField name="contactable.title" label="Title" type="text" />
                     <InputField name="contactable.firstName" label="First Name" type="text" required/>
                     <InputField name="contactable.middleName" label="Middle Name" type="text" />
@@ -240,6 +249,13 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
         if(this.props.contactableType === EL.Constants.COMPANY){
              return <React.Fragment>
                 <InputField type="text" name="contactable.companyNumber" label="Company Number"/>
+            </React.Fragment>
+        }
+        if(this.props.contactableType === EL.Constants.TRUST){
+             return <React.Fragment>
+                    <SelectField name="contactable.trustType" label="Trust Type" prompt options={
+                        ['Discretionary', 'Fixed With 10 or Fewer Beneficiaries', 'Charitable', 'Other'].map(k => ({text: k, value: k}))
+                        } />
             </React.Fragment>
         }
         return false;
@@ -317,14 +333,14 @@ const validateContact = (values: any) => {
        errors.contactable = validate({
             firstName: { name: 'First Name', required: true },
             surname: { name: 'Surname', required: true },
-        }, values.contactable);
+        }, values.contactable || {});
    }
    else{
        errors = {...errors, ...validate({
             firstName: { name: 'Name', required: true }
        }, values) };
    }
-   errors.relationships =  values.relationships.map((relationship: EL.ContactRelationship) => {
+   errors.relationships =  (values.relationships || []).map((relationship: EL.ContactRelationship) => {
        return validate({
                secondContactId: { name: 'Name', required: true },
                relationshipType: { name: 'Type', required: true }

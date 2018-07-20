@@ -41,7 +41,8 @@ class AppServiceProvider extends ServiceProvider
             'User' => \App\User::class,
             'Contact' => \App\Contact::class,
             'Individual' => \App\ContactIndividual::class,
-            'Company' => \App\ContactCompany::class
+            'Company' => \App\ContactCompany::class,
+            'Trust' => \App\ContactTrust::class
         ]);
 
 

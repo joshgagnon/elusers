@@ -6,6 +6,7 @@ use App\File;
 use App\Contact;
 use App\ContactIndividual;
 use App\ContactCompany;
+use App\ContactTrust;
 use App\ContactRelationship;
 use App\AccessToken;
 use Illuminate\Http\Request;
@@ -88,11 +89,15 @@ class ContactController extends Controller
 
 
         if($data['contactable_type'] == 'Individual') {
-            ContactIndividual::create($data['contactable'])->contact()->save($contact);
+            ContactIndividual::create($data['contactable'] ?? [])->contact()->save($contact);
         }
 
         if($data['contactable_type'] == 'Company') {
-             ContactCompany::create($data['contactable'])->contact()->save($contact);
+             ContactCompany::create($data['contactable'] ?? [])->contact()->save($contact);
+        }
+
+        if($data['contactable_type'] == 'Trust') {
+             ContactTrust::create($data['contactable'] ?? [])->contact()->save($contact);
         }
 
         $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
@@ -139,11 +144,15 @@ class ContactController extends Controller
         ], $data));
 
         if($data['contactable_type'] == 'Individual') {
-            ContactIndividual::create($data['contactable'])->contact()->save($contact);
+            ContactIndividual::create($data['contactable'] ?? [])->contact()->save($contact);
         }
 
         if($data['contactable_type'] == 'Company') {
-             ContactCompany::create($data['contactable'])->contact()->save($contact);
+             ContactCompany::create($data['contactable'] ?? [])->contact()->save($contact);
+        }
+
+        if($data['contactable_type'] == 'Trust') {
+             ContactTrust::create($data['contactable'] ?? [])->contact()->save($contact);
         }
 
         $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {

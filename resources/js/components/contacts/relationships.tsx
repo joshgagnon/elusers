@@ -33,7 +33,8 @@ const RELATIONSHIP_TYPES = [
     "Shareholder",
     "Spouse",
     "Subsidiary",
-    "Trustee"
+    "Trustee",
+    "Trustee of"
 ];
 
 

@@ -15,6 +15,4 @@ class ContactRelationship extends Pivot
         return $this->belongsTo(Contact::class, 'second_contact_id');
     }
 
-
-
 }
