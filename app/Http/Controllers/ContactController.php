@@ -6,6 +6,7 @@ use App\File;
 use App\Contact;
 use App\ContactIndividual;
 use App\ContactCompany;
+use App\ContactRelationship;
 use App\AccessToken;
 use Illuminate\Http\Request;
 use App\Library\Encryption;
@@ -14,6 +15,9 @@ use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+
+
+
 
 class ContactController extends Controller
 {
@@ -42,7 +46,7 @@ class ContactController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('contactable', 'files.file', 'accessTokens')->first();
+        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('contactable', 'files.file', 'accessTokens', 'relationships', 'relationships.contact', 'relationships.contact.contactable')->first();
 
         if (!$contact) {
             abort(404);
@@ -91,7 +95,13 @@ class ContactController extends Controller
              ContactCompany::create($data['contactable'])->contact()->save($contact);
         }
 
+        $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
+            $acc[$i['second_contact_id']] = $i;
+            return $acc;
+        }, []);
 
+        $contact->relationshipsSyncable()->sync($relations);
+        $this->inverseRelationships($contact->id, $data['relationships'] ?? []);
 
         $files = $request->file('file', []);
         foreach ($files as $file) {
@@ -136,6 +146,13 @@ class ContactController extends Controller
              ContactCompany::create($data['contactable'])->contact()->save($contact);
         }
 
+        $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
+            $acc[$i['second_contact_id']] = $i;
+            return $acc;
+        }, []);
+
+        $contact->relationshipsSyncable()->sync($relations);
+        $this->inverseRelationships($contact->id, $data['relationships'] ?? []);
 
         $files = $request->file('file', []);
 
@@ -265,6 +282,34 @@ class ContactController extends Controller
         return view('index')->with([
             'loadData' => json_encode($loadData)
         ]);
+    }
+
+    private function inverseRelationships($contactId, $relationships) {
+        $opposites = [
+            'Employee' => 'Employer',
+            'Employer' => 'Employee',
+            'Parent' => 'Child',
+            'Child' => 'Parent',
+            'De Facto Partner' => 'De Facto Partner',
+            'Grandparent' => 'Grandchild',
+            'Grandchild' => 'Grandparent',
+            'Partner' => 'Partner',
+            'Sibling' => 'Sibling',
+            'Spouse' => 'Spouse',
+            'Parent Company' => 'Subsidary',
+            'Subsidary' => 'Parent Company'
+        ];
+        foreach($relationships as $relationship) {
+            if(isset($opposites[$relationship['relationship_type']])){
+
+                ContactRelationship::firstOrCreate([
+                    'first_contact_id' => $relationship['second_contact_id'],
+                    'second_contact_id' => $contactId,
+                    'relationship_type' => $opposites[$relationship['relationship_type']]
+                ]);
+            }
+        }
+
     }
 
 }

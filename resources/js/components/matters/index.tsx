@@ -15,7 +15,7 @@ import { push } from 'react-router-redux';
 import { fullname, name, guessName } from '../utils';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import Referrer from './referrer';
-import { ContactSelector } from '../contacts';
+import { ContactSelector } from '../contacts/contactSelector';
 
 
 interface  MattersProps {

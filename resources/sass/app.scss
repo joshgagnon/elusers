@@ -347,3 +347,14 @@ input.checkbox.form-control {
     overflow: auto;
 }
 
+.rw-dropdown-list{
+
+    .rw-popup{
+        z-index:20;
+    }
+}
+
+.form-horizontal .form-group.naked {
+    margin-left: 0;
+    margin-right: 0;
+}

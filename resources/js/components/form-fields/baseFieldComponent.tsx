@@ -17,6 +17,29 @@ export interface IBaseFieldComponentProps extends IFieldComponentProps {
     help?: JSX.Element;
 }
 
+export class NakedBaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
+    validationState(touched: boolean, error: string) {
+        if (!touched) {
+            return null;
+        }
+
+        return error ? 'error' : 'success';
+    }
+
+    render() {
+        const { label, meta: { touched, error } } = this.props;
+        const displayError = touched && error;
+        return (
+            <FormGroup validationState={this.validationState(touched, error)} className={ 'naked '  + (this.props.required ? 'required' : '')}>
+                    {this.props.children}
+                    { displayError && <HelpBlock>{error}</HelpBlock>}
+                    <HelpBlock>{this.props.help}</HelpBlock>
+            </FormGroup>
+     );
+    }
+}
+
+
 export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
     validationState(touched: boolean, error: string) {
         if (!touched) {

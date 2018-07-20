@@ -118,6 +118,13 @@ declare global {
             companyNumber: string;
         }
 
+        interface ContactRelationship {
+            relationshipType: string;
+            startDate?: string;
+            endDate?: string;
+            contact?: Contact;
+        }
+
         interface Contact {
             id?: number;
             name: string;
@@ -129,6 +136,7 @@ declare global {
             amlcftComplete: boolean;
             files: Document[]
             accessTokens?: AccessToken[];
+            relationships?: ContactRelationship[];
             contactableType: string;
         }
 

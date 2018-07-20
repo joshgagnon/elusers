@@ -12,7 +12,8 @@ import CheckboxComponent from './checkboxComponent';
 
 interface FieldProps {
     name: string;
-    label: string;
+    label?: string;
+    naked?: boolean;
     showRemoveButton?: boolean;
     onRemoveButtonClick?: () => void;
     required?: boolean;

@@ -62,6 +62,22 @@ class Contact extends Model
     }
 
 
+    public function relationshipsSyncable()
+    {
+        return $this->belongsToMany('App\Contact', 'contact_relationships', 'first_contact_id', 'second_contact_id')->using('App\ContactRelationship');
+    }
+
+    public function relationships()
+    {
+        return $this->hasMany(ContactRelationship::class, 'first_contact_id');
+    }
+
+    public function relationshipInverse()
+    {
+        return $this->hasMany(ContactRelationship::class, 'second_contact_id');
+    }
+
+
 }
 
 

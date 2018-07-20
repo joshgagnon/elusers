@@ -16,41 +16,14 @@ import { createNotification, createResource, updateResource, deleteResource, con
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields } from '../address/form';
 import { ContactCapacity } from './amlcft';
-
+import { Relationships } from './relationships';
+import { ContactSelector } from './contactSelector';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
 }
 
 const HEADINGS = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Actions'];
-
-
-
-/*
-Accountant
- Attorney
- Authorised Person
- Beneficiary
- Beneficial Owner
- Child
- De Facto Partner
- Director
- Employee
- Employer
- Grandchild
- Grandparent
- Guardian
- Lawyer
- Parent
- Holding Company
- Partner
- Sibling
- Shareholder
- Spouse
- Subsidiary
- Trustee
-
-*/
 
 
 @ContactsHOC()
@@ -192,9 +165,17 @@ export class Contact extends React.PureComponent<ContactProps> {
 
                     { contact.agentId && <dd><Agent contactId={contact.agentId} /></dd> }
                     { individual  && <IndividualDisplayFields contact={contact.contactable as EL.ContactIndividual} /> }
-                    <dt>AML/CFT Complete</dt>
 
+                     <br/>
+                    <dt>Relationships</dt>
+                    { (contact.relationships || []).map((relationship: EL.ContactRelationship) => {
+                        return <dd><strong><Link to={`/contacts/${relationship.contact.id}`}>{ fullname(relationship.contact) }</Link></strong> is a <strong>{ relationship.relationshipType}</strong></dd>
+
+                    }) }
+                    <br/>
+                    <dt>AML/CFT Complete</dt>
                     <dd>{ contact.amlcftComplete ? 'Yes' : 'No'}</dd>
+                     <br/>
                     <dt>Documents</dt>
                     <dd>{ (contact.files || []).map((file, i) => {
                         return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
@@ -211,25 +192,7 @@ export class Contact extends React.PureComponent<ContactProps> {
     }
 }
 
-@ContactsHOC()
-class AgentSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Contact[]>; name?: string, label?: string}> {
-    render() {
-        if(!this.props.contacts.data){
-            return false;
-        }
-        const renderName = contact => {
-            if(!contact){
-                return "None";
-            }
-           const title = contact.type === EL.Constants.INDIVIDUAL ? fullname(contact) : contact.name;
-           return title;
-       };
-        return <DropdownListField name={this.props.name || "agentId"} label={this.props.label || "Agent"} placeholder="None" data={[...this.props.contacts.data]} textField={renderName} valueField='id' />
-    }
-}
 
-
-export const ContactSelector = AgentSelector;
 
 class ContactName extends React.PureComponent<{'contactableType':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
     render() {
@@ -295,6 +258,7 @@ interface CreateContactProps {
 class ContactForm extends React.PureComponent<ContactFormProps> {
 
     render() {
+                console.log(this.props); 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <SelectField name='contactableType' label='Type' options={[{value: EL.Constants.INDIVIDUAL, text: 'Individual'}, {value: EL.Constants.COMPANY, text: 'Company'}]} required prompt />
@@ -304,7 +268,8 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                 <InputField name="email" label="Email" type="email" />
                 <InputField name="phone" label="Phone" type="text" />
                 <ConnectedContactTypeFields selector={formValueSelector(this.props.form)} />
-                <AgentSelector />
+                <ContactSelector />
+                <Relationships />
                 <DocumentList name="files" label="Documents" />
                 <CheckboxField name="amlcftComplete" label="AML/CFT Complete" />
                 <hr />
@@ -321,19 +286,43 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
 
 
 const contactValidationRules: EL.IValidationFields = {
-    name: { name: 'Name', required: true },
+    name: { name: 'Name' },
     email: { name: 'Email' },
     phone: { name: 'Phone' },
 }
 
+
+
+const validateContact = (values: any) => {
+   let errors = {} as any;
+   if(values.contactableType === EL.Constants.INDIVIDUAL){
+       errors.contactable = validate({
+            firstName: { name: 'First Name', required: true },
+            surname: { name: 'Surname', required: true },
+        }, values.contactable);
+   }
+   else{
+       errors = {...errors, ...validate({
+            firstName: { name: 'Name', required: true }
+       }, values) };
+   }
+   errors.relationships =  values.relationships.map((relationship: EL.ContactRelationship) => {
+       return validate({
+               secondContactId: { name: 'Name', required: true },
+               relationshipType: { name: 'Type', required: true }
+       }, relationship);
+   })
+   return errors;
+}
+
 const CreateContactForm = (reduxForm({
     form: EL.FormNames.CREATE_CONTACT_FORM,
-    validate: values => validate(contactValidationRules, values)
+    validate: validateContact
 })(ContactForm as any) as any);
 
 const EditContactForm = (reduxForm({
     form: EL.FormNames.EDIT_CONTACT_FORM,
-    validate: values => validate(contactValidationRules, values)
+    validate: validateContact
 })(ContactForm as any) as any);
 
 

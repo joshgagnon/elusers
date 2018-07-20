@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
+import BaseFieldComponent, { IFieldComponentProps, NakedBaseFieldComponent } from './baseFieldComponent';
 import * as DropdownList from 'react-widgets/lib/DropdownList';
 import * as ReactList from 'react-list';
 import * as List from 'react-widgets/lib/List';
@@ -11,7 +11,7 @@ const defaultStyle = {
   transition: `opacity ${duration}ms ease-in-out`,
   opacity: 0,
   position: 'absolute',
-  zIndex: 1
+  zIndex: 20
 }
 
 const transitionStyles = {
@@ -68,12 +68,11 @@ class LazyList extends (List as any)<LazyListProps> {
     }
 }
 
-export default class DropdownComponent extends React.PureComponent<IDropdownComponentProps> {
+class DropdownNakedComponent extends React.PureComponent<any> {
     render() {
-        const { data, ...baseFieldComponentProps } = this.props;
+        const { data } = this.props;
         const DList = DropdownList  as any;
         return (
-            <BaseFieldComponent {...baseFieldComponentProps}>
                 <DList {...this.props.input} data={this.props.data} textField={this.props.textField} placeholder={this.props.placeholder}
                 valueField={this.props.valueField}
                 onChange={o => this.props.input.onChange(o[this.props.valueField as string] )}
@@ -81,6 +80,23 @@ export default class DropdownComponent extends React.PureComponent<IDropdownComp
                 popupTransition={Fade}
                 delay={0}
                 filter/>
+        );
+    }
+}
+
+export default class DropdownComponent extends React.PureComponent<IDropdownComponentProps & {naked?: boolean}> {
+    render() {
+        const { data, ...baseFieldComponentProps } = this.props;
+        const DList = DropdownList  as any;
+        const dropdown =  <DropdownNakedComponent input={this.props.input} data={this.props.data} textField={this.props.textField} placeholder={this.props.placeholder} valueField={this.props.valueField} />;
+        if(this.props.naked){
+            return <NakedBaseFieldComponent {...baseFieldComponentProps}>
+                  { dropdown }
+            </NakedBaseFieldComponent>
+        }
+        return (
+            <BaseFieldComponent {...baseFieldComponentProps}>
+               { dropdown }
             </BaseFieldComponent>
         );
     }

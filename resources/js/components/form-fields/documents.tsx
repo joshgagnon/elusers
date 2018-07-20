@@ -6,6 +6,7 @@ import { DropTarget } from 'react-dnd';
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';
 import * as DropdownList from 'react-widgets/lib/DropdownList';
+import Icon from '../icon';
 
 const fileTarget = {
     drop(props, monitor) {
@@ -155,14 +156,14 @@ class DocumentComponent extends React.PureComponent<any> {
                               }}>
                               <Glyphicon glyph="arrow-down"/>
                               </Button>
-                            <Button onClick={(e) => {
+                            <Button className="btn-icon-only" onClick={(e) => {
                                 e.preventDefault();
                                 const clone = documents.slice();
                                 clone.splice(i, 1);
                                 this.props.input.onChange(clone);
                               }}>
 
-                              <Glyphicon glyph="trash"/>
+                              <Icon iconName="trash-o" />
                               </Button>
                              {file.id && <a target="_blank" className="btn btn-default" href={`/api/files/${file.id}`}>
                               <Glyphicon glyph="new-window" />

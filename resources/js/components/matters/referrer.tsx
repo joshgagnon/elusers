@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ContactSelector } from '../contacts';
+import { ContactSelector } from '../contacts/contactSelector';
 import { UserSelector } from '../users';
 import { SelectField } from '../form-fields';
 
