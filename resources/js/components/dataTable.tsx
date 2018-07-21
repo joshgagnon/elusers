@@ -6,10 +6,14 @@ interface IDataTableProps {
     children: any;
     manualBodyTag?: boolean;
     lastColIsActions?: boolean;
+    bodyRef?: any;
 }
 
-const DataTable = ({ headings, children, manualBodyTag, lastColIsActions }: IDataTableProps) => (
-    <Table responsive>
+
+class DataTable extends React.PureComponent<IDataTableProps>{
+    render() {
+        const { headings, children, manualBodyTag, lastColIsActions, bodyRef } = this.props;
+        return <Table responsive>
         <thead>
             <tr>
                 {headings.map((heading, index) => {
@@ -22,8 +26,10 @@ const DataTable = ({ headings, children, manualBodyTag, lastColIsActions }: IDat
             </tr>
         </thead>
 
-        { manualBodyTag ?  children : <tbody>{ children }</tbody> }
+        { manualBodyTag ?  children : <tbody ref={bodyRef}>{ children }</tbody> }
     </Table>
-);
+    }
+}
+
 
 export default DataTable;

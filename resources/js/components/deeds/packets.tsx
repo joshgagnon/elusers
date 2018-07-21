@@ -87,7 +87,7 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
                     <Link to="/deeds/records/create" className="btn btn-default"><Icon iconName="plus" />Create Deed Record</Link>
                 </ButtonToolbar>
 
-                <div>
+                <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
 

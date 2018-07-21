@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
-import { Form, ButtonToolbar, Button, ProgressBar, Alert } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, ProgressBar, Alert, FormControl } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector } from 'redux-form';
@@ -18,6 +18,7 @@ import { AddressFields } from '../address/form';
 import { ContactCapacity } from './amlcft';
 import { Relationships } from './relationships';
 import { ContactSelector } from './contactSelector';
+import * as ReactList from 'react-list';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
@@ -26,30 +27,61 @@ interface ContactsProps {
 const HEADINGS = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Actions'];
 
 
+interface ContactState {
+    searchValue: string;
+}
+
+
+function filterData(search: string, data: EL.Contact[]) {
+    if(search){
+        return data.filter(contact => fullname(contact).includes(search))
+    }
+    return data;
+}
+
 @ContactsHOC()
-@PanelHOC<ContactsProps>('Contacts', props => props.contacts)
-export class Contacts extends React.PureComponent<ContactsProps> {
+@(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
+export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
+    state = {
+        searchValue: ''
+    }
+
     render() {
+        const data = filterData(this.state.searchValue, this.props.contacts.data);
         return (
             <div>
                 <ButtonToolbar>
                     <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
                 </ButtonToolbar>
 
-                <Table headings={HEADINGS} lastColIsActions>
-                    { this.props.contacts.data.map(contact => (
-                        <tr key={contact.id}>
+                <div className="search-bar">
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
+                </div>
+
+                    <ReactList
+                        useStaticSize={true}
+                        itemRenderer={(index) => {
+                            const contact = data[index];
+                            return <tr key={contact.id}>
                             <td>{contact.id}</td>
-                            <td>{contact.name}</td>
+                            <td>{fullname(contact)}</td>
                             <td>{contact.contactableType}</td>
                             <td><a href={ 'mailto:' + contact.email }>{contact.email}</a></td>
                             <td>{contact.phone}</td>
                             <td className="actions">
                                 <Link to={`/contacts/${contact.id}`}>View</Link>
                             </td>
-                        </tr>
-                    )) }
-                </Table>
+                        </tr>}}
+                        itemsRenderer={(items, ref) => {
+                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref}>
+                                { items }
+                            </Table>
+                        }}
+                        length={data.length}
+                        type='uniform'
+                      />
+
+
             </div>
         );
     }
@@ -281,7 +313,6 @@ interface CreateContactProps {
 class ContactForm extends React.PureComponent<ContactFormProps> {
 
     render() {
-                console.log(this.props); 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <SelectField name='contactableType' label='Type' options={[
