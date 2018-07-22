@@ -217,8 +217,8 @@ export class Contact extends React.PureComponent<ContactProps> {
 
                      <br/>
                     <dt>Relationships</dt>
-                    { (contact.relationships || []).map((relationship: EL.ContactRelationship) => {
-                        return <dd><strong><Link to={`/contacts/${relationship.contact.id}`}>{ fullname(relationship.contact) }</Link></strong> is a <strong>{ relationship.relationshipType}</strong></dd>
+                    { (contact.relationships || []).map((relationship: EL.ContactRelationship, index: number) => {
+                        return <dd key={index}><strong><Link to={`/contacts/${relationship.contact.id}`}>{ fullname(relationship.contact) }</Link></strong> is a <strong>{ relationship.relationshipType}</strong></dd>
 
                     }) }
                     <br/>

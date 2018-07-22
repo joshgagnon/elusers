@@ -41,7 +41,7 @@ class ContactAddressController extends Controller
     {
         $this->validate($request, [
             'address_one' => 'required',
-            'address_type' => 'required',
+            //'address_type' => 'required',
             'post_code' => 'required',
             'country' => 'required',
         ]);
@@ -63,7 +63,7 @@ class ContactAddressController extends Controller
         // address must be owned by contact
         $this->validate($request, [
             'address_one' => 'required',
-            'address_type' => 'required',
+           // 'address_type' => 'required',
             'post_code' => 'required',
             'country' => 'required',
         ]);
