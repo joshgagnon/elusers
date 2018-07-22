@@ -42,7 +42,8 @@ class DeedPacketController extends Controller
         $packet = json_decode($result[0]->packet)[0];
 
         // 404 if no record
-        if (count($packet) === 0) {
+
+        if (!$packet) {
             abort(404);
         }
 

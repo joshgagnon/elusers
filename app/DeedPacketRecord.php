@@ -73,11 +73,12 @@ class DeedPacketRecord extends Model
     {
         if(isset($date))
         {
-           if ($date instanceof DateTime || $date instanceof Carbon) {
-                return $date;
+            try{
+                return Carbon::createFromFormat('d M Y',$date);
             }
-            return Carbon::createFromFormat('d M Y', $date);
-
+            catch (\Exception $e) {
+                return Carbon::parse($date);
+            }
         }
         return null;
     }
