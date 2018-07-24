@@ -13,7 +13,10 @@ declare global {
             COURT = 'Court',
             BANK = 'Bank',
             LOCAL_AUTHORITY = 'Local Authority',
-            GOVERNMENT_BODY = 'Government Body'
+            GOVERNMENT_BODY = 'Government Body',
+            SIMPLIFIED = 'Simplified',
+            STANDARD = 'Standard',
+            ENHANCED = 'Enhanced'
         }
 
         interface User {
@@ -153,7 +156,9 @@ declare global {
             irdNumber?: string;
             bankAccountNumber?: string;
             agentId?: string;
-            amlcftComplete: boolean;
+            cddRequired?: boolean;
+            cddType?: string;
+            cddCompletionDate?: string;
             files: Document[]
             accessTokens?: AccessToken[];
             relationships?: ContactRelationship[];

@@ -31,6 +31,8 @@ interface ContactState {
     searchValue: string;
 }
 
+const FormHeading = (props: {title: string}) => <h4 className="text-center">{ props.title }</h4>
+
 
 function filterData(search: string, data: EL.Contact[]) {
     if(search){
@@ -57,11 +59,14 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
-
+                <div>
                     <ReactList
                         useStaticSize={true}
                         itemRenderer={(index) => {
-                            const contact = data[index];
+                            const contact = data[index]; //cause the header
+                            if(!contact){
+                                return false;
+                            }
                             return <tr key={contact.id}>
                             <td>{contact.id}</td>
                             <td>{fullname(contact)}</td>
@@ -77,11 +82,10 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                                 { items }
                             </Table>
                         }}
-                        length={data.length}
+                        length={data.length+1} // for the header
                         type='uniform'
                       />
-
-
+                      </div>
             </div>
         );
     }
@@ -219,16 +223,21 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <dt>Relationships</dt>
                     { (contact.relationships || []).map((relationship: EL.ContactRelationship, index: number) => {
                         return <dd key={index}><strong><Link to={`/contacts/${relationship.contact.id}`}>{ fullname(relationship.contact) }</Link></strong> is a <strong>{ relationship.relationshipType}</strong></dd>
-
                     }) }
+                    { (contact.relationships || []).length === 0 && <dd>No relationships></dd> }
                     <br/>
-                    <dt>AML/CFT Complete</dt>
-                    <dd>{ contact.amlcftComplete ? 'Yes' : 'No'}</dd>
+                    <dt>Customer Due Diligence</dt>
+                    { (contact.cddRequired && contact.cddType && !contact.cddCompletionDate) && <dd>{contact.cddType } CDD required</dd> }
+                    { (contact.cddRequired && contact.cddType && contact.cddCompletionDate) && <dd>{contact.cddType } CCD completed on {contact.cddCompletionDate}</dd> }
+                    { contact.cddRequired === false &&<dd>CDD not required</dd> }
+                    { (!contact.cddRequired && contact.cddRequired !== false) &&<dd>CDD requirements unknown</dd> }
                      <br/>
                     <dt>Documents</dt>
                     <dd>{ (contact.files || []).map((file, i) => {
                         return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
-                    }) } </dd>
+                    }) }
+                       { (contact.files || []).length === 0 && 'No Documents' }
+                    </dd>
 
                 </dl>
                 { hasSubmitted && <Alert  bsStyle="success">
@@ -241,6 +250,31 @@ export class Contact extends React.PureComponent<ContactProps> {
     }
 }
 
+
+
+
+class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean}> {
+    render() {
+
+        return <React.Fragment>
+             <FormHeading title="Customer Due Diligence" />
+            <CheckboxField name="cddRequired" label="CDD Required" />
+            { this.props.cddRequired && <React.Fragment>
+                <SelectField name='cddType' label='Type' options={[
+                    {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
+                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
+                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}
+                    ]} required prompt />
+
+                <DatePicker name="cddCompletionDate" label="CDD Completion Date"/>
+               </React.Fragment> }
+        </React.Fragment>
+    }
+}
+
+const ConnectedCustomerDueDiligence = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
+    return {cddRequired: props.selector(state, 'cddRequired')}
+})(CustomerDueDiligence as any);
 
 
 class ContactName extends React.PureComponent<{'contactableType':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
@@ -269,6 +303,7 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
     render() {
         if(this.props.contactableType === EL.Constants.INDIVIDUAL){
             return <React.Fragment>
+                   <FormHeading title="Individual Fields" />
                     <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="year"/>
                     <DatePicker name="contactable.dateOfDeath" label="Date of Death" defaultView="year"/>
                     <InputField name="contactable.occupation" label="Occupation" type="text" />
@@ -280,11 +315,13 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
         }
         if(this.props.contactableType === EL.Constants.COMPANY){
              return <React.Fragment>
+               <FormHeading title="Company Fields" />
                 <InputField type="text" name="contactable.companyNumber" label="Company Number"/>
             </React.Fragment>
         }
         if(this.props.contactableType === EL.Constants.TRUST){
              return <React.Fragment>
+              <FormHeading title="Trust Fields" />
                     <SelectField name="contactable.trustType" label="Trust Type" prompt options={
                         ['Discretionary', 'Fixed With 10 or Fewer Beneficiaries', 'Charitable', 'Other'].map(k => ({text: k, value: k}))
                         } />
@@ -294,6 +331,7 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
 
     }
 }
+
 const ConnectedContactTypeFields = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
     return {contactableType: props.selector(state, 'contactableType')};
 })(ContactTypeFields as any);
@@ -313,6 +351,7 @@ interface CreateContactProps {
 class ContactForm extends React.PureComponent<ContactFormProps> {
 
     render() {
+        const selector = formValueSelector(this.props.form);
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <SelectField name='contactableType' label='Type' options={[
@@ -325,11 +364,10 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     {value: EL.Constants.LOCAL_AUTHORITY, text: EL.Constants.LOCAL_AUTHORITY},
                     {value: EL.Constants.GOVERNMENT_BODY, text: EL.Constants.GOVERNMENT_BODY},
                     ]} required prompt />
+                <FormHeading title="Name" />
+                <ConnectedContactName selector={selector} />
 
-                <ConnectedContactName selector={formValueSelector(this.props.form)} />
-                <ConnectedContactTypeFields selector={formValueSelector(this.props.form)} />
-
-
+                <ConnectedContactTypeFields selector={selector} />
 
                 <InputField name="email" label="Email" type="email" />
                 <InputField name="phone" label="Phone" type="text" />
@@ -340,7 +378,9 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                 <ContactSelector />
                 <Relationships />
                 <DocumentList name="files" label="Documents" />
-                <CheckboxField name="amlcftComplete" label="AML/CFT Complete" />
+
+                <ConnectedCustomerDueDiligence  selector={selector} />
+
                 <hr />
 
                 <ButtonToolbar>
@@ -381,6 +421,11 @@ const validateContact = (values: any) => {
                relationshipType: { name: 'Type', required: true }
        }, relationship);
    })
+   if(values.cddRequired){
+       if(!values.cddType){
+           errors.cddType = 'CDD Type Required';
+       }
+   }
    return errors;
 }
 

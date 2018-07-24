@@ -8,10 +8,40 @@ use Carbon\Carbon;
 class Contact extends Model
 {
 
-    protected $fillable = ['name', 'email', 'phone', 'organisation_id',  'metadata', 'agent_id', 'amlcft_complete', 'bank_account_number', 'ird_number'];
+    protected $fillable = ['name', 'email', 'phone', 'organisation_id',  'metadata', 'agent_id', 'cdd_required', 'cdd_type',
+                            'cdd_completion_date', 'bank_account_number', 'ird_number'];
 
     public static $validationRules = [
     ];
+    protected $dates = [
+        'cdd_completion_date',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
+    protected $casts = [
+        'cdd_completion_date' => 'datetime:d M Y'
+    ];
+
+    public function setCddCompletionDateAttribute($value)
+    {
+        $this->attributes['cdd_completion_date'] = $this->parseDate($value);
+    }
+
+    public function parseDate($date=null)
+    {
+        if(isset($date))
+        {
+            try{
+                return Carbon::createFromFormat('d M Y',$date);
+            }
+            catch (\Exception $e) {
+                return Carbon::parse($date);
+            }
+        }
+        return null;
+    }
 
     /**
      * Organisation relationship: a contact belongs to an organisation.
