@@ -14,6 +14,7 @@ class ImportContacts extends Command
 
     public function handle()
     {
+        return;
         $orgId = $this->argument('organisation_id');
         $handle = fopen(storage_path() . '/contacts.csv', 'r');
 
