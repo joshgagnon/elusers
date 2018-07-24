@@ -19,7 +19,7 @@ class UsersTable extends React.PureComponent<IUsersTableProps> {
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/users/create" className="btn btn-success"><Icon iconName="plus" />Create User</Link>
+                    <Link to="/users/create" className="btn btn-primary"><Icon iconName="plus" />Create User</Link>
                 </ButtonToolbar>
 
                 <Table headings={HEADINGS}>
