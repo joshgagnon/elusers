@@ -7,6 +7,11 @@ use App\Contact;
 use App\ContactIndividual;
 use App\ContactCompany;
 use App\ContactTrust;
+use App\ContactPartnership;
+use App\ContactCourt;
+use App\ContactBank;
+use App\ContactLocalAuthority;
+use App\ContactGovernmentBody;
 use App\ContactRelationship;
 use App\AccessToken;
 use Illuminate\Http\Request;
@@ -87,18 +92,7 @@ class ContactController extends Controller
             'organisation_id' => $user->organisation_id
         ], $data));
 
-
-        if($data['contactable_type'] == 'Individual') {
-            ContactIndividual::create($data['contactable'] ?? [])->contact()->save($contact);
-        }
-
-        if($data['contactable_type'] == 'Company') {
-             ContactCompany::create($data['contactable'] ?? [])->contact()->save($contact);
-        }
-
-        if($data['contactable_type'] == 'Trust') {
-             ContactTrust::create($data['contactable'] ?? [])->contact()->save($contact);
-        }
+        $this->saveSubType($contact, $data);
 
         $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
             $acc[$i['second_contact_id']] = $i;
@@ -143,17 +137,7 @@ class ContactController extends Controller
             'organisation_id' => $user->organisation_id
         ], $data));
 
-        if($data['contactable_type'] == 'Individual') {
-            ContactIndividual::create($data['contactable'] ?? [])->contact()->save($contact);
-        }
-
-        if($data['contactable_type'] == 'Company') {
-             ContactCompany::create($data['contactable'] ?? [])->contact()->save($contact);
-        }
-
-        if($data['contactable_type'] == 'Trust') {
-             ContactTrust::create($data['contactable'] ?? [])->contact()->save($contact);
-        }
+        $this->saveSubType($contact, $data);
 
         $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
             $acc[$i['second_contact_id']] = $i;
@@ -182,7 +166,6 @@ class ContactController extends Controller
             }
         }
 
-
         if(isset($data['files_to_copy'])){
             // can read file
             foreach ($data['files_to_copy'] as $file) {
@@ -193,6 +176,35 @@ class ContactController extends Controller
         }
 
         return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
+    }
+
+    private function saveSubType(Contact $contact, $data) {
+        switch($data['contactable_type']) {
+            case 'Individual':
+                ContactIndividual::create($data['contactable'] ?? [])->contact()->save($contact);
+                break;
+            case 'Company':
+                ContactCompany::create($data['contactable'] ?? [])->contact()->save($contact);
+                break;
+            case 'Trust':
+                ContactTrust::create($data['contactable'] ?? [])->contact()->save($contact);
+                break;
+            case 'Partnership':
+                ContactPartnership::create([])->contact()->save($contact);
+                break;
+            case 'Court':
+                ContactCourt::create([])->contact()->save($contact);
+                break;
+            case 'Bank':
+                ContactBank::create([])->contact()->save($contact);
+                break;
+            case 'Local Authority':
+                ContactLocalAuthority::create([])->contact()->save($contact);
+                break;
+            case 'Government Body':
+                ContactGovernmentBody::create([])->contact()->save($contact);
+                break;
+        }
     }
 
     public function delete(Contact $contact)

@@ -3,11 +3,17 @@ import * as ReduxForm from 'redux-form';
 
 declare global {
 
+
     namespace EL {
         export const enum Constants {
             INDIVIDUAL = 'Individual',
             COMPANY = 'Company',
-            TRUST = 'Trust'
+            TRUST = 'Trust',
+            PARTNERSHIP = 'Partnership',
+            COURT = 'Court',
+            BANK = 'Bank',
+            LOCAL_AUTHORITY = 'Local Authority',
+            GOVERNMENT_BODY = 'Government Body'
         }
 
         interface User {

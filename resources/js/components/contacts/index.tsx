@@ -316,10 +316,14 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <SelectField name='contactableType' label='Type' options={[
-                    {value: EL.Constants.INDIVIDUAL, text: 'Individual'},
-                    {value: EL.Constants.COMPANY, text: 'Company'},
-                    {value: EL.Constants.TRUST, text: 'Trust'}
-
+                    {value: EL.Constants.INDIVIDUAL, text: EL.Constants.INDIVIDUAL},
+                    {value: EL.Constants.COMPANY, text: EL.Constants.COMPANY},
+                    {value: EL.Constants.TRUST, text: EL.Constants.TRUST},
+                    {value: EL.Constants.PARTNERSHIP, text: EL.Constants.PARTNERSHIP},
+                    {value: EL.Constants.COURT, text: EL.Constants.COURT},
+                    {value: EL.Constants.BANK, text: EL.Constants.BANK},
+                    {value: EL.Constants.LOCAL_AUTHORITY, text: EL.Constants.LOCAL_AUTHORITY},
+                    {value: EL.Constants.GOVERNMENT_BODY, text: EL.Constants.GOVERNMENT_BODY},
                     ]} required prompt />
 
                 <ConnectedContactName selector={formValueSelector(this.props.form)} />

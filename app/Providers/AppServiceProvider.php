@@ -42,7 +42,12 @@ class AppServiceProvider extends ServiceProvider
             'Contact' => \App\Contact::class,
             'Individual' => \App\ContactIndividual::class,
             'Company' => \App\ContactCompany::class,
-            'Trust' => \App\ContactTrust::class
+            'Trust' => \App\ContactTrust::class,
+            'Partnership' => \App\ContactPartnership::class,
+            'Court' => \App\ContactCourt::class,
+            'Bank' => \App\ContactBank::class,
+            'Local Authority' => \App\ContactLocalAuthority::class,
+            'Government Body' => \App\ContactGovernmentBody::class
         ]);
 
 
