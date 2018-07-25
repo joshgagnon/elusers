@@ -45,6 +45,8 @@ interface DropdownListProps extends FieldProps {
     valueField: string | ((any) => string);
     placeholder?: string;
     busy?: boolean;
+    allowCreate?: boolean | string;
+    onCreate?: (value: string) => void;
 }
 
 export class Combobox extends React.PureComponent<ComboboxProps> {

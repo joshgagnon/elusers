@@ -148,18 +148,17 @@ declare global {
 
         interface Contact {
             id?: number;
-            name: string;
+            name?: string;
             contactable: ContactIndividual | ContactCompany | ContactTrust;
             title?: string;
-            email: string;
-            phone: string;
+            email?: string;
+            phone?: string;
             irdNumber?: string;
             bankAccountNumber?: string;
-            agentId?: string;
             cddRequired?: boolean;
             cddType?: string;
             cddCompletionDate?: string;
-            files: Document[]
+            files?: Document[]
             accessTokens?: AccessToken[];
             relationships?: ContactRelationship[];
             contactableType: string;
@@ -241,6 +240,9 @@ declare global {
             SHOW_EDIT_CPDPR_RECORD_MODAL = 'SHOW_EDIT_CPDPR_RECORD_MODAL',
             HIDE_EDIT_CPDPR_RECORD_MODAL = 'HIDE_EDIT_CPDPR_RECORD_MODAL',
 
+            SHOW_CREATE_CONTACT_MODAL = 'SHOW_CREATE_CONTACT_MODAL',
+            HIDE_CREATE_CONTACT_MODAL = 'HIDE_CREATE_CONTACT_MODAL',
+
             /**
              * Notifications
              */
@@ -295,7 +297,8 @@ declare global {
         export const enum ModalNames {
             CONFIRM_ACTION = 'CONFIRM_ACTION',
             VERSION_WARNING = 'VERSION_WARNING',
-            AMLCFT_TOKEN = 'AMLCFT_TOKEN'
+            AMLCFT_TOKEN = 'AMLCFT_TOKEN',
+            CREATE_CONTACT = 'CREATE_CONTACT'
         }
 
         export const enum FormNames {
@@ -350,6 +353,15 @@ declare global {
 
         interface ShowConfirmActionModal extends Action {
             payload: ShowConfirmActionModalPayload;
+        }
+
+        interface ShowCreateContactModalPayload {
+            name: string;
+        }
+
+
+        interface ShowCreateContactModal extends Action {
+            payload: ShowCreateContactModalPayload;
         }
 
         interface CloseModalPayload {

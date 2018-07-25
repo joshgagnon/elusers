@@ -43,6 +43,9 @@ interface IDropdownComponentProps extends IFieldComponentProps {
     valueField: string | ((any) => string);
     placeholder?: string;
     busy?: boolean;
+
+    allowCreate?: boolean | string;
+    onCreate?: (value: string) => void;
 }
 
 
@@ -80,6 +83,8 @@ class DropdownNakedComponent extends React.PureComponent<any> {
                 onChange={o => this.props.input.onChange(o[this.props.valueField as string] )}
                 listComponent={LazyList}
                 popupTransition={Fade}
+                allowCreate={this.props.allowCreate}
+                onCreate={this.props.onCreate}
                 delay={0}
                 filter/>
         );
@@ -92,7 +97,8 @@ export default class DropdownComponent extends React.PureComponent<IDropdownComp
         const DList = DropdownList  as any;
         const dropdown =  <DropdownNakedComponent input={this.props.input} data={this.props.data} busy={this.props.busy}
         textField={this.props.textField} placeholder={this.props.placeholder} valueField={this.props.valueField}
-
+        allowCreate={this.props.allowCreate}
+        onCreate={this.props.onCreate}
         />;
         if(this.props.naked){
             return <NakedBaseFieldComponent {...baseFieldComponentProps}>

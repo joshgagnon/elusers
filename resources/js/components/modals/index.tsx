@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ConfirmAction from './confirmAction';
 import VersionWarning from './versionWarning';
 import AMLCFTToken from './amlcftToken';
+import CreateContact from './createContact';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -18,6 +19,8 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <VersionWarning />;
             case EL.ModalNames.AMLCFT_TOKEN:
                 return <AMLCFTToken />
+            case EL.ModalNames.CREATE_CONTACT:
+                return <CreateContact />
             default:
                 return false;
         }

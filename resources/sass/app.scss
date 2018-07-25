@@ -362,3 +362,11 @@ input.checkbox.form-control {
 .search-bar{
     margin: 10px 0;
 }
+
+.lazy-table {
+
+    table td{
+   //       overflow: hidden;
+  // white-space: nowrap;
+    }
+}

@@ -11,7 +11,7 @@ export function fullname(user: EL.User | EL.Contact) {
         const contactable = user.contactable as EL.ContactIndividual;
         return [contactable.title, contactable.firstName, contactable.middleName, contactable.surname].filter(x => !!x).join(' ');
     }
-    return user.name || '';
+    return user.name || '\xa0';
 }
 
 export function name(user: EL.User) {

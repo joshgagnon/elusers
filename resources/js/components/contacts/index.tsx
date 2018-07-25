@@ -59,9 +59,11 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
-                <div>
+                <div className="lazy-table">
                     <ReactList
+                        tyoe='variable' // remove if use widths for cells
                         useStaticSize={true}
+                        threshold={200}
                         itemRenderer={(index) => {
                             const contact = data[index]; //cause the header
                             if(!contact){
@@ -286,12 +288,12 @@ const ConnectedCustomerDueDiligence = connect<{}, {}, {selector: (state: any, ..
 })(CustomerDueDiligence as any);
 
 
-class ContactName extends React.PureComponent<{'contactableType':string; 'firstName':string; 'middleName':string; 'surname':string;}> {
+class ContactName extends React.PureComponent<{'contactableType':string; 'contactable': any;}> {
     render() {
-
-        if(this.props.contactableType === EL.Constants.INDIVIDUAL){
+        const { contactableType } = this.props;
+        if(contactableType === EL.Constants.INDIVIDUAL){
             return <div>
-                    <ReadOnlyComponent label="Full Name" value={fullname(this.props as EL.Contact)} />
+                    <ReadOnlyComponent label="Full Name" value={fullname({contactableType, contactable: this.props.contactable as EL.ContactIndividual})} />
                     <InputField name="contactable.title" label="Title" type="text" />
                     <InputField name="contactable.firstName" label="First Name" type="text" required/>
                     <InputField name="contactable.middleName" label="Middle Name" type="text" />

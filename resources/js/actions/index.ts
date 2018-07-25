@@ -112,3 +112,10 @@ export function showAMLCFTToken(payload: EL.Actions.ShowAMLCFTTokenPayload): EL.
     };
 }
 
+
+export function showCreateContactModal(payload: EL.Actions.ShowCreateContactModalPayload): EL.Actions.ShowCreateContactModal{
+    return {
+        type: EL.ActionTypes.SHOW_CREATE_CONTACT_MODAL,
+        payload
+    };
+}

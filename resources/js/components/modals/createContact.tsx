@@ -3,25 +3,22 @@ import { connect } from 'react-redux';
 import { Modal, ButtonToolbar, Button } from 'react-bootstrap';
 import { closeModal } from '../../actions';
 
-interface AMLCFTTokenProps {
+interface CreateContactProps {
     closeModal: () => void;
-    contactId: number,
-    token: string;
+    name: string;
 }
 
-class AMLCFTToken extends React.PureComponent<AMLCFTTokenProps> {
+class CreateContact extends React.PureComponent<CreateContactProps> {
     render() {
-        const { protocol, host } = window.location;
-        const url = `${protocol}//${host}/amlcft/${this.props.token}`;
+
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Create Contact</Modal.Title>
+                    <Modal.Title>Request for AML-CFT Information</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                   <p>The following url can be used to access the AML-CFT form.  Try incognito mode to preview.</p>
-                   <a href={url}>{ url }</a>
+
                 </Modal.Body>
 
                  <Modal.Footer>
@@ -36,11 +33,11 @@ class AMLCFTToken extends React.PureComponent<AMLCFTTokenProps> {
 
 
 const mapDispatchToProps = {
-    closeModal: () => closeModal({ modalName: EL.ModalNames.AMLCFT_TOKEN }),
+    closeModal: () => closeModal({ modalName: EL.ModalNames.CREATE_CONTACT }),
 };
 
 
 export default connect(
-    (state : EL.State) => state.modals[EL.ModalNames.AMLCFT_TOKEN],
+    (state : EL.State) => state.modals[EL.ModalNames.CREATE_CONTACT],
     mapDispatchToProps,
-)(AMLCFTToken as any);
+)(CreateContact as any);
