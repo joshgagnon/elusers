@@ -38,7 +38,6 @@ class ContactController extends Controller
         $orgId = $request->user()->organisation_id;
 
         $contacts = Contact::where('organisation_id', $orgId)->with('contactable') ->orderBy('name', 'asc')->get();
-
         return $contacts;
     }
 

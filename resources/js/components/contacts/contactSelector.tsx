@@ -8,19 +8,18 @@ import { fullname } from '../utils';
 
 
 @ContactsHOC()
-export class ContactSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Contact[]>; name?: string; label?: string; required?: boolean; naked?: boolean}> {
+export class ContactSelector extends React.PureComponent<{contacts?: EL.Resource<EL.Contact[]>; name: string; label?: string; required?: boolean; naked?: boolean}> {
     render() {
-        if(!this.props.contacts.data){
-            return false;
-        }
+        const data = this.props.contacts.data || [];
+
         const renderName = contact => {
             if(!contact){
                 return "None";
             }
            return fullname(contact);
        };
-        return <DropdownListField name={this.props.name || "agentId"} label={this.props.label || "Agent"} naked={this.props.naked}
-            placeholder="None" data={[...this.props.contacts.data]} textField={renderName} valueField='id' required={this.props.required}/>
+    return <DropdownListField name={this.props.name} label={this.props.label} naked={this.props.naked} busy={!this.props.contacts.data}
+        placeholder="None" data={data} textField={renderName} valueField='id' required={this.props.required}/>
     }
 }
 

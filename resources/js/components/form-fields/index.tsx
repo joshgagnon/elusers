@@ -39,6 +39,14 @@ interface SelectFieldProps extends FieldProps {
     prompt?: boolean;
 }
 
+interface DropdownListProps extends FieldProps {
+    data: any;
+    textField: string | ((any) => string);
+    valueField: string | ((any) => string);
+    placeholder?: string;
+    busy?: boolean;
+}
+
 export class Combobox extends React.PureComponent<ComboboxProps> {
     render() {
         return <ReduxField {...this.props} component={ComboboxComponent as any} />
@@ -82,14 +90,8 @@ export class DocumentList extends React.PureComponent<FieldProps> {
     }
 }
 
-interface DrodownListProps extends FieldProps {
-    data: any;
-    textField: string | ((any) => string);
-    valueField: string | ((any) => string);
-    placeholder?: string;
-}
 
-export class DropdownListField extends React.PureComponent<DrodownListProps> {
+export class DropdownListField extends React.PureComponent<DropdownListProps> {
     render() {
         return <ReduxField {...this.props} component={DropdownComponent as any} />
     }

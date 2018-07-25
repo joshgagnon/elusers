@@ -42,14 +42,12 @@ interface IDropdownComponentProps extends IFieldComponentProps {
     textField: string | ((any) => string);
     valueField: string | ((any) => string);
     placeholder?: string;
-}
-
-interface LazyListProps{
-
+    busy?: boolean;
 }
 
 
-class LazyList extends (List as any)<LazyListProps> {
+
+class LazyList extends (List as any) {
     itemRenderer(index) {
         return this.renderOption(this.props.data[index], index)
     }
@@ -74,6 +72,10 @@ class DropdownNakedComponent extends React.PureComponent<any> {
         const DList = DropdownList  as any;
         return (
                 <DList {...this.props.input} data={this.props.data} textField={this.props.textField} placeholder={this.props.placeholder}
+                busySpinner={
+                  <span className="fa fa-spinner fa-spin" />
+                }
+                busy={this.props.busy}
                 valueField={this.props.valueField}
                 onChange={o => this.props.input.onChange(o[this.props.valueField as string] )}
                 listComponent={LazyList}
@@ -88,7 +90,10 @@ export default class DropdownComponent extends React.PureComponent<IDropdownComp
     render() {
         const { data, ...baseFieldComponentProps } = this.props;
         const DList = DropdownList  as any;
-        const dropdown =  <DropdownNakedComponent input={this.props.input} data={this.props.data} textField={this.props.textField} placeholder={this.props.placeholder} valueField={this.props.valueField} />;
+        const dropdown =  <DropdownNakedComponent input={this.props.input} data={this.props.data} busy={this.props.busy}
+        textField={this.props.textField} placeholder={this.props.placeholder} valueField={this.props.valueField}
+
+        />;
         if(this.props.naked){
             return <NakedBaseFieldComponent {...baseFieldComponentProps}>
                   { dropdown }

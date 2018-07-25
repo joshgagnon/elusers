@@ -114,21 +114,20 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
 const IndividualDisplayFields = (props: {contact: EL.ContactIndividual}) => {
     const { contact } = props;
     return <React.Fragment>
-     <dt>Title</dt>
-    <dd>{ contact.title}</dd>
-     <dt>Preferred Name</dt>
-    <dd>{ contact.preferredName }</dd>
-    <dt>Date of Birth</dt>
-    <dd>{ contact.dateOfBirth }</dd>
-    <dt>Date of Death</dt>
-    <dd>{ contact.dateOfDeath }</dd>
-    <dt>Occupation</dt>
-    <dd>{ contact.occupation }</dd>
-
-    <dt>Country of Citizenship</dt>
-    <dd>{ contact.countryOfCitizenship }</dd>
-    <dt>Marital Status</dt>
-    <dd>{ contact.maritalStatus }</dd>
+     { contact.title && <dt>Title</dt> }
+    { contact.title && <dd>{ contact.title}</dd> }
+    { contact.preferredName && <dt>Preferred Name</dt> }
+    { contact.preferredName && <dd>{ contact.preferredName }</dd> }
+    { contact.dateOfBirth && <dt>Date of Birth</dt> }
+    { contact.dateOfBirth && <dd>{ contact.dateOfBirth }</dd> }
+    { contact.dateOfDeath && <dt>Date of Death</dt> }
+    { contact.dateOfDeath && <dd>{ contact.dateOfDeath }</dd> }
+    { contact.occupation && <dt>Occupation</dt> }
+    { contact.occupation && <dd>{ contact.occupation }</dd> }
+    { contact.countryOfCitizenship  && <dt>Country of Citizenship</dt> }
+    { contact.countryOfCitizenship  && <dd>{ contact.countryOfCitizenship }</dd> }
+    { contact.maritalStatus && <dt>Marital Status</dt> }
+    { contact.maritalStatus && <dd>{ contact.maritalStatus }</dd> }
 
     </React.Fragment>
 }
@@ -201,7 +200,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                 <h3>{fullname(contact)}</h3>
                 <h4>{contact.contactableType}</h4>
 
-                <dl>
+                <dl  className="dl-horizontal">
                     <dt>Email</dt>
                     <dd>{contact.email || '-'}</dd>
 
@@ -225,7 +224,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                     }) }
                     { (contact.relationships || []).length === 0 && <dd>No relationships</dd> }
                     <br/>
-                    <dt>Customer Due Diligence</dt>
+                    <dt>Due Diligence</dt>
                     { (contact.cddRequired && contact.cddType && !contact.cddCompletionDate) && <dd>{contact.cddType } CDD required</dd> }
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dt>Enhanced CDD reason</dt>}
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dd>{(contact.contactable as EL.ContactCompany).enhancedCddReason}</dd>}
@@ -434,9 +433,10 @@ const validateContact = (values: any) => {
            errors.cddType = 'CDD Type Required';
        }
        const enhancedCompanyCDD = values.cddRequired && values.contactableType === EL.Constants.COMPANY && values.cddType === EL.Constants.ENHANCED;
-       if(!(values.relationships || []).some((relationship: EL.ContactRelationship) => {
+       const hasBeneficial = (values.relationships || []).some((relationship: EL.ContactRelationship) => {
            return relationship.relationshipType === 'Beneficial Owner';
-       })){
+       });
+       if(enhancedCompanyCDD && !hasBeneficial){
            errors.relationships._error = 'At least one beneficial owner required';
        }
    }
