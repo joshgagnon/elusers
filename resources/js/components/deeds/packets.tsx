@@ -95,7 +95,7 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
                     {packets.map((packet, index: number) => {
                         const titleRow = (
                             <tr key={index}>
-                                <th>{packet.id}</th>
+                                <th>DP-{packet.id}</th>
                                 <th colSpan={4}>{packet.title}</th>
                                 <td className="actions">
                                     <Link to={`/deeds/${packet.id}`}>View</Link>
@@ -108,7 +108,7 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
 
                             return (
                                 <tr key={record.id}>
-                                    <td>{record.id}</td>
+                                    <td>DR-{record.id}</td>
                                     <td>{record.documentName}</td>
                                     <td>{formatDate(record.documentDate)}</td>
                                     <td>{record.matterId}</td>

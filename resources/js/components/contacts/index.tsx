@@ -214,8 +214,6 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <dd>{contact.irdNumber  || '-' }</dd>
 
                     <br />
-                    { contact.agentId && <dt>Agent</dt> }
-                    { contact.agentId && <dd><Agent contactId={contact.agentId} /></dd> }
                     { individual  && <IndividualDisplayFields contact={contact.contactable as EL.ContactIndividual} /> }
                     { trust && <TrustDisplayFields contact={contact.contactable as EL.ContactTrust} /> }
 
@@ -273,7 +271,7 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean}>
 }
 
 const ConnectedCustomerDueDiligence = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
-    return {cddRequired: props.selector(state, 'cddRequired')}
+    return props.selector(state, 'cddRequired', 'contactableType')
 })(CustomerDueDiligence as any);
 
 
@@ -374,8 +372,6 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                 <InputField name="bankAccountNumber" label="Bank Account Number" type="text" />
                 <InputField name="irdNumber" label="IRD Number" type="text" />
 
-
-                <ContactSelector />
                 <Relationships />
                 <DocumentList name="files" label="Documents" />
 

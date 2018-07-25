@@ -17,8 +17,7 @@ export class ContactSelector extends React.PureComponent<{contacts?: EL.Resource
             if(!contact){
                 return "None";
             }
-           const title = contact.type === EL.Constants.INDIVIDUAL ? fullname(contact) : contact.name;
-           return title;
+           return fullname(contact);
        };
         return <DropdownListField name={this.props.name || "agentId"} label={this.props.label || "Agent"} naked={this.props.naked}
             placeholder="None" data={[...this.props.contacts.data]} textField={renderName} valueField='id' required={this.props.required}/>

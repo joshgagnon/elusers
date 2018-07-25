@@ -128,7 +128,7 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
     }
 
     render() {
-        const packetOptions = this.props.deedPackets.map(packet => ({ value: packet.id, text: packet.title }));
+        const packetOptions = this.props.deedPackets.map(packet => ({ value: packet.id, text: `DP-${packet.id} ${packet.title}` }));
         const officeOptions = [
             { value: null, text: '' },
             ...this.props.offices.map(office => ({ value: office.id, text: office.name }))
