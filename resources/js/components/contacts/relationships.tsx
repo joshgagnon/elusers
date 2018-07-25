@@ -4,7 +4,7 @@ import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 
 import Icon from '../icon';
 import { ContactSelector } from './contactSelector';
-import { FormControl, ControlLabel, FormGroup, InputGroup, Glyphicon, Button, Col } from 'react-bootstrap';
+import { FormControl, ControlLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
 import { DropdownListField  } from '../form-fields';
 
 
@@ -75,11 +75,15 @@ class RelationshipSelector extends React.PureComponent<any> {
                     </FormGroup>
               </div>
             )) }
-
               <div className="button-row">
                   <Button onClick={() => fields.push({})}>
                 Add Relationship
                 </Button>
+            { this.props.meta.error && <Alert bsStyle="danger">
+                <p className="text-center">
+                { this.props.meta.error }
+                </p>
+            </Alert> }
               </div>
           </div>
     }

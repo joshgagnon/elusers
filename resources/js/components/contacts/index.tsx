@@ -3,7 +3,7 @@ import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar, Alert, FormControl } from 'react-bootstrap';
-import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
+import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector } from 'redux-form';
 import { validate } from '../utils/validation';
@@ -188,6 +188,7 @@ export class Contact extends React.PureComponent<ContactProps> {
         const individual = contact.contactableType === EL.Constants.INDIVIDUAL;
         const trust = contact.contactableType === EL.Constants.TRUST;
         const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
+        const enhancedCompanyCDD = contact.cddRequired && contact.contactableType === EL.Constants.COMPANY && contact.cddType === EL.Constants.ENHANCED;
         return (
             <div>
                 <ButtonToolbar className="pull-right">
@@ -222,10 +223,15 @@ export class Contact extends React.PureComponent<ContactProps> {
                     { (contact.relationships || []).map((relationship: EL.ContactRelationship, index: number) => {
                         return <dd key={index}><strong><Link to={`/contacts/${relationship.contact.id}`}>{ fullname(relationship.contact) }</Link></strong> is a <strong>{ relationship.relationshipType}</strong></dd>
                     }) }
-                    { (contact.relationships || []).length === 0 && <dd>No relationships></dd> }
+                    { (contact.relationships || []).length === 0 && <dd>No relationships</dd> }
                     <br/>
                     <dt>Customer Due Diligence</dt>
                     { (contact.cddRequired && contact.cddType && !contact.cddCompletionDate) && <dd>{contact.cddType } CDD required</dd> }
+                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dt>Enhanced CDD reason</dt>}
+                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dd>{(contact.contactable as EL.ContactCompany).enhancedCddReason}</dd>}
+                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).sourceOfFunds && <dt>Source of funds</dt>}
+                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).sourceOfFunds && <dd>{(contact.contactable as EL.ContactCompany).sourceOfFunds}</dd>}
+
                     { (contact.cddRequired && contact.cddType && contact.cddCompletionDate) && <dd>{contact.cddType } CCD completed on {contact.cddCompletionDate}</dd> }
                     { contact.cddRequired === false &&<dd>CDD not required</dd> }
                     { (!contact.cddRequired && contact.cddRequired !== false) &&<dd>CDD requirements unknown</dd> }
@@ -251,9 +257,10 @@ export class Contact extends React.PureComponent<ContactProps> {
 
 
 
-class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean}> {
+class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 'contactableType': string, 'cddType': string}> {
     render() {
-
+        const { cddRequired, contactableType, cddType } = this.props;
+        const enhancedCompanyCDD = cddRequired && contactableType === EL.Constants.COMPANY && cddType === EL.Constants.ENHANCED;
         return <React.Fragment>
              <FormHeading title="Customer Due Diligence" />
             <CheckboxField name="cddRequired" label="CDD Required" />
@@ -263,7 +270,12 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean}>
                     {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
                     {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}
                     ]} required prompt />
-
+                   { enhancedCompanyCDD && <SelectField name='contactable.enhancedCddReason' label='CDD Reason' options={[
+                        'Company is a vehicle for holding personal assets',
+                        'Company has nominee shareholders or shares in bearer form',
+                        'Level of risk warrants enhanced CDD'
+                    ]} required prompt />}
+                   { enhancedCompanyCDD && <TextArea name='contactable.sourceOfFunds' label='Source of Funds' required />}
                 <DatePicker name="cddCompletionDate" label="CDD Completion Date"/>
                </React.Fragment> }
         </React.Fragment>
@@ -271,7 +283,7 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean}>
 }
 
 const ConnectedCustomerDueDiligence = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
-    return props.selector(state, 'cddRequired', 'contactableType')
+    return props.selector(state, 'cddRequired', 'contactableType', 'cddType')
 })(CustomerDueDiligence as any);
 
 
@@ -420,6 +432,12 @@ const validateContact = (values: any) => {
    if(values.cddRequired){
        if(!values.cddType){
            errors.cddType = 'CDD Type Required';
+       }
+       const enhancedCompanyCDD = values.cddRequired && values.contactableType === EL.Constants.COMPANY && values.cddType === EL.Constants.ENHANCED;
+       if(!(values.relationships || []).some((relationship: EL.ContactRelationship) => {
+           return relationship.relationshipType === 'Beneficial Owner';
+       })){
+           errors.relationships._error = 'At least one beneficial owner required';
        }
    }
    return errors;

@@ -14,7 +14,11 @@ export default class SelectFieldComponent extends React.PureComponent<SelectFiel
             <BaseFieldComponent {...this.props}>
                 <FormControl componentClass="select" placeholder="select" {...this.props.input}>
                 { this.props.prompt && <option value="" disabled>Please Select...</option> }
-                    {this.props.options.map((option, index) => <option key={index} value={option.value}>{option.text}</option>)}
+                    { this.props.options.map((opt: SelectOption, index) => {
+                        const value = typeof opt === 'string' ? opt : (opt as SelectOption).value;
+                        const text = typeof opt === 'string' ? opt : (opt as SelectOption).text;
+                        return <option key={ index } value={ value }>{ text }</option>
+                    }) }
 
                 </FormControl>
             </BaseFieldComponent>
