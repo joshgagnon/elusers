@@ -46,7 +46,6 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
     createContact: () => submit(EL.FormNames.CREATE_CONTACT_FORM_SIMPLE),
     submit: (form: string, name: string, data: React.FormEvent<Form>) => {
         const url = 'contacts';
-        debugger
         const meta: EL.Actions.Meta = {
             onSuccess: [createNotification('Contact created.'), (response) => change(form, name, response.contactId), closeModal({ modalName: EL.ModalNames.CREATE_CONTACT })],
             onFailure: [createNotification('Contact creation failed. Please try again.', true)],
