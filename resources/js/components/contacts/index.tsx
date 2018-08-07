@@ -335,7 +335,7 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
               <FormHeading title="Trust Fields" />
                     <SelectField name="contactable.trustType" label="Trust Type" prompt options={
                         ['Discretionary', 'Fixed With 10 or Fewer Beneficiaries', 'Charitable', 'Other'].map(k => ({text: k, value: k}))
-                        } />
+                        } required/>
             </React.Fragment>
         }
         return false;
@@ -402,6 +402,33 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
 }
 
 
+class ContactFormSimple extends React.PureComponent<ContactFormProps> {
+
+    render() {
+        const selector = formValueSelector(this.props.form);
+        return (
+            <Form onSubmit={this.props.handleSubmit} horizontal>
+                <SelectField name='contactableType' label='Type' options={[
+                    {value: EL.Constants.INDIVIDUAL, text: EL.Constants.INDIVIDUAL},
+                    {value: EL.Constants.COMPANY, text: EL.Constants.COMPANY},
+                    {value: EL.Constants.TRUST, text: EL.Constants.TRUST},
+                    {value: EL.Constants.PARTNERSHIP, text: EL.Constants.PARTNERSHIP},
+                    {value: EL.Constants.COURT, text: EL.Constants.COURT},
+                    {value: EL.Constants.BANK, text: EL.Constants.BANK},
+                    {value: EL.Constants.LOCAL_AUTHORITY, text: EL.Constants.LOCAL_AUTHORITY},
+                    {value: EL.Constants.GOVERNMENT_BODY, text: EL.Constants.GOVERNMENT_BODY},
+                    ]} required prompt />
+                <FormHeading title="Name" />
+                <ConnectedContactName selector={selector} />
+
+                <ConnectedContactTypeFields selector={selector} />
+
+                <InputField name="email" label="Email" type="email" />
+                <InputField name="phone" label="Phone" type="text" />
+            </Form>
+        );
+    }
+}
 
 const contactValidationRules: EL.IValidationFields = {
     name: { name: 'Name' },
@@ -413,10 +440,19 @@ const contactValidationRules: EL.IValidationFields = {
 
 const validateContact = (values: any) => {
    let errors = {} as any;
+   if(!values.contactableType){
+       errors.contactableType = 'Type Required'
+   }
    if(values.contactableType === EL.Constants.INDIVIDUAL){
        errors.contactable = validate({
             firstName: { name: 'First Name', required: true },
             surname: { name: 'Surname', required: true },
+        }, values.contactable || {});
+   }
+   if(values.contactableType === EL.Constants.TRUST){
+       errors.contactable = validate({
+            name: { name: 'Name', required: true },
+            trustType: { name: 'Trust Type', required: true },
         }, values.contactable || {});
    }
    else{
@@ -445,14 +481,19 @@ const validateContact = (values: any) => {
    return errors;
 }
 
-const CreateContactForm = (reduxForm({
+export const CreateContactForm = (reduxForm({
     form: EL.FormNames.CREATE_CONTACT_FORM,
-    validate: validateContact
+    validate: validateContact,
 })(ContactForm as any) as any);
+
+export const CreateContactFormSimple = (reduxForm({
+    form: EL.FormNames.CREATE_CONTACT_FORM_SIMPLE,
+    validate: validateContact
+})(ContactFormSimple as any) as any);
 
 const EditContactForm = (reduxForm({
     form: EL.FormNames.EDIT_CONTACT_FORM,
-    validate: validateContact
+    validate: validateContact,
 })(ContactForm as any) as any);
 
 

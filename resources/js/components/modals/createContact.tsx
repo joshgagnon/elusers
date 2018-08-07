@@ -1,11 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Modal, ButtonToolbar, Button } from 'react-bootstrap';
+import { bindActionCreators } from 'redux'
+import { Modal, ButtonToolbar, Button, Form } from 'react-bootstrap';
 import { closeModal } from '../../actions';
+import  { submit, change } from 'redux-form';
+import { CreateContactFormSimple } from '../contacts';
+import { createResource, createNotification } from '../../actions';
+
 
 interface CreateContactProps {
     closeModal: () => void;
     name: string;
+    form: string;
+    submit: (form: string, name: string, data: React.FormEvent<Form>) => void;
+    createContact: () => void;
 }
 
 class CreateContact extends React.PureComponent<CreateContactProps> {
@@ -14,16 +22,17 @@ class CreateContact extends React.PureComponent<CreateContactProps> {
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Request for AML-CFT Information</Modal.Title>
+                    <Modal.Title>Create Contact</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-
+                <CreateContactFormSimple onSubmit={(data) => this.props.submit(this.props.form, this.props.name, data)}/>
                 </Modal.Body>
 
                  <Modal.Footer>
                     <ButtonToolbar className="pull-right">
                         <Button onClick={() => {this.props.closeModal();}}>Close</Button>
+                        <Button bsStyle="primary" onClick={this.props.createContact}>Create</Button>
                     </ButtonToolbar>
                 </Modal.Footer>
             </Modal>
@@ -31,10 +40,23 @@ class CreateContact extends React.PureComponent<CreateContactProps> {
     }
 }
 
-
-const mapDispatchToProps = {
+const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
+  {
     closeModal: () => closeModal({ modalName: EL.ModalNames.CREATE_CONTACT }),
-};
+    createContact: () => submit(EL.FormNames.CREATE_CONTACT_FORM_SIMPLE),
+    submit: (form: string, name: string, data: React.FormEvent<Form>) => {
+        const url = 'contacts';
+        debugger
+        const meta: EL.Actions.Meta = {
+            onSuccess: [createNotification('Contact created.'), (response) => change(form, name, response.contactId), closeModal({ modalName: EL.ModalNames.CREATE_CONTACT })],
+            onFailure: [createNotification('Contact creation failed. Please try again.', true)],
+            invalidateList: ['contacts']
+        };
+        return createResource(url, data, meta)
+    }
+  },
+  dispatch,
+)
 
 
 export default connect(

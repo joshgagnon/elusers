@@ -14,6 +14,7 @@ const RELATIONSHIP_TYPES = [
     "Accountant",
     "Attorney",
     "Authorised Person",
+    "Authorised Person Of",
     "Beneficiary",
     "Beneficial Owner",
     "Child",
@@ -34,7 +35,7 @@ const RELATIONSHIP_TYPES = [
     "Spouse",
     "Subsidiary",
     "Trustee",
-    "Trustee of"
+    "Trustee Of"
 ];
 
 
@@ -51,7 +52,6 @@ export class RelationshipTypeSelector extends React.PureComponent<{name?: string
 class RelationshipSelector extends React.PureComponent<any> {
     render() {
         const { fields } = this.props;
-        console.log(this.props)
         return <div>
             { fields.map((contact, index) => (
               <div key={index}>

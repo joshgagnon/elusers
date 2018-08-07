@@ -319,7 +319,9 @@ class ContactController extends Controller
             'Parent Company' => 'Subsidary',
             'Subsidary' => 'Parent Company',
             'Trustee' => 'Trustee Of',
-            'Trustee Of' => 'Trustee'
+            'Trustee Of' => 'Trustee',
+            'Authorised Person' => 'Authorised Person Of',
+            'Authorised Person Of' => 'Authorised Person',
         ];
 
     private function removeInverseRelations($contactId) {

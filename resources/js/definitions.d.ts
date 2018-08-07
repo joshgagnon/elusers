@@ -309,6 +309,7 @@ declare global {
             EDIT_DEED_PACKET = 'EDIT_DEED_PACKET',
 
             CREATE_CONTACT_FORM = 'CREATE_CONTACT_FORM',
+            CREATE_CONTACT_FORM_SIMPLE = 'CREATE_CONTACT_FORM_SIMPLE',
             EDIT_CONTACT_FORM = 'EDIT_CONTACT_FORM',
             EDIT_CONTACT_AMLCFT_FORM = 'EDIT_CONTACT_AMLCFT_FORM',
 
@@ -335,6 +336,8 @@ declare global {
             onSuccess?: (Action | Function | ReduxForm.FormAction)[];
             onFailure?: (Action | Function | ReduxForm.FormAction)[];
             refresh?: boolean;
+            invalidateList?: string[];
+
         }
 
         export interface Action {
@@ -357,6 +360,7 @@ declare global {
 
         interface ShowCreateContactModalPayload {
             name: string;
+            form: string;
         }
 
 

@@ -9,7 +9,10 @@ export function fullname(user: EL.User | EL.Contact) {
     }
     else if(user.contactableType === EL.Constants.INDIVIDUAL){
         const contactable = user.contactable as EL.ContactIndividual;
-        return [contactable.title, contactable.firstName, contactable.middleName, contactable.surname].filter(x => !!x).join(' ');
+        if(contactable) {
+            return [contactable.title, contactable.firstName, contactable.middleName, contactable.surname].filter(x => !!x).join(' ');
+        }
+        return '';
     }
     return user.name || '\xa0';
 }

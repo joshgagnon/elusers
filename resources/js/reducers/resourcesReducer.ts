@@ -27,13 +27,28 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
             };
         case EL.ActionTypes.CREATE_RESOURCE_SUCCESS:
         case EL.ActionTypes.CREATE_RESOURCE_FAILURE:
-        
+
         case EL.ActionTypes.UPDATE_RESOURCE_SUCCESS:
         case EL.ActionTypes.UPDATE_RESOURCE_FAILURE:
 
         case EL.ActionTypes.DELETE_RESOURCE_SUCCESS:
         case EL.ActionTypes.DELETE_RESOURCE_FAILURE:
             // Reset resources state to default
+            if(action.meta.invalidateList){
+                let invalidated = {};
+                const keys = Object.keys(state);
+                invalidated = keys.reduce((acc, key) => {
+                    return action.meta.invalidateList.reduce((acc, invalid) => {
+                        if(invalid === key){
+                            acc[key] = null;
+                        }
+                        return acc;
+                    }, acc);
+                }, {});
+                return {...state, ...invalidated};
+            }
+
+
             return DEFAULT_STATE;
         default:
             return state;
