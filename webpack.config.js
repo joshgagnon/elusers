@@ -3,10 +3,11 @@ const path = require('path');
 const DEV = process.env.NODE_ENV !== 'production';
 const WebpackNotifierPlugin = require('webpack-notifier');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const  ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     entry: path.resolve(__dirname, 'resources/js/index.tsx'),
@@ -14,25 +15,27 @@ module.exports = {
         filename: DEV ? 'js/app.js' : 'js/app.[hash].js',
         path: path.resolve(__dirname, 'public')
     },
+    mode: DEV ? 'development' : 'production',
     devtool: DEV ? "source-map" : false,
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'awesome-typescript-loader'
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                options: {
+                  // transpileOnly: true // IMPORTANT! use transpileOnly mode to speed-up compilation
+                 },
             },
-            {
+            /*{
                 test: /\.js$/,
                 enforce: "pre",
                 loader: "source-map-loader"
-            },
-            {
-                test: /\.json$/,
-                loader: "json-loader"
-            },
+            },*/
             {
                 test: /\.(scss|css)$/,
-                use: ExtractTextPlugin.extract({use: [
+                use: [
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
                         options: {
@@ -55,7 +58,7 @@ module.exports = {
                             sourceMap: true
                         }
                     }
-                ]})
+                ]
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -86,11 +89,24 @@ module.exports = {
             'react-widgets-moment': path.resolve('./node_modules/react-widgets-moment'),
           }
     },
-    plugins: [
-          new CopyWebpackPlugin([{ from: 'resources/images', to: 'images' }]),
+    stats: {
+        // suppress "export not found" warnings about re-exported types
+        warningsFilter: /export .* was not found in/
+    },
 
-        new WebpackNotifierPlugin({ title: 'Evolution Users' }),
-        new ExtractTextPlugin(DEV ? 'css/[name].css' : 'css/[name].[hash].css'),
+    plugins: [
+      //  new ForkTsCheckerWebpackPlugin(),
+        new CopyWebpackPlugin([{ from: 'resources/images', to: 'images' }]),
+
+        //new ExtractTextPlugin(DEV ? 'css/[name].css' : 'css/[name].[hash].css'),
+        new MiniCssExtractPlugin({
+          // Options similar to the same options in webpackOptions.output
+          // both options are optional
+          filename: DEV ? 'css/[name].css' : 'css/[name].[hash].css',
+          chunkFilename: DEV ? 'css/[id].css' : 'css/[id].[hash].css',
+        }),
+
+
         DEV ? function(){} : new webpack.optimize.UglifyJsPlugin(),
 
         // Using define pluggin makes sure we are using the production build
@@ -106,6 +122,7 @@ module.exports = {
         new ManifestPlugin({
             fileName: 'mix-manifest.json',
             basePath: '/'
-        })
+        }),
+        new WebpackNotifierPlugin({ title: 'Evolution Users' })
     ]
 };

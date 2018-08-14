@@ -300,7 +300,7 @@ declare global {
             VERSION_WARNING = 'VERSION_WARNING',
             AMLCFT_TOKEN = 'AMLCFT_TOKEN',
             CREATE_CONTACT = 'CREATE_CONTACT',
-            UPLOAD = 'UPLOAD';
+            UPLOAD = 'UPLOAD'
         }
 
         export const enum FormNames {
