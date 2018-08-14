@@ -5,6 +5,7 @@ import ConfirmAction from './confirmAction';
 import VersionWarning from './versionWarning';
 import AMLCFTToken from './amlcftToken';
 import CreateContact from './createContact';
+import Upload from './upload';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -21,6 +22,8 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <AMLCFTToken />
             case EL.ModalNames.CREATE_CONTACT:
                 return <CreateContact />
+            case EL.ModalNames.UPLOAD:
+                return <Upload />
             default:
                 return false;
         }

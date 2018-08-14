@@ -19,6 +19,9 @@ export default function(state: EL.Modals = DEFAULT_STATE, action: any) {
         case EL.ActionTypes.SHOW_CREATE_CONTACT_MODAL:
             return showCreateContactModal(state, action);
 
+         case EL.ActionTypes.SHOW_UPLOAD_MODAL:
+             return showUploadModal(state, action);
+
         default:
             return state;
     }
@@ -67,5 +70,13 @@ function showCreateContactModal(state: EL.Modals, action: EL.Actions.ShowCreateC
         ...state,
         visible: EL.ModalNames.CREATE_CONTACT,
         [EL.ModalNames.CREATE_CONTACT]: action.payload
+    };
+}
+
+function showUploadModal(state: EL.Modals, action: EL.Actions.ShowCreateContactModal) {
+    return {
+        ...state,
+        visible: EL.ModalNames.UPLOAD,
+        [EL.ModalNames.UPLOAD]: action.payload
     };
 }

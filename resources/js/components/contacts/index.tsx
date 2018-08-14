@@ -12,7 +12,7 @@ import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
 import { connect } from 'react-redux';
-import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken  } from '../../actions';
+import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken, showUploadModal  } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields } from '../address/form';
 import { ContactCapacity } from './amlcft';
@@ -22,6 +22,7 @@ import * as ReactList from 'react-list';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
+    showUploadModal: () => void;
 }
 
 const HEADINGS = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Actions'];
@@ -35,14 +36,17 @@ const FormHeading = (props: {title: string}) => <h4 className="text-center">{ pr
 
 
 function filterData(search: string, data: EL.Contact[]) {
-    if(search){
-        return data.filter(contact => fullname(contact).includes(search))
+    if(search.toLocaleLowerCase()){
+        return data.filter(contact => fullname(contact).toLocaleLowerCase().includes(search))
     }
     return data;
 }
 
 @ContactsHOC()
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
+@(connect(undefined, {
+    showUploadModal: () => showUploadModal({})
+}) as any)
 export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
     state = {
         searchValue: ''
@@ -54,6 +58,7 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
             <div>
                 <ButtonToolbar>
                     <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
+                    <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Contact List</Button>
                 </ButtonToolbar>
 
                 <div className="search-bar">

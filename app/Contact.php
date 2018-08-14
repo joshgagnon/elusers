@@ -70,7 +70,7 @@ class Contact extends Model
 
     public function files()
     {
-        return $this->hasMany(ContactFile::class);
+        return $this->belongsToMany(File::Class, 'contact_files', "contact_id", "file_id")->withTimestamps();
     }
 
     public function accessTokens()

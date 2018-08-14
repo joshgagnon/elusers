@@ -256,6 +256,7 @@ declare global {
             CLOSE_MODAL = 'CLOSE_MODAL',
             SHOW_VERSION_WARNING_MODAL = 'SHOW_VERSION_WARNING_MODAL',
             SHOW_AMLCFT_MODAL = 'SHOW_AMLCFT_MODAL',
+            SHOW_UPLOAD_MODAL = 'SHOW_UPLOAD_MODAL',
             /**
              * Initial testing
              */
@@ -298,7 +299,8 @@ declare global {
             CONFIRM_ACTION = 'CONFIRM_ACTION',
             VERSION_WARNING = 'VERSION_WARNING',
             AMLCFT_TOKEN = 'AMLCFT_TOKEN',
-            CREATE_CONTACT = 'CREATE_CONTACT'
+            CREATE_CONTACT = 'CREATE_CONTACT',
+            UPLOAD = 'UPLOAD';
         }
 
         export const enum FormNames {
@@ -314,7 +316,7 @@ declare global {
             EDIT_CONTACT_AMLCFT_FORM = 'EDIT_CONTACT_AMLCFT_FORM',
 
             CREATE_MATTER_FORM = 'CREATE_MATTER_FORM',
-            EDIT_MATTER_FORM = 'EDIT_MATTER_FORM',
+            EDIT_MATTER_FORM = 'EDIT_MATTER_FORM'
         }
 
         interface ConfirmActionModal {
@@ -421,6 +423,14 @@ declare global {
         interface ShowAMLCFTToken extends Action {
             payload: ShowAMLCFTTokenPayload
         }
+
+        interface ShowUploadPayload {
+        }
+
+        interface ShowUpload extends Action {
+            payload: ShowUploadPayload
+        }
+
     }
 
     namespace EL.CPDPR {

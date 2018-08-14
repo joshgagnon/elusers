@@ -119,3 +119,10 @@ export function showCreateContactModal(payload: EL.Actions.ShowCreateContactModa
         payload
     };
 }
+
+export function showUploadModal(payload: EL.Actions.ShowUploadPayload): EL.Actions.ShowUpload{
+    return {
+        type: EL.ActionTypes.SHOW_UPLOAD_MODAL,
+        payload
+    };
+}
