@@ -77,6 +77,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::delete('contacts/{contact}', 'ContactController@delete');
     Route::post('contacts/{contact}/access_token', 'ContactController@createAccessToken');
 
+    Route::post('contacts-sync', 'ContactController@syncContacts');
+
 
     /**
      * Addresses

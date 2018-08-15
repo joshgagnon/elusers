@@ -36,8 +36,8 @@ const FormHeading = (props: {title: string}) => <h4 className="text-center">{ pr
 
 
 function filterData(search: string, data: EL.Contact[]) {
-    if(search.toLocaleLowerCase()){
-        return data.filter(contact => fullname(contact).toLocaleLowerCase().includes(search))
+    if(search){
+        return data.filter(contact => fullname(contact).toLocaleLowerCase().includes(search.toLocaleLowerCase()))
     }
     return data;
 }

@@ -21,8 +21,8 @@ use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
-
+use DB;
+use Exception;
 
 
 class ContactController extends Controller
@@ -218,6 +218,96 @@ class ContactController extends Controller
         return response()->json(['message' => 'Contact deleted.']);
     }
 
+    public function createAccessToken(Contact $contact)
+    {
+
+        foreach($contact->accessTokens as $token) {
+            $token->delete();
+        }
+        return $contact->accessTokens()->create(['token' => Str::random(40)]);
+    }
+
+
+    public function amlcft(Request $request)
+    {
+
+        $loadData = [];
+        $loadData['user'] = false;
+        return view('index')->with([
+            'loadData' => json_encode($loadData)
+        ]);
+    }
+
+
+    public function syncContacts(Request $request)
+    {
+        DB::beginTransaction();
+        $user = $request->user();
+        try {
+            $orgId = $request->user()->organisation_id;
+            $file = $request->file('file')[0];
+
+            $rows   = array_map('str_getcsv',file($file->getRealPath()));
+            if(count($rows[0]) == 1){
+                array_shift($rows); //sep
+            }
+            $header = array_shift($rows);
+            $csv    = array();
+            foreach($rows as $row) {
+                $csv[] = array_combine($header, array_map('trim', $row));
+            }
+            foreach ($csv as $row) {
+                $actionstepId = $row['ID'];
+                $contact = Contact::where('metadata->actionstepId', $actionstepId)->first();
+                if ($contact) continue;
+                $fields = [
+                    'organisation_id' => $user->organisation_id,
+                    'contactable_type' => $row['Type'],
+                    'email' => $row['Email Address'],
+                    'phone' => $row['Phone Numbers'],
+                    'name' => $row['Name'],
+                    'metadata' => json_encode(['actionstepId' => $actionstepId]),
+                    'contactable' => []
+                ];
+
+                if($row['Type'] == 'Individual'){
+                    $names = explode(" ", $row['Name']);
+                    $middle = null;
+                    if(count($names) > 2){
+                        $middle = array_slice($names, 1, count($names) - 2);
+                        $middle = implode(' ', $middle);
+                    }
+                    $fields['contactable'] = [
+                        'first_name' => $names[0],
+                        'middle_name' => $middle,
+                        'surname' => $names[count($names) - 1]
+                    ];
+                }
+
+                $contact = Contact::create($fields);
+                $this->saveSubType($contact, $fields);
+                if($row['Address']){
+                    $address = [
+                        'address_one' => $row['Address'],
+                        'city' => $row['City'],
+                        'post_code' => $row['Zip/Post Code'],
+                        'address_type' => 'postal',
+                        'country' => 'New Zealand'
+                    ];
+                    $contact->addresses()->create($address);
+
+                }
+
+            }
+            //throw new Exception('asdf');
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
+        return response()->json(['message' => 'Contacts updated.']);
+    }
+
     private function saveUploadedFile($file, $user)
     {
         // Get the uploaded file contents
@@ -285,25 +375,7 @@ class ContactController extends Controller
         return $contactFile;
     }
 
-    public function createAccessToken(Contact $contact)
-    {
 
-        foreach($contact->accessTokens as $token) {
-            $token->delete();
-        }
-        return $contact->accessTokens()->create(['token' => Str::random(40)]);
-    }
-
-
-    public function amlcft(Request $request)
-    {
-
-        $loadData = [];
-        $loadData['user'] = false;
-        return view('index')->with([
-            'loadData' => json_encode($loadData)
-        ]);
-    }
 
     public $opposites = [
             'Employee' => 'Employer',
