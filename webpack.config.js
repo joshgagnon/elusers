@@ -18,7 +18,7 @@ module.exports = {
     mode: DEV ? 'development' : 'production',
     devtool: DEV ? "source-map" : false,
     optimization: {
-        minimize: !DEV}
+        minimize: !DEV
     },
     module: {
         rules: [
