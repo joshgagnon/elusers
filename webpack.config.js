@@ -17,6 +17,9 @@ module.exports = {
     },
     mode: DEV ? 'development' : 'production',
     devtool: DEV ? "source-map" : false,
+    optimization: {
+        minimize: !DEV}
+    },
     module: {
         rules: [
             {
@@ -105,9 +108,6 @@ module.exports = {
           filename: DEV ? 'css/[name].css' : 'css/[name].[hash].css',
           chunkFilename: DEV ? 'css/[id].css' : 'css/[id].[hash].css',
         }),
-
-
-        DEV ? function(){} : new webpack.optimize.UglifyJsPlugin(),
 
         // Using define pluggin makes sure we are using the production build
         // of React when we build for production.
