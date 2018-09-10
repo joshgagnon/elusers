@@ -263,10 +263,13 @@ export class Contact extends React.PureComponent<ContactProps> {
 
 
 
-class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 'contactableType': string, 'cddType': string}> {
+class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 'contactableType': EL.Constants, 'cddType': string}> {
     render() {
         const { cddRequired, contactableType, cddType } = this.props;
         const enhancedCompanyCDD = cddRequired && contactableType === EL.Constants.COMPANY && cddType === EL.Constants.ENHANCED;
+        if(![EL.Constants.INDIVIDUAL, EL.Constants.COMPANY, EL.Constants.TRUST, EL.Constants.PARTNERSHIP].includes(contactableType)){
+            return false;
+        }
         return <React.Fragment>
              <FormHeading title="Customer Due Diligence" />
             <CheckboxField name="cddRequired" label="CDD Required" />
