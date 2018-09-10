@@ -34,7 +34,7 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
         case EL.ActionTypes.DELETE_RESOURCE_SUCCESS:
         case EL.ActionTypes.DELETE_RESOURCE_FAILURE:
             // Reset resources state to default
-            if(action.meta.invalidateList){
+            if(action.meta && action.meta.invalidateList){
                 let invalidated = {};
                 const keys = Object.keys(state);
                 invalidated = keys.reduce((acc, key) => {

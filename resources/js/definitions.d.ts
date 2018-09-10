@@ -129,7 +129,7 @@ declare global {
             enhancedCcdRequired?: string;
             enhancedCddReason?: string;
             sourceOfFunds?: string;
-
+            clauseOfTrustDeed?: string;
         }
 
         interface ContactCompany {
@@ -146,6 +146,12 @@ declare global {
             contact?: Contact;
         }
 
+        interface ContactAgent{
+            startDate?: string;
+            endDate?: string;
+            contact?: Contact;
+        }
+
         interface Contact {
             id?: number;
             name?: string;
@@ -156,11 +162,13 @@ declare global {
             irdNumber?: string;
             bankAccountNumber?: string;
             cddRequired?: boolean;
+            reasonNoCddRequired?: string;
             cddType?: string;
             cddCompletionDate?: string;
             files?: Document[]
             accessTokens?: AccessToken[];
             relationships?: ContactRelationship[];
+            agents?: ContactAgent[];
             contactableType: string;
         }
 

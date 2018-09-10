@@ -12,14 +12,14 @@ class AccessTokenController extends Controller
 {
     public function get(Request $request, $token)
     {
-        $accessToken = AccessToken::where('token', $token)->with('files.file')->first();
+        $accessToken = AccessToken::where('token', $token)->with('files')->first();
         if(!$accessToken){
             abort(404);
         }
         if($accessToken['submitted']){
             $data = $accessToken['data'];
             $data['files'] = array_map(function ($i) {
-                return $i['file'];
+                return $i;
             }, $accessToken['files']->toArray());
 
             return $data;
@@ -74,7 +74,7 @@ class AccessTokenController extends Controller
 
     public function delete(Request $request, $token)
     {
-        $accessToken = AccessToken::where('token', $token)->with('files.file')->first();
+        $accessToken = AccessToken::where('token', $token)->with('files')->first();
         $accessToken->delete();
         return response()->json(['message' => 'Resource deleted.'], 200);
     }

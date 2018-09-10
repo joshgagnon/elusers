@@ -19,7 +19,7 @@ class AccessToken extends Model
 
     public function files()
     {
-        return $this->hasMany(AccessTokenFile::class);
+        return $this->belongsToMany(File::Class, 'access_token_files', "access_token_id", "file_id")->withTimestamps();
     }
 
 }

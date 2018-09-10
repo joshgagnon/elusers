@@ -51,7 +51,12 @@ class ContactController extends Controller
     {
         $orgId = $request->user()->organisation_id;
 
-        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)->with('contactable', 'files', 'accessTokens', 'relationships', 'relationships.contact', 'relationships.contact.contactable')->first();
+        $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)
+            ->with('contactable', 'files', 'accessTokens',
+                   'relationships', 'relationships.contact', 'relationships.contact.contactable',
+                   'agents', 'agents.contact', 'agents.contact.contactable'
+
+               )->first();
 
         if (!$contact) {
             abort(404);
@@ -98,6 +103,13 @@ class ContactController extends Controller
         $contact->relationshipsSyncable()->sync($relations);
         $this->inverseRelationships($contact->id, $data['relationships'] ?? []);
 
+        $agents = array_reduce($data['agents'] ?? [], function ($acc, $i) {
+            $acc[$i['agent_id']] = $i;
+            return $acc;
+        }, []);
+
+        $contact->agentsSyncable()->sync($agents);
+
         $fileIds = array_map(function($file) use ($user) {
             return $this->saveUploadedFile($file, $user)->id;
         }, $request->file('file', []));
@@ -130,7 +142,7 @@ class ContactController extends Controller
         }
 
         $contact->update(array_merge([
-            'organisation_id' => $user->organisation_id
+            'organisation_id' => $user->organisation_id,
         ], $data));
 
         $this->saveSubType($contact, $data);
@@ -144,9 +156,12 @@ class ContactController extends Controller
         $contact->relationshipsSyncable()->sync($relations);
         $this->inverseRelationships($contact->id, $data['relationships'] ?? []);
 
-        /*foreach ($files as $file) {
-            $this->saveUploadedFile($file, $request->user(), $contact);
-        }*/
+        $agents = array_reduce($data['agents'] ?? [], function ($acc, $i) {
+            $acc[$i['agent_id']] = $i;
+            return $acc;
+        }, []);
+
+        $contact->agentsSyncable()->sync($agents);
 
         $fileIds = array_map(function($file) use ($request) {
             return $this->saveUploadedFile($file, $request->user())->id;
@@ -158,27 +173,6 @@ class ContactController extends Controller
 
         $contact->files()->sync(array_merge($fileIds, $existingFileIds));
 
-
-        # if not in this list we get rid of
-        /*$existingFileIds = array_map(function ($i) {
-            return (int)$i;
-        }, $data['existing_files'] ?? []);
-
-        # USE A PIVOT AND sync() INSTEAD@!!!!!!!!!
-        foreach($contact->files as $file) {
-            if(!in_array($file->file_id, $existingFileIds)){
-                $file->delete();
-            }
-        }
-
-        if(isset($data['files_to_copy'])){
-            // can read file
-            foreach ($data['files_to_copy'] as $file) {
-                if(isset($file['id']) && File::canRead($file['id'], $user)){
-                    $this->copyFile(File::find($file['id']), $request->user(), $contact);
-                }
-            }
-        }*/
 
         return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
     }

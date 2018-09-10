@@ -77,7 +77,7 @@ class AMLCFTPage1 extends React.PureComponent<InjectedFormProps & { previousPage
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
-        return <Form onSubmit={handleSubmit}>
+        return <Form horizontal onSubmit={handleSubmit}>
             <Fields/>
             { this.props.children }
         </Form>
@@ -95,7 +95,7 @@ class AMLCFTPage2 extends React.PureComponent<InjectedFormProps & { previousPage
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
-        return <Form onSubmit={handleSubmit}>
+        return <Form horizontal onSubmit={handleSubmit}>
              <Fields/>
             { this.props.children }
         </Form>
@@ -113,7 +113,7 @@ class AMLCFTPage3 extends React.PureComponent<InjectedFormProps & { previousPage
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
-        return <Form onSubmit={handleSubmit}>
+        return <Form horizontal onSubmit={handleSubmit}>
              <Fields/>
             { this.props.children }
         </Form>
@@ -143,7 +143,7 @@ class AMLCFTPage4 extends React.PureComponent<InjectedFormProps & { previousPage
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
-        return <Form onSubmit={handleSubmit}>
+        return <Form horizontal onSubmit={handleSubmit}>
         <ContactCapacity required/>
         { this.props.capacity === 'trust' && <DocumentList name="trust_deed_files" label="Trust Deed" /> }
         { this.props.capacity === 'company' && <CheckboxField name="confirmation" label="">
@@ -168,7 +168,7 @@ class AMLCFTPage5 extends React.PureComponent<InjectedFormProps & { previousPage
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const name = fullname(this.props as any);
-        return <Form onSubmit={handleSubmit}>
+        return <Form horizontal onSubmit={handleSubmit}>
             <CheckboxField name="authority_confirm" label="" >
             <strong>I confirm that I am {name} or, if I am not {name}, that I am submitting this form on behalf of, and with the authority of, {name}.</strong>
             </CheckboxField>
@@ -227,9 +227,9 @@ class FullAMLCFTForm extends React.PureComponent<ContactFormProps> {
     render() {
         const { handleSubmit, } = this.props;
         const name = fullname(this.props as any);
-        return <Form onSubmit={handleSubmit}>
+        return <Form horizontal onSubmit={handleSubmit}>
                 { AMLCFTFields.map((Fields, i) => <Fields key={i} /> )}
-                <CheckboxField name="amlcftComplete" label="AML/CFT Complete" />
+                <DatePicker name="cddCompletionDate" label="CDD Completion Date"/>
                 { this.props.children }
             </Form>
     }
@@ -314,24 +314,24 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
                 onFailure: [createNotification('Contact update failed. Please try again.', true)],
             };
-            let addressAction;
-            if(data.addresses[0].id){
+            const actions = [updateResource(url, merged, meta)] as any;
+            if(data.addresses && data.addresses.length && data.addresses[0].id){
                 // update address
                 const addressId = data.addresses[0].id;
-                addressAction = updateResource(`contacts/${contactId}/addresses/${addressId}`, data.addresses[0]);
+                actions.push(updateResource(`contacts/${contactId}/addresses/${addressId}`, data.addresses[0]));
             }
-            else{
+            else if(data.addresses && data.addresses.length){
                 //they never had an address, create it
-                addressAction = createResource(`contacts/${contactId}/addresses`, data.addresses[0]);
+                actions.push(createResource(`contacts/${contactId}/addresses`, data.addresses[0]));
             }
+            actions.push(deleteResource(`access_token/${token}`));
 
-            const deleteAction = deleteResource(`access_token/${token}`);
             return confirmAction({
                 title: 'Merge Information',
                 content: 'Selecting merge will update this contact with the information and documents given.',
                 acceptButtonText: 'Merge',
                 declineButtonText: 'Cancel',
-                onAccept: [updateResource(url, merged, meta), addressAction, deleteAction]
+                onAccept: actions
             });
         }
     }
@@ -340,6 +340,9 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
 @PanelHOC<UnwrappedEditContactProps>('Merge Information', props => props.contact)
 class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
     render() {
+      if(!this.props.contact.data.accessTokens || !this.props.contact.data.accessTokens.length) {
+          return <p className="text-danger">Sorry, this token does not exist</p>
+      }
       return <TokenContactAMLCFTForm
           contactId={this.props.contactId}
           originalContact={this.props.contact.data}

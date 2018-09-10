@@ -16,7 +16,7 @@ import { createNotification, createResource, updateResource, deleteResource, con
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields } from '../address/form';
 import { ContactCapacity } from './amlcft';
-import { Relationships } from './relationships';
+import { Relationships, Agents } from './relationships';
 import { ContactSelector } from './contactSelector';
 import * as ReactList from 'react-list';
 
@@ -31,6 +31,25 @@ const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
 interface ContactState {
     searchValue: string;
 }
+
+
+const  requestAMLCFT = (contactId: number) => {
+    const createAction = createResource(`contacts/${contactId}/access_token`, {}, {
+        onSuccess: [createNotification('Contact AML/CFT request send.'), (response) => {
+            return showAMLCFTToken({contactId, token: response.token});
+        }],
+        onFailure: [createNotification('Contact AML/CFT request failed. Please try again.', true)],
+    });
+
+    return confirmAction({
+        title: 'Confirm Send AML/CFT Request to Contact',
+        content: 'Are you sure you want generate a AML/CFT access token for this contact?',
+        acceptButtonText: 'Send',
+        declineButtonText: 'Cancel',
+        onAccept: createAction
+    });
+}
+
 
 const FormHeading = (props: {title: string}) => <h4 className="text-center">{ props.title }</h4>
 
@@ -68,8 +87,8 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                 </div>
                 <div className="lazy-table">
                     <ReactList
-                        type='variable' // remove if use widths for cells
-                        useStaticSize={true}
+                        type='variable'
+                        useStaticSize={false}
                         threshold={200}
                         itemRenderer={(index) => {
                             const contact = data[index]; //cause the header
@@ -83,6 +102,7 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                             <td>{contact.phone}</td>
                             <td className="actions">
                                 <Link to={`/contacts/${contact.id}`}>View</Link>
+                                <Link to={`/contacts/${contact.id}/edit`}>Edit</Link>
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
@@ -117,6 +137,20 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
 
 }
 
+
+export class CDDBadge extends React.PureComponent<{contact: EL.Contact, requestAMLCFT: (contactId: number) => void }> {
+    render() {
+        if(this.props.contact.contactableType !== EL.Constants.INDIVIDUAL) {
+            return false;
+        }
+        const hasCDDCompleted = this.props.contact.cddCompletionDate;
+        if(hasCDDCompleted) {
+            return <a className="btn btn-success btn-xs">CDD Complete</a>
+        }
+        return <a className="btn btn-danger btn-xs" onClick={() => this.props.requestAMLCFT(this.props.contact.id)}>CDD Missing</a>
+    }
+
+}
 
 const IndividualDisplayFields = (props: {contact: EL.ContactIndividual}) => {
     const { contact } = props;
@@ -165,23 +199,7 @@ const TrustDisplayFields = (props: {contact: EL.ContactTrust}) => {
                 onAccept: deleteAction
             });
         },
-        requestAMLCFT: (contactId: number) => {
-            const createAction = createResource(`contacts/${contactId}/access_token`, {}, {
-                onSuccess: [createNotification('Contact AML/CFT request send.'), (response) => {
-                    return showAMLCFTToken({contactId, token: response.token});
-                }],
-                onFailure: [createNotification('Contact AML/CFT request failed. Please try again.', true)],
-            });
-
-            return confirmAction({
-                title: 'Confirm Send AML/CFT Request to Contact',
-                content: 'Are you sure you want generate a AML/CFT access token for this contact?',
-                acceptButtonText: 'Send',
-                declineButtonText: 'Cancel',
-                onAccept: createAction
-            });
-        },
-
+        requestAMLCFT,
     }
 ) as any)
 @MapParamsToProps(['contactId'])
@@ -195,12 +213,17 @@ export class Contact extends React.PureComponent<ContactProps> {
         const trust = contact.contactableType === EL.Constants.TRUST;
         const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
         const enhancedCompanyCDD = contact.cddRequired && contact.contactableType === EL.Constants.COMPANY && contact.cddType === EL.Constants.ENHANCED;
+        const enhancedTrustCDD = contact.cddRequired && trust && contact.cddType === EL.Constants.ENHANCED;
+        const enhancedTrustShowBeneficiaryClasses = enhancedTrustCDD && (contact.contactable as EL.ContactTrust).trustType === 'Discretionary';
+        const enhancedTrustShowObjects = enhancedTrustCDD && (contact.contactable as EL.ContactTrust).trustType === 'Charitable';
         return (
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
                     <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
-                    <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil" />Get AML/CFT Token</Button>
+                    { contact.contactableType === EL.Constants.INDIVIDUAL &&
+                      !contact.cddCompletionDate &&
+                         <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
                     <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 
@@ -225,6 +248,13 @@ export class Contact extends React.PureComponent<ContactProps> {
                     { trust && <TrustDisplayFields contact={contact.contactable as EL.ContactTrust} /> }
 
                      <br/>
+                    <dt>Agents</dt>
+                    { (contact.agents || []).map((agent: EL.ContactAgent, index: number) => {
+                        return <dd key={index}><strong><Link to={`/contacts/${agent.contact.id}`}>{ fullname(agent.contact) }</Link></strong> <CDDBadge contact={agent.contact} requestAMLCFT={this.props.requestAMLCFT}/></dd>
+                    }) }
+                    { (contact.agents || []).length === 0 && <dd>No Agents</dd> }
+                     <br/>
+
                     <dt>Relationships</dt>
                     { (contact.relationships || []).map((relationship: EL.ContactRelationship, index: number) => {
                         return <dd key={index}><strong><Link to={`/contacts/${relationship.contact.id}`}>{ fullname(relationship.contact) }</Link></strong> is a <strong>{ relationship.relationshipType}</strong></dd>
@@ -232,15 +262,37 @@ export class Contact extends React.PureComponent<ContactProps> {
                     { (contact.relationships || []).length === 0 && <dd>No relationships</dd> }
                     <br/>
                     <dt>Due Diligence</dt>
+
                     { (contact.cddRequired && contact.cddType && !contact.cddCompletionDate) && <dd>{contact.cddType } CDD required</dd> }
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dt>Enhanced CDD reason</dt>}
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dd>{(contact.contactable as EL.ContactCompany).enhancedCddReason}</dd>}
+
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).sourceOfFunds && <dt>Source of funds</dt>}
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).sourceOfFunds && <dd>{(contact.contactable as EL.ContactCompany).sourceOfFunds}</dd>}
 
+                    { enhancedTrustShowBeneficiaryClasses && (contact.contactable as EL.ContactTrust).clauseOfTrustDeed &&
+                            <React.Fragment>
+                                <dt>Trust Deed Describing Classes of Beneficiaries</dt>
+                                <dd>{ (contact.contactable as EL.ContactTrust).clauseOfTrustDeed }</dd>
+                            </React.Fragment> }
+
+                   { enhancedTrustShowObjects && (contact.contactable as EL.ContactTrust).clauseOfTrustDeed &&
+                            <React.Fragment>
+                                <dt>Clause of Trust Deed Describing Objects of Trust</dt>
+                                <dd>{ (contact.contactable as EL.ContactTrust).clauseOfTrustDeed }</dd>
+                            </React.Fragment> }
+
+                    { (enhancedCompanyCDD || enhancedTrustCDD) && (contact.contactable as EL.ContactCompany | EL.ContactTrust).sourceOfFunds &&
+                        <React.Fragment>
+                            <dt>Source of funds</dt>
+                            <dd>{(contact.contactable as EL.ContactCompany | EL.ContactTrust).sourceOfFunds}</dd>
+                        </React.Fragment>
+                     }
+
                     { (contact.cddRequired && contact.cddType && contact.cddCompletionDate) && <dd>{contact.cddType } CCD completed on {contact.cddCompletionDate}</dd> }
-                    { contact.cddRequired === false &&<dd>CDD not required</dd> }
+                    { contact.cddRequired === false &&<dd>CDD not required{ !!contact.reasonNoCddRequired && ` - ${contact.reasonNoCddRequired}`}</dd> }
                     { (!contact.cddRequired && contact.cddRequired !== false) &&<dd>CDD requirements unknown</dd> }
+
                      <br/>
                     <dt>Documents</dt>
                     <dd>{ (contact.files || []).map((file, i) => {
@@ -260,19 +312,27 @@ export class Contact extends React.PureComponent<ContactProps> {
     }
 }
 
+const canCdd = (contactableType: string) => {
+    return [EL.Constants.INDIVIDUAL, EL.Constants.COMPANY, EL.Constants.TRUST].includes(contactableType as EL.Constants);
+}
 
 
-
-class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 'contactableType': EL.Constants, 'cddType': string}> {
+class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 'contactableType': EL.Constants, 'cddType': string, 'contactable': {'trustType': string}}> {
     render() {
-        const { cddRequired, contactableType, cddType } = this.props;
-        const enhancedCompanyCDD = cddRequired && contactableType === EL.Constants.COMPANY && cddType === EL.Constants.ENHANCED;
-        if(![EL.Constants.INDIVIDUAL, EL.Constants.COMPANY, EL.Constants.TRUST, EL.Constants.PARTNERSHIP].includes(contactableType)){
+        console.log(this.props)
+        const { cddRequired, contactableType, cddType, contactable} = this.props;
+        const trustType = contactable && contactable.trustType;
+        const enhancedCDD = cddRequired && (contactableType === EL.Constants.COMPANY || contactableType === EL.Constants.TRUST) && cddType === EL.Constants.ENHANCED;
+        const enhancedCompanyCDD = enhancedCDD && contactableType === EL.Constants.COMPANY;
+        const enhancedTrustCDD = enhancedCDD && contactableType === EL.Constants.TRUST;
+
+        if(!canCdd(contactableType)){
             return false;
         }
         return <React.Fragment>
              <FormHeading title="Customer Due Diligence" />
             <CheckboxField name="cddRequired" label="CDD Required" />
+
             { this.props.cddRequired && <React.Fragment>
                 <SelectField name='cddType' label='Type' options={[
                     {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
@@ -284,15 +344,22 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
                         'Company has nominee shareholders or shares in bearer form',
                         'Level of risk warrants enhanced CDD'
                     ]} required prompt />}
-                   { enhancedCompanyCDD && <TextArea name='contactable.sourceOfFunds' label='Source of Funds' required />}
+                   { enhancedCDD && <TextArea name='contactable.sourceOfFunds' label='Source of Funds' required /> }
+
+                 { enhancedTrustCDD && trustType === 'Discretionary' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Classes of Beneficiaries' /> }
+                 { enhancedTrustCDD && trustType === 'Charitable' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Objects of Trust' /> }
+
                 <DatePicker name="cddCompletionDate" label="CDD Completion Date"/>
+
                </React.Fragment> }
+
+              {! this.props.cddRequired && <TextArea name='reasonNoCddRequired' label='Reason CDD not required' /> }
         </React.Fragment>
     }
 }
 
 const ConnectedCustomerDueDiligence = connect<{}, {}, {selector: (state: any, ...args) => any}>((state: EL.State, props: {selector: (state: any, ...args) => any}) => {
-    return props.selector(state, 'cddRequired', 'contactableType', 'cddType')
+    return props.selector(state, 'cddRequired', 'contactableType', 'cddType', 'contactable.trustType')
 })(CustomerDueDiligence as any);
 
 
@@ -393,6 +460,7 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                 <InputField name="bankAccountNumber" label="Bank Account Number" type="text" />
                 <InputField name="irdNumber" label="IRD Number" type="text" />
 
+                <Agents />
                 <Relationships />
                 <DocumentList name="files" label="Documents" />
 
@@ -484,6 +552,13 @@ const validateContact = (values: any) => {
        });
        if(enhancedCompanyCDD && !hasBeneficial){
            errors.relationships._error = 'At least one beneficial owner required';
+       }
+       const enhancedTrustCDD = values.cddRequired && values.contactableType === EL.Constants.TRUST && values.cddType === EL.Constants.ENHANCED;
+       const hasBeneficary = (values.relationships || []).some((relationship: EL.ContactRelationship) => {
+           return relationship.relationshipType === 'Beneficiary';
+       });
+       if(enhancedTrustCDD && !hasBeneficary && values.contactable && values.contactable.trustType === 'Fixed With 10 or Fewer Beneficiaries'){
+           errors.relationships._error = 'At least one beneficiary required';
        }
    }
    return errors;

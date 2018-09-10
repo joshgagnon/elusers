@@ -97,3 +97,49 @@ export class Relationships extends React.PureComponent<{}> {
          </React.Fragment>
     }
 }
+
+class AgentSelector extends React.PureComponent<any> {
+    render() {
+        const { fields } = this.props;
+        return <div>
+            { fields.map((contact, index) => (
+              <div key={index}>
+
+                <FormGroup>
+                    <Col componentClass={ControlLabel} md={3}>
+                        Agent
+                    </Col>
+                    <Col md={8}>
+                         <ContactSelector name={`${contact}.agentId`} required naked={true}/>
+                    </Col>
+                    <Col md={1}>
+                        <Button className="btn-icon-only" onClick={(e) => {
+                                e.preventDefault();
+                                fields.remove(index)
+                              }}><Icon iconName="trash-o" /></Button>
+                    </Col>
+                    </FormGroup>
+              </div>
+            )) }
+              <div className="button-row">
+                  <Button onClick={() => fields.push({})}>
+                Add Agent
+                </Button>
+            { this.props.meta.error && <Alert bsStyle="danger">
+                <p className="text-center">
+                { this.props.meta.error }
+                </p>
+            </Alert> }
+              </div>
+          </div>
+    }
+}
+
+
+export class Agents extends React.PureComponent<{}> {
+    render() {
+         return <React.Fragment>
+                <FieldArray name="agents" component={AgentSelector as any} />
+         </React.Fragment>
+    }
+}
