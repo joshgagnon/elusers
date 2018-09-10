@@ -25,7 +25,7 @@ interface ContactsProps {
     showUploadModal: () => void;
 }
 
-const HEADINGS = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Actions'];
+const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
 
 
 interface ContactState {
@@ -39,6 +39,7 @@ function filterData(search: string, data: EL.Contact[]) {
     if(search){
         return data.filter(contact => fullname(contact).toLocaleLowerCase().includes(search.toLocaleLowerCase()))
     }
+    data.sort((a, b) => fullname(a).localeCompare(fullname(b)));
     return data;
 }
 
@@ -48,6 +49,7 @@ function filterData(search: string, data: EL.Contact[]) {
     showUploadModal: () => showUploadModal({})
 }) as any)
 export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
+
     state = {
         searchValue: ''
     }
@@ -66,7 +68,7 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                 </div>
                 <div className="lazy-table">
                     <ReactList
-                        tyoe='variable' // remove if use widths for cells
+                        type='variable' // remove if use widths for cells
                         useStaticSize={true}
                         threshold={200}
                         itemRenderer={(index) => {
@@ -75,7 +77,6 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                                 return false;
                             }
                             return <tr key={contact.id}>
-                            <td>{contact.id}</td>
                             <td>{fullname(contact)}</td>
                             <td>{contact.contactableType}</td>
                             <td><a href={ 'mailto:' + contact.email }>{contact.email}</a></td>
@@ -90,7 +91,6 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                             </Table>
                         }}
                         length={data.length+1} // for the header
-                        type='uniform'
                       />
                       </div>
             </div>
@@ -200,7 +200,7 @@ export class Contact extends React.PureComponent<ContactProps> {
                 <ButtonToolbar className="pull-right">
                     <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
                     <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
-                    <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil-square-o" />Get AML/CFT Token</Button>
+                    <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil" />Get AML/CFT Token</Button>
                     <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 

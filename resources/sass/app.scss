@@ -81,6 +81,9 @@ $input-color-placeholder: lighten($text-color, 30%);
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
 
+@import "~font-awesome/scss/font-awesome";
+
+
 $font-path: '~react-widgets/lib/fonts';
 $img-path: '~react-widgets/lib/img';
 @import "~react-widgets/lib/scss/react-widgets";
@@ -364,7 +367,9 @@ input.checkbox.form-control {
 }
 
 .lazy-table {
-
+    table {
+        table-layout: fixed;
+    }
     table td{
    //       overflow: hidden;
   // white-space: nowrap;
