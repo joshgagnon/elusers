@@ -242,7 +242,7 @@ class ContactController extends Controller
             $file = $request->file('file')[0];
 
             $rows   = array_map('str_getcsv',file($file->getRealPath()));
-            if(count($rows[0]) == 1){
+            if(count($rows[0]) < 3){
                 array_shift($rows); //sep
             }
             $header = array_shift($rows);
