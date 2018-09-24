@@ -362,6 +362,29 @@ input.checkbox.form-control {
     margin-right: 0;
 }
 
+.form-group.no-margin{
+    margin-bottom:0;
+}
+
+.form-horizontal{
+  .form-group-sm {
+    @media (min-width: $screen-sm-min) {
+      .rw-widget-container {
+
+            height: $input-height-small;
+            font-size: $font-size-small;
+            line-height: $line-height-small;
+            border-radius: $input-border-radius-small;
+
+      }
+      .btn{
+        @include button-size($padding-small-vertical, $padding-small-horizontal, $font-size-small, $line-height-small, $btn-border-radius-small);
+      }
+    }
+  }
+}
+
+
 .search-bar{
     margin: 10px 0;
 }

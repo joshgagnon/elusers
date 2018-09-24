@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
+import BaseFieldComponent, { IFieldComponentProps, NakedBaseFieldComponent } from './baseFieldComponent';
 import { FormControl } from 'react-bootstrap';
 import { SelectOption } from './index';
 
@@ -10,6 +10,7 @@ interface SelectFieldComponentProps extends IFieldComponentProps {
 
 export default class SelectFieldComponent extends React.PureComponent<SelectFieldComponentProps> {
     render() {
+
         return (
             <BaseFieldComponent {...this.props}>
                 <FormControl componentClass="select" placeholder="select" {...this.props.input}>

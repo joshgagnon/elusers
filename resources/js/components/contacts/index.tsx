@@ -5,7 +5,7 @@ import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar, Alert, FormControl } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
-import { reduxForm, formValueSelector } from 'redux-form';
+import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { fullname } from '../utils';
 import { Link } from 'react-router';
@@ -18,6 +18,7 @@ import { AddressFields } from '../address/form';
 import { ContactCapacity } from './amlcft';
 import { Relationships, Agents } from './relationships';
 import { ContactSelector } from './contactSelector';
+import { ContactInformationFields } from '../contact-information/contactInformation';
 import * as ReactList from 'react-list';
 
 interface ContactsProps {
@@ -51,7 +52,7 @@ const  requestAMLCFT = (contactId: number) => {
 }
 
 
-const FormHeading = (props: {title: string}) => <h4 className="text-center">{ props.title }</h4>
+const FormHeading = (props: {title: string}) => <h5 className="text-center">{ props.title }</h5>
 
 
 function filterData(search: string, data: EL.Contact[]) {
@@ -61,6 +62,17 @@ function filterData(search: string, data: EL.Contact[]) {
     data.sort((a, b) => fullname(a).localeCompare(fullname(b)));
     return data;
 }
+
+const primaryEmail = (contact: EL.Contact) => {
+    const emails = contact.contactInformations.filter(c => c.type === 'email');
+    return emails.length > 0  && emails.map((email, i) => <span style={{ display: "inline-block"}} key={i}>{email.data.subtype && `[${email.data.subtype}] `}{ email.data.email }</span>);
+}
+
+const primaryPhone = (contact: EL.Contact) => {
+    const phones = contact.contactInformations.filter(c => c.type === 'phone');
+    return phones.length > 0 && phones.map((phone, i) => <span style={{ display: "inline-block"}} key={i}>{phone.data.subtype && `[${phone.data.subtype}] `}{ phone.data.phone }</span>);
+}
+
 
 @ContactsHOC()
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
@@ -92,14 +104,16 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                         threshold={200}
                         itemRenderer={(index) => {
                             const contact = data[index]; //cause the header
+                            const email = primaryEmail(contact);
+                            const phone = primaryPhone(contact)
                             if(!contact){
                                 return false;
                             }
                             return <tr key={contact.id}>
                             <td>{fullname(contact)}</td>
                             <td>{contact.contactableType}</td>
-                            <td><a href={ 'mailto:' + contact.email }>{contact.email}</a></td>
-                            <td>{contact.phone}</td>
+                            <td>{email && <a href={ `mailto:${email}` }>{email}</a> }</td>
+                            <td>{phone || ''}</td>
                             <td className="actions">
                                 <Link to={`/contacts/${contact.id}`}>View</Link>
                                 <Link to={`/contacts/${contact.id}/edit`}>Edit</Link>
@@ -231,11 +245,6 @@ export class Contact extends React.PureComponent<ContactProps> {
                 <h4>{contact.contactableType}</h4>
 
                 <dl  className="dl-horizontal">
-                    <dt>Email</dt>
-                    <dd>{contact.email || '-'}</dd>
-
-                    <dt>Phone</dt>
-                    <dd>{contact.phone || '-'}</dd>
 
                     <dt>Bank Account Number</dt>
                     <dd>{contact.bankAccountNumber || '-'}</dd>
@@ -422,6 +431,20 @@ const ConnectedContactTypeFields = connect<{}, {}, {selector: (state: any, ...ar
     return {contactableType: props.selector(state, 'contactableType')};
 })(ContactTypeFields as any);
 
+
+
+class ContactInformations extends React.PureComponent<{selector: (state: any, ...args) => any }> {
+    render() {
+
+        return <React.Fragment>
+                   <FormHeading title="Contact Information" />
+                   <FieldArray name="contactInformations" component={ContactInformationFields as any} selector={this.props.selector} />
+            </React.Fragment>
+
+    }
+}
+
+
 interface ContactFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
@@ -440,38 +463,46 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
         const selector = formValueSelector(this.props.form);
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <SelectField name='contactableType' label='Type' options={[
-                    {value: EL.Constants.INDIVIDUAL, text: EL.Constants.INDIVIDUAL},
-                    {value: EL.Constants.COMPANY, text: EL.Constants.COMPANY},
-                    {value: EL.Constants.TRUST, text: EL.Constants.TRUST},
-                    {value: EL.Constants.PARTNERSHIP, text: EL.Constants.PARTNERSHIP},
-                    {value: EL.Constants.COURT, text: EL.Constants.COURT},
-                    {value: EL.Constants.BANK, text: EL.Constants.BANK},
-                    {value: EL.Constants.LOCAL_AUTHORITY, text: EL.Constants.LOCAL_AUTHORITY},
-                    {value: EL.Constants.GOVERNMENT_BODY, text: EL.Constants.GOVERNMENT_BODY},
-                    ]} required prompt />
-                <FormHeading title="Name" />
-                <ConnectedContactName selector={selector} />
+                <div className="form-group-sm">
+                    <SelectField name='contactableType' label='Type' options={[
+                        {value: EL.Constants.INDIVIDUAL, text: EL.Constants.INDIVIDUAL},
+                        {value: EL.Constants.COMPANY, text: EL.Constants.COMPANY},
+                        {value: EL.Constants.TRUST, text: EL.Constants.TRUST},
+                        {value: EL.Constants.PARTNERSHIP, text: EL.Constants.PARTNERSHIP},
+                        {value: EL.Constants.COURT, text: EL.Constants.COURT},
+                        {value: EL.Constants.BANK, text: EL.Constants.BANK},
+                        {value: EL.Constants.LOCAL_AUTHORITY, text: EL.Constants.LOCAL_AUTHORITY},
+                        {value: EL.Constants.GOVERNMENT_BODY, text: EL.Constants.GOVERNMENT_BODY},
+                        ]} required prompt />
 
-                <ConnectedContactTypeFields selector={selector} />
+                    <FormHeading title="Name" />
 
-                <InputField name="email" label="Email" type="email" />
-                <InputField name="phone" label="Phone" type="text" />
-                <InputField name="bankAccountNumber" label="Bank Account Number" type="text" />
-                <InputField name="irdNumber" label="IRD Number" type="text" />
+                    <ConnectedContactName selector={selector} />
+                     <hr />
+                    <ContactInformations selector={selector}/>
+                    <hr />
+                    <ConnectedContactTypeFields selector={selector} />
+                         <hr />
 
-                <Agents />
-                <Relationships />
-                <DocumentList name="files" label="Documents" />
-
-                <ConnectedCustomerDueDiligence  selector={selector} />
-
+                     <FormHeading title="Financials" />
+                    <InputField name="bankAccountNumber" label="Bank Account Number" type="text" />
+                    <InputField name="irdNumber" label="IRD Number" type="text" />
+                                          <hr />
+                    <Agents />
+                                          <hr />
+                    <Relationships />
+                                          <hr />
+                    <DocumentList name="files" label="Documents" />
+                                          <hr />
+                    <ConnectedCustomerDueDiligence  selector={selector} />
+                    </div>
                 <hr />
 
                 <ButtonToolbar>
                     { /*<Link className="btn btn-default pull-right" to="/contacts">Back</Link> */ }
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
                 </ButtonToolbar>
+
             </Form>
         );
     }

@@ -20,7 +20,7 @@ declare global {
         }
 
         interface User {
-            id: number;
+            id?: number;
             title: string;
             firstName: string;
             middleName?: string;
@@ -152,6 +152,11 @@ declare global {
             contact?: Contact;
         }
 
+        interface ContactInformation{
+            type: 'email' | 'phone' | 'fax' | 'address';
+            data: any;
+        }
+
         interface Contact {
             id?: number;
             name?: string;
@@ -170,6 +175,7 @@ declare global {
             relationships?: ContactRelationship[];
             agents?: ContactAgent[];
             contactableType: string;
+            contactInformations?: ContactInformation[];
         }
 
         interface Office {

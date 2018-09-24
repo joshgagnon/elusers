@@ -14,6 +14,7 @@ export interface IBaseFieldComponentProps extends IFieldComponentProps {
     showRemoveButton?: boolean;
     onRemoveButtonClick?: () => void;
     required?: boolean;
+    naked?: boolean;
     help?: JSX.Element;
 }
 
@@ -50,9 +51,11 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
     }
 
     render() {
-        const { label, meta: { touched, error } } = this.props;
+        const { label, meta: { touched, error }, naked } = this.props;
         const displayError = touched && error;
-
+        if(naked){
+            return <NakedBaseFieldComponent {...this.props} />
+        }
         return (
             <FormGroup validationState={this.validationState(touched, error)} className={this.props.required ? 'required' : null}>
                 <Col componentClass={ControlLabel} md={3}>

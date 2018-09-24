@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class Contact extends Model
 {
 
-    protected $fillable = ['name', 'email', 'phone', 'organisation_id',  'metadata', 'agent_id', 'cdd_required', 'reason_no_cdd_required', 'cdd_type',
+    protected $fillable = ['name',  'organisation_id',  'metadata', 'agent_id', 'cdd_required', 'reason_no_cdd_required', 'cdd_type',
                             'cdd_completion_date', 'bank_account_number', 'ird_number'];
 
     public static $validationRules = [
@@ -117,6 +117,10 @@ class Contact extends Model
         return $this->hasMany(ContactAgent::class, 'contact_id');
     }
 
+    public function contactInformations()
+    {
+        return $this->belongsToMany(ContactInformation::Class);
+    }
 }
 
 

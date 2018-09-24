@@ -18,6 +18,7 @@ interface FieldProps {
     onRemoveButtonClick?: () => void;
     required?: boolean;
     help?: JSX.Element;
+    placeholder?: string;
 }
 
 interface ComboboxProps extends FieldProps {
@@ -43,7 +44,6 @@ interface DropdownListProps extends FieldProps {
     data: any;
     textField: string | ((any) => string);
     valueField: string | ((any) => string);
-    placeholder?: string;
     busy?: boolean;
     allowCreate?: boolean | string;
     onCreate?: (value: string) => void;
