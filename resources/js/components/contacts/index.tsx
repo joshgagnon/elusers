@@ -63,16 +63,22 @@ function filterData(search: string, data: EL.Contact[]) {
     return data;
 }
 
-const primaryEmail = (contact: EL.Contact) => {
+const emails = (contact: EL.Contact, hrefs=false) => {
     const emails = contact.contactInformations.filter(c => c.type === 'email');
-    return emails.length > 0  && emails.map((email, i) => <span style={{ display: "inline-block"}} key={i}>{email.data.subtype && `[${email.data.subtype}] `}{ email.data.email }</span>);
+    return emails.length > 0  && emails.map((email, i) => <span style={{ display: "block"}} key={i}>{email.data.subtype && `[${email.data.subtype}] `}
+                                            <a href={`mailto:${email.data.email}`}>{ email.data.email }</a>{ email.data.notes && ` ${email.data.notes}`}
+                                            </span>);
 }
 
-const primaryPhone = (contact: EL.Contact) => {
+const phones = (contact: EL.Contact) => {
     const phones = contact.contactInformations.filter(c => c.type === 'phone');
-    return phones.length > 0 && phones.map((phone, i) => <span style={{ display: "inline-block"}} key={i}>{phone.data.subtype && `[${phone.data.subtype}] `}{ phone.data.phone }</span>);
+    return phones.length > 0 && phones.map((phone, i) => <span style={{ display: "block"}} key={i}>{phone.data.subtype && `[${phone.data.subtype}] `}{ phone.data.phone }{ phone.data.notes && ` ${phone.data.notes}`}</span>);
 }
 
+const faxes = (contact: EL.Contact) => {
+    const phones = contact.contactInformations.filter(c => c.type === 'fax');
+    return phones.length > 0 && phones.map((fax, i) => <span style={{ display: "block"}} key={i}>{fax.data.subtype && `[${fax.data.subtype}] `}{fax.data.fax }{ fax.data.notes && ` ${fax.data.notes}`}</span>);
+}
 
 @ContactsHOC()
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
@@ -104,15 +110,15 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                         threshold={200}
                         itemRenderer={(index) => {
                             const contact = data[index]; //cause the header
-                            const email = primaryEmail(contact);
-                            const phone = primaryPhone(contact)
                             if(!contact){
                                 return false;
                             }
+                            const email = emails(contact, true);
+                            const phone = phones(contact)
                             return <tr key={contact.id}>
                             <td>{fullname(contact)}</td>
                             <td>{contact.contactableType}</td>
-                            <td>{email && <a href={ `mailto:${email}` }>{email}</a> }</td>
+                            <td>{email || '' }</td>
                             <td>{phone || ''}</td>
                             <td className="actions">
                                 <Link to={`/contacts/${contact.id}`}>View</Link>
@@ -234,7 +240,6 @@ export class Contact extends React.PureComponent<ContactProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    <Link to={`/contacts/${contact.id}/addresses`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Addresses</Link>
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
                          <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
@@ -245,6 +250,15 @@ export class Contact extends React.PureComponent<ContactProps> {
                 <h4>{contact.contactableType}</h4>
 
                 <dl  className="dl-horizontal">
+
+                    <dt>Email</dt>
+                    <dd>{ emails(contact, true) }</dd>
+
+                    <dt>Phone</dt>
+                    <dd>{ phones(contact) }</dd>
+
+                    <dt>Fax</dt>
+                    <dd>{ faxes(contact) }</dd>
 
                     <dt>Bank Account Number</dt>
                     <dd>{contact.bankAccountNumber || '-'}</dd>
@@ -530,8 +544,6 @@ class ContactFormSimple extends React.PureComponent<ContactFormProps> {
 
                 <ConnectedContactTypeFields selector={selector} />
 
-                <InputField name="email" label="Email" type="email" />
-                <InputField name="phone" label="Phone" type="text" />
             </Form>
         );
     }
@@ -539,8 +551,6 @@ class ContactFormSimple extends React.PureComponent<ContactFormProps> {
 
 const contactValidationRules: EL.IValidationFields = {
     name: { name: 'Name' },
-    email: { name: 'Email' },
-    phone: { name: 'Phone' },
 }
 
 
