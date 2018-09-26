@@ -52,13 +52,14 @@ declare global {
 
         interface IAddress {
             id?: number;
-            addressName: string;
+            addressName?: string;
             addressOne: string;
             addressTwo: string;
             addressThree: string;
             postCode: string;
             countryCode: string;
-            addressType: string;
+            addressType?: string;
+            subType?: string;
         }
 
         interface DeedPacket {

@@ -62,9 +62,7 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="contacts/:contactId" component={Contact} />
         <Route path="contacts/:contactId/edit" component={EditContact} />
         <Route path="contacts/:contactId/merge" component={MergeContact} />
-        <Route path="contacts/:contactId/addresses" component={ViewContactAddresses} />
-        <Route path="contacts/:contactId/addresses/create" component={CreateContactAddress} />
-        <Route path="contacts/:contactId/addresses/:addressId/edit" component={EditContactAddress} />
+
 
 
         <Route path="deeds" component={ListDeedPackets} />

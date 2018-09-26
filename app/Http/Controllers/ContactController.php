@@ -179,6 +179,14 @@ class ContactController extends Controller
 
         $contact->files()->sync(array_merge($fileIds, $existingFileIds));
 
+        if(isset($data['files_to_copy'])){
+            // can read file
+            foreach ($data['files_to_copy'] as $file) {
+                if(isset($file['id']) && File::canRead($file['id'], $user)){
+                    $this->copyFile(File::find($file['id']), $request->user(), $contact);
+                }
+            }
+        }
 
         return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
     }
@@ -286,8 +294,8 @@ class ContactController extends Controller
                 $fields = [
                     'organisation_id' => $user->organisation_id,
                     'contactable_type' => $row['Type'],
-                    'email' => $row['Email Address'],
-                    'phone' => $row['Phone Numbers'],
+                   //'email' => $row['Email Address'],
+                   // 'phone' => $row['Phone Numbers'],
                     'name' => $row['Name'],
                     'metadata' => json_encode(['actionstepId' => $actionstepId]),
                     'contactable' => []
@@ -309,7 +317,7 @@ class ContactController extends Controller
 
                 $contact = Contact::create($fields);
                 $this->saveSubType($contact, $fields);
-                if($row['Address']){
+                /*if($row['Address']){
                     $address = [
                         'address_one' => $row['Address'],
                         'city' => $row['City'],
@@ -319,7 +327,7 @@ class ContactController extends Controller
                     ];
                     $contact->addresses()->create($address);
 
-                }
+                }*/
 
             }
             //throw new Exception('asdf');

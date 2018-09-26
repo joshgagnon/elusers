@@ -83,12 +83,13 @@ const faxes = (contact: EL.Contact) => {
 
 const addresses = (contact: EL.Contact) => {
     const addresses = contact.contactInformations.filter(c => c.type === 'address');
-    return addresses.length > 0 && addresses.map((address, i) => <React.Fragment>
-        { ['subtype', 'addressOne', 'addressTwo', 'city', 'county', 'state', 'city', 'postCode', 'country'].map(key => {
+    return addresses.length > 0 && addresses.map((address, i) => <React.Fragment key={i}>
+        { ['subtype', 'addressOne', 'addressTwo', 'city', 'county', 'state',  'postCode', 'country'].map(key => {
             if(address.data[key]){
                 return <span style={{ display: "block", fontWeight: key === 'subtype' ? 'bold' : 'normal'}} key={key}>{ address.data[key]}</span>
             }
         }) }
+        <br/>
         </React.Fragment>);
 }
 

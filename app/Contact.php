@@ -53,11 +53,6 @@ class Contact extends Model
         return $this->belongsTo(Organisation::class);
     }
 
-    public function addresses()
-    {
-        return $this->morphMany(Address::class, 'addressable');
-    }
-
     /**
      * Deed packet relationship: a contact belongs to many deed packets.
      *
@@ -80,7 +75,7 @@ class Contact extends Model
 
 
     public function tokenExtras() {
-        $this->load('addresses');
+        $this->load('contactInformations');
         $this->load('contactable');
         return $this;
     }

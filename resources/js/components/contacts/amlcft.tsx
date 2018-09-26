@@ -38,7 +38,7 @@ const AMLCFTFields = [
     () => {
         return <React.Fragment>
             <h4 className={"text-center"}>Residential Address</h4>
-            <FormSection name="addresses[0]">
+            <FormSection name="address.data">
                 <AddressFields />
             </FormSection>
         </React.Fragment>
@@ -241,7 +241,7 @@ const EditFullAMLCFTForm= (reduxForm({
 
 interface UnwrappedExternalContactAMLCFTProps {
     submit?: (token: string, data: React.FormEvent<Form>) => void;
-    contact?: EL.Resource<EL.Contact & {addresses: EL.IAddress[]}>;
+    contact?: EL.Resource<EL.Contact & {address: any}>;
     token?: string;
 }
 
@@ -265,7 +265,15 @@ interface UnwrappedExternalContactAMLCFTProps {
 class UnwrappedExternalContactAMLCFT extends React.PureComponent<UnwrappedExternalContactAMLCFTProps> {
     render() {
         let values = this.props.contact.data;
-        return <EditContactAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.token, data)}  />
+        // find address
+        const address = (values.contactInformations || []).find(c => c.type === 'address' && c.data.subtype === 'Residential') ||
+        (values.contactInformations || []).find(c => c.type === 'address');
+        if(address) {
+            values.address = address;
+        }else{
+            values.address = {type: 'address', data: {subtype: 'Residential'}};
+        }
+        return <EditContactAMLCFTForm initialValues={values} onSubmit={data => this.props.submit(this.props.token, data)}  />
     }
 }
 
@@ -310,20 +318,21 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
         submit: (contactId: number, token: string, originalContact: EL.Contact, data: any) => {
             const url = `contacts/${contactId}`;
             const merged = {...originalContact, ...data, filesToCopy: data.files, files: originalContact.files};
+            debugger
+            const addressIndex = (merged.contactInformations || []).findIndex(info => data.address && data.address.id && data.address.id === info.id);
+            if(addressIndex >= 0) {
+                merged.contactInformations[addressIndex] = data.address;
+            }
+            else{
+                merged.contactInformations.push(data.address);
+            }
+
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
                 onFailure: [createNotification('Contact update failed. Please try again.', true)],
             };
             const actions = [updateResource(url, merged, meta)] as any;
-            if(data.addresses && data.addresses.length && data.addresses[0].id){
-                // update address
-                const addressId = data.addresses[0].id;
-                actions.push(updateResource(`contacts/${contactId}/addresses/${addressId}`, data.addresses[0]));
-            }
-            else if(data.addresses && data.addresses.length){
-                //they never had an address, create it
-                actions.push(createResource(`contacts/${contactId}/addresses`, data.addresses[0]));
-            }
+
             actions.push(deleteResource(`access_token/${token}`));
 
             return confirmAction({
