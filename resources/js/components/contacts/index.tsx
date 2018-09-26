@@ -14,7 +14,7 @@ import Icon from '../icon';
 import { connect } from 'react-redux';
 import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken, showUploadModal  } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
-import { AddressFields } from '../address/form';
+import { AddressFields, validationRules as addressValidationRules } from '../address/form';
 import { ContactCapacity } from './amlcft';
 import { Relationships, Agents } from './relationships';
 import { ContactSelector } from './contactSelector';
@@ -79,6 +79,19 @@ const faxes = (contact: EL.Contact) => {
     const phones = contact.contactInformations.filter(c => c.type === 'fax');
     return phones.length > 0 && phones.map((fax, i) => <span style={{ display: "block"}} key={i}>{fax.data.subtype && `[${fax.data.subtype}] `}{fax.data.fax }{ fax.data.notes && ` ${fax.data.notes}`}</span>);
 }
+
+
+const addresses = (contact: EL.Contact) => {
+    const addresses = contact.contactInformations.filter(c => c.type === 'address');
+    return addresses.length > 0 && addresses.map((address, i) => <React.Fragment>
+        { ['subtype', 'addressOne', 'addressTwo', 'city', 'county', 'state', 'city', 'postCode', 'country'].map(key => {
+            if(address.data[key]){
+                return <span style={{ display: "block", fontWeight: key === 'subtype' ? 'bold' : 'normal'}} key={key}>{ address.data[key]}</span>
+            }
+        }) }
+        </React.Fragment>);
+}
+
 
 @ContactsHOC()
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
@@ -260,6 +273,10 @@ export class Contact extends React.PureComponent<ContactProps> {
                     <dt>Fax</dt>
                     <dd>{ faxes(contact) }</dd>
 
+                    <dt>Address</dt>
+                    <dd>{ addresses(contact) }</dd>
+
+
                     <dt>Bank Account Number</dt>
                     <dd>{contact.bankAccountNumber || '-'}</dd>
 
@@ -342,7 +359,6 @@ const canCdd = (contactableType: string) => {
 
 class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 'contactableType': EL.Constants, 'cddType': string, 'contactable': {'trustType': string}}> {
     render() {
-        console.log(this.props)
         const { cddRequired, contactableType, cddType, contactable} = this.props;
         const trustType = contactable && contactable.trustType;
         const enhancedCDD = cddRequired && (contactableType === EL.Constants.COMPANY || contactableType === EL.Constants.TRUST) && cddType === EL.Constants.ENHANCED;
@@ -553,7 +569,29 @@ const contactValidationRules: EL.IValidationFields = {
     name: { name: 'Name' },
 }
 
+const validateContactInformation = (values: any) => {
+    return values.map(contactInformation => {
+        if(contactInformation.type === 'email'){
+            if(!contactInformation.data || !contactInformation.data.email){
+                return {data: {email: 'Email Required'}};
+            }
+        }
+        if(contactInformation.type === 'fax'){
+            if(!contactInformation.data || !contactInformation.data.fax){
+                return {data: {fax: 'Fax Required'}};
+            }
+        }
+        if(contactInformation.type === 'phone'){
+            if(!contactInformation.data || !contactInformation.data.phone){
+                return {data: {phone: 'Phone Required'}};
+            }
+        }
+        if(contactInformation.type === 'address'){
+            return {data: validate(addressValidationRules, contactInformation.data || {})};
+        }
 
+    })
+}
 
 const validateContact = (values: any) => {
    let errors = {} as any;
@@ -601,6 +639,9 @@ const validateContact = (values: any) => {
        if(enhancedTrustCDD && !hasBeneficary && values.contactable && values.contactable.trustType === 'Fixed With 10 or Fewer Beneficiaries'){
            errors.relationships._error = 'At least one beneficiary required';
        }
+   }
+   if(values.contactInformations){
+       errors.contactInformations = validateContactInformation(values.contactInformations);
    }
    return errors;
 }

@@ -14,6 +14,7 @@ use App\ContactLocalAuthority;
 use App\ContactGovernmentBody;
 use App\ContactRelationship;
 use App\AccessToken;
+use App\ContactInformation;
 use Illuminate\Http\Request;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
@@ -149,6 +150,8 @@ class ContactController extends Controller
 
         $this->saveSubType($contact, $data);
 
+        $this->saveContactInformations($contact, $data);
+
         $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
             $acc[$i['second_contact_id']] = $i;
             return $acc;
@@ -172,6 +175,7 @@ class ContactController extends Controller
         $existingFileIds = array_map(function ($i) {
             return (int)$i;
         }, $data['existing_files'] ?? []);
+
 
         $contact->files()->sync(array_merge($fileIds, $existingFileIds));
 
@@ -207,6 +211,29 @@ class ContactController extends Controller
                 break;
         }
     }
+
+    private function saveContactInformations(Contact $contact, $data) {
+
+        if(isset($data['contact_informations']) && is_array($data['contact_informations'])) {
+            $ids = array_map(function($contactInformation) use ($contact) {
+                $info = null;
+                if(isset($contactInformation['id'])){
+                    $info = $contact->contactInformations()->find($contactInformation['id']);
+                    if($info) {
+                        $info->update($contactInformation);
+                    }
+                }
+                if(!$info) {
+                    $info = new ContactInformation($contactInformation);
+                    $info->save();
+                }
+                return $info->id;
+            }, $data['contact_informations']);
+
+            $contact->contactInformations()->sync($ids);
+        }
+    }
+
 
     public function delete(Contact $contact)
     {
