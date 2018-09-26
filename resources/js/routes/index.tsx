@@ -15,7 +15,6 @@ import CreateUser from '../components/users/create';
 import { ViewBasicDetails, EditBasicDetails } from '../components/users/basicDetails';
 import { ViewEmergencyContact, EditEmergencyContact } from '../components/users/emergencyContact';
 import { ViewAddresses, EditAddress as EditUserAddress, CreateAddress as CreateUserAddress } from '../components/users/addresses';
-import { ViewAddresses as ViewContactAddresses, EditAddress as EditContactAddress, CreateAddress as CreateContactAddress } from '../components/contacts/addresses';
 import { ChangePassword as ChangeUserPassword } from '../components/users/changePassword';
 
 import CPDPRIndex from '../components/cpdpr';
