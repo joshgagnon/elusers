@@ -4,11 +4,11 @@ import PanelHOC from '../hoc/panelHOC';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
-import { Form, ButtonToolbar, Button } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel } from 'react-bootstrap';
 import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
-import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
+import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
@@ -179,13 +179,42 @@ const Clients = ({ fields, meta: { error, submitFailed } }) => (
             </Button>
             </h4>
         </div>
-        <ContactSelector name={`${contact}.contact_id`}  label="Contact" required/>
+        <ContactSelector name={`${contact}.id`}  label="Contact" required/>
       </div>
     )) }
 
       <div className="button-row">
           <Button onClick={() => fields.push({})}>
-        Add Contact
+        Add Client
+        </Button>
+      </div>
+  </div>
+)
+
+const Notes = ({ fields, meta: { error, submitFailed } }) => (
+  <div>
+    { fields.map((note, index) => (
+        <FormGroup key={index}>
+            <Col componentClass={ControlLabel} md={3}>
+                Note
+            </Col>
+            <Col md={8}>
+                    <TextArea name={`${note}.note`}  naked required />
+            </Col>
+            <Col md={1}>
+                <Button className="btn-icon-only" onClick={(e) => {
+                        e.preventDefault();
+                        fields.remove(index)
+                      }}><Icon iconName="trash-o" /></Button>
+            </Col>
+            </FormGroup>
+
+
+    )) }
+
+      <div className="button-row">
+          <Button onClick={() => fields.push({})}>
+        Add Note
         </Button>
       </div>
   </div>
@@ -200,19 +229,22 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
     render() {
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                <InputField name="matterNumber" label="Matter Number" type="textl" required/>
+                <InputField name="matterNumber" label="Matter Number" type="text" required/>
                 <InputField name="matterName" label="Matter Name" type="text" required/>
+
+                <SelectField name="status" label="Status" options={['Unapproved', 'Active', 'Closed']} required prompt/>
 
                 <SelectField name="matterType" label="Matter Type" options={this.matterOptions} required prompt/>
 
                 <Referrer selector={formValueSelector(this.props.form)}/>
-
 
                 <DocumentList name="files" label="Documents" />
 
                 <hr />
 
                 <FieldArray name="clients" component={Clients as any} />
+
+                <FieldArray name="notes" component={Notes as any} />
 
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>

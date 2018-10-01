@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Matter;
 use App\File;
+use App\Contact;
+use App\MatterNote;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
 use Illuminate\Support\Facades\Storage;
@@ -45,8 +47,21 @@ class MatterController extends Controller
         $fileIds = array_map(function($file) use ($user) {
             return $this->saveUploadedFile($file, $user)->id;
         }, $request->file('file', []));
+
         $matter->files()->sync($fileIds);
 
+        $clients =  array_map(function ($i) {
+            return $i['id'];
+        }, $data['clients'] ?? []);
+
+
+        $matter->clients()->sync($clients);
+
+        $newNotes = array_map(function ($i) use ($user)  {
+            return array_merge($i, ['created_by_user_id' => $user->id]);
+        }, $data['notes'] ?? []);
+
+        $matter->notes()->createMany($newNotes);
 
         return response()->json(['message' => 'Matter created', 'id' => $matter->id], 201);
     }
@@ -60,7 +75,7 @@ class MatterController extends Controller
     public function show(Request $request, $id)
     {
         //
-        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files'])->first();
+        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files', 'clients',  'notes'])->first();
         return $matter;
     }
 
@@ -87,6 +102,41 @@ class MatterController extends Controller
         }, $data['existing_files'] ?? []);
 
         $matter->files()->sync(array_merge($fileIds, $existingFileIds));
+
+        $clients =  array_map(function ($i) {
+            return $i['id'];
+        }, $data['clients'] ?? []);
+
+
+        $matter->clients()->sync($clients);
+
+        $notes = array_filter($data['notes'] ?? [], function($note){
+            return isset($note['id']);
+        });
+
+        $notes = array_reduce($notes,  function ($acc, $i) use ($id) {
+            $acc[$i['id']] = MatterNote::where(['id' => $i['id'], 'matter_id' => $id])->first();
+            if(!$acc[$i['id']]) {
+                $acc[$i['id']] = new MatterNote($i);
+            }
+            $acc[$i['id']]->update($i);
+            return $acc;
+        }, []);
+
+
+
+        $matter->notes()->saveMany($notes);
+
+        $newNotes = array_filter($data['notes'] ?? [], function($note){
+            return !isset($note['id']);
+        });
+
+        $newNotes = array_map(function ($i) use ($user) {
+            return array_merge($i, ['created_by_user_id' => $user->id]);
+        }, $newNotes);
+
+
+        $matter->notes()->createMany($newNotes);
 
         return response()->json(['message' => 'Matter updated', 'id' => $matter->id], 200);
     }
