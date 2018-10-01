@@ -80,6 +80,10 @@ class Contact extends Model
         return $this;
     }
 
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
 
     public function contactable()
     {
