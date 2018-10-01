@@ -17,8 +17,8 @@ class MatterFields extends Migration
             //
             $table->enum('status', ['Unapproved', 'Active', 'Closed'])->nullable()->defaultValue('Unapproved');
             $table->jsonb('metadata')->nullable();
-            $table->integer('created_by_user_id')->unsigned()->nullable();
-            $table->foreign('created_by_user_id')->references('id')->on('users')->onDelete('cascade');
+            //$table->integer('created_by_user_id')->unsigned()->nullable();
+            //$table->foreign('created_by_user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
