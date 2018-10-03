@@ -4,7 +4,7 @@ import PanelHOC from '../hoc/panelHOC';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl } from 'react-bootstrap';
 import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -12,7 +12,7 @@ import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, C
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
-import { fullname, name, guessName } from '../utils';
+import { fullname, name, guessName, formatDate } from '../utils';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import Referrer from './referrer';
 import { ContactSelector } from '../contacts/contactSelector';
@@ -48,29 +48,73 @@ export const MATTER_TYPES = [
 ];
 
 
+interface ContactState {
+    searchValue: string;
+}
+
+function filterData(search: string, data: EL.Matter[]) {
+    if(search){
+        search = search.toLocaleLowerCase();
+        return data.filter(matter => {
+            return matter.clients.some(contact => fullname(contact).toLocaleLowerCase().includes(search)) ||
+            matter.matterNumber.toLocaleLowerCase().includes(search) ||
+            matter.matterName.toLocaleLowerCase().includes(search) ||
+            matter.matterType.toLocaleLowerCase().includes(search)
+        });
+    }
+    data.sort((a, b) => a.matterNumber.localeCompare(a.matterNumber));
+    return data;
+}
 
 
-const HEADINGS = ['Matter Number', 'Name', 'Type', 'Created By', 'Actions'];
+const HEADINGS = ['Matter Number', 'Name', 'Type', 'Status', 'Clients', 'Actions'];
+
+const MatterStatus = ({matter} : {matter: EL.Matter}) => {
+    let className = 'text-danger';
+    if(matter.status === 'Pending') {
+        className = 'text-warning';
+    }
+    if(matter.status === 'Active') {
+        className = 'text-success';
+    }
+    return <span className={className}>{ matter.status }</span>
+
+}
+
+
 
 class MattersTable extends React.PureComponent<MattersViewProps> {
+    state = {
+        searchValue: ''
+    }
+
     render() {
+        const data = filterData(this.state.searchValue, this.props.matters);
         return (
             <div>
                 <ButtonToolbar>
                     <Link to="/matters/create" className="btn btn-primary"><Icon iconName="plus" />Create Matter</Link>
                 </ButtonToolbar>
-
+                <div className="search-bar">
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
+                </div>
                 <Table headings={HEADINGS} lastColIsActions>
-                    { this.props.matters.map((matter: EL.Matter, index: number) => {
+                    { data.map((matter: EL.Matter, index: number) => {
                         return <tr key={index}>
                         <td>{matter.matterNumber}</td>
                         <td>{matter.matterName}</td>
                         <td>{matter.matterType}</td>
-                        <td>{matter.createdAt}</td>
+                        <td><MatterStatus matter={matter}/></td>
+                        <td>
+                            { (matter.clients || []).map((client, i) => {
+                                return <div key={i}><a href={`/contacts/${client.id}`}>{ fullname(client) } </a></div>
+                            }) }
+                        </td>
 
 
                         <td>
                         <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
+                        <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="eye" />Edit</Link>
 
                         </td>
 
@@ -126,14 +170,29 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    <Button bsSize="small" bsStyle="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="pencil-trash" />Delete</Button>
+                    <Button bsSize="small" bsStyle="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button>
                 </ButtonToolbar>
 
                 <h3>{ matter.matterNumber }</h3>
                 <h3>{ matter.matterName }</h3>
                 <h4>{ matter.matterType }</h4>
+                <h4><MatterStatus matter={matter}/></h4>
 
                 <dl>
+                    <dt>Clients</dt>
+                    <dd>
+                        { (matter.clients || []).map((client, i) => {
+                            return <div key={i}><a href={`/contacts/${client.id}`}>{ fullname(client) } </a></div>
+                        }) }
+
+                    </dd>
+
+                    <dt>Created At</dt>
+                    <dd>{ formatDate(matter.createdAt) }</dd>
+
+                    <dt>Updated At</dt>
+                    <dd>{ formatDate(matter.updatedAt) }</dd>
+
                     <dt>Creator</dt>
                     <dd>{ name(matter.creator) }</dd>
 
@@ -147,7 +206,7 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
 
                     <dt>Notes</dt>
                     <dd>{ (matter.notes || []).map((note, i) => {
-                        return <div key={note.id}>{note.note}</div>
+                        return <div key={note.id}>{ name(note.creator) } -  {note.note}</div>
                     }) } </dd>
 
 
@@ -186,7 +245,7 @@ const Clients = ({ fields, meta: { error, submitFailed } }) => (
             </Button>
             </h4>
         </div>
-        <ContactSelector name={`${contact}.id`}  label="Contact" required/>
+        <ContactSelector name={`${contact}.id`}  label="Client" required/>
       </div>
     )) }
 
@@ -196,7 +255,7 @@ const Clients = ({ fields, meta: { error, submitFailed } }) => (
         </Button>
       </div>
 
-      { error && <Alert  bsStyle="danger error"><p className="text-center">{ error }</p> </Alert> }
+      { error && <Alert  bsStyle="danger"><p className="text-center">{ error }</p> </Alert> }
 
   </div>
 )
@@ -227,7 +286,7 @@ const Notes = ({ fields, meta: { error, submitFailed } }) => (
         Add Note
         </Button>
       </div>
-      { error && <Alert  bsStyle="danger error"><p className="text-center">{ error } </p></Alert> }
+      { error && <Alert  bsStyle="danger"><p className="text-center">{ error } </p></Alert> }
   </div>
 )
 

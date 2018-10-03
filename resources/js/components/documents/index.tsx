@@ -46,7 +46,7 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
                         return <tr key={index}>
                         <td>{document.filename}</td>
                         <td>{document.createdAt}</td>
-                        <td><a target="_blank" className="btn btn-default btn-sml" href={`/api/files/${document.id}`}>Download</a></td>
+                        <td><a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.id}`}>Download</a></td>
                         <td><Button bsSize='small' bsStyle="danger" onClick={() => this.props.destroy(document.id as string)}>Delete</Button></td>
 
                         </tr>

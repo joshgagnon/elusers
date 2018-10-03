@@ -389,6 +389,15 @@ input.checkbox.form-control {
     margin: 10px 0;
 }
 
+table{
+    td{
+        .btn{
+            &:not(:first-child){
+                margin-left:4px;
+            }
+        }
+    }
+}
 .lazy-table {
     table {
         table-layout: fixed;

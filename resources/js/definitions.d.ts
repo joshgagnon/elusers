@@ -89,7 +89,9 @@ declare global {
             matterName?: string;
             matterNumber: string;
             matterType: string;
+            status: string;
             createdAt: string;
+            updatedAt?: string;
             creator: EL.User;
             referrer: EL.User | EL.Contact;
             files: Document[];

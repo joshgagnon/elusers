@@ -21,7 +21,7 @@ class MatterController extends Controller
     public function index(Request $request)
     {
         $orgId = $request->user()->organisation_id;
-        return Matter::where('organisation_id', $orgId)->with(['creator:preferred_name'])->get();
+        return Matter::where('organisation_id', $orgId)->with(['creator:preferred_name', 'clients', 'clients.contactable'])->get();
     }
 
     /**
@@ -75,7 +75,7 @@ class MatterController extends Controller
     public function show(Request $request, $id)
     {
         //
-        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files', 'clients',  'notes'])->first();
+        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator'])->first();
         return $matter;
     }
 
