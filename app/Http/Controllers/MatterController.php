@@ -7,6 +7,7 @@ use App\Matter;
 use App\File;
 use App\Contact;
 use App\MatterNote;
+use App\MatterFile;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
 use Illuminate\Support\Facades\Storage;
@@ -152,6 +153,14 @@ class MatterController extends Controller
         $matter = Matter::findOrFail($id)->where('organisation_id', $request->user()->organisation_id)->first();
         $matter->delete();
         return response()->json(['message' => 'Matter deleted', 'id' => $matter->id], 200);
+    }
+
+    public function documents(Request $request)
+    {
+        $orgId = $request->user()->organisation_id;
+        return MatterFile::with('file', 'matter')->whereHas('matter', function($q) use ($orgId) {
+            $q->where('organisation_id', $orgId);
+        })->get();
     }
 
     private function saveUploadedFile($file, $user)

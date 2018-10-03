@@ -100,7 +100,10 @@ export const ContactHOC = () => HOCFactory({ location: (props) => `contacts/${pr
 export const ContactAddressesHOC = () => HOCFactory({ location: (props) => `contacts/${props.contactId}/addresses`, propsName: 'addresses' });
 export const ContactAddressHOC = () => HOCFactory({ location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
 
-export const OrganisationDocumentsHOC = () => HOCFactory({ location: (props) => `organisation_files`, propsName: 'documents' });
+export const OrganisationDocumentsHOC = () => HOCFactory({ location: (props) => `organisation-files`, propsName: 'documents' });
+export const ContactDocumentsHOC = () => HOCFactory({ location: (props) => `contact-files`, propsName: 'documents' });
+export const MatterDocumentsHOC = () => HOCFactory({ location: (props) => `matter-files`, propsName: 'documents' });
+
 export const MattersHOC = () => HOCFactory({ location: (props) => `matters`, propsName: 'matters' });
 export const MatterHOC = () => HOCFactory({ location: (props) => `matters/${props.matterId}`, propsName: 'matter' });
 

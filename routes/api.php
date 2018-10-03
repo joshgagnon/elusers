@@ -78,25 +78,15 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('contacts/{contact}/access_token', 'ContactController@createAccessToken');
 
     Route::post('contacts-sync', 'ContactController@syncContacts');
-
-
-    /**
-     * Addresses
-     */
-    Route::get('contacts/{contact}/addresses', 'ContactAddressController@all');
-    Route::post('contacts/{contact}/addresses', 'ContactAddressController@create');
-    Route::get('contacts/{contact}/addresses/{address}', 'ContactAddressController@get');
-    Route::put('contacts/{contact}/addresses/{address}', 'ContactAddressController@update');
-    Route::delete('contacts/{contact}/addresses/{address}', 'ContactAddressController@delete');
-
+    Route::get('contact-files', 'ContactController@documents');
 
     /**
      * Files
      */
     Route::get('files/{file}', 'FileController@get')->name('file');
-    Route::get('organisation_files', 'OrganisationFileController@all');
-    Route::post('organisation_files', 'OrganisationFileController@create');
-    Route::delete('organisation_files/{file}', 'OrganisationFileController@delete');
+    Route::get('organisation-files', 'OrganisationFileController@all');
+    Route::post('organisation-files', 'OrganisationFileController@create');
+    Route::delete('organisation-files/{file}', 'OrganisationFileController@delete');
 
     /**
      * CPDPR
@@ -118,7 +108,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::apiResource('matters', 'MatterController');
     Route::post('matters/{matter}', 'MatterController@update');
-
+    Route::get('matter-files', 'MatterController@documents');
 
     Route::post('render', 'RenderController@render');
 

@@ -12,4 +12,9 @@ class MatterFile extends Model
     {
         return $this->belongsTo(File::class);
     }
+
+    public function matter()
+    {
+        return $this->belongsTo(Matter::class);
+    }
 }

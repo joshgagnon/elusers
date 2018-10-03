@@ -12,4 +12,9 @@ class ContactFile extends Model
     {
         return $this->belongsTo(File::class);
     }
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 }

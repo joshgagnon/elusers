@@ -83,6 +83,18 @@ declare global {
             file: Document;
         }
 
+        interface MatterDocument {
+            id: string | number;
+            file: Document;
+            matter: Matter;
+        }
+
+        interface ContactDocument {
+            id: string | number;
+            file: Document;
+            contact: Contact;
+        }
+
         interface Note {
             id: number | string;
             note: string;

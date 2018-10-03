@@ -339,6 +339,14 @@ class ContactController extends Controller
         return response()->json(['message' => 'Contacts updated.']);
     }
 
+    public function documents(Request $request)
+    {
+        $orgId = $request->user()->organisation_id;
+        return ContactFile::with('file', 'contact', 'contact.contactable')->whereHas('contact', function($q) use ($orgId) {
+            $q->where('organisation_id', $orgId);
+        })->get();
+    }
+
     private function saveUploadedFile($file, $user)
     {
         // Get the uploaded file contents

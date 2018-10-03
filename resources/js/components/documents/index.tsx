@@ -1,27 +1,32 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
-import { OrganisationDocumentsHOC } from '../hoc/resourceHOCs';
+import { OrganisationDocumentsHOC, ContactDocumentsHOC, MatterDocumentsHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { DocumentDropZone } from '../form-fields/documents';
 import { createNotification, createResource, deleteResource, confirmAction } from '../../actions';
 import { Form, ButtonToolbar, Button, Tabs, Tab, FormControl } from 'react-bootstrap';
 import { fullname, name } from '../utils';
+import { Link } from 'react-router';
+
 
 interface  DocumentsProps {
       documents: EL.Resource<EL.OrganisationDocument[]>;
     //delete: (documentId: number) => void;
 }
 interface  DocumentsViewProps {
-      documents: EL.OrganisationDocument[];
+    searchValue: string;
+    documents: EL.OrganisationDocument[];
     upload: (files: any) => any;
-    destroy:
-     (documentId: string) => any;
+    destroy: (documentId: string) => any;
 }
-function filterData(search: string, data: EL.OrganisationDocument[]) {
+
+
+type Doc = EL.OrganisationDocument | EL.ContactDocument | EL.MatterDocument;
+function filterData(search: string, data: Doc[], includes : (string, any) => boolean = (any) => false) : Doc[]{
     if(search){
         search = search.toLocaleLowerCase();
-        return data.filter(orgFile => orgFile.file.filename.toLowerCase().includes(search));
+        return data.filter((orgFile: Doc) => orgFile.file.filename.toLowerCase().includes(search) || includes(search, orgFile));
     }
     data.sort((a, b) => a.file.filename.localeCompare(b.file.filename));
     return data;
@@ -29,12 +34,7 @@ function filterData(search: string, data: EL.OrganisationDocument[]) {
 
 
 
-
-
-class DocumentsView extends React.PureComponent<DocumentsViewProps> {
-    state = {
-        searchValue: ''
-    }
+class OrgDocumentsView extends React.PureComponent<DocumentsViewProps> {
     constructor(props: DocumentsViewProps) {
         super(props);
         this.onDrop = this.onDrop.bind(this);
@@ -43,12 +43,10 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
         this.props.upload(droppedFiles);
     }
     render() {
-        const data = filterData(this.state.searchValue, this.props.documents);
+        const data = filterData(this.props.searchValue, this.props.documents);
         return (
             <div>
-                <div className="search-bar">
-                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
-                </div>
+                <br/>
                 <DocumentDropZone onDrop={this.onDrop}>
                     <div className="text-center">Click or drag files to upload.  Files will be encrypted and available organisation wide.</div>
                 </DocumentDropZone>
@@ -68,7 +66,7 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
                         <td>{document.file.createdAt}</td>
                         <td>{ document.creator && name(document.creator) }</td>
                         <td>
-                        <a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.id}`}>Download</a>
+                        <a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.file.id}`}>Download</a>
                         <Button bsSize='small' bsStyle="danger" onClick={() => this.props.destroy(document.id as string)}>Delete</Button></td>
 
                         </tr>
@@ -81,8 +79,88 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
     }
 }
 
+interface  ContactDocumentsViewProps {
+    searchValue: string;
+    documents?: EL.Resource<EL.ContactDocument[]>;
+}
+@ContactDocumentsHOC()
+class ContactDocumentsView extends React.PureComponent<ContactDocumentsViewProps> {
 
-const ConnectedDocumentsView = connect<void, {upload: (files: any) => void; destroy: (fileId: string) => void}, {documents: EL.Document[]} >(
+    render() {
+        const data = filterData(this.props.searchValue, (this.props.documents.data || []),
+                                (search: string, doc: EL.ContactDocument) => fullname(doc.contact).toLowerCase().includes(search));
+        return (
+            <div>
+                <table className="table">
+                <thead>
+                    <tr>
+                    <th>Filename</th>
+                    <th>Created At</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     {data.map((document: EL.ContactDocument, index: number) => {
+                        return <tr key={index}>
+                        <td>{document.file.filename}</td>
+                        <td>{document.file.createdAt}</td>
+                        <td><Link to={`/contacts/${document.contact.id}`}> { fullname(document.contact) }</Link></td>
+                        <td>
+                        <a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.file.id}`}>Download</a>
+                        </td>
+                        </tr>
+                    })}
+                </tbody>
+
+                </table>
+            </div>
+        );
+    }
+}
+
+interface  MatterDocumentsViewProps {
+    searchValue: string;
+    documents?: EL.Resource<EL.MatterDocument[]>;
+}
+@MatterDocumentsHOC()
+class MatterDocumentsView extends React.PureComponent<MatterDocumentsViewProps> {
+
+    render() {
+        const data = filterData(this.props.searchValue, (this.props.documents.data || []),
+                                (search: string, doc: EL.MatterDocument) => `${doc.matter.matterNumber} ${doc.matter.matterName}`.toLowerCase().includes(search));
+        return (
+            <div>
+                <table className="table">
+                <thead>
+                    <tr>
+                    <th>Filename</th>
+                    <th>Created At</th>
+                    <th>Matter</th>
+                    <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     {data.map((document: EL.MatterDocument, index: number) => {
+                        return <tr key={index}>
+                        <td>{document.file.filename}</td>
+                        <td>{document.file.createdAt}</td>
+                         <td><Link to={`/contacts/${document.matter.id}`}> { document.matter.matterNumber }</Link></td>
+                        <td>
+                        <a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.file.id}`}>Download</a>
+                        </td>
+                        </tr>
+                    })}
+                </tbody>
+
+                </table>
+            </div>
+        );
+    }
+}
+
+
+const ConnectedOrgDocumentsView = connect<void, {upload: (files: any) => void; destroy: (fileId: string) => void}, {documents: EL.Document[]} >(
     undefined,
     {
         upload: (files: any) => {
@@ -107,17 +185,33 @@ const ConnectedDocumentsView = connect<void, {upload: (files: any) => void; dest
           })
         }
     }
-)(DocumentsView);
+)(OrgDocumentsView);
 
 
 @OrganisationDocumentsHOC()
-@PanelHOC<DocumentsProps>('Documents', props => [props.documents])
+@PanelHOC<DocumentsProps, {searchValue: string}>('Documents', props => [props.documents])
 export default  class Documents extends React.PureComponent<DocumentsProps> {
-
+    state = {
+        searchValue: ''
+    }
     render() {
-        return (
-                <ConnectedDocumentsView documents={this.props.documents.data}/>
+        return <React.Fragment>
+                <div className="search-bar">
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
+                </div>
 
-        );
+           <Tabs defaultActiveKey={1} id="documents">
+              <Tab eventKey={1} title="Organisation Documents">
+                <ConnectedOrgDocumentsView documents={this.props.documents.data} searchValue={this.state.searchValue}/>
+              </Tab>
+              <Tab eventKey={2} title="Matter Documents">
+                  <ContactDocumentsView searchValue={this.state.searchValue} />
+              </Tab>
+              <Tab eventKey={3} title="Contact Documents">
+                  <MatterDocumentsView searchValue={this.state.searchValue} />
+              </Tab>
+             </Tabs>
+
+        </React.Fragment>
     }
 }
