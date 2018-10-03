@@ -114,7 +114,7 @@ class MattersTable extends React.PureComponent<MattersViewProps> {
 
                         <td>
                         <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
-                        <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="eye" />Edit</Link>
+                        <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link>
 
                         </td>
 

@@ -22,12 +22,7 @@ class OrganisationFileController extends Controller
     public function all(Request $request)
 
     {
-        $files = function ($n) {
-            return $n->files;
-        };
-        return $request->user()->organisation()->first()->organisationFiles()->with('file')->get()->map(function ($i) {
-            return $i->file;
-        });
+        return $request->user()->organisation()->first()->organisationFiles()->with('file', 'creator')->get();
     }
 
 
@@ -102,6 +97,7 @@ class OrganisationFileController extends Controller
 
         $orgFile->file_id = $file->id;
         $orgFile->organisation_id  = $organisation->id;
+        $orgFile->created_by_user_id  = $user->id;
         $orgFile->save();
         return $orgFile;
     }

@@ -77,6 +77,12 @@ declare global {
             createdAt?: string;
         }
 
+        interface OrganisationDocument {
+            id: string | number;
+            creator?: User;
+            file: Document;
+        }
+
         interface Note {
             id: number | string;
             note: string;

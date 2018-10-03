@@ -135,8 +135,8 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                             <td>{email || '' }</td>
                             <td>{phone || ''}</td>
                             <td className="actions">
-                                <Link to={`/contacts/${contact.id}`}>View</Link>
-                                <Link to={`/contacts/${contact.id}/edit`}>Edit</Link>
+                                <Link className="btn btn-sm btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
+                                <Link className="btn btn-sm btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link>
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {

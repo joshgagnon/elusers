@@ -5,15 +5,15 @@ import { OrganisationDocumentsHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { DocumentDropZone } from '../form-fields/documents';
 import { createNotification, createResource, deleteResource, confirmAction } from '../../actions';
-import { Form, ButtonToolbar, Button } from 'react-bootstrap';
-
+import { Form, ButtonToolbar, Button, Tabs, Tab } from 'react-bootstrap';
+import { fullname, name } from '../utils';
 
 interface  DocumentsProps {
-      documents: EL.Resource<EL.Document[]>;
+      documents: EL.Resource<EL.OrganisationDocument[]>;
     //delete: (documentId: number) => void;
 }
 interface  DocumentsViewProps {
-      documents: EL.Document[];
+      documents: EL.OrganisationDocument[];
     upload: (files: any) => any;
     destroy: (documentId: string) => any;
 }
@@ -31,23 +31,27 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
         return (
             <div>
                 <DocumentDropZone onDrop={this.onDrop}>
-                    <div>Click or drag files to upload.  Files will be encrypted and available organisation wide.</div>
+                    <div className="text-center">Click or drag files to upload.  Files will be encrypted and available organisation wide.</div>
                 </DocumentDropZone>
                 <p/>
                 <table className="table">
                 <thead>
                     <tr>
                     <th>Filename</th>
-                    <th>Created At</th><th></th><th></th>
+                    <th>Created At</th>
+                    <th>Uploaded By</th>
+                    <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    { this.props.documents.map((document: EL.Document, index: number) => {
+                    { this.props.documents.map((document: EL.OrganisationDocument, index: number) => {
                         return <tr key={index}>
-                        <td>{document.filename}</td>
-                        <td>{document.createdAt}</td>
-                        <td><a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.id}`}>Download</a></td>
-                        <td><Button bsSize='small' bsStyle="danger" onClick={() => this.props.destroy(document.id as string)}>Delete</Button></td>
+                        <td>{document.file.filename}</td>
+                        <td>{document.file.createdAt}</td>
+                        <td>{ document.creator && name(document.creator) }</td>
+                        <td>
+                        <a target="_blank" className="btn btn-default btn-sm" href={`/api/files/${document.id}`}>Download</a>
+                        <Button bsSize='small' bsStyle="danger" onClick={() => this.props.destroy(document.id as string)}>Delete</Button></td>
 
                         </tr>
                     })}

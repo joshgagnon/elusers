@@ -12,4 +12,8 @@ class OrganisationFile extends Model
     {
         return $this->belongsTo(File::class);
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id');
+    }
 }
