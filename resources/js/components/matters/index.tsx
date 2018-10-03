@@ -62,7 +62,7 @@ function filterData(search: string, data: EL.Matter[]) {
             matter.matterType.toLocaleLowerCase().includes(search)
         });
     }
-    data.sort((a, b) => a.matterNumber.localeCompare(a.matterNumber));
+    data.sort((a, b) => a.matterNumber.localeCompare(b.matterNumber));
     return data;
 }
 

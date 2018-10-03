@@ -5,7 +5,7 @@ import { OrganisationDocumentsHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { DocumentDropZone } from '../form-fields/documents';
 import { createNotification, createResource, deleteResource, confirmAction } from '../../actions';
-import { Form, ButtonToolbar, Button, Tabs, Tab } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Tabs, Tab, FormControl } from 'react-bootstrap';
 import { fullname, name } from '../utils';
 
 interface  DocumentsProps {
@@ -15,11 +15,26 @@ interface  DocumentsProps {
 interface  DocumentsViewProps {
       documents: EL.OrganisationDocument[];
     upload: (files: any) => any;
-    destroy: (documentId: string) => any;
+    destroy:
+     (documentId: string) => any;
+}
+function filterData(search: string, data: EL.OrganisationDocument[]) {
+    if(search){
+        search = search.toLocaleLowerCase();
+        return data.filter(orgFile => orgFile.file.filename.toLowerCase().includes(search));
+    }
+    data.sort((a, b) => a.file.filename.localeCompare(b.file.filename));
+    return data;
 }
 
 
+
+
+
 class DocumentsView extends React.PureComponent<DocumentsViewProps> {
+    state = {
+        searchValue: ''
+    }
     constructor(props: DocumentsViewProps) {
         super(props);
         this.onDrop = this.onDrop.bind(this);
@@ -28,12 +43,15 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
         this.props.upload(droppedFiles);
     }
     render() {
+        const data = filterData(this.state.searchValue, this.props.documents);
         return (
             <div>
+                <div className="search-bar">
+                    <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
+                </div>
                 <DocumentDropZone onDrop={this.onDrop}>
                     <div className="text-center">Click or drag files to upload.  Files will be encrypted and available organisation wide.</div>
                 </DocumentDropZone>
-                <p/>
                 <table className="table">
                 <thead>
                     <tr>
@@ -44,7 +62,7 @@ class DocumentsView extends React.PureComponent<DocumentsViewProps> {
                     </tr>
                 </thead>
                 <tbody>
-                    { this.props.documents.map((document: EL.OrganisationDocument, index: number) => {
+                     {data.map((document: EL.OrganisationDocument, index: number) => {
                         return <tr key={index}>
                         <td>{document.file.filename}</td>
                         <td>{document.file.createdAt}</td>
