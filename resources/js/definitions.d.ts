@@ -77,6 +77,13 @@ declare global {
             createdAt?: string;
         }
 
+        interface Note {
+            id: number | string;
+            note: string;
+            creator: User;
+            createdAt: string;
+        }
+
         interface Matter {
             id?: number;
             matterName?: string;
@@ -86,6 +93,9 @@ declare global {
             creator: EL.User;
             referrer: EL.User | EL.Contact;
             files: Document[];
+            notes: Note[];
+            clients: Contact[];
+
         }
 
 
@@ -287,7 +297,7 @@ declare global {
         }
 
         export interface ValidationErrors {
-            [key: string]: string
+            [key: string]: any
         }
 
         interface IValidationField {
@@ -298,6 +308,7 @@ declare global {
             maxValue?: number;
             minItems?: number;
             isDate?: boolean;
+            map?: {[key: string]: IValidationField};
             sameAs?: {
                 fieldName: string;
                 fieldDisplayName: string;

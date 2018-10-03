@@ -4,7 +4,7 @@ import PanelHOC from '../hoc/panelHOC';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert } from 'react-bootstrap';
 import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -136,13 +136,20 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
                 <dl>
                     <dt>Creator</dt>
                     <dd>{ name(matter.creator) }</dd>
-                    <dt>Referrerr</dt>
+
+                    <dt>Referrer</dt>
                     <dd>{ matter.referrer ? guessName(matter.referrer) : 'None'}</dd>
 
                     <dt>Documents</dt>
                     <dd>{ (matter.files || []).map((file, i) => {
                         return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
                     }) } </dd>
+
+                    <dt>Notes</dt>
+                    <dd>{ (matter.notes || []).map((note, i) => {
+                        return <div key={note.id}>{note.note}</div>
+                    }) } </dd>
+
 
                 </dl>
             </div>
@@ -188,6 +195,9 @@ const Clients = ({ fields, meta: { error, submitFailed } }) => (
         Add Client
         </Button>
       </div>
+
+      { error && <Alert  bsStyle="danger error"><p className="text-center">{ error }</p> </Alert> }
+
   </div>
 )
 
@@ -217,6 +227,7 @@ const Notes = ({ fields, meta: { error, submitFailed } }) => (
         Add Note
         </Button>
       </div>
+      { error && <Alert  bsStyle="danger error"><p className="text-center">{ error } </p></Alert> }
   </div>
 )
 
@@ -235,16 +246,22 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
                 <SelectField name="status" label="Status" options={['Unapproved', 'Active', 'Closed']} required prompt/>
 
                 <SelectField name="matterType" label="Matter Type" options={this.matterOptions} required prompt/>
-
+                <hr />
                 <Referrer selector={formValueSelector(this.props.form)}/>
 
+                <hr />
+
+
+
+                <FieldArray name="clients" component={Clients as any} />
+                <hr />
                 <DocumentList name="files" label="Documents" />
 
                 <hr />
 
-                <FieldArray name="clients" component={Clients as any} />
-
                 <FieldArray name="notes" component={Notes as any} />
+                <hr />
+
 
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
@@ -258,17 +275,25 @@ const matterValidationRules: EL.IValidationFields = {
     matterNumber: { name: 'Matter Number', required: true },
     matterName: { name: 'Name', required: true },
     matterType: { name: 'Matter Type', required: true },
-    clients: { name: 'Client', minItems: 1},
+    status: { name: 'Status', required: true },
+    clients: { name: 'Client', minItems: 1, map: {id: { name: 'Client', required: true}}},
+    notes: { name: 'Notes',  map: {note: { name: 'Note', required: true}}}
+}
+
+const validateMatter = values => {
+    const errors = validate(matterValidationRules, values);
+    console.log(errors)
+    return errors;
 }
 
 const CreateMatterForm = (reduxForm({
     form: EL.FormNames.CREATE_MATTER_FORM,
-    validate: values => validate(matterValidationRules, values)
+    validate: validateMatter
 })(MatterForm as any) as any);
 
 const EditMatterForm = (reduxForm({
     form: EL.FormNames.EDIT_MATTER_FORM,
-    validate: values => validate(matterValidationRules, values)
+    validate: validateMatter
 })(MatterForm as any) as any);
 
 
@@ -289,7 +314,7 @@ const EditMatterForm = (reduxForm({
 @PanelHOC<CreateMatterProps>('Create Matter')
 export class CreateMatter extends React.PureComponent<CreateMatterProps> {
     render() {
-        return <CreateMatterForm initialValues={{client: [{}]}} onSubmit={this.props.submit} saveButtonText="Create Matter" />
+        return <CreateMatterForm initialValues={{clients: [{}]}} onSubmit={this.props.submit} saveButtonText="Create Matter" />
     }
 }
 
