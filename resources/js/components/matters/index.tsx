@@ -107,7 +107,7 @@ class MattersTable extends React.PureComponent<MattersViewProps> {
                         <td><MatterStatus matter={matter}/></td>
                         <td>
                             { (matter.clients || []).map((client, i) => {
-                                return <div key={i}><a href={`/contacts/${client.id}`}>{ fullname(client) } </a></div>
+                                return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
                             }) }
                         </td>
 
@@ -182,7 +182,7 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
                     <dt>Clients</dt>
                     <dd>
                         { (matter.clients || []).map((client, i) => {
-                            return <div key={i}><a href={`/contacts/${client.id}`}>{ fullname(client) } </a></div>
+                            return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
                         }) }
 
                     </dd>

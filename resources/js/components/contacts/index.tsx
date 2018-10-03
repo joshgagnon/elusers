@@ -341,6 +341,13 @@ export class Contact extends React.PureComponent<ContactProps> {
                     }) }
                        { (contact.files || []).length === 0 && 'No Documents' }
                     </dd>
+                     <br/>
+                    <dt>Matters</dt>
+                    <dd>{ (contact.matters || []).map((matter, i) => {
+                        return <div key={matter.id}><Link to={`/matters/${matter.id}`}>{matter.matterNumber}</Link></div>
+                    }) }
+                       { (contact.matters || []).length === 0 && 'No Matters' }
+                    </dd>
 
                 </dl>
                 { hasSubmitted && <Alert  bsStyle="success">
@@ -365,6 +372,13 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
         const enhancedCDD = cddRequired && (contactableType === EL.Constants.COMPANY || contactableType === EL.Constants.TRUST) && cddType === EL.Constants.ENHANCED;
         const enhancedCompanyCDD = enhancedCDD && contactableType === EL.Constants.COMPANY;
         const enhancedTrustCDD = enhancedCDD && contactableType === EL.Constants.TRUST;
+        const cddTypes = contactableType !== 'Individual' ? [
+                    {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
+                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD}] :
+                    [ {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
+                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
+                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}];
+
 
         if(!canCdd(contactableType)){
             return false;
@@ -374,11 +388,7 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
             <CheckboxField name="cddRequired" label="CDD Required" />
 
             { this.props.cddRequired && <React.Fragment>
-                <SelectField name='cddType' label='Type' options={[
-                    {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
-                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
-                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}
-                    ]} required prompt />
+                <SelectField name='cddType' label='Type' options={cddTypes} required prompt />
                    { enhancedCompanyCDD && <SelectField name='contactable.enhancedCddReason' label='CDD Reason' options={[
                         'Company is a vehicle for holding personal assets',
                         'Company has nominee shareholders or shares in bearer form',

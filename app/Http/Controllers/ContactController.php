@@ -57,8 +57,8 @@ class ContactController extends Controller
         $contact = Contact::where('organisation_id', $orgId)->where('id', $contactId)
             ->with('contactable', 'files', 'accessTokens',
                    'relationships', 'relationships.contact', 'relationships.contact.contactable',
-                   'agents', 'agents.contact', 'agents.contact.contactable', 'contactInformations'
-
+                   'agents', 'agents.contact', 'agents.contact.contactable', 'contactInformations',
+                   'matters'
                )->first();
 
         if (!$contact) {

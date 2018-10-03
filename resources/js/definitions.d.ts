@@ -189,6 +189,7 @@ declare global {
             agents?: ContactAgent[];
             contactableType: string;
             contactInformations?: ContactInformation[];
+            matters?: Matter[];
         }
 
         interface Office {

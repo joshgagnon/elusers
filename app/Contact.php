@@ -120,6 +120,11 @@ class Contact extends Model
     {
         return $this->belongsToMany(ContactInformation::Class);
     }
+
+    public function matters()
+    {
+        return $this->belongsToMany(Matter::Class, 'matter_clients', 'contact_id', 'matter_id')->using('App\MatterClient');
+    }
 }
 
 
