@@ -204,10 +204,10 @@ export default  class Documents extends React.PureComponent<DocumentsProps> {
               <Tab eventKey={1} title="Organisation Documents">
                 <ConnectedOrgDocumentsView documents={this.props.documents.data} searchValue={this.state.searchValue}/>
               </Tab>
-              <Tab eventKey={2} title="Matter Documents">
+              <Tab eventKey={2} title="Contact Documents">
                   <ContactDocumentsView searchValue={this.state.searchValue} />
               </Tab>
-              <Tab eventKey={3} title="Contact Documents">
+              <Tab eventKey={3} title="Matter Documents">
                   <MatterDocumentsView searchValue={this.state.searchValue} />
               </Tab>
              </Tabs>
