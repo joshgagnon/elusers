@@ -27,3 +27,6 @@ Route::get('amlcft/{token}', 'HomeController@amlcft')->name('home.amlcft');
 Route::group(['middleware' => 'auth'], function() {
     Route::get('{path?}', 'HomeController@index')->where('path', '.*');
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

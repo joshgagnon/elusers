@@ -6,23 +6,23 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $loadData = [];
-        $loadData['user'] = $request->user();
-
-        return view('index')->with([
-            'loadData' => json_encode($loadData)
-        ]);
+        $this->middleware('auth');
     }
 
-    public function amlcft(Request $request)
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-
-        $loadData = [];
-        $loadData['user'] = false;
-        return view('index')->with([
-            'loadData' => json_encode($loadData)
-        ]);
+        return view('home');
     }
 }

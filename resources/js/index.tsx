@@ -32,9 +32,10 @@ const store = configureStore(browserHistory, initialState);
 const history = syncHistoryWithStore(browserHistory, store);
 
 
+if(document.getElementById('main')){
 
-
-ReactDOM.render(
-    <ReduxRoot store={store} history={history} />,
-    document.getElementById('main')
-);
+    ReactDOM.render(
+        <ReduxRoot store={store} history={history} />,
+        document.getElementById('main')
+    );
+}
