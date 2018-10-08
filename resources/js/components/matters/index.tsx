@@ -57,6 +57,7 @@ function filterData(search: string, data: EL.Matter[]) {
         search = search.toLocaleLowerCase();
         return data.filter(matter => {
             return matter.clients.some(contact => fullname(contact).toLocaleLowerCase().includes(search)) ||
+            `ELF-${matter.id}`.toLocaleLowerCase().includes(search) ||
             matter.matterNumber.toLocaleLowerCase().includes(search) ||
             matter.matterName.toLocaleLowerCase().includes(search) ||
             matter.matterType.toLocaleLowerCase().includes(search)
@@ -67,7 +68,7 @@ function filterData(search: string, data: EL.Matter[]) {
 }
 
 
-const HEADINGS = ['Matter Number', 'Name', 'Type', 'Status', 'Clients', 'Actions'];
+const HEADINGS = ['ELF #', 'Matter Number', 'Name', 'Type', 'Status', 'Clients', 'Actions'];
 
 const MatterStatus = ({matter} : {matter: EL.Matter}) => {
     let className = 'text-danger';
@@ -101,6 +102,7 @@ class MattersTable extends React.PureComponent<MattersViewProps> {
                 <Table headings={HEADINGS} lastColIsActions>
                     { data.map((matter: EL.Matter, index: number) => {
                         return <tr key={index}>
+                        <td>ELF-{matter.id}</td>
                         <td>{matter.matterNumber}</td>
                         <td>{matter.matterName}</td>
                         <td>{matter.matterType}</td>
