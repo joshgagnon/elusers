@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Notifications\MyResetPassword;
 
 class User extends Authenticatable
 {
@@ -82,5 +82,10 @@ class User extends Authenticatable
         }
 
         return $query->where('users.organisation_id', $organisation);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MyResetPassword($token));
     }
 }

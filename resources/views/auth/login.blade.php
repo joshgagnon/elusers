@@ -8,7 +8,7 @@
                 <div class="panel-heading">Login</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
-                        {{ csrf_field() }}
+                        @csrf
                         @if (session('csrf_error'))
                             <span class="help-block text-center">
                                 <strong>{{ session('csrf_error') }}</strong>
