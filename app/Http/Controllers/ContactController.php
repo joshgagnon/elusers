@@ -97,7 +97,7 @@ class ContactController extends Controller
         ], $data));
 
         $this->saveSubType($contact, $data);
-
+        $this->saveContactInformations($contact, $data);
         $relations = array_reduce($data['relationships'] ?? [], function ($acc, $i) {
             $acc[$i['second_contact_id']] = $i;
             return $acc;
