@@ -40,12 +40,15 @@ class AdminPermissions extends Migration
         $orgAdmin->givePermissionTo('administer organisation permissions');
         $orgAdmin->givePermissionTo('administer organisation users');
         $orgAdmin->givePermissionTo('administer matters');
-        try{
-            User::where('email', 'thomas@evolutionlawyers.nz')->first()->assignRole([$admin, $orgAdmin]);
-            User::where('email', 'josh@catalex.nz')->first()->assignRole($orgAdmin);
-        }catch(Exception $e){
 
-        };
+       $user = User::where('email', 'thomas@evolutionlawyers.nz')->first();
+       if($user){
+            $user->assignRole([$admin, $orgAdmin]);
+       }
+       $user = User::where('email', 'josh@catalex.nz')->first();
+       if($user){
+            $user->assignRole( $orgAdmin);
+       };
     }
 
     /**
