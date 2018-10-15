@@ -24,7 +24,7 @@ class UserControllerTest extends TestCase
         $this->actingAs($org1User)
             ->get('api/users')
             ->assertStatus(200)
-            ->assertExactJson($org1->users()->get()->toArray());
+            ->assertExactJson($org1->users()->with('roles')->get()->toArray());
     }
 
     public function test_show_returns_requested_user()
@@ -33,7 +33,7 @@ class UserControllerTest extends TestCase
         $org = $this->createOrganisation();
         $requestingUser = $this->createUser(['organisation_id' => $org->id]);
         $userToFind = $this->createUser(['organisation_id' => $org->id]);
-
+        $userToFind->load('roles');
         // Generate the route
         $routeForUserToFind = url('api/users', [$userToFind->id]);
 

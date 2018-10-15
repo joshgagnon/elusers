@@ -35,7 +35,6 @@ class OrganisationFileController extends Controller
      */
     public function create(Request $request, User $user)
     {
-       ;
         $files = $request->file('file', []);
         foreach ($files as $file) {
             $this->saveFile($file, $request->user());

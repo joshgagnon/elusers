@@ -164,7 +164,7 @@ const ConnectedOrgDocumentsView = connect<void, {upload: (files: any) => void; d
     undefined,
     {
         upload: (files: any) => {
-            const url = `organisation_files`;
+            const url = `organisation-files`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Document Uploaded.')],
                 onFailure: [createNotification('Document uploaded failed. Please try again.', true)],
@@ -172,7 +172,7 @@ const ConnectedOrgDocumentsView = connect<void, {upload: (files: any) => void; d
             return createResource(url, { files }, meta);
         },
         destroy: (documentId: string) => {
-            const deleteAction = deleteResource(`organisation_files/${documentId}`, {
+            const deleteAction = deleteResource(`organisation-files/${documentId}`, {
                 onSuccess: [createNotification('Document deleted.')],
                 onFailure: [createNotification('Document  deletion failed. Please try again.', true)],
             });

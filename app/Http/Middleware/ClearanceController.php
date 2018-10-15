@@ -14,10 +14,13 @@ class ClearanceMiddleware {
      * @return mixed
      */
     public function handle($request, Closure $next) {
+
         if (Auth::user()->hasPermissionTo('administer')) //If user has this //permission
-    {
+        {
             return $next($request);
         }
+
+
 
         if($requests->is('api/*'))
         {
