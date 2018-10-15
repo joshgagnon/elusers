@@ -28,7 +28,9 @@ class AdminRoles extends Migration
             $table->foreign('organisation_id')->references('id')->on('organisations')->onDelete('cascade');
         });
        Role::create(['name' => 'admin']);
+        try{
        User::where('email', 'josh@catalex.nz')->first()->assignRole('admin');
+        catch(e){};
     }
 
     /**
