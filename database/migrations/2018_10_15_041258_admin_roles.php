@@ -30,7 +30,7 @@ class AdminRoles extends Migration
        Role::create(['name' => 'admin']);
         try{
        User::where('email', 'josh@catalex.nz')->first()->assignRole('admin');
-        }catch(e){
+        }catch(Exception $e){
 
         };
     }
