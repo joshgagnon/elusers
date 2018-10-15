@@ -43,7 +43,9 @@ class AdminPermissions extends Migration
         try{
             User::where('email', 'thomas@evolutionlawyers.nz')->first()->assignRole([$admin, $orgAdmin]);
             User::where('email', 'josh@catalex.nz')->first()->assignRole($orgAdmin);
-        }catch(e){};
+        }catch(Exception $e){
+
+        };
     }
 
     /**
