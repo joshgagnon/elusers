@@ -18,12 +18,11 @@ class RoleController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        $roles = Role::all();//Get all roles
+    public function index(Request $request) {
 
         return [
-            'roles' => $roles->with('roles', $roles),
-            'permissions': Permission::all()
+            'roles' => Role::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->get(),
+            'permissions' => Permission::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->get()
         ];
     }
 
