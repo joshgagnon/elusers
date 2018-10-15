@@ -6,14 +6,17 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\MyResetPassword;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable, SoftDeletes, HasRoles;
 
     protected $fillable = ['title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number', 'phone', 'mobile', 'position'];
 
-    protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number', 'phone', 'mobile', 'position'];
+    protected $visible = ['id', 'title', 'first_name', 'middle_name', 'surname', 'preferred_name', 'email', 'law_admission_date', 'ird_number', 'bank_account_number', 'phone', 'mobile', 'position', 'roles'];
 
     public static $validationRules = [
         'title'               => 'required',
@@ -22,6 +25,8 @@ class User extends Authenticatable
         'email'               => 'required|email',
         'law_admission_date'  => 'nullable|date'
     ];
+
+
 
     /**
      * Organisation relationship: a user belongs to an organisation.

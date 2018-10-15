@@ -107,6 +107,10 @@ Route::group(['middleware' => 'auth'], function() {
 
 
     Route::apiResource('matters', 'MatterController');
+    Route::apiResource('roles', 'RoleController');
+
+    Route::apiResource('permissions', 'PermissionController');
+
     Route::post('matters/{matter}', 'MatterController@update');
     Route::get('matter-files', 'MatterController@documents');
 

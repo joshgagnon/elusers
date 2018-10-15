@@ -7,6 +7,10 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+//Importing laravel-permission models
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 
 class UserController extends Controller
 {
@@ -19,7 +23,11 @@ class UserController extends Controller
     {
         $currentOrgId = $request->user()->organisation_id;
 
-        return User::inOrganisation($currentOrgId)->get();
+        return User::inOrganisation($currentOrgId)->with(array('roles' => function($query)
+            {
+                $query->select('name');
+
+            }))->get()->toArray();
     }
 
     /**
@@ -49,8 +57,10 @@ class UserController extends Controller
         // Check users are in the same org
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
-
         $response = $user->toArray();
+        $response['roles'] = $user->roles->pluck('name');
+
+        #$response['roles'] = $user->roles;
         $response['law_admission_date'] = $user->law_admission_date ? Carbon::parse($user->law_admission_date)->format('d M Y') : null;
 
         // Return the user

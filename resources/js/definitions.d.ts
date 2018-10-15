@@ -19,6 +19,14 @@ declare global {
             ENHANCED = 'Enhanced'
         }
 
+        interface Role {
+            name: string;
+        }
+
+        interface Permission {
+            name: string;
+        }
+
         interface User {
             id?: number;
             title: string;
@@ -30,6 +38,8 @@ declare global {
             lawAdmissionDate?: string;
             irdNumber?: string;
             bankAccountNumber?: string;
+            roles?: Role[];
+            permissions?: Permission[];
         }
 
         interface StateResources {
