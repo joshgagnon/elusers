@@ -20,10 +20,6 @@ export class NavMenu extends React.PureComponent<{routing: any}> {
                 <Navbar.Collapse>
                     <Nav pullRight>
 
-                        <LinkContainer to="/users">
-                            <NavItem>Users</NavItem>
-                        </LinkContainer>
-
                         <LinkContainer to="/matters">
                             <NavItem>Matters</NavItem>
                         </LinkContainer>
@@ -54,7 +50,7 @@ export class NavMenu extends React.PureComponent<{routing: any}> {
 
 
                         <LinkContainer to="/my-profile">
-                            <NavItem>My Profile</NavItem>
+                            <NavItem>Account & Settings</NavItem>
                         </LinkContainer>
 
                         <LogoutButton />

@@ -41,7 +41,7 @@ export class ViewAddresses extends React.PureComponent<IViewAddressesProps> {
     render() {
         return (
             <div>
-                <Link to={`/users/${this.props.userId}/addresses/create`} className="btn btn-success"><Icon iconName="plus" />Add Address</Link>
+                <Link to={`/my-profile/organisation/users/${this.props.userId}/addresses/create`} className="btn btn-success"><Icon iconName="plus" />Add Address</Link>
                 <hr />
 
                 {this.props.addresses.data.map(address => <Address key={address.id} address={address} userId={this.props.userId} />)}
@@ -56,7 +56,7 @@ class Address extends React.PureComponent<IAddressProps> {
 
         return (
             <div>
-                <Link to={`/users/${this.props.userId}/addresses/${address.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />Edit</Link>
+                <Link to={`/my-profile/organisation/users/${this.props.userId}/addresses/${address.id}/edit`} className="btn btn-sm btn-info pull-right"><Icon iconName="pencil-square-o" />Edit</Link>
                 <h3>{address.addressName}</h3>
 
                 <p>{formatAddress(address)}</p>

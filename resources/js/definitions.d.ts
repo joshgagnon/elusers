@@ -20,12 +20,20 @@ declare global {
         }
 
         interface Role {
+            id?: number;
+            name: string;
+            permissions: Permission[]
+        }
+
+        type Permission = {
             name: string;
         }
 
-        interface Permission {
-            name: string;
+        interface RolesAndPermissions {
+            roles: Role[],
+            permissions: Permission[]
         }
+
 
         interface User {
             id?: number;
@@ -373,7 +381,10 @@ declare global {
             EDIT_CONTACT_AMLCFT_FORM = 'EDIT_CONTACT_AMLCFT_FORM',
 
             CREATE_MATTER_FORM = 'CREATE_MATTER_FORM',
-            EDIT_MATTER_FORM = 'EDIT_MATTER_FORM'
+            EDIT_MATTER_FORM = 'EDIT_MATTER_FORM',
+
+            CREATE_ROLE_FORM = 'CREATE_ROLE_FORM',
+            EDIT_ROLE_FORM = 'EDIT_ROLE_FORM'
         }
 
         interface ConfirmActionModal {

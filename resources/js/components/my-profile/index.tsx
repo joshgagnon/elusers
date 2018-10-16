@@ -6,16 +6,19 @@ import { connect } from 'react-redux';
 import { fullname } from '../utils';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import Panel from '../panel';
+import { hasPermission } from '../utils/permissions';
 
-export default class MyProfile extends React.PureComponent {
+
+@(connect((state: EL.State) => ({user: state.user})) as any)
+export default class MyProfile extends React.PureComponent<{user: EL.User}> {
     render() {
         return (
             <Row>
                 <Col md={3}>
                     <MyProfileNavigation />
-                    <MyOrganisationNavigation />
+                    { hasPermission(this.props.user, 'administer organisation') &&  <MyOrganisationNavigation user={this.props.user}/> }
 
-                    <Button block bsStyle="success">Create User</Button>
+
                 </Col>
 
                 <Col md={9}>
@@ -34,7 +37,7 @@ class MyProfileNavigation extends React.Component { // Cannot be pure component 
                     <IndexLinkContainer to="/my-profile">
                         <ListGroupItem>Basic Details</ListGroupItem>
                     </IndexLinkContainer>
-                    
+
                     <LinkContainer to="/my-profile/emergency-contact">
                         <ListGroupItem>Emergency Contact</ListGroupItem>
                     </LinkContainer>
@@ -46,19 +49,32 @@ class MyProfileNavigation extends React.Component { // Cannot be pure component 
                     <LinkContainer to="/my-profile/password">
                         <ListGroupItem>Change Password</ListGroupItem>
                     </LinkContainer>
+
                 </ListGroup>
             </Panel>
         );
     }
 }
 
-class MyOrganisationNavigation extends React.Component {
+
+class MyOrganisationNavigation extends React.Component<{user: EL.User}> {
     render() {
         return (
             <Panel title="Organisation">
                 <ListGroup fill>
                     <IndexLinkContainer to="/my-profile/organisation">
                         <ListGroupItem>Basic Details</ListGroupItem>
+                    </IndexLinkContainer>
+
+                    <IndexLinkContainer to="/my-profile/organisation/users">
+                       { hasPermission(this.props.user, 'administer organisation users') &&   <ListGroupItem>Users</ListGroupItem> }
+
+                    </IndexLinkContainer>
+                    {/* <IndexLinkContainer to="/my-profile/organisation/permissions">
+                        { hasPermission(this.props.user, 'administer organisation permissions') && <ListGroupItem>Permissions</ListGroupItem> }
+                    </IndexLinkContainer> */ }
+                  <IndexLinkContainer to="/my-profile/organisation/roles">
+                        { hasPermission(this.props.user, 'administer organisation roles') && <ListGroupItem>Roles</ListGroupItem> }
                     </IndexLinkContainer>
                 </ListGroup>
             </Panel>

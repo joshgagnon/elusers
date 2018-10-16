@@ -19,10 +19,11 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-
+        $roles = Role::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->with('permissions')->get();
+        $permissions = Permission::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->get();
         return [
-            'roles' => Role::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->get(),
-            'permissions' => Permission::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->get()
+            'roles' => $roles,
+            'permissions' => $permissions
         ];
     }
 

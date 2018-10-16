@@ -31,6 +31,8 @@ import CreateAddress from '../components/my-profile/createAddress';
 import EditAddress from '../components/my-profile/editAddress';
 import Templates from '../components/templates';
 import Documents from '../components/documents';
+import Roles, { EditRole, CreateRole} from '../components/permissions/roles';
+
 import { ListMatters, CreateMatter, ViewMatter, EditMatter } from '../components/matters';
 
 import WikiRoutes from './wiki';
@@ -38,21 +40,7 @@ import WikiRoutes from './wiki';
 const routes = (routeComponent: RouteComponent) => (
     <Route path='/' component={routeComponent}>
         <IndexRoute component={Home} />
-        <Route path='users' component={Users} />
-        <Route path='users/create' component={CreateUser} />
-        <Route path='users/:userId' component={UserLayout}>
-            <IndexRoute component={ViewBasicDetails} />
-            <Route path='edit' component={EditBasicDetails} />
 
-            <Route path='emergency-contact' component={ViewEmergencyContact} />
-            <Route path='emergency-contact/edit' component={EditEmergencyContact} />
-
-            <Route path='addresses' component={ViewAddresses} />
-            <Route path='addresses/create' component={CreateUserAddress} />
-            <Route path='addresses/:addressId/edit' component={EditUserAddress} />
-
-            <Route path="password" component={ChangeUserPassword} />
-        </Route>
 
         <Route path="documents" component={Documents} />
 
@@ -88,10 +76,32 @@ const routes = (routeComponent: RouteComponent) => (
             <IndexRoute component={ BasicDetails } />
             <Route path="emergency-contact" component={ EmergencyContact } />
             <Route path="password" component={ ChangePassword } />
-            <Route path='organisation' component={ EditOrganisation } />
             <Route path="addresses" component={ Addresses } />
             <Route path="addresses/create" component={ CreateAddress } />
             <Route path="addresses/:addressId/edit" component={ EditAddress } />
+
+            <Route path="organisation"  >
+                <IndexRoute component={ EditOrganisation } />
+                <Route path='users' component={Users} />
+                <Route path='roles' component={Roles} />
+                <Route path='roles/create' component={CreateRole} />
+                <Route path='roles/:roleId/edit' component={EditRole} />
+                <Route path='users/create' component={CreateUser} />
+                <Route path='users/:userId' component={UserLayout}>
+                    <IndexRoute component={ViewBasicDetails} />
+                    <Route path='edit' component={EditBasicDetails} />
+
+                    <Route path='emergency-contact' component={ViewEmergencyContact} />
+                    <Route path='emergency-contact/edit' component={EditEmergencyContact} />
+
+                    <Route path='addresses' component={ViewAddresses} />
+                    <Route path='addresses/create' component={CreateUserAddress} />
+                    <Route path='addresses/:addressId/edit' component={EditUserAddress} />
+
+                    <Route path="password" component={ChangeUserPassword} />
+                </Route>
+           </Route>
+
         </Route>
 
         <Route path="templates" component={ Templates } />

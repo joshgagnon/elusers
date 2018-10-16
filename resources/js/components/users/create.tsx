@@ -59,7 +59,7 @@ export default connect(
         submit: (data: React.FormEvent<Form>) => {
             const url = 'users';
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('User created.'), (response) => push(`/users/${response.userId}`)],
+                onSuccess: [createNotification('User created.'), (response) => push(`/my-profile/organisation/users/${response.userId}`)],
                 onFailure: [createNotification('User creation failed. Please try again.', true)],
             };
 

@@ -108,3 +108,4 @@ export const MattersHOC = () => HOCFactory({ location: (props) => `matters`, pro
 export const MatterHOC = () => HOCFactory({ location: (props) => `matters/${props.matterId}`, propsName: 'matter' });
 
 export const TokenHOC = (name: string) => HOCFactory({ location: (props) => `access_token/${props.token}`, propsName: name });
+export const RolesAndPermissionsHOC = () => HOCFactory({ location: (props) => `roles`, propsName: 'rolesAndPermissions' });

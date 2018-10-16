@@ -16,7 +16,7 @@ interface ILayoutProps {
 @(DragDropContext(HTML5Backend) as any)
 export class Layout extends React.PureComponent<ILayoutProps> {
     render() {
-        const fluid = this.props.routes.some(c => c.component.FLUID_CONTAINER);
+        const fluid = this.props.routes.some(c => c.component && c.component.FLUID_CONTAINER);
 
         return (
             <div>

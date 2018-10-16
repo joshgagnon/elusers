@@ -7,11 +7,12 @@ import { Link } from 'react-router';
 import Icon from '../icon';
 import { ButtonToolbar } from 'react-bootstrap';
 
+
 interface IUsersTableProps {
     users: EL.Resource<EL.User[]>;
 }
 
-const HEADINGS = ['Full Name', 'Preferred Name', 'Email', 'Actions'];
+const HEADINGS = ['Full Name', 'Preferred Name', 'Email', 'Roles', 'Actions'];
 
 @PanelHOC<IUsersTableProps>('Users', props => props.users)
 class UsersTable extends React.PureComponent<IUsersTableProps> {
@@ -19,7 +20,7 @@ class UsersTable extends React.PureComponent<IUsersTableProps> {
         return (
             <div>
                 <ButtonToolbar>
-                    <Link to="/users/create" className="btn btn-primary"><Icon iconName="plus" />Create User</Link>
+                    <Link to="/my-profile/organisation/users/create" className="btn btn-primary"><Icon iconName="plus" />Create User</Link>
                 </ButtonToolbar>
 
                 <Table headings={HEADINGS}>
@@ -28,7 +29,8 @@ class UsersTable extends React.PureComponent<IUsersTableProps> {
                             <td>{fullname(user)}</td>
                             <td>{user.preferredName || '—'}</td>
                             <td><a href={ 'mailto:' + user.email }>{user.email}</a></td>
-                            <td><Link to={`/users/${user.id}`}>View</Link></td>
+                            <td>{user.roles.map((role, i) => role.name ).join(', ') }</td>
+                            <td><Link  className="btn btn-sm btn-default" to={`/my-profile/organisation/users/${user.id}`}><Icon iconName="eye" />View</Link></td>
                         </tr>
                     )) }
                 </Table>
