@@ -100,7 +100,7 @@ class DocumentComponent extends React.PureComponent<any> {
     existingDocuments(docs) {
         return <div style={{paddingBottom: '20px'}}>
              <DropdownList
-              filter
+              filter="contains"
               data={docs}
               textField={'filename'}
               value={''}
