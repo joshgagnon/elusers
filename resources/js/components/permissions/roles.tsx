@@ -8,9 +8,11 @@ import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
-import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
+import { reduxForm, formValueSelector, FieldArray, FormSection } from 'redux-form';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
 import { push } from 'react-router-redux';
+import { validate } from '../utils/validation';
+
 
 interface IRolesProps {
     rolesAndPermissions: EL.Resource<EL.RolesAndPermissions>;
@@ -52,6 +54,7 @@ export default class Roles extends React.PureComponent<{rolesAndPermissions: EL.
 interface RoleFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
+    delete?: () => void;
     saveButtonText: string;
     form: string;
     permissions: EL.Permission[]
@@ -64,42 +67,90 @@ interface CreateRoleProps {
 
 interface EditRoleProps {
     submit: (data: React.FormEvent<Form>) => void;
+    rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>;
 }
 
 class RoleForm extends React.PureComponent<RoleFormProps> {
 
 
     render() {
+        const categories = this.props.permissions.reduce((acc: any, permission: EL.Permission) => {
+            const cat = permission.category || 'administration';
+            acc[cat] = [...(acc[cat] || []), permission];
+            return acc;
+        }, {});
+
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-            <InputField name="name" label="Name" type="text"/>
-                { this.props.permissions.map(permission => {
-                    return <CheckboxField name={permission.name}  key={permission.name}>
-                    { permission.name }
-                    </CheckboxField>
-                })}
+            <InputField name="name" label="Role Name" type="text" required/>
+            <FormSection name="permissions">
+            { Object.keys(categories).sort().map(key => {
+                return <fieldset key={key}>
+                    <h4 className="text-center">{ key }</h4>
+                    { categories[key].sort(function (a, b) {
+                          return a.name.localeCompare(b.name);
+                        }).map(permission => {
+                        return <CheckboxField name={permission.name}  key={permission.name}>
+                        { permission.name }
+                        </CheckboxField>
+                    }) }
+
+                    </fieldset>
+            }) }
+            </FormSection>
+                <div className="button-row">
+                    { this.props.delete && <Button bsStyle="danger" onClick={this.props.delete}>Delete</Button> }
+                    <Button bsStyle="primary"  type="submit">{ this.props.saveButtonText }</Button>
+                </div>
             </Form>
         );
     }
 }
+
+const roleValidationRules: EL.IValidationFields = {
+    name: { name: 'Name', required: true },
+}
+
+const validateRole = values => {
+    const errors = validate(roleValidationRules, values);
+    return errors;
+}
+
 const CreateRoleForm = (reduxForm({
     form: EL.FormNames.CREATE_ROLE_FORM,
+    validate: validateRole
 })(RoleForm as any) as any);
 
 const EditRoleForm = (reduxForm({
     form: EL.FormNames.EDIT_ROLE_FORM,
+    validate: validateRole
 })(RoleForm as any) as any);
+
+
+const formatRoleForm = (data: any) => {
+    return {
+        name: data.name,
+        permissions: Object.keys(data.permissions || {}).map(key => {
+            if(data.permissions[key]){
+                return key;
+            }
+        })
+        .filter(permission => !!permission)
+    }
+}
+
 @(connect(
     undefined,
     {
         submit: (data: React.FormEvent<Form>) => {
+            const roleData = formatRoleForm(data);
             const url = 'roles';
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Role created.'), (response) => push(`/roles/${response.id}`)],
+                onSuccess: [createNotification('Role created.'), (response) => push(`/my-profile/organisation/roles`)],
                 onFailure: [createNotification('Role creation failed. Please try again.', true)],
             };
 
-            return createResource(url, data, meta)
+            return createResource(url, roleData, meta)
         }
     }
 ) as any)
@@ -113,7 +164,8 @@ export class CreateRole extends React.PureComponent<CreateRoleProps> {
 }
 
 interface UnwrappedEditRoleProps {
-    submit?: (RoleId: number, data: React.FormEvent<Form>) => void;
+    submit?: (roleId: number, data: React.FormEvent<Form>) => void;
+    delete?: (roleId: number) => void;
     roleId: number;
     rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>;
 }
@@ -122,13 +174,28 @@ interface UnwrappedEditRoleProps {
     undefined,
     {
         submit: (roleId: number, data: React.FormEvent<Form>) => {
+            const roleData = formatRoleForm(data);
             const url = `roles/${roleId}`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('Role updated.'), (response) => push(`/Roles/${roleId}`)],
+                onSuccess: [createNotification('Role updated.'), (response) => push(`/my-profile/organisation/roles`)],
                 onFailure: [createNotification('Role update failed. Please try again.', true)],
             };
 
-            return updateResource(url, data, meta);
+            return updateResource(url, roleData, meta);
+        },
+        delete: (roleId: string) => {
+            const deleteAction = deleteResource(`role/${roleId}`, {
+                onSuccess: [createNotification('Role deleted.'), (response) => push('/my-profile/organisation/roles')],
+                onFailure: [createNotification('Role deletion failed. Please try again.', true)],
+            });
+
+            return confirmAction({
+                title: 'Confirm Delete this Role',
+                content: 'Are you sure you want to delete this role?',
+                acceptButtonText: 'Delete',
+                declineButtonText: 'Cancel',
+                onAccept: deleteAction
+            });
         }
     }
 ) as any)
@@ -136,14 +203,23 @@ interface UnwrappedEditRoleProps {
 @PanelHOC<UnwrappedEditRoleProps>('Edit Role', props => props.rolesAndPermissions)
 class UnwrappedEditRole extends React.PureComponent<UnwrappedEditRoleProps> {
     render() {
-        const data = {};
-        return <EditRoleForm initialValues={data} onSubmit={data => this.props.submit(this.props.roleId, data)} saveButtonText="Save Role" permissions={this.props.rolesAndPermissions.data.permissions}/>
+        const data = {...this.props.rolesAndPermissions.data.roles.find(r => r.id === this.props.roleId)};
+        if(!data) {
+            return <div className="alert alert-danger">Not Found</div>
+        }
+        data.permissions = data.permissions.reduce((acc: any, perm: EL.Permission) => {
+            acc[perm.name] = true;
+            return acc;
+        }, {});
+        return <EditRoleForm initialValues={data} delete={() => this.props.delete(this.props.roleId)}
+            onSubmit={data => this.props.submit(this.props.roleId, data)} saveButtonText="Save Role"
+            permissions={this.props.rolesAndPermissions.data.permissions} />
     }
 }
 
 export class EditRole extends React.PureComponent<{ params: { roleId: number; } }> {
     render() {
-        return <UnwrappedEditRole  roleId={this.props.params.roleId}  />
+        return <UnwrappedEditRole  roleId={parseInt(this.props.params.roleId as any, 10)}  />
     }
 }
 

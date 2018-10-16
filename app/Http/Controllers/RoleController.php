@@ -19,8 +19,29 @@ class RoleController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $roles = Role::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->with('permissions')->get();
-        $permissions = Permission::where('organisation_id', null)->orWhere('organisation_id', $request->user()->organisation_id)->get();
+        $organisation_id = $request->user()->organisation_id;
+        $roles = Role::where(function($q) use ($organisation_id) {
+            $q
+            ->where('organisation_id', null)
+            ->orWhere('organisation_id', $organisation_id);
+        })
+        ->where(function($q) {
+            $q
+            ->where('protected', '!=', true)
+            ->orWhere('protected', null);
+        })->with('permissions')->get();
+
+        $permissions = Permission::select('name','id', 'category')
+            ->where(function($q) use ($organisation_id) {
+                $q
+                ->where('organisation_id', null)
+                ->orWhere('organisation_id', $organisation_id);
+            })
+        ->where(function($q) {
+            $q
+            ->where('protected', '!=', true)
+            ->orWhere('protected', null);
+        })->get();
         return [
             'roles' => $roles,
             'permissions' => $permissions
@@ -37,37 +58,27 @@ class RoleController extends Controller {
     public function store(Request $request) {
     //Validate name and permissions field
         $this->validate($request, [
-            'name'=>'required|unique:roles|max:10',
-            'permissions' =>'required',
+            'name'=>'required'
             ]
         );
 
         $name = $request['name'];
         $role = new Role();
         $role->name = $name;
-
+        $role->organisation_id = $request->user()->organisation_id;
+        $role->protected = false;
         $permissions = $request['permissions'];
 
         $role->save();
     //Looping thru selected permissions
         foreach ($permissions as $permission) {
-            $p = Permission::where('id', '=', $permission)->firstOrFail();
-         //Fetch the newly created role and assign permission
-            $role = Role::where('name', '=', $name)->first();
-            $role->givePermissionTo($p);
+            $p = Permission::where('name', $permission)->first();
+            if(!$p->protected) {
+                $role->givePermissionTo($p);
+            }
         }
 
         return $role;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id) {
-        return redirect('roles');
     }
 
     /**
@@ -76,12 +87,6 @@ class RoleController extends Controller {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
-        $role = Role::findOrFail($id);
-        $permissions = Permission::all();
-
-        return compact('role', 'permissions');
-    }
 
     /**
      * Update the specified resource in storage.
@@ -94,9 +99,11 @@ class RoleController extends Controller {
 
         $role = Role::findOrFail($id);//Get role with the given id
     //Validate name and permission fields
+        if($role->protected) {
+            abort(403);
+        }
         $this->validate($request, [
-            'name'=>'required|max:10|unique:roles,name,'.$id,
-            'permissions' =>'required',
+            'name'=>'required'
         ]);
 
         $input = $request->except(['permissions']);
@@ -110,8 +117,10 @@ class RoleController extends Controller {
         }
 
         foreach ($permissions as $permission) {
-            $p = Permission::where('id', '=', $permission)->firstOrFail(); //Get corresponding form //permission in db
-            $role->givePermissionTo($p);  //Assign permission to role
+            $p = Permission::where('name', $permission)->firstOrFail(); //Get corresponding form //permission in db
+            if(!$p->protected) {
+                $role->givePermissionTo($p);  //Assign permission to role
+            }
         }
 
         return $role;

@@ -27,6 +27,7 @@ declare global {
 
         type Permission = {
             name: string;
+            category?: string;
         }
 
         interface RolesAndPermissions {
