@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PanelHOC from '../hoc/panelHOC';
 import { connect } from 'react-redux';
-import { RolesAndPermissionsHOC } from '../hoc/resourceHOCs';
+import { RolesAndPermissionsHOC, UserHOC } from '../hoc/resourceHOCs';
 import HasPermission from '../hoc/hasPermission';
 import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl } from 'react-bootstrap';
 import Table from '../dataTable';
@@ -12,7 +12,7 @@ import { reduxForm, formValueSelector, FieldArray, FormSection } from 'redux-for
 import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
 import { push } from 'react-router-redux';
 import { validate } from '../utils/validation';
-
+import mapParamsToProps from '../hoc/mapParamsToProps';
 
 interface IRolesProps {
     rolesAndPermissions: EL.Resource<EL.RolesAndPermissions>;
@@ -222,4 +222,20 @@ export class EditRole extends React.PureComponent<{ params: { roleId: number; } 
         return <UnwrappedEditRole  roleId={parseInt(this.props.params.roleId as any, 10)}  />
     }
 }
+
+
+
+
+@mapParamsToProps(['userId'])
+@UserHOC()
+@RolesAndPermissionsHOC()
+@PanelHOC<any>('Roles', props => [props.user, props.rolesAndPermissions])
+export class UserRoles extends React.PureComponent<{user?: EL.Resource<EL.User>}> {
+    render() {
+        return <div>WIP</div> /*<EditUserRolesForm initialValues={this.props.user.data.roles}
+            onSubmit={data => this.props.submit(data)}
+            permissions={this.props.rolesAndPermissions.data.roles} />*/
+    }
+}
+
 

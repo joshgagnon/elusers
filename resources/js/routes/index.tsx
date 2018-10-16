@@ -31,7 +31,7 @@ import CreateAddress from '../components/my-profile/createAddress';
 import EditAddress from '../components/my-profile/editAddress';
 import Templates from '../components/templates';
 import Documents from '../components/documents';
-import Roles, { EditRole, CreateRole} from '../components/permissions/roles';
+import Roles, { EditRole, CreateRole, UserRoles } from '../components/permissions/roles';
 
 import { ListMatters, CreateMatter, ViewMatter, EditMatter } from '../components/matters';
 
@@ -99,6 +99,7 @@ const routes = (routeComponent: RouteComponent) => (
                     <Route path='addresses/:addressId/edit' component={EditUserAddress} />
 
                     <Route path="password" component={ChangeUserPassword} />
+                    <Route path="roles" component={UserRoles} />
                 </Route>
            </Route>
 
