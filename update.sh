@@ -13,7 +13,6 @@ php artisan down
 sudo -u $1 git pull
 rm -f vendor/compiled.php
 sudo -u $1 composer update
-sudo -u $1 rm yarn.lock
 sudo -u $1 yarn install
 sudo -u $1 php artisan clear-compiled
 sudo -u $1 composer dump-autoload
