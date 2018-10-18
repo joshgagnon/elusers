@@ -16,7 +16,8 @@ import { fullname, name, guessName, formatDate } from '../utils';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import Referrer from './referrer';
 import { ContactSelector } from '../contacts/contactSelector';
-
+import { hasPermission } from '../utils/permissions';
+import HasPermissionHOC from '../hoc/hasPermission';
 
 interface  MattersProps {
       matters: EL.Resource<EL.Matter[]>;
@@ -84,7 +85,7 @@ const MatterStatus = ({matter} : {matter: EL.Matter}) => {
 
 
 
-class MattersTable extends React.PureComponent<MattersViewProps> {
+class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User}, {searchValue: string}> {
     state = {
         searchValue: ''
     }
@@ -93,9 +94,9 @@ class MattersTable extends React.PureComponent<MattersViewProps> {
         const data = filterData(this.state.searchValue, this.props.matters);
         return (
             <div>
-                <ButtonToolbar>
+                {  hasPermission(this.props.user, 'create matter')  && <ButtonToolbar>
                     <Link to="/matters/create" className="btn btn-primary"><Icon iconName="plus" />Create Matter</Link>
-                </ButtonToolbar>
+                </ButtonToolbar> }
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
@@ -116,7 +117,7 @@ class MattersTable extends React.PureComponent<MattersViewProps> {
 
                         <td>
                         <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
-                        <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link>
+                        {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link> }
 
                         </td>
 
@@ -128,12 +129,13 @@ class MattersTable extends React.PureComponent<MattersViewProps> {
 }
 
 @MattersHOC()
-@PanelHOC<MattersProps>('Matters', props => [props.matters])
-export class ListMatters extends React.PureComponent<MattersProps> {
+@(connect((state: EL.State) => ({ user: state.user })) as any)
+@PanelHOC<MattersProps & {user: EL.User}>('Matters', props => [props.matters])
+export class ListMatters extends React.PureComponent<MattersProps & {user: EL.User} > {
 
     render() {
         return (
-                <MattersTable matters={this.props.matters.data}/>
+                <MattersTable matters={this.props.matters.data} user={this.props.user}/>
 
         );
     }
@@ -358,6 +360,9 @@ const EditMatterForm = (reduxForm({
 })(MatterForm as any) as any);
 
 
+
+
+@HasPermissionHOC('create matter')
 @(connect(
     undefined,
     {
@@ -407,7 +412,7 @@ class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> 
     }
 }
 
-
+@HasPermissionHOC('edit matter')
 export class EditMatter extends React.PureComponent<{ params: { matterId: number; } }> {
     render() {
         return <UnwrappedEditMatter  matterId={this.props.params.matterId} />

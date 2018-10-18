@@ -3,9 +3,10 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
+import { hasPermission } from './utils/permissions';
 
 
-export class NavMenu extends React.PureComponent<{routing: any}> {
+export class NavMenu extends React.PureComponent<{routing: any, user: EL.User}> {
     render() {
         return (
             <Navbar collapseOnSelect staticTop>
@@ -20,21 +21,21 @@ export class NavMenu extends React.PureComponent<{routing: any}> {
                 <Navbar.Collapse>
                     <Nav pullRight>
 
-                        <LinkContainer to="/matters">
+                        { hasPermission(this.props.user, 'view matters') && <LinkContainer to="/matters">
                             <NavItem>Matters</NavItem>
-                        </LinkContainer>
+                        </LinkContainer> }
 
                         <LinkContainer to="/documents">
                             <NavItem>Documents</NavItem>
                         </LinkContainer>
 
-                        <LinkContainer to="/contacts">
+                         { hasPermission(this.props.user, 'view contacts') && <LinkContainer to="/contacts">
                             <NavItem>Contacts</NavItem>
-                        </LinkContainer>
+                        </LinkContainer> }
 
-                        <LinkContainer to="/deeds">
+                         { hasPermission(this.props.user, 'view deeds') &&  <LinkContainer to="/deeds">
                             <NavItem>Deeds</NavItem>
-                        </LinkContainer>
+                        </LinkContainer> }
 
                         <LinkContainer to="/cpdpr">
                             <NavItem>CPDPR</NavItem>
@@ -44,9 +45,9 @@ export class NavMenu extends React.PureComponent<{routing: any}> {
                             <NavItem>Knowledge Base</NavItem>
                         </LinkContainer>
 
-                        <LinkContainer to="/templates">
+                        { hasPermission(this.props.user, 'create template') &&  <LinkContainer to="/templates">
                             <NavItem>Templates</NavItem>
-                        </LinkContainer>
+                        </LinkContainer> }
 
 
                         <LinkContainer to="/my-profile">
@@ -89,7 +90,7 @@ class LogoutButton extends React.PureComponent {
 export class NavMenuCheck extends React.PureComponent<{user: EL.User, routing: any}> {
     render() {
         if(this.props.user){
-            return <NavMenu routing={this.props.routing}/>;
+            return <NavMenu routing={this.props.routing} user={this.props.user}/>;
         }
         return <NavMenuPublic />
     }

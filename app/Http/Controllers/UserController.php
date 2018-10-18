@@ -58,7 +58,7 @@ class UserController extends Controller
         $usersInSameOrganisation = $user->organisation_id === $request->user()->organisation_id;
         abort_if(!$usersInSameOrganisation, 404);
         $response = $user->toArray();
-        $response['roles'] = $user->roles->pluck('name');
+        $response['roles'] = $user->roles;
 
         #$response['roles'] = $user->roles;
         $response['law_admission_date'] = $user->law_admission_date ? Carbon::parse($user->law_admission_date)->format('d M Y') : null;
@@ -119,4 +119,12 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Password changed']);
     }
+
+    public function updateRoles(Request $request, User $user)
+    {
+        $data = $request->allJson();
+        $user->syncRoles($data['roles']);
+        return response()->json(['message' => 'User updated.'], 200);
+    }
+
 }

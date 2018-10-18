@@ -139,6 +139,15 @@ const formatRoleForm = (data: any) => {
     }
 }
 
+const formatUserRolesForm = (data: any) => {
+    return  Object.keys(data || {}).map(key => {
+            if(data[key]){
+                return key;
+            }
+        })
+        .filter(role => !!role);
+}
+
 @(connect(
     undefined,
     {
@@ -224,17 +233,75 @@ export class EditRole extends React.PureComponent<{ params: { roleId: number; } 
 }
 
 
+interface UserRolesFormmProps {
+    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit: (data: React.FormEvent<Form>) => void;
+    form: string;
+    roles: EL.Role[]
+}
+
+class UserRolesForm extends React.PureComponent<UserRolesFormmProps> {
+
+    render() {
+
+        return (
+            <Form onSubmit={this.props.handleSubmit} horizontal>
+                { this.props.roles.sort(function (a, b) {
+                      return a.name.localeCompare(b.name);
+                    }).map(permission => {
+                    return <CheckboxField name={permission.name}  key={permission.name}>
+                    { permission.name }
+                    </CheckboxField>
+                }) }
+                <div className="button-row">
+                    <Button bsStyle="primary"  type="submit">Save</Button>
+                </div>
+            </Form>
+        );
+    }
+}
+
+
+
+
+const EditUserRolesForm = (reduxForm({
+    form: EL.FormNames.EDIT_USER_ROLES_FORM,
+})(UserRolesForm as any) as any);
 
 
 @mapParamsToProps(['userId'])
 @UserHOC()
 @RolesAndPermissionsHOC()
 @PanelHOC<any>('Roles', props => [props.user, props.rolesAndPermissions])
-export class UserRoles extends React.PureComponent<{user?: EL.Resource<EL.User>}> {
+@(connect(
+    undefined,
+    {
+        submit: (userId: number, data: React.FormEvent<Form>) => {
+            const roleData = {roles: formatUserRolesForm(data)};
+            const url = `users/${userId}/roles`;
+            const meta: EL.Actions.Meta = {
+                onSuccess: [createNotification('User updated.'), (response) => push(`/my-profile/organisation/users/${userId}`)],
+                onFailure: [createNotification('User update failed. Please try again.', true)],
+            };
+
+            return updateResource(url, roleData, meta);
+        }
+    }
+) as any)
+export class UserRoles extends React.PureComponent<{userId?: number, user?: EL.Resource<EL.User>,
+    rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>,
+    submit?: (userId: number, data: React.FormEvent<Form>) => void;}> {
     render() {
-        return <div>WIP</div> /*<EditUserRolesForm initialValues={this.props.user.data.roles}
-            onSubmit={data => this.props.submit(data)}
-            permissions={this.props.rolesAndPermissions.data.roles} />*/
+        const roles = this.props.user.data.roles.reduce((acc, role) => {
+            acc[role.name] = true;
+            return acc;
+        }, {});
+        return <EditUserRolesForm
+            roles={this.props.rolesAndPermissions.data.roles}
+            initialValues={roles}
+            onSubmit={data => this.props.submit(this.props.userId, data)}
+              />
+
     }
 }
 

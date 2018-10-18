@@ -30,7 +30,12 @@ class UsersTable extends React.PureComponent<IUsersTableProps> {
                             <td>{user.preferredName || '—'}</td>
                             <td><a href={ 'mailto:' + user.email }>{user.email}</a></td>
                             <td>{user.roles.map((role, i) => role.name ).join(', ') }</td>
-                            <td><Link  className="btn btn-sm btn-default" to={`/my-profile/organisation/users/${user.id}`}><Icon iconName="eye" />View</Link></td>
+                            <td>
+
+                                <Link  className="btn btn-sm btn-default" to={`/my-profile/organisation/users/${user.id}`}><Icon iconName="eye" />View</Link>
+
+
+                            </td>
                         </tr>
                     )) }
                 </Table>

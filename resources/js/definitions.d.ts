@@ -385,7 +385,9 @@ declare global {
             EDIT_MATTER_FORM = 'EDIT_MATTER_FORM',
 
             CREATE_ROLE_FORM = 'CREATE_ROLE_FORM',
-            EDIT_ROLE_FORM = 'EDIT_ROLE_FORM'
+            EDIT_ROLE_FORM = 'EDIT_ROLE_FORM',
+
+            EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM'
         }
 
         interface ConfirmActionModal {

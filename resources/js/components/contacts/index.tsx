@@ -20,6 +20,8 @@ import { Relationships, Agents } from './relationships';
 import { ContactSelector } from './contactSelector';
 import { ContactInformationFields } from '../contact-information/contactInformation';
 import * as ReactList from 'react-list';
+import { hasPermission } from '../utils/permissions';
+import HasPermissionHOC from '../hoc/hasPermission';
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
@@ -93,13 +95,13 @@ const addresses = (contact: EL.Contact) => {
         </React.Fragment>);
 }
 
-
+@HasPermissionHOC('view contacts')
 @ContactsHOC()
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
-@(connect(undefined, {
+@(connect((state: EL.State) => ({user: state.user}), {
     showUploadModal: () => showUploadModal({})
 }) as any)
-export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
+export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User}, ContactState> {
 
     state = {
         searchValue: ''
@@ -109,10 +111,10 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
         const data = filterData(this.state.searchValue, this.props.contacts.data);
         return (
             <div>
-                <ButtonToolbar>
+                { hasPermission(this.props.user, 'create contact') && <ButtonToolbar>
                     <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
                     <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Contact List</Button>
-                </ButtonToolbar>
+                </ButtonToolbar> }
 
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
@@ -136,7 +138,7 @@ export class Contacts extends React.PureComponent<ContactsProps, ContactState> {
                             <td>{phone || ''}</td>
                             <td className="actions">
                                 <Link className="btn btn-sm btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
-                                <Link className="btn btn-sm btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link>
+                                { hasPermission(this.props.user, 'edit contact') &&  <Link className="btn btn-sm btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link> }
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
@@ -216,8 +218,10 @@ const TrustDisplayFields = (props: {contact: EL.ContactTrust}) => {
     </React.Fragment>
 }
 
+
+@HasPermissionHOC('view contacts')
 @(connect(
-    undefined,
+    (state: EL.State) => {user: state.user},
     {
         deleteContact: (contactId: number) => {
             const deleteAction = deleteResource(`contacts/${contactId}`, {
@@ -238,8 +242,8 @@ const TrustDisplayFields = (props: {contact: EL.ContactTrust}) => {
 ) as any)
 @MapParamsToProps(['contactId'])
 @ContactHOC()
-@PanelHOC<ContactProps>('Contact', props => props.contact)
-export class Contact extends React.PureComponent<ContactProps> {
+@PanelHOC<ContactProps& {user: EL.User}>('Contact', props => props.contact)
+export class Contact extends React.PureComponent<ContactProps & {user: EL.User}> {
 
     render() {
         const contact = this.props.contact.data;
@@ -253,11 +257,11 @@ export class Contact extends React.PureComponent<ContactProps> {
         return (
             <div>
                 <ButtonToolbar className="pull-right">
-                    <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
+                    { hasPermission(this.props.user, 'edit contact') &&  <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link> }
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
                          <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
-                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button>
+                     { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button> }
                 </ButtonToolbar>
 
                 <h3>{fullname(contact)}</h3>
@@ -673,6 +677,7 @@ const EditContactForm = (reduxForm({
 })(ContactForm as any) as any);
 
 
+@HasPermissionHOC('create contact')
 @(connect(
     undefined,
     {
@@ -701,6 +706,8 @@ interface UnwrappedEditContactProps {
     contact?: EL.Resource<EL.Contact>;
 }
 
+
+@HasPermissionHOC('edit contact')
 @(connect(
     undefined,
     {

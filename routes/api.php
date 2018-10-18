@@ -32,6 +32,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('users/{user}/addresses', 'UserAddressController@all');
     Route::post('users/{user}/addresses', 'UserAddressController@create');
 
+    Route::put('users/{user}/roles', 'UserController@updateRoles');
+
     /**
      * Addresses
      */
