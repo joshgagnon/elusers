@@ -412,7 +412,7 @@ class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> 
     }
 }
 
-@HasPermissionHOC('edit matter')
+@HasPermissionHOC('edit matters')
 export class EditMatter extends React.PureComponent<{ params: { matterId: number; } }> {
     render() {
         return <UnwrappedEditMatter  matterId={this.props.params.matterId} />
