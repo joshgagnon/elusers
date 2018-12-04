@@ -9,6 +9,29 @@ class Matter extends Model
 {
     use SoftDeletes;
 
+    const MATTER_TYPES = [
+        "Bankruptcy and Liquidation",
+        "Business Acquisitions and Investment",
+        "Commercial Advice",
+        "Commercial Documentation",
+        "Company Governance and Shareholding",
+        "Company Incorporation and Administration",
+        "Conveyancing – Sale / Purchase",
+        "Conveyancing – Refinance",
+        "Criminal Process",
+        "Debt Recovery",
+        "Disputes and Litigation",
+        "Employment",
+        "General Advice",
+        "Insolvency Advice",
+        "Relationship Property",
+        "Property Advice",
+        "Wills and Estates",
+        "Trust Advice",
+        "Trust Creation and Administration"
+    ];
+
+
     protected $fillable = ['matter_number', 'matter_name', 'matter_type', 'status', 'approved_by_user_id', 'metadata', 'created_by_user_id',  'organisation_id', 'referrer_id', 'referrer_type'];
    # protected $visible = ['id', 'matter_number', 'matter_name', 'matter_type', 'created_by_user_id', 'referrer_id', 'organisation_id', 'created_at', 'updated_at'];
 

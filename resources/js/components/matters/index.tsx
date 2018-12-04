@@ -75,7 +75,7 @@ const HEADINGS = ['ELF #', 'Matter Number', 'Name', 'Type', 'Status', 'Clients',
 
 const MatterStatus = ({matter} : {matter: EL.Matter}) => {
     let className = 'text-danger';
-    if(matter.status === 'Pending') {
+    if(matter.status === 'Unapproved') {
         className = 'text-warning';
     }
     if(matter.status === 'Active') {
@@ -311,7 +311,7 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
                 <InputField name="matterNumber" label="Matter Number" type="text" required/>
                 <InputField name="matterName" label="Matter Name" type="text" required/>
 
-                <SelectField name="status" label="Status" options={['Unapproved', 'Active', 'Closed']} required prompt/>
+                <SelectField name="status" label="Status" options={['Unapproved', 'Active', 'Closed', 'Inactive']} required prompt/>
 
                 <SelectField name="matterType" label="Matter Type" options={this.matterOptions} required prompt/>
                 <hr />

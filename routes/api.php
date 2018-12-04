@@ -116,6 +116,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('matters/{matter}', 'MatterController@update');
     Route::get('matter-files', 'MatterController@documents');
 
+    Route::post('matters-sync', 'MatterController@syncMatters');
+
     Route::post('render', 'RenderController@render');
 
     Route::get('version', 'VersionController@index');

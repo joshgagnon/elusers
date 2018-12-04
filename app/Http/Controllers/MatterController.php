@@ -11,6 +11,25 @@ use App\MatterFile;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
 use Illuminate\Support\Facades\Storage;
+use DB;
+use Exception;
+ use Carbon\Carbon;
+
+
+function findClosestMatterType($input) {
+    $best = -1;
+    $match = null;
+    foreach(Matter::MATTER_TYPES as $matterType) {
+        $val = similar_text($matterType, $input);
+        if($val > $best) {
+            $best = $val;
+            $match = $matterType;
+        }
+    }
+    return $match;
+}
+
+
 
 class MatterController extends Controller
 {
@@ -192,5 +211,103 @@ class MatterController extends Controller
         ]);
         return $file;
       }
+
+   public function syncMatters(Request $request)
+    {
+        DB::beginTransaction();
+        $user = $request->user();
+        $results = [];
+
+        try {
+            $orgId = $request->user()->organisation_id;
+            $file = $request->file('file')[0];
+            $escaped = mb_convert_encoding(file_get_contents($file->getRealPath()),  'UTF-8', 'UTF-8');
+
+            $lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
+            $rows   = array_map('str_getcsv', $lines);
+
+            if(count($rows[0]) < 3){
+                array_shift($rows); //sep
+            }
+            $header = array_shift($rows);
+            $csv    = array();
+            foreach($rows as $row) {
+                if(count($row) == count($header)){
+                    $csv[] = array_combine($header, array_map('trim', $row));
+                }
+            }
+
+            foreach ($csv as $row) {
+                $actionstepId = $row['ID'];
+                if($row['Type'] == 'Deeds' or strpos($row['Type'], 'NA') === 0 || strpos($row['Type'], 'Evolution') !== false){
+                    continue;
+                }
+                $matter_type = findClosestMatterType($row['Type']);
+
+                $created_at = Carbon::createFromFormat('d M Y', $row['Created']);
+                #return $create_at;
+                $results[] = [$created_at];
+
+
+                $matter = Matter::where('matter_number', $actionstepId)->first();
+                $params = [
+                        'matter_number' => $actionstepId,
+                        'matter_name' => $row['Matter Name'],
+                        'matter_type' => $matter_type,
+                        'created_at' => $created_at,
+                        'status' => $row['Status'],
+                        'metadata' => json_encode($row),
+                        'created_by_user_id' =>  $user->id,
+                        'organisation_id' => $user->organisation_id
+                    ];
+                if($matter) {
+                    $matter->update($params);
+                }
+                else{
+                    Matter::create($params);
+                }
+
+                #$matter = Contact::where('matterId', $actionstepId)->first();
+                /*if ($contact) continue;
+                $fields = [
+                    'organisation_id' => $user->organisation_id,
+                    'contactable_type' => $row['Type'],
+                   //'email' => $row['Email Address'],
+                   // 'phone' => $row['Phone Numbers'],
+                    'name' => $row['Name'],
+                    'metadata' => json_encode(['actionstepId' => $actionstepId]),
+                    'contactable' => []
+                ];
+
+                if($row['Type'] == 'Individual'){
+                    $names = explode(" ", $row['Name']);
+                    $middle = null;
+                    if(count($names) > 2){
+                        $middle = array_slice($names, 1, count($names) - 2);
+                        $middle = implode(' ', $middle);
+                    }
+                    $fields['contactable'] = [
+                        'first_name' => $names[0],
+                        'middle_name' => $middle,
+                        'surname' => $names[count($names) - 1]
+                    ];
+                }*/
+
+                //$contact = Contact::create($fields);
+
+
+
+            }
+
+            #return response()->json($results);
+
+            #throw new Exception('asdf');
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
+        return response()->json(['message' => 'Matters updated.']);
+    }
 
 }
