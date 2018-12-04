@@ -18,6 +18,8 @@ import Referrer from './referrer';
 import { ContactSelector } from '../contacts/contactSelector';
 import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
+import * as ReactList from 'react-list';
+
 
 interface  MattersProps {
       matters: EL.Resource<EL.Matter[]>;
@@ -103,29 +105,46 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
-                <Table headings={HEADINGS} lastColIsActions>
-                    { data.map((matter: EL.Matter, index: number) => {
-                        return <tr key={index}>
-                        <td>ELF-{matter.id}</td>
-                        <td>{matter.matterNumber}</td>
-                        <td>{matter.matterName}</td>
-                        <td>{matter.matterType}</td>
-                        <td><MatterStatus matter={matter}/></td>
-                        <td>
-                            { (matter.clients || []).map((client, i) => {
-                                return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
-                            }) }
-                        </td>
+
+                <div className="lazy-table">
+                    <ReactList
+                        type='variable'
+                        useStaticSize={false}
+                        threshold={200}
+                        itemRenderer={(index) => {
+                            const matter = data[index]; //cause the header
+                            if(!matter){
+                                return false;
+                            }
+
+                            return <tr key={index}>
+                            <td>ELF-{matter.id}</td>
+                            <td>{matter.matterNumber}</td>
+                            <td>{matter.matterName}</td>
+                            <td>{matter.matterType}</td>
+                            <td><MatterStatus matter={matter}/></td>
+                            <td>
+                                { (matter.clients || []).map((client, i) => {
+                                    return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
+                                }) }
+                            </td>
 
 
-                        <td>
-                        <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
-                        {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link> }
+                            <td>
+                            <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
+                            {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link> }
 
-                        </td>
+                            </td>
 
-                        </tr> }) }
-                </Table>
+                        </tr>}}
+                        itemsRenderer={(items, ref) => {
+                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref}>
+                                { items }
+                            </Table>
+                        }}
+                        length={data.length+1} // for the header
+                      />
+                      </div>
             </div>
         );
     }

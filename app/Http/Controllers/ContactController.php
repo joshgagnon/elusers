@@ -290,33 +290,37 @@ class ContactController extends Controller
             foreach ($csv as $row) {
                 $actionstepId = $row['ID'];
                 $contact = Contact::where('metadata->actionstepId', $actionstepId)->first();
-                if ($contact) continue;
-                $fields = [
-                    'organisation_id' => $user->organisation_id,
-                    'contactable_type' => $row['Type'],
-                   //'email' => $row['Email Address'],
-                   // 'phone' => $row['Phone Numbers'],
-                    'name' => $row['Name'],
-                    'metadata' => json_encode(['actionstepId' => $actionstepId]),
-                    'contactable' => []
-                ];
-
-                if($row['Type'] == 'Individual'){
-                    $names = explode(" ", $row['Name']);
-                    $middle = null;
-                    if(count($names) > 2){
-                        $middle = array_slice($names, 1, count($names) - 2);
-                        $middle = implode(' ', $middle);
-                    }
-                    $fields['contactable'] = [
-                        'first_name' => $names[0],
-                        'middle_name' => $middle,
-                        'surname' => $names[count($names) - 1]
-                    ];
+                if ($contact) {
+                    $contact->update([
+                        'metadata' => json_encode(array_merge(['actionstepId' => $actionstepId], $row))
+                    ]);
                 }
+                else {
+                    $fields = [
+                        'organisation_id' => $user->organisation_id,
+                        'contactable_type' => $row['Type'],
+                        'name' => $row['Name'],
+                        'metadata' => json_encode(['actionstepId' => $actionstepId]),
+                        'contactable' => []
+                    ];
 
-                $contact = Contact::create($fields);
-                $this->saveSubType($contact, $fields);
+                    if($row['Type'] == 'Individual'){
+                        $names = explode(" ", $row['Name']);
+                        $middle = null;
+                        if(count($names) > 2){
+                            $middle = array_slice($names, 1, count($names) - 2);
+                            $middle = implode(' ', $middle);
+                        }
+                        $fields['contactable'] = [
+                            'first_name' => $names[0],
+                            'middle_name' => $middle,
+                            'surname' => $names[count($names) - 1]
+                        ];
+                    }
+
+                    $contact = Contact::create($fields);
+                    $this->saveSubType($contact, $fields);
+                }
                 /*if($row['Address']){
                     $address = [
                         'address_one' => $row['Address'],

@@ -245,8 +245,7 @@ class MatterController extends Controller
                 $matter_type = findClosestMatterType($row['Type']);
 
                 $created_at = Carbon::createFromFormat('d M Y', $row['Created']);
-                #return $create_at;
-                $results[] = [$created_at];
+
 
 
                 $matter = Matter::where('matter_number', $actionstepId)->first();
@@ -264,49 +263,21 @@ class MatterController extends Controller
                     $matter->update($params);
                 }
                 else{
-                    Matter::create($params);
+                    $matter = Matter::create($params);
                 }
 
-                #$matter = Contact::where('matterId', $actionstepId)->first();
-                /*if ($contact) continue;
-                $fields = [
-                    'organisation_id' => $user->organisation_id,
-                    'contactable_type' => $row['Type'],
-                   //'email' => $row['Email Address'],
-                   // 'phone' => $row['Phone Numbers'],
-                    'name' => $row['Name'],
-                    'metadata' => json_encode(['actionstepId' => $actionstepId]),
-                    'contactable' => []
-                ];
+                $clients  = Contact::whereIn("metadata->Name", explode("\n", $row['Primary Participant']))->get();
 
-                if($row['Type'] == 'Individual'){
-                    $names = explode(" ", $row['Name']);
-                    $middle = null;
-                    if(count($names) > 2){
-                        $middle = array_slice($names, 1, count($names) - 2);
-                        $middle = implode(' ', $middle);
-                    }
-                    $fields['contactable'] = [
-                        'first_name' => $names[0],
-                        'middle_name' => $middle,
-                        'surname' => $names[count($names) - 1]
-                    ];
-                }*/
-
-                //$contact = Contact::create($fields);
-
-
+                $matter->clients()->sync($clients);
 
             }
 
-            #return response()->json($results);
-
-            #throw new Exception('asdf');
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
             throw $e;
         }
+        return response()->json($results);
         return response()->json(['message' => 'Matters updated.']);
     }
 
