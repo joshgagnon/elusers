@@ -99,7 +99,7 @@ const addresses = (contact: EL.Contact) => {
 @ContactsHOC()
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
 @(connect((state: EL.State) => ({user: state.user}), {
-    showUploadModal: () => showUploadModal({})
+    showUploadModal: () => showUploadModal({uploadType: 'contacts'})
 }) as any)
 export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User}, ContactState> {
 

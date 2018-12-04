@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
-import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
+import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal } from '../../actions';
 import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl } from 'react-bootstrap';
 import Table from '../dataTable';
 import { Link } from 'react-router';
@@ -21,9 +21,11 @@ import HasPermissionHOC from '../hoc/hasPermission';
 
 interface  MattersProps {
       matters: EL.Resource<EL.Matter[]>;
+      showUploadModal: () => void;
 }
 interface  MattersViewProps {
       matters: EL.Matter[];
+      showUploadModal: () => void;
 }
 
 export const MATTER_TYPES = [
@@ -96,6 +98,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
             <div>
                 {  hasPermission(this.props.user, 'create matter')  && <ButtonToolbar>
                     <Link to="/matters/create" className="btn btn-primary"><Icon iconName="plus" />Create Matter</Link>
+                    <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Matter List</Button>
                 </ButtonToolbar> }
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
@@ -129,13 +132,15 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
 }
 
 @MattersHOC()
-@(connect((state: EL.State) => ({ user: state.user })) as any)
+@(connect((state: EL.State) => ({user: state.user}), {
+    showUploadModal: () => showUploadModal({uploadType: 'matters'})
+}) as any)
 @PanelHOC<MattersProps & {user: EL.User}>('Matters', props => [props.matters])
 export class ListMatters extends React.PureComponent<MattersProps & {user: EL.User} > {
 
     render() {
         return (
-                <MattersTable matters={this.props.matters.data} user={this.props.user}/>
+                <MattersTable matters={this.props.matters.data} user={this.props.user} showUploadModal={this.props.showUploadModal}/>
 
         );
     }

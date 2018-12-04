@@ -496,6 +496,7 @@ declare global {
         }
 
         interface ShowUploadPayload {
+            uploadType: 'contacts' | 'matters'
         }
 
         interface ShowUpload extends Action {
