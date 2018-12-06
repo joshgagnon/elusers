@@ -259,15 +259,13 @@ class MatterController extends Controller
                         'created_by_user_id' =>  $user->id,
                         'organisation_id' => $user->organisation_id
                     ];
-                if($matter) {
-                    $matter->update($params);
+                if(!$matter) {
+                    $matter = new Matter;
                 }
-                else{
-                    $matter = Matter::create($params);
-                }
-
+                $matter->fill($params);
+                $matter->save(['timestamps' => false]);
+                Matter::where('matter_number', $actionstepId)->update(['created_at' => $created_at]);
                 $clients  = Contact::whereIn("metadata->Name", explode("\n", $row['Primary Participant']))->get();
-
                 $matter->clients()->sync($clients);
 
             }
@@ -277,7 +275,6 @@ class MatterController extends Controller
             DB::rollback();
             throw $e;
         }
-        return response()->json($results);
         return response()->json(['message' => 'Matters updated.']);
     }
 

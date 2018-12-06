@@ -9,6 +9,7 @@ interface IDataTableProps {
     bodyRef?: any;
 }
 
+const NO_SORT = (key: string) => {};
 
 class DataTable extends React.PureComponent<IDataTableProps>{
     render() {
@@ -20,7 +21,6 @@ class DataTable extends React.PureComponent<IDataTableProps>{
                     if (lastColIsActions && headings.length === index + 1) {
                         return <th key={index} className="actions">{ heading }</th>
                     }
-
                     return <th key={index}>{ heading }</th>
                 })}
             </tr>

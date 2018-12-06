@@ -4,8 +4,8 @@ import PanelHOC from '../hoc/panelHOC';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl } from 'react-bootstrap';
-import Table from '../dataTable';
+import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
+
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
@@ -19,6 +19,9 @@ import { ContactSelector } from '../contacts/contactSelector';
 import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
 import * as ReactList from 'react-list';
+import { firstBy } from 'thenby'
+
+
 
 
 interface  MattersProps {
@@ -62,18 +65,49 @@ function filterData(search: string, data: EL.Matter[]) {
         search = search.toLocaleLowerCase();
         return data.filter(matter => {
             return matter.clients.some(contact => fullname(contact).toLocaleLowerCase().includes(search)) ||
-            `ELF-${matter.id}`.toLocaleLowerCase().includes(search) ||
+            //`ELF-${matter.id}`.toLocaleLowerCase().includes(search) ||
             matter.matterNumber.toLocaleLowerCase().includes(search) ||
             matter.matterName.toLocaleLowerCase().includes(search) ||
             matter.matterType.toLocaleLowerCase().includes(search)
         });
     }
-    data.sort((a, b) => a.matterNumber.localeCompare(b.matterNumber));
     return data;
 }
 
+function sortData(data: EL.Matter[], column: string, sortDown: boolean) {
+    const collator = new Intl.Collator(undefined, {numeric: column === 'matterNumber', sensitivity: 'base'});
 
-const HEADINGS = ['ELF #', 'Matter Number', 'Name', 'Type', 'Status', 'Clients', 'Actions'];
+    return data.sort(firstBy((a, b) => {
+        if(!sortDown) {
+            [b, a] = [a, b];
+        }
+        if(column === 'createdAt') {
+            return ((new Date(a.createdAt).getTime()) - (new Date(b.createdAt).getTime()));
+        }
+        return collator.compare(a[column], b[column]);
+    }));
+}
+
+
+const MATTER_STRINGS = {
+    'matterNumber': 'Matter Number',
+    'matterName': 'Name',
+    'matterType': 'Type',
+    'status': 'Status',
+    'clients': 'Clients',
+    'createdAt': 'Created',
+    'actions': 'Actions'
+}
+
+
+const MATTER_SORTABLE = {
+    'matterNumber': true,
+    'matterName': true,
+    'matterType': true,
+    'status': true,
+    'createdAt': true
+}
+
 
 const MatterStatus = ({matter} : {matter: EL.Matter}) => {
     let className = 'text-danger';
@@ -89,13 +123,24 @@ const MatterStatus = ({matter} : {matter: EL.Matter}) => {
 
 
 
-class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User}, {searchValue: string}> {
+class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User}, {searchValue: string, sortColumn: string, sortDown: boolean}> {
     state = {
-        searchValue: ''
+        searchValue: '',
+        sortColumn: 'matterNumber',
+        sortDown: true
+    }
+
+    sort(column: string) {
+        if(this.state.sortColumn === column) {
+            this.setState({sortDown: !this.state.sortDown})
+        }
+        else{
+            this.setState({sortColumn: column});
+        }
     }
 
     render() {
-        const data = filterData(this.state.searchValue, this.props.matters);
+        const data = sortData(filterData(this.state.searchValue, this.props.matters), this.state.sortColumn, this.state.sortDown);
         return (
             <div>
                 {  hasPermission(this.props.user, 'create matter')  && <ButtonToolbar>
@@ -118,7 +163,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                             }
 
                             return <tr key={index}>
-                            <td>ELF-{matter.id}</td>
+                            {/* <td>ELF-{matter.id}</td> */ }
                             <td>{matter.matterNumber}</td>
                             <td>{matter.matterName}</td>
                             <td>{matter.matterType}</td>
@@ -128,7 +173,9 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                                     return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
                                 }) }
                             </td>
-
+                            <td>
+                                { formatDate(matter.createdAt) }
+                            </td>
 
                             <td>
                             <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
@@ -138,9 +185,24 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
 
                         </tr>}}
                         itemsRenderer={(items, ref) => {
-                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref}>
+                            return <Table responsive>
+                            <thead>
+                                <tr>
+                                    { ['matterNumber', 'matterName', 'matterType', 'status', 'clients', 'createdAt'].map((heading: string, index) => {
+                                        return <th key={index} onClick={MATTER_SORTABLE[heading] ? () => this.sort(heading) : undefined } className={MATTER_SORTABLE[heading] ? 'actionable' : ''}>
+                                            { MATTER_STRINGS[heading] }
+                                            { this.state.sortColumn === heading && this.state.sortDown && <Icon iconName="chevron-down" /> }
+                                            { this.state.sortColumn === heading && !this.state.sortDown && <Icon iconName="chevron-up" /> }
+                                           </th>
+                                    }) }
+                                    <th className="actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody ref={ref}>
                                 { items }
+                            </tbody>
                             </Table>
+
                         }}
                         length={data.length+1} // for the header
                       />
