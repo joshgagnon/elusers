@@ -8,7 +8,7 @@ use App\Library\SQLFile;
 
 class File extends Model
 {
-    protected $fillable = ['path', 'filename', 'mime_type', 'encrypted'];
+    protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'protected'];
 
     public static function boot() {
         parent::boot();

@@ -5,7 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\Relation;
-
+use App\Matter;
+use App\Observers\MatterObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Matter::observe(MatterObserver::class);
     }
 
     /**
@@ -49,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
             'Local Authority' => \App\ContactLocalAuthority::class,
             'Government Body' => \App\ContactGovernmentBody::class
         ]);
+
+
 
 
     }

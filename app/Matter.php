@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,6 +32,13 @@ class Matter extends Model
         "Trust Creation and Administration"
     ];
 
+
+    const DEFAULT_DIRECTORYS = [
+        'Accounts',
+        'Documents',
+        'Emails',
+        'Letters and Faxes'
+    ];
 
     protected $fillable = ['matter_number', 'matter_name', 'matter_type', 'status', 'approved_by_user_id', 'metadata', 'created_by_user_id',  'organisation_id', 'referrer_id', 'referrer_type'];
    # protected $visible = ['id', 'matter_number', 'matter_name', 'matter_type', 'created_by_user_id', 'referrer_id', 'organisation_id', 'created_at', 'updated_at'];
@@ -64,5 +72,17 @@ class Matter extends Model
     public function notes()
     {
         return $this->hasMany(MatterNote::Class);
+    }
+
+    public function populateDirectories()
+    {
+        // if have at least one directory then has been populated
+        $hasDir = $this->files()->where('directory', true)->where('protected', true)->get();
+        if($hasDir) {
+            return false;
+        }
+
+        //create
+        File::create();
     }
 }
