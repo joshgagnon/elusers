@@ -13,7 +13,7 @@ class ProfessionalDevelopmentRecordSeeder extends Seeder
      */
     public function run()
     {
-        $user1 = User::find(1);
+        $user1 = User::first();
 
         $user1Records = [];
 
