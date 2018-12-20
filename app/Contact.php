@@ -125,6 +125,15 @@ class Contact extends Model
     {
         return $this->belongsToMany(Matter::Class, 'matter_clients', 'contact_id', 'matter_id')->using('App\MatterClient');
     }
+
+    public function getName()
+    {
+        if($this->contactable_type === 'Individual'){
+            $contactable = $this->contactable;
+            return $contactable->first_name.' '.$contactable->surname;
+        }
+        return $this->name;
+    }
 }
 
 
