@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\Library\SQLFile;
+use App\Library\Encryption;
+
 
 class File extends Model
 {
@@ -36,7 +38,16 @@ class File extends Model
     }
 
 
-}
+    public function getContent($key)
+    {
+        $content = Storage::get($this->path);
+        if ($this->encrypted) {
+            $encryption = new Encryption($key);
+            $content = $encryption->decrypt($content);
+        }
+        return $content;
 
+    }
+}
 
 

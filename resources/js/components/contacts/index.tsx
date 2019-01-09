@@ -121,8 +121,8 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
                 </div>
                 <div className="lazy-table">
                     <ReactList
-                        type='variable'
-                        useStaticSize={false}
+                        type='uniform'
+                        useStaticSize={true}
                         threshold={200}
                         itemRenderer={(index) => {
                             const contact = data[index]; //cause the header
