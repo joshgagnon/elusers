@@ -78,11 +78,20 @@ class Matter extends Model
     {
         // if have at least one directory then has been populated
         $hasDir = $this->files()->where('directory', true)->where('protected', true)->get();
-        if($hasDir) {
+
+        if(count($hasDir)) {
             return false;
         }
+        foreach(Matter::DEFAULT_DIRECTORYS as $name) {
+            $this->files()->save(File::create([
+                'filename'  => $name,
+                'directory' => true,
+                'protected' => true,
+                'path' => '',
+                'mimetype' => ''
+            ]));
+        }
 
-        //create
-        File::create();
+
     }
 }

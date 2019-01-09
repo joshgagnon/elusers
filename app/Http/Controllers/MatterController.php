@@ -68,7 +68,7 @@ class MatterController extends Controller
             return $this->saveUploadedFile($file, $user)->id;
         }, $request->file('file', []));
 
-        $matter->files()->sync($fileIds);
+        $matter->files()->attach($fileIds);
 
         $clients =  array_map(function ($i) {
             return $i['id'];
