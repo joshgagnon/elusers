@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
+import Panel from 'components/panel';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal } from '../../actions';
@@ -12,7 +13,7 @@ import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, C
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
-import { fullname, name, guessName, formatDate } from '../utils';
+import { fullname, name, guessName, formatDate, formatDateTime } from '../utils';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import Referrer from './referrer';
 import { ContactSelector } from '../contacts/contactSelector';
@@ -23,6 +24,116 @@ import { firstBy } from 'thenby'
 import classnames from 'classnames';
 
 import { DragSource, DropTarget } from 'react-dnd';
+import { NativeTypes } from 'react-dnd-html5-backend';
+
+
+const fileTarget = {
+    drop(props, monitor) {
+        if(props.documents.value){
+            props.documents.onChange([...props.documents.value, ...monitor.getItem().files]);
+        }
+        else{
+            props.documents.onChange(monitor.getItem().files);
+        }
+    }
+};
+
+
+const imageTarget = {
+    drop(props, monitor) {
+        props.onChange(monitor.getItem().files);
+    }
+};
+
+
+class DocumentFormBase extends React.PureComponent<any> {
+    open() {
+        this.isFileDialogActive = true;
+        this.fileInputEl.value = null;
+        this.fileInputEl.click();
+    }
+
+    onDrop(e) {
+        const droppedFiles = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+        if(this.props.documents){
+            this.props.documents.onChange([...(this.props.documents.value || []), ...droppedFiles]);
+        }
+        else{
+            this.props.onChange(droppedFiles);
+        }
+    }
+
+    onFileDialogCancel() {
+        // timeout will not recognize context of this method
+        const { onFileDialogCancel } = this.props;
+        const { fileInputEl } = this;
+        let { isFileDialogActive } = this;
+        // execute the timeout only if the onFileDialogCancel is defined and FileDialog
+        // is opened in the browser
+        if (onFileDialogCancel && isFileDialogActive) {
+          setTimeout(() => {
+            // Returns an object as FileList
+            const FileList = fileInputEl.files;
+            if (!FileList.length) {
+              isFileDialogActive = false;
+              onFileDialogCancel();
+            }
+          }, 300);
+        }
+    }
+
+    render() {
+        const documents = this.props.documents;
+        const { connectDropTarget, isOver, canDrop } = this.props;
+        let className="dropzone";
+        if(isOver && !canDrop){
+            className += ' reject';
+        }
+        else if(isOver && canDrop){
+            className += ' accept';
+        }
+        const inputAttributes = {
+            type: 'file',
+            style: { display: 'none' },
+            multiple: true,
+            ref: el => this.fileInputEl = el,
+            onChange: (e) => this.onDrop(e)
+        };
+        return <div>
+            { this.props.label && <label className="control-label">{ this.props.label }</label>}
+
+                { connectDropTarget(<div className="dropzone" onClick={() => this.open()}>
+                                        <div>Drop files here to upload or <a className="vanity-link" href="#">click to browse</a> your device</div>
+                  <input {...inputAttributes} />
+            </div>) }
+           {((documents|| {}).value || []).map((file, i) => {
+                if(file.type && file.type === 'Directory'){
+                    return false;
+                }
+                return  <StaticField type="static" key={i} label="File" key={i}
+                hasFeedback groupClassName='has-group' value={file.name || file.filename}
+                buttonAfter={<button className="btn btn-default" onClick={(e) => {
+                    e.preventDefault();
+                    const clone = documents.value.slice();
+                    clone.splice(i, 1);
+                    documents.onChange(clone);
+                }}><Glyphicon glyph='trash'/></button>} />
+
+            }) }
+           </div>
+        }
+}
+
+
+export const DocumentsForm = DropTarget(NativeTypes.FILE, fileTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop()
+}))(DocumentFormBase);
+
+
+
+
 
 const documentTypeClasses = (doc, showingSubTree) => {
     const map = {
@@ -36,8 +147,8 @@ const documentTypeClasses = (doc, showingSubTree) => {
         'application/zip': 'fa-file-archive-o'
     };
 
-    if(doc.type === 'Directory'){
-        if(doc.userUploaded){
+    if(doc.directory){
+        if(!doc.protected){
             if(showingSubTree){
                 return 'fa fa-folder-open-o'
             }
@@ -69,7 +180,8 @@ function listToTree(documents: EL.Document[]){
     return [{
             id: 'root',
             directory: true,
-            filename: 'Files',
+            protected: true,
+            filename: 'Documents',
             children: roots
         }]
 }
@@ -98,54 +210,54 @@ const fileSource = {
   beginDrag(props) {
     return {
       id: props.item.id,
-      directoryId: props.item.directoryId
+      parentId: props.item.parentId
     };
   }
 };
 
 const fileTarget = {
     drop(props, monitor) {
-        const newDirectoryId = props.item.id === 'root' ? null : props.item.id;
+        const newParentid = props.item.id === 'root' ? null : props.item.id;
         const dragItem = monitor.getItem()
         if(!dragItem.id && dragItem.files){
             if(!monitor.didDrop()) {
-                props.showSubTree(newDirectoryId);
+                props.showSubTree(newParentid);
                 props.path.map(id =>  props.showSubTree(id))
-                props.upload(dragItem.files, newDirectoryId);
+                props.upload(dragItem.files, newParentid);
                 return;
             }
         }
-        if(newDirectoryId === dragItem.id){
+        if(newParentid === dragItem.id){
             return;
         }
-        if(dragItem.directoryId === newDirectoryId){
+        if(dragItem.parentId === newParentid){
             return;
         };
         if(props.path.indexOf(dragItem.id) > -1){
             return;
         }
         if(!monitor.didDrop()){
-            props.showSubTree(newDirectoryId);
+            props.showSubTree(newParentid);
             props.path.map(id =>  props.showSubTree(id))
-            props.move(dragItem.id, newDirectoryId);
+            props.move(dragItem.id, newParentid);
             // always show parents on drop, so we can select result when upload finished
         }
     },
     canDrop(props, monitor) {
-        return props.canUpdate && props.item.id === "root" || props.item.userUploaded;
+        return true;
     }
 
 
 }
 
-const GC_FILE = 'GC_FILE';
+const FILE = 'FILE';
 
 @DropTarget((props) => props.accepts, fileTarget, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
   canDrop: monitor.canDrop()
 }))
-@DragSource(GC_FILE, fileSource, (connect, monitor) => ({
+@DragSource(FILE, fileSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 }))
@@ -162,12 +274,12 @@ class RenderFile extends React.PureComponent<any> {
 
         const defaultView = () => {
             return  <span>{ !item.directory && <span onClick={() => push(link)} className="view">View</span> }
-                    { this.props.canUpdate && item.userUploaded && <span onClick={() => startRename(item.id)} className="view">Rename</span> }
-                    { this.props.canUpdate && item.userUploaded && <span onClick={() => deleteFile(item.id)} className="view">Delete</span> }</span>
+                    { this.props.canUpdate && !item.protected && <span onClick={() => startRename(item.id)} className="view">Rename</span> }
+                    { this.props.canUpdate && !item.protected && <span onClick={() => deleteFile(item.id)} className="view">Delete</span> }</span>
         }
 
         const submitRename = () => {
-            const value = this.refs.input.getValue();
+            const value = this.input.value;
             if(value){
                 renameFile(item.id, value);
                 endRename();
@@ -175,7 +287,8 @@ class RenderFile extends React.PureComponent<any> {
         }
 
         const submitCreateFolder = () => {
-            const value = this.refs.input.getValue();
+
+            const value = this.input.value;
             if(value){
                 createDirectory(item.id === 'root' ? null : item.id, value);
                 endCreateFolder();
@@ -196,30 +309,30 @@ class RenderFile extends React.PureComponent<any> {
             return <div className="file-sub-tree"><span className="expand-control"></span>
                     <span className="file selected" >
                         <span className="icon fa fa-plus-circle"></span>
-                        {/* <Input type="text" placeholder={ 'New Folder' } ref="input" /> */}
+                        <FormGroup><FormControl type="text" placeholder={ 'New Folder' } inputRef={ref => { this.input = ref; }}  /></FormGroup>
                         <span onClick={submitCreateFolder} className="view">Create Folder</span>
                         <span onClick={endCreateFolder} className="view">Cancel</span>
                     </span>
                 </div>
         }
 
-        const fileSpan = <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})} onMouseDown={() => !props.selected && props.select()}>
+        const fileSpan = () => <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})} onMouseDown={() => !props.selected && props.select()}>
                 <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
-                { !this.props.renaming && <span className="filename">{ item.filename } { item.date ? ` - ${stringDateToFormattedString(item.date)}` : '' }</span> }
+                { !this.props.renaming && <span className="filename">{ item.filename } { !item.directory && item.createdAt ? ` - ${formatDateTime(item.createdAt)}` : '' }</span> }
                 { !this.props.renaming && defaultView() }
-                {/* { this.props.renaming && <Input type="text" defaultValue={ item.filename } ref="input"/> } */ }
+                { this.props.renaming && <FormGroup><FormControl type="text" defaultValue={ item.filename } inputRef={ref => { this.input = ref; }} /></FormGroup> }
                 { this.props.renaming && <span onClick={() => submitRename()} className="view">Save</span> }
                 { this.props.renaming && <span onClick={() => endRename()} className="view">Cancel</span> }
                 </span>
 
-        const canCreateDirectory = this.props.canUpdate && (item.id === "root" || item.userUploaded);
+        const canCreateDirectory = this.props.canUpdate;
         const renderedFile = (<div className="file-sub-tree">
               <span className="expand-control">
-                { item.type === 'Directory'  && showingSubTree && <span className="fa fa-minus-square-o" onClick={() => props.hideSubTree()} /> }
-                { item.type === 'Directory'  && !showingSubTree && <span className="fa fa-plus-square-o" onClick={() => props.showSubTree()} /> }
+                { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={() => props.hideSubTree()} /> }
+                { item.directory   && !showingSubTree && <span className="fa fa-plus-square-o" onClick={() => props.showSubTree()} /> }
               </span>
-                { item.id !== "root" && item.userUploaded && !this.props.renaming ? connectDragSource(fileSpan) : fileSpan }
-                { item.type === 'Directory' &&
+                { item.id !== "root" && !item.protected && !this.props.renaming ? connectDragSource(fileSpan()) : fileSpan() }
+                { item.directory  &&
                     <div className={classnames("children", {"showing": showingSubTree})}>
                     { canCreateDirectory && !this.props.creatingFolder && showNew() }
                     { canCreateDirectory && this.props.creatingFolder && showNewForm() }
@@ -231,17 +344,27 @@ class RenderFile extends React.PureComponent<any> {
     }
 }
 
-//return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
-
+const SearchForm = (props) => {
+    return <div>
+            <h3 className="panel-title">Documents</h3>
+            <form className="form-inline pull-right">
+            <FormGroup><FormControl type="text"  onChange={props.onSearchChange} placeholder="Search" value={props.filter}/></FormGroup>
+            <div className="btn-group">
+            <Button onClick={props.expandAll}>Expand All</Button>
+            <Button onClick={props.collapseAll}>Collapse All</Button>
+            </div>
+        </form>
+        </div>
+}
 
 class FileTree extends React.PureComponent<any> {
-    state = {root: true}
+    state = {root: true, filter: ''}
     constructor(props){
         super(props);
         this.expandAll = this.expandAll.bind(this);
         this.collapseAll = this.collapseAll.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
-        //this.upload = this.upload.bind(this);
+        this.upload = this.upload.bind(this);
         this.move = this.move.bind(this);
         this.renameFile = this.renameFile.bind(this);
         this.deleteFile = this.deleteFile.bind(this);
@@ -311,6 +434,23 @@ class FileTree extends React.PureComponent<any> {
         this.props.createDirectory(...args)
     }
 
+    upload(files, parentId) {
+        if(!parentId){
+            const target = this.state.selected && this.props.flatFiles.find(f => f.id === this.state.selected);
+            if(target && target.userUploaded){
+                parentId = target.directory ? target.id : target.parentId;
+                parentId = parentId === 'root' ? null : parentId;
+            }
+        }
+        parentId && this.showSubTree(parentId)
+        this.props.upload(files, parentId)
+         /*   .then((r) => {
+                if(r && r.response && r.response.documentIds && r.response.documentIds[0]){
+                    this.setState({selected: r.response.documentIds[0]});
+                }
+            }) */
+    }
+
     render() {
         const loop = (data, path) => {
             return data.map((item) => {
@@ -320,8 +460,8 @@ class FileTree extends React.PureComponent<any> {
                     item: item,
                     link: link,
                     push: this.props.push,
-                    accepts: item.type === 'Directory' ? [GC_FILE, NativeTypes.FILE] : [],
-                    fileTypes:  GC_FILE,
+                    accepts: item.directory ? [FILE, NativeTypes.FILE] : [],
+                    fileTypes:  FILE,
                     select: () => this.select(item.id),
                     selected: !this.state.creatingFolder && this.state.selected === item.id,
                     renaming: !this.state.creatingFolder && this.state.selected === item.id && this.state.renaming === item.id,
@@ -358,30 +498,20 @@ class FileTree extends React.PureComponent<any> {
         };
 
         const files = filterTree(this.state.filter, this.props.files);
-        return <div>
-            <div className="button-row">
-                <form className="form-inline">
-                <FormControl type="text"  label="Search" onChange={this.onSearchChange} value={this.state.filter}/>
-                <div className="btn-group">
-                <Button onClick={this.expandAll}>Expand All</Button>
-                <Button onClick={this.collapseAll}>Collapse All</Button>
-                </div>
-            </form>
-            </div>
+        return <Panel formattedTitle={ <SearchForm key="search" onSearchChange={this.onSearchChange} filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll} /> } className="document-panel">
             <div className="file-tree">
                 { loop(files, []) }
             </div>
             { this.props.canUpdate && <DocumentsForm documents={{onChange: (files) => this.upload(files)}} /> }
-        </div>
+         </Panel>
     }
 
 }
 
 @connect(undefined,
  (dispatch, ownProps) => ({
-    //companyTransaction: (...args) => companyTransaction(...args),
     addNotification: (args) => dispatch(addNotification(args)),
-    createDocument: (...args) => dispatch(createResource(`/company/${ownProps.companyId}/documents`, ...args)),
+    createDocument: (...args) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, ...args)),
     updateDocument: (...args) => dispatch(updateResource(...args)),
     softDeleteResource: (...args) => dispatch(softDeleteResource(...args)),
 }))
@@ -398,17 +528,16 @@ export class DocumentsView extends React.PureComponent<any> {
 
     renderField(key, value) {
         switch(key){
-            case 'date':
             case 'createdAt':
-                return stringDateToFormattedString(value);
+                return formatDateTime(value);
             default:
                 return value;
         }
     }
 
-    upload(files, directoryId=null) {
+    upload(files, parentId=null) {
         const body = new FormData();
-        body.append('json', JSON.stringify({directoryId}));
+        body.append('json', JSON.stringify({parentId}));
         (files || []).map(d => {
             body.append('documents', d, d.name);
         });
@@ -420,8 +549,8 @@ export class DocumentsView extends React.PureComponent<any> {
             .catch((e) => this.props.addNotification({message: e.message, error: true}))
     }
 
-    move(documentId, directoryId) {
-        return this.props.updateDocument(`/company/${this.props.companyId}/document/${documentId}`, {directoryId: directoryId}, {loadingMessage: 'Moving File'})
+    move(documentId, parentId) {
+        return this.props.updateDocument(`/company/${this.props.companyId}/document/${documentId}`, {parentId: parentId}, {loadingMessage: 'Moving File'})
             .then(() => this.props.addNotification({message: 'File moved'}))
             .catch((e) => this.props.addNotification({message: e.message, error: true}))
     }
@@ -438,17 +567,14 @@ export class DocumentsView extends React.PureComponent<any> {
             .catch((e) => this.props.addNotification({message: e.message, error: true}))
     }
 
-    createDirectory(directoryId, name) {
-        return this.props.createDocument({directoryId: directoryId, newDirectory: name})
-            .then(() => {
-                this.props.addNotification({message: 'Directory Created'})
-            })
-            .catch((e) => this.props.addNotification({message: e.message, error: true}))
+    createDirectory(parentId, name) {
+        return this.props.createDocument({parentId, newDirectory: name})
     }
 
     render() {
         const { files } = this.props;
-        return  <div>
+        return  <div className="documents-view">
+
             <FileTree
                 files={listToTree(files)}
                 flatFiles={files}
@@ -458,8 +584,9 @@ export class DocumentsView extends React.PureComponent<any> {
                 renameFile={this.props.canUpdate && this.renameFile}
                 createDirectory={this.createDirectory}
                 upload={this.upload}
-                canUpdate={this.props.canUpdate}
+                canUpdate={true} // TODO, get edit matter permission
                 />
+
         </div>
     }
 }
@@ -674,27 +801,8 @@ interface MatterProps {
     deleteMatter: (matterId: string) => any;
 }
 
-@(connect(undefined, {
-    deleteMatter: (matterId: string) => {
-        const deleteAction = deleteResource(`matters/${matterId}`, {
-            onSuccess: [createNotification('Matter deleted.'), (response) => push('/matters')],
-            onFailure: [createNotification('Matter deletion failed. Please try again.', true)],
-        });
-
-        return confirmAction({
-            title: 'Confirm Delete Matter',
-            content: 'Are you sure you want to delete this matter?',
-            acceptButtonText: 'Delete',
-            declineButtonText: 'Cancel',
-            onAccept: deleteAction
-        });
-    }
-}) as any)
-@MapParamsToProps(['matterId'])
-@MatterHOC()
 @PanelHOC<MatterProps>('Matter', props => props.matter)
-export class ViewMatter extends React.PureComponent<MatterProps> {
-
+class MatterDetails extends React.PureComponent<MatterProps> {
     render() {
         const matter = this.props.matter.data;
         return (
@@ -736,14 +844,45 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
                     <dd>{ (matter.notes || []).map((note, i) => {
                         return <div key={note.id}>{ name(note.creator) } -  {note.note}</div>
                     }) } </dd>
-
-                    <dt>Documents</dt>
-                    <dd><DocumentsView files={matter.files} /></dd>
-
                 </dl>
             </div>
         );
     }
+}
+
+class MatterDocuments extends React.PureComponent<MatterProps> {
+
+    render() {
+        return <DocumentsView files={this.props.matter.data ? this.props.matter.data.files : []} matterId={this.props.matterId} />
+    }
+}
+
+@(connect(undefined, {
+    deleteMatter: (matterId: string) => {
+        const deleteAction = deleteResource(`matters/${matterId}`, {
+            onSuccess: [createNotification('Matter deleted.'), (response) => push('/matters')],
+            onFailure: [createNotification('Matter deletion failed. Please try again.', true)],
+        });
+
+        return confirmAction({
+            title: 'Confirm Delete Matter',
+            content: 'Are you sure you want to delete this matter?',
+            acceptButtonText: 'Delete',
+            declineButtonText: 'Cancel',
+            onAccept: deleteAction
+        });
+    }
+}) as any)
+@MapParamsToProps(['matterId'])
+@MatterHOC()
+export class ViewMatter extends React.PureComponent<MatterProps> {
+    render() {
+        return <React.Fragment>
+            <MatterDetails {...this.props} />
+            <MatterDocuments {...this.props} />
+        </React.Fragment>
+    }
+
 }
 
 
@@ -844,7 +983,7 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
 
                 <FieldArray name="clients" component={Clients as any} />
                 <hr />
-                <DocumentList name="files" label="Documents" />
+                {/* <DocumentList name="files" label="Documents" /> */ }
 
                 <hr />
 

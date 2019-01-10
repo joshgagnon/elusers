@@ -1,5 +1,6 @@
 .file-tree{
     position:relative;
+    clear:both;
     .file-sub-tree{
         .expand-control{
             width: 20px;
@@ -31,6 +32,7 @@
                 margin:0 4px;
                 font-size: 20px;
                 vertical-align:middle;
+                color:$brand-primary;
             }
             .view{
                 font-style: italic;
@@ -56,22 +58,32 @@
         }
 
 
-        .form-group{
-            display: inline-block;
-            margin-bottom: 0;
-            padding-right:12px;
-        }
     }
+    .form-group{
+        display: inline-block;
+        margin-bottom: 0;
+        padding-right:12px;
+    }
+
+
+
+
 }
 
+.documents-view {
+    .document-panel {
+        .panel-heading {
+            float: left;
+            width: 100%;
+            padding: 4px;
+            h3.panel-title {
+                float: left;
+                padding: 4px;
+            }
 
-.widget.company-documents{
-    td{
-        white-space: nowrap;
-        a{
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         }
+    }
+    .dropzone{
+            margin-top: 20px;
     }
 }

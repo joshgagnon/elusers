@@ -90,7 +90,8 @@ module.exports = {
             'react-bootstrap': path.resolve('./node_modules/react-bootstrap'),
             moment: path.resolve('./node_modules/moment'),
             'react-widgets-moment': path.resolve('./node_modules/react-widgets-moment'),
-          }
+          },
+        modules:  [path.resolve(__dirname, 'resources/js'), 'node_modules']
     },
     stats: {
         // suppress "export not found" warnings about re-exported types
