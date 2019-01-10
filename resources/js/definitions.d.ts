@@ -94,6 +94,10 @@ declare global {
             name?: string;
             id: number | string;
             createdAt?: string;
+            directory?: boolean;
+            protected?: boolean;
+            children?: Document[];
+            parentId?: string;
         }
 
         interface OrganisationDocument {

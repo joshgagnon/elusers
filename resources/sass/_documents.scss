@@ -1,0 +1,77 @@
+.file-tree{
+    position:relative;
+    .file-sub-tree{
+        .expand-control{
+            width: 20px;
+            display: inline-block;
+            text-align: center;
+            * {
+                cursor: pointer;
+            }
+        }
+        .file{
+            border: 1px solid white;
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            display: inline-block;
+
+            & > * {
+                line-height: 30px;
+            }
+            &.selected{
+                background-color: lighten($brand-warning, 20%);
+                border: 1px solid $brand-warning;
+            }
+            &.can-drop{
+                background-color: lighten($brand-success, 20%);
+                border: 1px solid $brand-success;
+            }
+            .icon{
+                margin:0 4px;
+                font-size: 20px;
+                vertical-align:middle;
+            }
+            .view{
+                font-style: italic;
+                padding: 0 6px;
+                display:none;
+            }
+            &.selected .view{
+                display: inline;
+                &:hover{
+
+                }
+            }
+            .filename{
+                padding-right:12px;
+            }
+        }
+        .children{
+            margin-left: 20px;
+            display:none;
+        }
+        .children.showing{
+            display:block;
+        }
+
+
+        .form-group{
+            display: inline-block;
+            margin-bottom: 0;
+            padding-right:12px;
+        }
+    }
+}
+
+
+.widget.company-documents{
+    td{
+        white-space: nowrap;
+        a{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        }
+    }
+}
