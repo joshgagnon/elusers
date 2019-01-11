@@ -27,7 +27,7 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
 
 
-const fileTarget = {
+const documentFileTarget = {
     drop(props, monitor) {
         if(props.documents.value){
             props.documents.onChange([...props.documents.value, ...monitor.getItem().files]);
@@ -47,6 +47,8 @@ const imageTarget = {
 
 
 class DocumentFormBase extends React.PureComponent<any> {
+    isFileDialogActive = false;
+    fileInputEl = null;
     open() {
         this.isFileDialogActive = true;
         this.fileInputEl.value = null;
@@ -69,7 +71,7 @@ class DocumentFormBase extends React.PureComponent<any> {
         const { fileInputEl } = this;
         let { isFileDialogActive } = this;
         // execute the timeout only if the onFileDialogCancel is defined and FileDialog
-        // is opened in the browser
+        // is opened in the browserextends Re
         if (onFileDialogCancel && isFileDialogActive) {
           setTimeout(() => {
             // Returns an object as FileList
@@ -106,7 +108,7 @@ class DocumentFormBase extends React.PureComponent<any> {
                                         <div>Drop files here to upload or <a className="vanity-link" href="#">click to browse</a> your device</div>
                   <input {...inputAttributes} />
             </div>) }
-           {((documents|| {}).value || []).map((file, i) => {
+          {/* }{((documents|| {}).value || []).map((file, i) => {
                 if(file.type && file.type === 'Directory'){
                     return false;
                 }
@@ -117,19 +119,19 @@ class DocumentFormBase extends React.PureComponent<any> {
                     const clone = documents.value.slice();
                     clone.splice(i, 1);
                     documents.onChange(clone);
-                }}><Glyphicon glyph='trash'/></button>} />
+                }}><Icon iconName='trash'/></button>} />
 
-            }) }
+            }) } */ }
            </div>
         }
 }
 
 
-export const DocumentsForm = DropTarget(NativeTypes.FILE, fileTarget, (connect, monitor) => ({
+export const DocumentsForm = (DropTarget(NativeTypes.FILE, documentFileTarget, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
   canDrop: monitor.canDrop()
-}))(DocumentFormBase);
+})) as any)(DocumentFormBase);
 
 
 
@@ -252,16 +254,18 @@ const fileTarget = {
 
 const FILE = 'FILE';
 
-@DropTarget((props) => props.accepts, fileTarget, (connect, monitor) => ({
+@(DropTarget((props) => props.accepts, fileTarget, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
   canDrop: monitor.canDrop()
-}))
-@DragSource(FILE, fileSource, (connect, monitor) => ({
+})) as any)
+@(DragSource(FILE, fileSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
-}))
+})) as any)
 class RenderFile extends React.PureComponent<any> {
+    input = null;
+
     render() {
         const props = this.props;
         const { item, link, push, renameFile, deleteFile, startRename, endRename, createDirectory, startCreateFolder, endCreateFolder } = props;
@@ -358,7 +362,7 @@ const SearchForm = (props) => {
 }
 
 class FileTree extends React.PureComponent<any> {
-    state = {root: true, filter: ''}
+    state = {root: true, filter: '', creatingFolder: false, renaming: false, selected: false}
     constructor(props){
         super(props);
         this.expandAll = this.expandAll.bind(this);
@@ -379,7 +383,7 @@ class FileTree extends React.PureComponent<any> {
         this.setState({renaming: id, selected: id})
     }
 
-    endRename(id) {
+    endRename() {
         this.setState({renaming: false});
     }
 
@@ -434,7 +438,7 @@ class FileTree extends React.PureComponent<any> {
         this.props.createDirectory(...args)
     }
 
-    upload(files, parentId) {
+    upload(files, parentId=null) {
         if(!parentId){
             const target = this.state.selected && this.props.flatFiles.find(f => f.id === this.state.selected);
             if(target && target.userUploaded){
@@ -508,17 +512,17 @@ class FileTree extends React.PureComponent<any> {
 
 }
 
-@connect(undefined,
- (dispatch, ownProps) => ({
-    addNotification: (args) => dispatch(addNotification(args)),
-    createDocument: (...args) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, ...args)),
-    updateDocument: (...args) => dispatch(updateResource(...args)),
-    softDeleteResource: (...args) => dispatch(softDeleteResource(...args)),
-}))
+@(connect(undefined,
+ (dispatch, ownProps: any) => ({
+    createNotification: (args) => dispatch(createNotification(args)),
+    createDocument: (data) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, data)),
+    updateDocument: (documentId, data) => dispatch(updateResource(`matter/${ownProps.matterId}/documents/${documentId}`, data)),
+    deleteResource: (documentId) => dispatch(deleteResource(`matter/${ownProps.matterId}/documents/${documentId}`)),
+})) as any)
 export class DocumentsView extends React.PureComponent<any> {
 
     constructor(props) {
-        super();
+        super(props);
         this.move = this.move.bind(this);
         this.renameFile = this.renameFile.bind(this);
         this.deleteFile = this.deleteFile.bind(this);
@@ -543,28 +547,28 @@ export class DocumentsView extends React.PureComponent<any> {
         });
         return this.props.createDocument(body, {stringify: false, 'loadingMessage': 'Uploading'})
             .then((result) => {
-                this.props.addNotification({message: 'File uploaded'});
+                this.props.createNotification({message: 'File uploaded'});
                 return result;
             })
-            .catch((e) => this.props.addNotification({message: e.message, error: true}))
+            .catch((e) => this.props.createNotification({message: e.message, error: true}))
     }
 
     move(documentId, parentId) {
         return this.props.updateDocument(`/company/${this.props.companyId}/document/${documentId}`, {parentId: parentId}, {loadingMessage: 'Moving File'})
-            .then(() => this.props.addNotification({message: 'File moved'}))
-            .catch((e) => this.props.addNotification({message: e.message, error: true}))
-    }
+            .then(() => this.props.createNotification({message: 'File moved'}))
+            .catch((e) => this.props.createNotification({message: e.message, error: true}))
+    }   
 
     deleteFile(documentId) {
-        return this.props.softDeleteResource(`/company/${this.props.companyId}/document/${documentId}`, {loadingMessage: 'Deleting File'})
-            .then(() => this.props.addNotification({message: 'File deleted'}))
-            .catch((e) => this.props.addNotification({message: e.message, error: true}))
+        return this.props.deleteResource(`/company/${this.props.companyId}/document/${documentId}`, {loadingMessage: 'Deleting File'})
+            .then(() => this.props.createNotification({message: 'File deleted'}))
+            .catch((e) => this.props.createNotification({message: e.message, error: true}))
     }
 
     renameFile(documentId, filename) {
         return this.props.updateDocument(`/company/${this.props.companyId}/document/${documentId}`, {filename: filename}, {loadingMessage: 'Renaming File'})
-            .then(() => this.props.addNotification({message: 'File renamed'}))
-            .catch((e) => this.props.addNotification({message: e.message, error: true}))
+            .then(() => this.props.createNotification({message: 'File renamed'}))
+            .catch((e) => this.props.createNotification({message: e.message, error: true}))
     }
 
     createDirectory(parentId, name) {
