@@ -72,13 +72,14 @@
 
 .documents-view {
     .document-panel {
+        user-select: none;
         .panel-heading {
             float: left;
             width: 100%;
-            padding: 4px;
+            padding: 5px 15px;
             h3.panel-title {
                 float: left;
-                padding: 4px;
+                padding: 4px 0;
             }
 
         }

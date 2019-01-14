@@ -350,7 +350,7 @@ class RenderFile extends React.PureComponent<any> {
 
 const SearchForm = (props) => {
     return <div>
-            <h3 className="panel-title">Documents</h3>
+            <h3 className="panel-title">{ props.title }</h3>
             <form className="form-inline pull-right">
             <FormGroup><FormControl type="text"  onChange={props.onSearchChange} placeholder="Search" value={props.filter}/></FormGroup>
             <div className="btn-group">
@@ -497,7 +497,8 @@ class FileTree extends React.PureComponent<any> {
         };
 
         const files = filterTree(this.state.filter, this.props.files);
-        return <Panel formattedTitle={ <SearchForm key="search" onSearchChange={this.onSearchChange} filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll} /> } className="document-panel">
+        return <Panel formattedTitle={
+            <SearchForm title={this.props.title} key="search" onSearchChange={this.onSearchChange} filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll} /> } className="document-panel">
             <div className="file-tree">
                 { loop(files, []) }
             </div>
@@ -513,8 +514,23 @@ class FileTree extends React.PureComponent<any> {
     createNotification: (args) => dispatch(createNotification(args)),
     createDocuments: (data) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, data)),
     updateDocument: (documentId, data) => dispatch(updateResource(`matter/${ownProps.matterId}/documents/${documentId}`, data)),
-    deleteResource: (documentId) => dispatch(deleteResource(`matter/${ownProps.matterId}/documents/${documentId}`)),
-    push: (url) => push(url)
+    deleteResource: (documentId) => {
+        const deleteAction = deleteResource(`matter/${ownProps.matterId}/documents/${documentId}`, {
+            onSuccess: [createNotification('File deleted.')],
+            onFailure: [createNotification('File deletion failed. Please try again.', true)],
+        });
+
+
+        return dispatch(confirmAction({
+            title: 'Confirm Delete File',
+            content: 'Are you sure you want to delete this file',
+            acceptButtonText: 'Delete',
+            declineButtonText: 'Cancel',
+            onAccept: deleteAction
+        }));
+
+    },
+    push: (url) => dispatch(push(url))
 })) as any)
 export class DocumentsView extends React.PureComponent<any> {
 
@@ -561,6 +577,7 @@ export class DocumentsView extends React.PureComponent<any> {
         return  <div className="documents-view">
 
             <FileTree
+                title={this.props.title}
                 files={listToTree(files)}
                 flatFiles={files}
                 push={this.props.push}
@@ -839,7 +856,7 @@ class MatterDetails extends React.PureComponent<MatterProps> {
 class MatterDocuments extends React.PureComponent<MatterProps> {
 
     render() {
-        return <DocumentsView files={this.props.matter.data ? this.props.matter.data.files : []} matterId={this.props.matterId} canUpdate={this.props.canUpdate}/>
+        return <DocumentsView title="Matter Documents" files={this.props.matter.data ? this.props.matter.data.files : []} matterId={this.props.matterId} canUpdate={this.props.canUpdate}/>
     }
 }
 

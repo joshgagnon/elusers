@@ -113,7 +113,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::apiResource('permissions', 'PermissionController');
 
-    //Route::post('matters/{matter}', 'MatterController@update');
+    Route::post('matters/{matter}', 'MatterController@update');
     Route::post('matter/{matter}/documents', 'MatterController@uploadDocuments');
     Route::put('matter/{matter}/documents/{document}', 'MatterController@updateDocument');
     Route::delete('matter/{matter}/documents/{document}', 'MatterController@deleteDocument');
