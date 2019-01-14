@@ -67,10 +67,10 @@ class ExportFiles extends Command
     public function orgFiles($org, $outputDir) {
         $files = OrganisationFile::where('organisation_id', $org->id)->get();
         foreach($files as $file) {
-            if($file->directory) {
+            if($file->file->directory) {
                 continue;
             }
-            $subpath = $file->getFullPath();
+            $subpath = $file->file->getFullPath();
             if($subpath) {
                 $path = $path.'/'.$subpath;
             }
