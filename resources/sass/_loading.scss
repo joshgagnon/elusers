@@ -1,10 +1,17 @@
-.loading, .loading:after {
+.loading, .loading:after{
     border-radius: 50%;
     width: 10em;
     height: 10em;
 }
 
-.loading {
+.loading-small, .loading-small:after {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+.loading,
+.loading-small {
     margin: 60px auto;
     font-size: 10px;
     position: relative;
@@ -15,6 +22,10 @@
     animation: spinner 1s infinite linear;
     opacity: 1;
     transition: opacity 250ms ease;
+}
+.loading-small{
+    border-width: 5px;
+    margin: unset;
 }
 
 .static-loading-container{

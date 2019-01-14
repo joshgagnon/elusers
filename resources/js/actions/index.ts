@@ -126,3 +126,10 @@ export function showUploadModal(payload: EL.Actions.ShowUploadPayload): EL.Actio
         payload
     };
 }
+
+export function showDocumentModal(payload: EL.Actions.ShowDocumentModalPayload): EL.Actions.ShowDocumentModal{
+    return {
+        type: EL.ActionTypes.SHOW_DOCUMENT_MODAL,
+        payload
+    };
+}

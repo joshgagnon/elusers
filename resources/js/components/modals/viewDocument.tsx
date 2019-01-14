@@ -3,26 +3,27 @@ import { connect } from 'react-redux';
 import { Modal, ButtonToolbar, Button } from 'react-bootstrap';
 import { closeModal } from '../../actions';
 
-interface VersionWarningProps {
+interface ViewDocumentProps {
     closeModal: () => void;
+    fileId: string;
 }
 
-class VersionWarning extends React.PureComponent<VersionWarningProps> {
+class ViewDocument extends React.PureComponent<ViewDocumentProps> {
     render() {
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>New Version</Modal.Title>
+                    <Modal.Title>View Document</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                   <p>A new version of Evolution Users has been deployed.</p>
+                <p>Preview in development</p>
+                <a className="btn btn-primary" target="_blank" href={`/api/files/${this.props.fileId}`}>Download</a>
                 </Modal.Body>
 
                  <Modal.Footer>
                     <ButtonToolbar className="pull-right">
                         <Button onClick={() => {this.props.closeModal();}}>Close</Button>
-                        <Button bsStyle="danger" onClick={() => location.reload()}>Refresh</Button>
                     </ButtonToolbar>
                 </Modal.Footer>
             </Modal>
@@ -32,11 +33,11 @@ class VersionWarning extends React.PureComponent<VersionWarningProps> {
 
 
 const mapDispatchToProps = {
-    closeModal: () => closeModal({ modalName: EL.ModalNames.VERSION_WARNING }),
+    closeModal: () => closeModal({ modalName: EL.ModalNames.DOCUMENT}),
 };
 
 
 export default connect(
-                       undefined,
+      (state : EL.State) => state.modals[EL.ModalNames.DOCUMENT],
     mapDispatchToProps,
-)(VersionWarning as any);
+)(ViewDocument as any);

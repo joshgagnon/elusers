@@ -241,6 +241,7 @@ declare global {
         export interface Resource<T> {
             status?: RequestStatus;
             data?: T;
+            cached?: boolean;
             isFetching: boolean;
             hasErrored: boolean;
         }
@@ -326,6 +327,7 @@ declare global {
             SHOW_VERSION_WARNING_MODAL = 'SHOW_VERSION_WARNING_MODAL',
             SHOW_AMLCFT_MODAL = 'SHOW_AMLCFT_MODAL',
             SHOW_UPLOAD_MODAL = 'SHOW_UPLOAD_MODAL',
+            SHOW_DOCUMENT_MODAL = 'SHOW_DOCUMENT_MODAL',
             /**
              * Initial testing
              */
@@ -370,7 +372,8 @@ declare global {
             VERSION_WARNING = 'VERSION_WARNING',
             AMLCFT_TOKEN = 'AMLCFT_TOKEN',
             CREATE_CONTACT = 'CREATE_CONTACT',
-            UPLOAD = 'UPLOAD'
+            UPLOAD = 'UPLOAD',
+            DOCUMENT = 'DOCUMENT'
         }
 
         export const enum FormNames {
@@ -505,6 +508,14 @@ declare global {
 
         interface ShowUpload extends Action {
             payload: ShowUploadPayload
+        }
+
+        interface ShowDocumentModalPayload {
+            fileId: fileId
+        }
+
+        interface ShowDocumentModal extends Action {
+            payload: ShowDocumentPayload
         }
 
     }

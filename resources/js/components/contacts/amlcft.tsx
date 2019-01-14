@@ -260,8 +260,8 @@ interface UnwrappedExternalContactAMLCFTProps {
         }
     }
 ) as any)
-@TokenHOC('contact')
-@PanelHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact, () => <div>Sorry, this link has expired</div>)
+@TokenHOC({name: 'contact'})
+@PanelHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact, {errorComponent: () => <div>Sorry, this link has expired</div>})
 class UnwrappedExternalContactAMLCFT extends React.PureComponent<UnwrappedExternalContactAMLCFTProps> {
     render() {
         let values = this.props.contact.data;
@@ -300,7 +300,7 @@ interface UnwrappedEditContactProps {
     contact?: EL.Resource<EL.Contact>;
 }
 
-@TokenHOC('contact')
+@TokenHOC({name: 'contact'})
 @WaitForResource((props: any) => props.contact)
 class TokenContactAMLCFTForm extends React.PureComponent<any> {
     render() {

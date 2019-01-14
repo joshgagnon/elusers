@@ -12,12 +12,14 @@ interface IInjectorState {}
 interface IHOCFactoryParameters {
     location: (ownProps: any) => string;
     propsName: string;
+    cache: boolean;
 }
 
-function HOCFactory({location, propsName}: IHOCFactoryParameters) {
+function HOCFactory({cache, location, propsName}: IHOCFactoryParameters) {
     //return function ConnectedInjector<T extends React.PureComponent<any, any>>(ComposedComponent: () =>  T) {
     return function ConnectedInjector(ComposedComponent: any) : any {
         class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
+            state = {} as any;
 
             fetch(refresh?: boolean){
                 // Set the default of refresh to false
@@ -34,12 +36,20 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
                 this.fetch();
             }
 
-            componentDidUpdate() {
+            componentDidUpdate(oldProps) {
+                if(cache) {
+                    if(!this.props[propsName].data && oldProps[propsName].data) {
+                        this.setState({[propsName]: {...oldProps[propsName], cached: true}});
+                    }
+                    else if(this.props[propsName].data) {
+                        this.setState({[propsName]: this.props[propsName]});
+                    }
+                }
                 this.fetch();
             }
 
             render() {
-                return <ComposedComponent {...this.props} />;
+                return <ComposedComponent {...this.props} {...this.state} />;
             }
         }
 
@@ -58,6 +68,7 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
         }
 
         function actions(dispatch: Dispatch<any>, ownProps: any) {
+
             return {
                 fetch: (refresh) => {
                     const resource = location(ownProps);
@@ -71,41 +82,41 @@ function HOCFactory({location, propsName}: IHOCFactoryParameters) {
     }
 }
 
-export const UsersHOC = () => HOCFactory({ location: () => 'users', propsName: 'users' });
-export const UserHOC = () => HOCFactory({ location: (props) => `users/${props.userId}`, propsName: 'user' });
+export const UsersHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: () => 'users', propsName: 'users' });
+export const UserHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `users/${props.userId}`, propsName: 'user' });
 
-export const UserCPDPRHOC = () => HOCFactory({ location: (props) => `users/${props.user.id}/cpdpr`, propsName: 'cpdpr' });
-export const CPDPRHOC = () => HOCFactory({ location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });
+export const UserCPDPRHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `users/${props.user.id}/cpdpr`, propsName: 'cpdpr' });
+export const CPDPRHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `cpdpr/${props.recordId}`, propsName: 'record' });
 
-export const UserAddressesHOC = () => HOCFactory({ location: (props) => `users/${props.userId || props.user.id}/addresses`, propsName: 'addresses' });
-export const UserAddressHOC = () => HOCFactory({ location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
+export const UserAddressesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `users/${props.userId || props.user.id}/addresses`, propsName: 'addresses' });
+export const UserAddressHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
 
-export const UserEmergencyContactHOC = () => HOCFactory({ location: (props) => `users/${props.userId || props.user.id}/emergency-contact`, propsName: 'emergencyContact' });
+export const UserEmergencyContactHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `users/${props.userId || props.user.id}/emergency-contact`, propsName: 'emergencyContact' });
 
-export const WikiIndexHOC = () => HOCFactory({ location: (props) => `wiki`, propsName: 'wiki' });
-export const WikiHOC = () => HOCFactory({ location: (props) => `wiki/${props.wikiPath}`, propsName: 'wikiPage' });
+export const WikiIndexHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `wiki`, propsName: 'wiki' });
+export const WikiHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `wiki/${props.wikiPath}`, propsName: 'wikiPage' });
 
-export const ClientsHOC = () => HOCFactory({ location: () => 'clients', propsName: 'clients' });
+export const ClientsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: () => 'clients', propsName: 'clients' });
 
-export const DeedPacketsHOC = () => HOCFactory({ location: () => 'deed-packets', propsName: 'deedPackets' });
-export const DeedPacketHOC = () => HOCFactory({ location: (props) => `deed-packets/${props.deedPacketId}`, propsName: 'deedPacket' });
+export const DeedPacketsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: () => 'deed-packets', propsName: 'deedPackets' });
+export const DeedPacketHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `deed-packets/${props.deedPacketId}`, propsName: 'deedPacket' });
 
-export const DeedPacketRecordHOC = () => HOCFactory({ location: (props) => `deed-packet-records/${props.recordId}`, propsName: 'record' });
+export const DeedPacketRecordHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `deed-packet-records/${props.recordId}`, propsName: 'record' });
 
-export const OfficesHOC = () => HOCFactory({ location: (props) => 'office-locations', propsName: 'offices' });
+export const OfficesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => 'office-locations', propsName: 'offices' });
 
-export const ContactsHOC = () => HOCFactory({ location: (props) => 'contacts', propsName: 'contacts' });
-export const ContactHOC = () => HOCFactory({ location: (props) => `contacts/${props.contactId}`, propsName: 'contact' });
+export const ContactsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => 'contacts', propsName: 'contacts' });
+export const ContactHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `contacts/${props.contactId}`, propsName: 'contact' });
 
-export const ContactAddressesHOC = () => HOCFactory({ location: (props) => `contacts/${props.contactId}/addresses`, propsName: 'addresses' });
-export const ContactAddressHOC = () => HOCFactory({ location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
+export const ContactAddressesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `contacts/${props.contactId}/addresses`, propsName: 'addresses' });
+export const ContactAddressHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
 
-export const OrganisationDocumentsHOC = () => HOCFactory({ location: (props) => `organisation-files`, propsName: 'documents' });
-export const ContactDocumentsHOC = () => HOCFactory({ location: (props) => `contact-files`, propsName: 'documents' });
-export const MatterDocumentsHOC = () => HOCFactory({ location: (props) => `matter-files`, propsName: 'documents' });
+export const OrganisationDocumentsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `organisation-files`, propsName: 'documents' });
+export const ContactDocumentsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `contact-files`, propsName: 'documents' });
+export const MatterDocumentsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `matter-files`, propsName: 'documents' });
 
-export const MattersHOC = () => HOCFactory({ location: (props) => `matters`, propsName: 'matters' });
-export const MatterHOC = () => HOCFactory({ location: (props) => `matters/${props.matterId}`, propsName: 'matter' });
+export const MattersHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `matters`, propsName: 'matters' });
+export const MatterHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `matters/${props.matterId}`, propsName: 'matter' });
 
-export const TokenHOC = (name: string) => HOCFactory({ location: (props) => `access_token/${props.token}`, propsName: name });
-export const RolesAndPermissionsHOC = () => HOCFactory({ location: (props) => `roles`, propsName: 'rolesAndPermissions' });
+export const TokenHOC = ({cache=false, name} : {cache?: boolean, name: string} = {name: ''}) => HOCFactory({ cache, location: (props) => `access_token/${props.token}`, propsName: name });
+export const RolesAndPermissionsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `roles`, propsName: 'rolesAndPermissions' });

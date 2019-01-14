@@ -83,6 +83,16 @@
             }
 
         }
+        .panel-body{
+            clear:both;
+            position: relative;
+
+        }
+    }
+    .loading-small {
+        position: absolute;
+        top: 16px;
+        right: 16px;
     }
     .dropzone{
             margin-top: 20px;

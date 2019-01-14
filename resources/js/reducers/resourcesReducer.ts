@@ -6,6 +6,7 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
             return {
                 ...state,
                 [action.payload.key]: {
+                    ...(state[action.payload.key] || {}),
                     status: EL.RequestStatus.FETCHING
                 }
             };

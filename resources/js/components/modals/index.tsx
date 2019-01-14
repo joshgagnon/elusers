@@ -6,6 +6,7 @@ import VersionWarning from './versionWarning';
 import AMLCFTToken from './amlcftToken';
 import CreateContact from './createContact';
 import Upload from './upload';
+import ViewDocument from './viewDocument';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -24,6 +25,8 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <CreateContact />
             case EL.ModalNames.UPLOAD:
                 return <Upload />
+            case EL.ModalNames.DOCUMENT:
+                return <ViewDocument />
             default:
                 return false;
         }
