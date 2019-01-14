@@ -12,7 +12,8 @@ class File extends Model
 {
     protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'protected'];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
 
         static::deleting(function ($file) {
@@ -31,12 +32,17 @@ class File extends Model
         return $this->belongsToMany(DeedPacketRecord::class);
     }
 
-    public static function canRead($id, $user) {
+    public static function canRead($id, $user)
+    {
         $canReadFile = SQLFile::run('can_read_file', ['user_id' => $user->id, 'file_id' => $id]);
         $canReadFile = $canReadFile[0]->exists;
         return !!$canReadFile;
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(File::class, 'parent_id');
+    }
 
     public function getContent($key)
     {
@@ -47,6 +53,17 @@ class File extends Model
         }
         return $content;
 
+    }
+
+    public function getFullPath()
+    {
+        $path = [];
+        $file = $this;
+        while($file->parent) {
+            $file = $file->parent;
+            $path[] = $file->filename;
+        }
+        return implode(DIRECTORY_SEPARATOR, array_reverse($path));
     }
 }
 

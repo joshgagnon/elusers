@@ -511,9 +511,10 @@ class FileTree extends React.PureComponent<any> {
 @(connect(undefined,
  (dispatch, ownProps: any) => ({
     createNotification: (args) => dispatch(createNotification(args)),
-    createDocument: (data) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, data)),
+    createDocuments: (data) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, data)),
     updateDocument: (documentId, data) => dispatch(updateResource(`matter/${ownProps.matterId}/documents/${documentId}`, data)),
     deleteResource: (documentId) => dispatch(deleteResource(`matter/${ownProps.matterId}/documents/${documentId}`)),
+    push: (url) => push(url)
 })) as any)
 export class DocumentsView extends React.PureComponent<any> {
 
@@ -536,7 +537,7 @@ export class DocumentsView extends React.PureComponent<any> {
     }
 
     upload(files, parentId=null) {
-        return this.props.uploadDocuments({files, parentId})
+        return this.props.createDocuments({files, parentId})
     }
 
     move(documentId, parentId) {
@@ -552,7 +553,7 @@ export class DocumentsView extends React.PureComponent<any> {
     }
 
     createDirectory(parentId, name) {
-        return this.props.createDocument({parentId, newDirectory: name})
+        return this.props.createDocuments({parentId, newDirectory: name})
     }
 
     render() {
@@ -782,6 +783,7 @@ export class ListMatters extends React.PureComponent<MattersProps & {user: EL.Us
 interface MatterProps {
     matter: EL.Resource<EL.Matter>;
     matterId: string;
+    canUpdate: boolean;
     deleteMatter: (matterId: string) => any;
 }
 
@@ -837,11 +839,13 @@ class MatterDetails extends React.PureComponent<MatterProps> {
 class MatterDocuments extends React.PureComponent<MatterProps> {
 
     render() {
-        return <DocumentsView files={this.props.matter.data ? this.props.matter.data.files : []} matterId={this.props.matterId} canUpdate={true}/>
+        return <DocumentsView files={this.props.matter.data ? this.props.matter.data.files : []} matterId={this.props.matterId} canUpdate={this.props.canUpdate}/>
     }
 }
 
-@(connect(undefined, {
+@(connect((state: EL.State) => ({
+    canUpdate: hasPermission(state.user, 'edit matters')
+}), {
     deleteMatter: (matterId: string) => {
         const deleteAction = deleteResource(`matters/${matterId}`, {
             onSuccess: [createNotification('Matter deleted.'), (response) => push('/matters')],

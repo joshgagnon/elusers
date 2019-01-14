@@ -25,46 +25,62 @@ class ExportFiles extends Command
 
     public function contacts($org, $outputDir) {
         $contacts = Contact::where('organisation_id', $org->id)->with('contactable', 'files')->get();
-      
-        foreach($contacts as $contact) {
-            
-            foreach($contact->files as $file) {
-                $path = $outputDir.'/Contact Files/'.$contact->getName();
 
+        foreach($contacts as $contact) {
+
+            foreach($contact->files as $file) {
+                if($file->directory) {
+                    continue;
+                }
+                $path = $outputDir.'/Contact Files/'.$contact->getName();
+                $subpath = $file->getFullPath();
+                if($subpath) {
+                    $path = $path.'/'.$subpath;
+                }
                 @mkdir($path, 0777, true); // ignore result
                 file_put_contents($path.'/'.$file->filename, $file->getContent($org->encryption_key));
-                // put file into 
+                // put file into
             }
         }
     }
 
     public function matters($org, $outputDir) {
         $matters = Matter::where('organisation_id', $org->id)->get();
-      
+
         foreach($matters as $matter) {
-            
             foreach($matter->files as $file) {
+                if($file->directory) {
+                    continue;
+                }
                 $path = $outputDir.'/Matter Files/'.$matter->matter_number;
+                $subpath = $file->getFullPath();
+                if($subpath) {
+                    $path = $path.'/'.$subpath;
+                }
                 @mkdir($path, 0777, true); // ignore result
                 file_put_contents($path.'/'.$file->filename, $file->getContent($org->encryption_key));
-                // put file into 
+                // put file into
             }
         }
-    }    
+    }
 
     public function orgFiles($org, $outputDir) {
         $files = OrganisationFile::where('organisation_id', $org->id)->get();
-      
-
-            
-            foreach($files as $file) {
-                $path = $outputDir.'/Organisation Files';
-                @mkdir($path, 0777, true); // ignore result
-                file_put_contents($path.'/'.$file->file->filename, $file->file->getContent($org->encryption_key));
-                // put file into 
+        foreach($files as $file) {
+            if($file->directory) {
+                continue;
             }
-        
-    }    
+            $subpath = $file->getFullPath();
+            if($subpath) {
+                $path = $path.'/'.$subpath;
+            }
+            $path = $outputDir.'/Organisation Files';
+            @mkdir($path, 0777, true); // ignore result
+            file_put_contents($path.'/'.$file->file->filename, $file->file->getContent($org->encryption_key));
+            // put file into
+        }
+
+    }
 
 
     public function handle()
