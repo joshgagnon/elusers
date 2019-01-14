@@ -8,7 +8,11 @@ import { createNotification, createResource, deleteResource, confirmAction } fro
 import { Form, ButtonToolbar, Button, Tabs, Tab, FormControl } from 'react-bootstrap';
 import { fullname, name } from '../utils';
 import { Link } from 'react-router';
+import { DocumentsTree } from 'components/documents/documentsTree';
+import { hasPermission } from '../utils/permissions';
 
+
+/*
 
 interface  DocumentsProps {
       documents: EL.Resource<EL.OrganisationDocument[]>;
@@ -213,5 +217,27 @@ export default  class Documents extends React.PureComponent<DocumentsProps> {
              </Tabs>
 
         </React.Fragment>
+    }
+    */
+
+interface  DocumentsProps {
+      documents: EL.Resource<EL.OrganisationDocument[]>;
+      canUpdate: boolean;
+    //delete: (documentId: number) => void;
+}
+
+@(connect((state: EL.State) => ({
+    canUpdate: hasPermission(state.user, 'administer organisation')
+})) as any)
+@OrganisationDocumentsHOC({cache: true})
+export default  class Documents extends React.PureComponent<DocumentsProps> {
+
+    render() {
+        return <DocumentsTree
+            title="Organisation Documents"
+            files={this.props.documents.data ? this.props.documents.data : []}
+            basePath={`organisation-files`}
+            cached={this.props.documents.cached}
+            canUpdate={this.props.canUpdate} />
     }
 }

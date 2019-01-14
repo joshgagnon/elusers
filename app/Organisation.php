@@ -3,13 +3,19 @@
 namespace App;
 
 use App\Library\EncryptionKey;
+use App\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\DefaultDirectoriesTrait;
 
 class Organisation extends Model
 {
     protected $table = 'organisations';
     use SoftDeletes;
+    use DefaultDirectoriesTrait;
+
+    const DEFAULT_DIRECTORIES = [
+    ];
 
     protected $fillable = ['legal_name', 'trading_name'];
 
@@ -33,10 +39,10 @@ class Organisation extends Model
         return $this->hasMany(User::class);
     }
 
-    public function organisationFiles()
-    {
-        return $this->hasMany(OrganisationFile::class);
-    }
 
+    public function files()
+    {
+        return $this->belongsToMany(File::Class, 'organisation_files', "organisation_id", "file_id")->withTimestamps();
+    }
 
 }

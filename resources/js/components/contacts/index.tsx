@@ -22,6 +22,8 @@ import { ContactInformationFields } from '../contact-information/contactInformat
 import * as ReactList from 'react-list';
 import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
+import { DocumentsTree } from 'components/documents/documentsTree';
+
 
 interface ContactsProps {
     contacts: EL.Resource<EL.Contact[]>;
@@ -154,9 +156,13 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
     }
 }
 
+
+
 interface ContactProps {
     contact: EL.Resource<EL.Contact>;
+    user: EL.User,
     contactId: string;
+    canUpdate: boolean;
     deleteContact: (contactId: number) => void;
     requestAMLCFT: (contactId: number) => void;
 }
@@ -219,31 +225,22 @@ const TrustDisplayFields = (props: {contact: EL.ContactTrust}) => {
 }
 
 
-@HasPermissionHOC('view contacts')
-@(connect(
-    (state: EL.State) => {user: state.user},
-    {
-        deleteContact: (contactId: number) => {
-            const deleteAction = deleteResource(`contacts/${contactId}`, {
-                onSuccess: [createNotification('Contact deleted.'), (response) => push('/contacts')],
-                onFailure: [createNotification('Contact deletion failed. Please try again.', true)],
-            });
-
-            return confirmAction({
-                title: 'Confirm Delete Contact',
-                content: 'Are you sure you want to delete this contact?',
-                acceptButtonText: 'Delete',
-                declineButtonText: 'Cancel',
-                onAccept: deleteAction
-            });
-        },
-        requestAMLCFT,
+class ContactDocuments extends React.PureComponent<ContactProps> {
+    render() {
+        return <DocumentsTree
+            title="Contact Documents"
+            files={this.props.contact.data ? this.props.contact.data.files : []}
+            matterId={this.props.contactId}
+            basePath={`contact/${this.props.contactId}`}
+            cached={this.props.contact.cached}
+            canUpdate={this.props.canUpdate} />
     }
-) as any)
-@MapParamsToProps(['contactId'])
-@ContactHOC()
+}
+
+
+
 @PanelHOC<ContactProps& {user: EL.User}>('Contact', props => props.contact)
-export class Contact extends React.PureComponent<ContactProps & {user: EL.User}> {
+export class ContactDetails extends React.PureComponent<ContactProps> {
 
     render() {
         const contact = this.props.contact.data;
@@ -339,13 +336,6 @@ export class Contact extends React.PureComponent<ContactProps & {user: EL.User}>
                     { (!contact.cddRequired && contact.cddRequired !== false) &&<dd>CDD requirements unknown</dd> }
 
                      <br/>
-                    <dt>Documents</dt>
-                    <dd>{ (contact.files || []).map((file, i) => {
-                        return <div key={file.id}><a target="_blank" href={`/api/files/${file.id}`}>{file.filename}</a></div>
-                    }) }
-                       { (contact.files || []).length === 0 && 'No Documents' }
-                    </dd>
-                     <br/>
                     <dt>Matters</dt>
                     <dd>{ (contact.matters || []).map((matter, i) => {
                         return <div key={matter.id}><Link to={`/matters/${matter.id}`}>{matter.matterNumber}</Link></div>
@@ -363,6 +353,42 @@ export class Contact extends React.PureComponent<ContactProps & {user: EL.User}>
         );
     }
 }
+
+@HasPermissionHOC('view contacts')
+@(connect(
+    (state: EL.State) => ({user: state.user, canUpdate: hasPermission(state.user, 'edit contact')}),
+    {
+        deleteContact: (contactId: number) => {
+            const deleteAction = deleteResource(`contacts/${contactId}`, {
+                onSuccess: [createNotification('Contact deleted.'), (response) => push('/contacts')],
+                onFailure: [createNotification('Contact deletion failed. Please try again.', true)],
+            });
+
+            return confirmAction({
+                title: 'Confirm Delete Contact',
+                content: 'Are you sure you want to delete this contact?',
+                acceptButtonText: 'Delete',
+                declineButtonText: 'Cancel',
+                onAccept: deleteAction
+            });
+        },
+        requestAMLCFT,
+    }
+) as any)
+@MapParamsToProps(['contactId'])
+@ContactHOC({cache: true})
+export class Contact extends React.PureComponent<ContactProps> {
+    render() {
+        return <React.Fragment>
+            <ContactDetails {...this.props} />
+            <ContactDocuments {...this.props}  />
+        </React.Fragment>
+    }
+
+}
+
+
+
 
 const canCdd = (contactableType: string) => {
     return [EL.Constants.INDIVIDUAL, EL.Constants.COMPANY, EL.Constants.TRUST].includes(contactableType as EL.Constants);
@@ -536,8 +562,6 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     <Agents />
                                           <hr />
                     <Relationships />
-                                          <hr />
-                    <DocumentList name="files" label="Documents" />
                                           <hr />
                     <ConnectedCustomerDueDiligence  selector={selector} />
                     </div>

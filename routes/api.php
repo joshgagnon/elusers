@@ -80,6 +80,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('contacts/{contact}/access_token', 'ContactController@createAccessToken');
 
     Route::post('contacts-sync', 'ContactController@syncContacts');
+
+    Route::post('contact/{contact}/documents', 'ContactController@uploadDocuments');
+    Route::put('contact/{contact}/documents/{document}', 'ContactController@updateDocument');
+    Route::delete('contact/{contact}/documents/{document}', 'ContactController@deleteDocument');
+
     Route::get('contact-files', 'ContactController@documents');
 
     /**
@@ -87,7 +92,9 @@ Route::group(['middleware' => ['auth']], function() {
      */
     Route::get('files/{file}', 'FileController@get')->name('file');
     Route::get('organisation-files', 'OrganisationFileController@all');
-    Route::post('organisation-files', 'OrganisationFileController@create');
+    Route::post('organisation-files/documents', 'OrganisationFileController@create');
+    Route::post('organisation-files/documents', 'OrganisationFileController@create');
+    Route::put('organisation-files/documents/{document}', 'OrganisationFileController@update');
     Route::delete('organisation-files/{file}', 'OrganisationFileController@delete');
 
     /**
@@ -117,6 +124,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('matter/{matter}/documents', 'MatterController@uploadDocuments');
     Route::put('matter/{matter}/documents/{document}', 'MatterController@updateDocument');
     Route::delete('matter/{matter}/documents/{document}', 'MatterController@deleteDocument');
+
+
     Route::get('matter-files', 'MatterController@documents');
 
     Route::post('matters-sync', 'MatterController@syncMatters');

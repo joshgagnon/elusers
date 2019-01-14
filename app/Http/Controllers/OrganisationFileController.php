@@ -20,9 +20,8 @@ class OrganisationFileController extends Controller
      * @return mixed
      */
     public function all(Request $request)
-
     {
-        return $request->user()->organisation()->first()->organisationFiles()->with('file', 'creator')->get();
+        return $request->user()->organisation()->first()->files;
     }
 
 
@@ -33,13 +32,39 @@ class OrganisationFileController extends Controller
      * @param \App\User                $user
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request, User $user)
+    public function create(Request $request)
     {
+        $user = $request->user();
+        $data = $request->allJson();
         $files = $request->file('file', []);
+        $parentId = $data['parent_id'] ?? null;
+        $newDirectory = $data['new_directory'] ?? null;
+        if($newDirectory) {
+            $organisation = $user->organisation()->first();
+            $organisation->files()->save(File::create([
+                'filename'  => $newDirectory,
+                'directory' => true,
+                'protected' => false,
+                'path' => '',
+                'mimetype' => '',
+                'parent_id' => $parentId
+            ]), ['created_by_user_id'  => $user->id]);
+        }
+
+
         foreach ($files as $file) {
-            $this->saveFile($file, $request->user());
+            $this->saveFile($file, $request->user(), $parentId);
         }
         return response()->json(['message' => 'Files created.'], 201);
+    }
+
+    public function update(Request $request, $documentId)
+    {
+        $user = $request->user();
+        $data = $request->allJson();
+        $document = OrganisationFile::where('file_id', $documentId)->where('organisation_id', $request->user()->organisation_id)->first()->file;
+        $document->update($data);
+        return response()->json(['message' => 'Document Updated'], 200);
     }
 
 
@@ -64,7 +89,7 @@ class OrganisationFileController extends Controller
     }
 
 
-    private function saveFile($file, $user)
+    private function saveFile($file, $user, $parentId=null)
     {
         // Get the uploaded file contents
         $uploadedFilePath = $file->getRealPath();
@@ -91,6 +116,8 @@ class OrganisationFileController extends Controller
             'filename'  => $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType(),
             'encrypted' => true,
+            'parent_id' => $parentId
+
         ]);
         $orgFile = new OrganisationFile;
 

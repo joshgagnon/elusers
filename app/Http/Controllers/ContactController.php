@@ -249,6 +249,89 @@ class ContactController extends Controller
         return response()->json(['message' => 'Contact deleted.']);
     }
 
+    public function uploadDocuments(Request $request, $id)
+    {
+        $user = $request->user();
+        $data = $request->allJson();
+        $parentId = $data['parent_id'] ?? null;
+        $newDirectory = $data['new_directory'] ?? null;
+        $contact = Contact::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->first();
+        if($newDirectory) {
+            $contact->files()->save(File::create([
+                'filename'  => $newDirectory,
+                'directory' => true,
+                'protected' => false,
+                'path' => '',
+                'mimetype' => '',
+                'parent_id' => $parentId
+            ]));
+        }
+        else {
+            $fileIds = array_map(function($file) use ($user, $parentId) {
+                return $this->saveUploadedFile($file, $user, $parentId)->id;
+            }, $request->file('file', []));
+            $contact->files()->attach($fileIds);
+        }
+
+        return response()->json(['message' => 'Documents Uploaded', 'id' => $contact->id], 200);
+    }
+
+    public function updateDocument(Request $request, $contactId, $documentId)
+    {
+        $user = $request->user();
+        $data = $request->allJson();
+        $contact = Contact::where('id', $contactId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $document = $contact->files()->find($documentId);
+        $document->update($data);
+        return response()->json(['message' => 'Documents Updated', 'id' => $contact->id], 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteDocument(Request $request, $contactId, $documentId)
+    {
+        $contact =Contact::where('id', $contactId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $document = $contact->files()->find($documentId);
+        $document->delete();
+        return response()->json(['message' => 'Contact Document deleted', 'id' => $contact->id], 200);
+    }
+
+    private function saveUploadedFile($file, $user, $parentId)
+    {
+        // Get the uploaded file contents
+        $uploadedFilePath = $file->getRealPath();
+        $contents = file_get_contents($uploadedFilePath);
+
+        // Get the user's organisation's encryption key
+        $encryptionKey = $user->organisation()->first()->encryption_key;
+
+        // Encrypt the file contents
+        $encryption = new Encryption($encryptionKey);
+        $encryptedContents = $encryption->encrypt($contents);
+
+        // Create a unique path for the file
+        do {
+            $storageName = time() . uniqid();
+            $storagePath = 'contact-files/' . $storageName;
+        } while (Storage::exists($storagePath));
+
+        // Store the file
+        Storage::put($storagePath, $encryptedContents);
+        $file = File::create([
+            'path'      => $storagePath,
+            'filename'  => $file->getClientOriginalName(),
+            'mime_type' => $file->getMimeType(),
+            'encrypted' => true,
+            'parent_id' => $parentId
+        ]);
+        return $file;
+      }
+
+
     public function createAccessToken(Contact $contact)
     {
 
@@ -350,36 +433,6 @@ class ContactController extends Controller
             $q->where('organisation_id', $orgId);
         })->get();
     }
-
-    private function saveUploadedFile($file, $user)
-    {
-        // Get the uploaded file contents
-        $uploadedFilePath = $file->getRealPath();
-        $contents = file_get_contents($uploadedFilePath);
-
-        // Get the user's organisation's encryption key
-        $encryptionKey = $user->organisation()->first()->encryption_key;
-
-        // Encrypt the file contents
-        $encryption = new Encryption($encryptionKey);
-        $encryptedContents = $encryption->encrypt($contents);
-
-        // Create a unique path for the file
-        do {
-            $storageName = time() . uniqid();
-            $storagePath = 'contact-files/' . $storageName;
-        } while (Storage::exists($storagePath));
-
-        // Store the file
-        Storage::put($storagePath, $encryptedContents);
-        return  $file = File::create([
-            'path'      => $storagePath,
-            'filename'  => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
-            'encrypted' => true
-        ]);
-    }
-
 
 
     private function copyFile(File $file, $user, $contact)

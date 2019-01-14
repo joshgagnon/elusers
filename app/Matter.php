@@ -5,10 +5,12 @@ namespace App;
 use App\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\DefaultDirectoriesTrait;
 
 class Matter extends Model
 {
     use SoftDeletes;
+    use DefaultDirectoriesTrait;
 
     const MATTER_TYPES = [
         "Bankruptcy and Liquidation",
@@ -33,7 +35,7 @@ class Matter extends Model
     ];
 
 
-    const DEFAULT_DIRECTORYS = [
+    const DEFAULT_DIRECTORIES = [
         'Accounts',
         'Documents',
         'Emails',
@@ -74,24 +76,5 @@ class Matter extends Model
         return $this->hasMany(MatterNote::Class);
     }
 
-    public function populateDirectories()
-    {
-        // if have at least one directory then has been populated
-        $hasDir = $this->files()->where('directory', true)->where('protected', true)->get();
 
-        if(count($hasDir)) {
-            return false;
-        }
-        foreach(Matter::DEFAULT_DIRECTORYS as $name) {
-            $this->files()->save(File::create([
-                'filename'  => $name,
-                'directory' => true,
-                'protected' => true,
-                'path' => '',
-                'mimetype' => ''
-            ]));
-        }
-
-
-    }
 }

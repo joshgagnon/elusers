@@ -4,15 +4,21 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Traits\DefaultDirectoriesTrait;
 
 class Contact extends Model
 {
+    use DefaultDirectoriesTrait;
 
     protected $fillable = ['name',  'organisation_id',  'metadata', 'agent_id', 'cdd_required', 'reason_no_cdd_required', 'cdd_type',
                             'cdd_completion_date', 'bank_account_number', 'ird_number'];
 
     public static $validationRules = [
     ];
+
+    const DEFAULT_DIRECTORIES = [
+    ];
+
     protected $dates = [
         'cdd_completion_date',
         'created_at',

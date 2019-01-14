@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Matter;
 use App\Observers\MatterObserver;
+use App\Contact;
+use App\Observers\ContactObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Matter::observe(MatterObserver::class);
+        Contact::observe(ContactObserver::class);
     }
 
     /**
