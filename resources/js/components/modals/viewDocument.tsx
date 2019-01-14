@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Modal, ButtonToolbar, Button } from 'react-bootstrap';
 import { closeModal } from '../../actions';
+import PDF from 'react-pdf-component';
+
 
 interface ViewDocumentProps {
     closeModal: () => void;
@@ -11,14 +13,16 @@ interface ViewDocumentProps {
 class ViewDocument extends React.PureComponent<ViewDocumentProps> {
     render() {
         return (
-            <Modal backdrop="static" show={true} onHide={this.props.closeModal}>
+            <Modal backdrop="static" show={true} onHide={this.props.closeModal} bsSize="large">
                 <Modal.Header closeButton>
                     <Modal.Title>View Document</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                <p>Preview in development</p>
-                <a className="btn btn-primary" target="_blank" href={`/api/files/${this.props.fileId}`}>Download</a>
+                    <div className="button-row"><a className="btn btn-primary" target="_blank" href={`/api/files/${this.props.fileId}`}>Download</a></div>
+                    <div className="pdf-wrapper">
+                        <PDF url={`/api/files/${this.props.fileId}/preview`} scale={2.5} noPDFMsg='Loading...' />
+                    </div>
                 </Modal.Body>
 
                  <Modal.Footer>

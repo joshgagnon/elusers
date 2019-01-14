@@ -91,6 +91,8 @@ Route::group(['middleware' => ['auth']], function() {
      * Files
      */
     Route::get('files/{file}', 'FileController@get')->name('file');
+    Route::get('files/{file}/preview', 'FileController@preview');
+
     Route::get('organisation-files', 'OrganisationFileController@all');
     Route::post('organisation-files/documents', 'OrganisationFileController@create');
     Route::post('organisation-files/documents', 'OrganisationFileController@create');
