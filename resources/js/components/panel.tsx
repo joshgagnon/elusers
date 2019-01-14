@@ -3,7 +3,7 @@ import { Panel } from 'react-bootstrap';
 
 interface IPanel {
     title?: string;
-    formattedTitle?: string;
+    formattedTitle?: JSX.Element;
     className?: string;
     children: any;
 }

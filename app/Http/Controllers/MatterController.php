@@ -168,24 +168,49 @@ class MatterController extends Controller
         $user = $request->user();
         $data = $request->allJson();
         $parentId = $data['parent_id'] ?? null;
-        $fileIds = array_map(function($file) use ($user, $parentId) {
-            return $this->saveUploadedFile($file, $user, $parentId)->id;
-        }, $request->file('file', []));
+        $newDirectory = $data['new_directory'] ?? null;
         $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->first();
-        $matter->files()->attach($fileIds);
-        return response()->json(['message' => 'Documents Uploaded', 'id' => $matter->id], 200);
+        if($newDirectory) {
+            $matter->files()->save(File::create([
+                'filename'  => $newDirectory,
+                'directory' => true,
+                'protected' => false,
+                'path' => '',
+                'mimetype' => '',
+                'parent_id' => $parentId
+            ]));
+        }
+        else {
+            $fileIds = array_map(function($file) use ($user, $parentId) {
+                return $this->saveUploadedFile($file, $user, $parentId)->id;
+            }, $request->file('file', []));
+            $matter->files()->attach($fileIds);
+        }
 
+        return response()->json(['message' => 'Documents Uploaded', 'id' => $matter->id], 200);
     }
+
+    public function updateDocument(Request $request, $matterId, $documentId)
+    {
+        $user = $request->user();
+        $data = $request->allJson();
+        $matter = Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $document = $matter->files()->find($documentId);
+        $document->update($data);
+        return response()->json(['message' => 'Documents Updated', 'id' => $matter->id], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function deleteDocument(Request $request, $matterId, $documentId)
     {
-        $matter = Matter::findOrFail($id)->where('organisation_id', $request->user()->organisation_id)->first();
-        $matter->delete();
+        $matter =Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $document = $matter->files()->find($documentId);
+        $document->delete();
         return response()->json(['message' => 'Matter deleted', 'id' => $matter->id], 200);
     }
 
