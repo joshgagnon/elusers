@@ -113,8 +113,8 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::apiResource('permissions', 'PermissionController');
 
-    Route::post('matters/{matter}', 'MatterController@update');
-    Route::post('matters/{matter}/documents', 'MatterController@uploadDocuments');
+    //Route::post('matters/{matter}', 'MatterController@update');
+    Route::post('matter/{matter}/documents', 'MatterController@uploadDocuments');
     Route::get('matter-files', 'MatterController@documents');
 
     Route::post('matters-sync', 'MatterController@syncMatters');

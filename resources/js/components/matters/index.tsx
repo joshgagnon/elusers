@@ -444,11 +444,6 @@ class FileTree extends React.PureComponent<any> {
         }
         parentId && this.showSubTree(parentId)
         this.props.upload(files, parentId)
-         /*   .then((r) => {
-                if(r && r.response && r.response.documentIds && r.response.documentIds[0]){
-                    this.setState({selected: r.response.documentIds[0]});
-                }
-            }) */
     }
 
     render() {
@@ -511,7 +506,7 @@ class FileTree extends React.PureComponent<any> {
 @connect(undefined,
  (dispatch, ownProps) => ({
     addNotification: (args) => dispatch(addNotification(args)),
-    createDocument: (...args) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, ...args)),
+    uploadDocuments: (...args) => dispatch(createResource(`matter/${ownProps.matterId}/documents`, ...args)),
     updateDocument: (...args) => dispatch(updateResource(...args)),
     softDeleteResource: (...args) => dispatch(softDeleteResource(...args)),
 }))
@@ -536,17 +531,7 @@ export class DocumentsView extends React.PureComponent<any> {
     }
 
     upload(files, parentId=null) {
-        const body = new FormData();
-        body.append('json', JSON.stringify({parentId}));
-        (files || []).map(d => {
-            body.append('documents', d, d.name);
-        });
-        return this.props.createDocument(body, {stringify: false, 'loadingMessage': 'Uploading'})
-            .then((result) => {
-                this.props.addNotification({message: 'File uploaded'});
-                return result;
-            })
-            .catch((e) => this.props.addNotification({message: e.message, error: true}))
+        return this.props.uploadDocuments({files, parentId})
     }
 
     move(documentId, parentId) {

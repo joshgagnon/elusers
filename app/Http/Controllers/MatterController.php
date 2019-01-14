@@ -86,6 +86,7 @@ class MatterController extends Controller
         return response()->json(['message' => 'Matter created', 'id' => $matter->id], 201);
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -161,6 +162,20 @@ class MatterController extends Controller
         return response()->json(['message' => 'Matter updated', 'id' => $matter->id], 200);
     }
 
+
+    public function uploadDocuments(Request $request, $id)
+    {
+        $user = $request->user();
+        $data = $request->allJson();
+        $parentId = $data['parent_id'] ?? null;
+        $fileIds = array_map(function($file) use ($user, $parentId) {
+            return $this->saveUploadedFile($file, $user, $parentId)->id;
+        }, $request->file('file', []));
+        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->first();
+        $matter->files()->attach($fileIds);
+        return response()->json(['message' => 'Documents Uploaded', 'id' => $matter->id], 200);
+
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -182,7 +197,7 @@ class MatterController extends Controller
         })->get();
     }
 
-    private function saveUploadedFile($file, $user)
+    private function saveUploadedFile($file, $user, $parentId)
     {
         // Get the uploaded file contents
         $uploadedFilePath = $file->getRealPath();
@@ -207,7 +222,8 @@ class MatterController extends Controller
             'path'      => $storagePath,
             'filename'  => $file->getClientOriginalName(),
             'mime_type' => $file->getMimeType(),
-            'encrypted' => true
+            'encrypted' => true,
+            'parent_id' => $parentId
         ]);
         return $file;
       }
