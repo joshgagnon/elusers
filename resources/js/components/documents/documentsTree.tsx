@@ -56,12 +56,7 @@ class DocumentFormBase extends React.PureComponent<any> {
 
     onDrop(e) {
         const droppedFiles = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-        if(this.props.documents){
-            this.props.documents.onChange([...(this.props.documents.value || []), ...droppedFiles]);
-        }
-        else{
-            this.props.onChange(droppedFiles);
-        }
+        this.props.documents.onChange(Array.from(droppedFiles));
     }
 
     onFileDialogCancel() {
@@ -86,7 +81,7 @@ class DocumentFormBase extends React.PureComponent<any> {
     render() {
         const documents = this.props.documents;
         const { connectDropTarget, isOver, canDrop } = this.props;
-        let className="dropzone";
+        let className = "dropzone";
         if(isOver && !canDrop){
             className += ' reject';
         }
@@ -104,7 +99,7 @@ class DocumentFormBase extends React.PureComponent<any> {
             { this.props.label && <label className="control-label">{ this.props.label }</label>}
 
                 { connectDropTarget(<div className="dropzone" onClick={() => this.open()}>
-                                        <div>Drop files here to upload or <a className="vanity-link" href="#">click to browse</a> your device</div>
+                      <div>Drop files here to upload or <a className="vanity-link">click to browse</a> your device</div>
                   <input {...inputAttributes} />
             </div>) }
            </div>

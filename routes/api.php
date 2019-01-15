@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('organisation-files/documents', 'OrganisationFileController@create');
     Route::post('organisation-files/documents', 'OrganisationFileController@create');
     Route::put('organisation-files/documents/{document}', 'OrganisationFileController@update');
-    Route::delete('organisation-files/{file}', 'OrganisationFileController@delete');
+    Route::delete('organisation-files/documents/{file}', 'OrganisationFileController@delete');
 
     /**
      * CPDPR

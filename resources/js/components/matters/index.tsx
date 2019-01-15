@@ -234,6 +234,7 @@ interface MatterProps {
     canUpdate: boolean;
     deleteMatter: (matterId: string) => any;
 }
+
 @PanelHOC<MatterProps>('Matter', props => props.matter)
 class MatterDetails extends React.PureComponent<MatterProps> {
     render() {
@@ -283,7 +284,13 @@ class MatterDetails extends React.PureComponent<MatterProps> {
     }
 }
 
-class MatterDocuments extends React.PureComponent<MatterProps> {
+interface MatterDocumentProps {
+    matter: EL.Resource<EL.Matter>;
+    matterId: string;
+    canUpdate: boolean;
+}
+
+class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
     render() {
         return <DocumentsTree
             title="Matter Documents"
@@ -490,8 +497,8 @@ export class CreateMatter extends React.PureComponent<CreateMatterProps> {
 }
 
 interface UnwrappedEditMatterProps {
-    submit?: (matterId: number, data: React.FormEvent<Form>) => void;
-    matterId: number;
+    submit?: (matterId: string, data: React.FormEvent<Form>) => void;
+    matterId: string;
     matter?: EL.Resource<EL.Matter>;
 }
 
@@ -509,7 +516,6 @@ interface UnwrappedEditMatterProps {
         }
     }
 ) as any)
-@MatterHOC()
 @PanelHOC<UnwrappedEditMatterProps>('Edit Matter', props => props.matter)
 class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> {
     render() {
@@ -517,10 +523,16 @@ class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> 
     }
 }
 
+
 @HasPermissionHOC('edit matters')
-export class EditMatter extends React.PureComponent<{ params: { matterId: number; } }> {
+@MapParamsToProps(['matterId'])
+@MatterHOC({cache: true})
+export class EditMatter extends React.PureComponent< { matterId: string; matter: EL.Resource<EL.Matter>} > {
     render() {
-        return <UnwrappedEditMatter  matterId={this.props.params.matterId} />
+        return <React.Fragment>
+            <UnwrappedEditMatter {...this.props} />
+            <MatterDocuments {...this.props}  canUpdate={true} />
+            </React.Fragment>
     }
 }
 
