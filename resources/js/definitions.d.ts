@@ -494,7 +494,7 @@ declare global {
         }
 
         interface ShowAMLCFTTokenPayload {
-            contactId: number;
+            contactId: string;
             token: string;
         }
 

@@ -38,7 +38,7 @@ interface ContactState {
 }
 
 
-const  requestAMLCFT = (contactId: number) => {
+const  requestAMLCFT = (contactId: string) => {
     const createAction = createResource(`contacts/${contactId}/access_token`, {}, {
         onSuccess: [createNotification('Contact AML/CFT request send.'), (response) => {
             return showAMLCFTToken({contactId, token: response.token});
@@ -163,8 +163,8 @@ interface ContactProps {
     user: EL.User,
     contactId: string;
     canUpdate: boolean;
-    deleteContact: (contactId: number) => void;
-    requestAMLCFT: (contactId: number) => void;
+    deleteContact: (contactId: string) => void;
+    requestAMLCFT: (contactId: string) => void;
 }
 
 @ContactHOC()
@@ -180,7 +180,7 @@ export class Agent extends React.PureComponent<{contact?: EL.Resource<EL.Contact
 }
 
 
-export class CDDBadge extends React.PureComponent<{contact: EL.Contact, requestAMLCFT: (contactId: number) => void }> {
+export class CDDBadge extends React.PureComponent<{contact: EL.Contact, requestAMLCFT: (contactId: string) => void }> {
     render() {
         if(this.props.contact.contactableType !== EL.Constants.INDIVIDUAL) {
             return false;
@@ -189,7 +189,7 @@ export class CDDBadge extends React.PureComponent<{contact: EL.Contact, requestA
         if(hasCDDCompleted) {
             return <a className="btn btn-success btn-xs">CDD Complete</a>
         }
-        return <a className="btn btn-danger btn-xs" onClick={() => this.props.requestAMLCFT(this.props.contact.id)}>CDD Missing</a>
+        return <a className="btn btn-danger btn-xs" onClick={() => this.props.requestAMLCFT(this.props.contact.id.toString())}>CDD Missing</a>
     }
 
 }
@@ -224,8 +224,15 @@ const TrustDisplayFields = (props: {contact: EL.ContactTrust}) => {
     </React.Fragment>
 }
 
+interface ContactDocumentProps {
+    contact: EL.Resource<EL.Contact>;
+    user: EL.User,
+    contactId: string;
+    canUpdate: boolean;
+}
 
-class ContactDocuments extends React.PureComponent<ContactProps> {
+
+class ContactDocuments extends React.PureComponent<ContactDocumentProps> {
     render() {
         return <DocumentsTree
             title="Contact Documents"
@@ -257,8 +264,8 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { hasPermission(this.props.user, 'edit contact') &&  <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link> }
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
-                         <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id)}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
-                     { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id)}><Icon iconName="trash" />Delete</Button> }
+                         <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
+                     { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
                 </ButtonToolbar>
 
                 <h3>{fullname(contact)}</h3>
@@ -358,7 +365,7 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
 @(connect(
     (state: EL.State) => ({user: state.user, canUpdate: hasPermission(state.user, 'edit contact')}),
     {
-        deleteContact: (contactId: number) => {
+        deleteContact: (contactId: string) => {
             const deleteAction = deleteResource(`contacts/${contactId}`, {
                 onSuccess: [createNotification('Contact deleted.'), (response) => push('/contacts')],
                 onFailure: [createNotification('Contact deletion failed. Please try again.', true)],
@@ -725,8 +732,8 @@ export class CreateContact extends React.PureComponent<CreateContactProps> {
 
 
 interface UnwrappedEditContactProps {
-    submit?: (contactId: number, data: React.FormEvent<Form>) => void;
-    contactId: number;
+    submit?: (contactId: string, data: React.FormEvent<Form>) => void;
+    contactId: string;
     contact?: EL.Resource<EL.Contact>;
 }
 
@@ -735,7 +742,7 @@ interface UnwrappedEditContactProps {
 @(connect(
     undefined,
     {
-        submit: (contactId: number, data: React.FormEvent<Form>) => {
+        submit: (contactId: string, data: React.FormEvent<Form>) => {
             const url = `contacts/${contactId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
@@ -746,7 +753,6 @@ interface UnwrappedEditContactProps {
         }
     }
 ) as any)
-@ContactHOC()
 @PanelHOC<UnwrappedEditContactProps>('Edit Contact', props => props.contact)
 class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
     render() {
@@ -755,9 +761,15 @@ class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps
 }
 
 
-export class EditContact extends React.PureComponent<{ params: { contactId: number; } }> {
+@(connect((state: EL.State) => ({user: state.user})) as any)
+@MapParamsToProps(['contactId'])
+@ContactHOC({cache: true})
+export class EditContact extends React.PureComponent<{ contactId: string, contact: EL.Resource<EL.Contact>, user: EL.User } > {
     render() {
-        return <UnwrappedEditContact contactId={this.props.params.contactId} />
+        return <React.Fragment>
+             <UnwrappedEditContact {...this.props} />
+              <ContactDocuments {...this.props}  canUpdate={true}/>
+        </React.Fragment>
     }
 }
 
