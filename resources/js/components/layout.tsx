@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modals from './modals';
 import * as HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext, DropTarget } from 'react-dnd';
-import { CSSTransition } from 'react-transition-group';
+//import { CSSTransition } from 'react-transition-group';
 
 @(connect((state: EL.State) => ({uploads: state.uploads})) as any)
 export class Uploads extends React.PureComponent<{uploads?: EL.Uploads}> {
@@ -13,10 +13,13 @@ export class Uploads extends React.PureComponent<{uploads?: EL.Uploads}> {
         { Object.keys(this.props.uploads).map(key => {
             const document = this.props.uploads[key];
           // return <CSSTransition key={key} transitionName="progress" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-                return  document.uploadStatus === EL.DocumentUploadStatus.InProgress &&
+            return document.uploadStatus === EL.DocumentUploadStatus.InProgress &&
+                <Notification key={key} isError={false}>
+                    <div className="" style={{textAlign: 'center', marginBottom: 12}}>Uploading: { document.files[0].name }</div>
                     <div className="progress" key="progress">
                         <div className="progress-bar progress-bar-striped active" style={{width: `${document.progress*100}%`}}></div>
                     </div>
+                </Notification>
                 
           //  </CSSTransition>
         }) }
@@ -59,7 +62,7 @@ export default connect((state: EL.State) => ({ notifications: state.notification
 
 interface INotificationProps {
     isError: boolean;
-    children: string;
+    children: string | JSX.Element | JSX.Element[];
 }
 
 class Notification extends React.PureComponent<INotificationProps> {

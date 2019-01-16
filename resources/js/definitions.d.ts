@@ -271,7 +271,7 @@ declare global {
         }
 
         interface DocumentUpload {
-            file: File;
+            files: File[];
             uploadStatus: DocumentUploadStatus,
             progress: number,
             size?: number;
