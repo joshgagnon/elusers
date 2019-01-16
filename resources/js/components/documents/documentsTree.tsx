@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
 import Panel from 'components/panel';
 import * as moment from 'moment';
-import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal } from '../../actions';
+import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, uploadDocument } from '../../actions';
 import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
 
 import { Link } from 'react-router';
@@ -491,7 +491,7 @@ class FileTree extends React.PureComponent<any> {
 @(connect(undefined,
  (dispatch, ownProps: any) => ({
     createNotification: (args) => dispatch(createNotification(args)),
-    createDocuments: (data) => dispatch(createResource(`${ownProps.basePath}/documents`, data)),
+    createDocuments: (data) => dispatch(uploadDocument({url: `${ownProps.basePath}/documents`, ...data})),
     updateDocument: (documentId, data) => dispatch(updateResource(`${ownProps.basePath}/documents/${documentId}`, data)),
     deleteResource: (documentId) => {
         const deleteAction = deleteResource(`${ownProps.basePath}/documents/${documentId}`, {

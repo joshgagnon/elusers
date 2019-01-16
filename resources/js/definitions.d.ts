@@ -19,6 +19,13 @@ declare global {
             ENHANCED = 'Enhanced'
         }
 
+        const enum DocumentUploadStatus {
+            NotStarted,
+            InProgress,
+            Complete,
+            Failed
+        }
+
         interface Role {
             id?: number;
             name: string;
@@ -41,7 +48,7 @@ declare global {
             title: string;
             firstName: string;
             middleName?: string;
-            surname: string;
+            surname: string;State
             preferredName?: string;
             email: string;
             lawAdmissionDate?: string;
@@ -263,6 +270,17 @@ declare global {
             title: string;
         }
 
+        interface DocumentUpload {
+            file: File;
+            uploadStatus: DocumentUploadStatus,
+            progress: number,
+            size?: number;
+        }
+
+        interface Uploads {
+            [documentId: string]: DocumentUpload
+        }
+
         interface INotifications extends ObjectOf<INotification> {}
 
         export interface State {
@@ -273,6 +291,7 @@ declare global {
             cpdpr: CPDPRState;
             notifications: INotifications;
             modals: Modals;
+            uploads: Uploads;
             version: {
                 ASSET_HASH: string;
             }
@@ -333,7 +352,11 @@ declare global {
              */
             TOGGLE_SOMETHING = 'TOGGLE_SOMETHING',
 
-            MOUNTED =  'MOUNTED'
+            MOUNTED =  'MOUNTED',
+
+            UPLOAD_DOCUMENT = 'UPLOAD_DOCUMENT',
+            UPDATE_UPLOAD = 'UPDATE_UPLOAD',
+            UPLOAD_COMPLETE = 'UPLOAD_COMPLETE'
         }
 
         export const enum RequestStatus {
@@ -474,6 +497,35 @@ declare global {
             payload: {
                 url: string;
             };
+        }
+
+        export interface UploadDocumentPayload extends Action {
+            files: File[],
+            parentId: number;
+        }
+
+
+        export interface UploadDocument extends Action {
+            payload: UploadDocumentPayload
+        }
+
+        export interface UpdateUploadPayload {
+            documentId: string;
+            uploadStatus: DocumentUploadStatus;
+            progress?: number;
+        }
+
+
+        export interface UpdateUpload extends Action {
+            payload: UpdateUploadPayload
+        }
+
+        export interface UploadCompletePayload {
+            documentId: string;
+        }
+
+        export interface UploadComplete extends Action {
+            payload: UploadCompletePayload
         }
 
         interface ICreateNotificationAction extends Action {

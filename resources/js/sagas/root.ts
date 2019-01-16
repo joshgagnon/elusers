@@ -1,10 +1,10 @@
 import { select, takeEvery, put, call, fork, take, race } from 'redux-saga/effects';
-import { SagaMiddleware, delay } from 'redux-saga';
+import { SagaMiddleware, delay, eventChannel, END } from 'redux-saga';
 import axios from 'axios';
 import * as humps from 'humps';
 import * as FormData from 'form-data';
 import { downloadSaga, renderSaga } from 'jasons-formal/lib/sagas';
-import { mounted, showVersionWarningModal } from '../actions';
+import { mounted, showVersionWarningModal, createNotification, updateUpload, uploadComplete } from '../actions';
 
 function* rootSagas() {
     yield [
@@ -12,6 +12,8 @@ function* rootSagas() {
         createResourceRequests(),
         updateResourceRequests(),
         deleteResourceRequests(),
+
+        uploadDocumentSaga(),
 
         resourceSuccess(),
         resourceFailure(),
@@ -21,7 +23,7 @@ function* rootSagas() {
         longPollVersion(),
 
         renderSaga(),
-        downloadSaga()
+        downloadSaga(),
 
     ];
 }
@@ -131,23 +133,30 @@ function *checkAndRequest(action: EL.Actions.Action) {
     }
 }
 
+function createFormBody(data, uploadFiles) {
+    const body = new FormData();
+    const { files, ...rest} = data;
+    if(!uploadFiles) {
+        return data;
+    }
+    body.append('__json', JSON.stringify(rest));
+    uploadFiles.map((d: any) => {
+        if(d.id){
+            body.append('existing_files[]', d.id);
+        }
+        else{
+            body.append('file[]', d, d.name);
+        }
+    });
+    return body;
+}
+
 function *createResource(action: EL.Actions.CreateResourceAction) {
     try {
         // Make the create request
         let data = humps.decamelizeKeys(action.payload.postData);
         if(action.payload.postData.files){
-            const body = new FormData();
-            const { files, ...rest} = data;
-            body.append('__json', JSON.stringify(rest));
-            action.payload.postData.files.map((d: any) => {
-                if(d.id){
-                    body.append('existing_files[]', d.id);
-                }
-                else{
-                    body.append('file[]', d, d.name);
-                }
-            });
-            data = body;
+            data = createFormBody(data, action.payload.postData.files);
         }
         const response = yield call(axios.post, '/api/' + action.payload.url, data);
 
@@ -255,3 +264,70 @@ export function* longPollVersion() {
     }
 }
 
+function *uploadDocumentSaga() {
+    yield takeEvery(EL.ActionTypes.UPLOAD_DOCUMENT, uploadDocument);
+
+    function *uploadDocument(action: EL.Actions.UploadDocument) {
+        const document = yield select((state: EL.State) => state.uploads[action.payload.documentId]);
+
+        yield put(updateUpload({
+            documentId: action.payload.documentId,
+            uploadStatus: EL.DocumentUploadStatus.InProgress,
+            progress: 0
+        }));
+
+        // Start the upload process
+        const {documentId, url, ...rest} = action.payload;
+        const channel = yield call(uploadDocumentProgressEmitter, url, documentId, rest);
+        let state : any;
+        try {
+            while (true) {
+                state = yield take(channel);
+
+                yield put(updateUpload({ documentId: action.payload.documentId, ...state }));
+            }
+        } finally {
+            // Set the document upload status to complete
+
+            if(state && state.error){
+                //yield put(removeDocument(action.payload.documentId));
+                const resolved = false; //yield handleErrors(state.error);
+                if(!resolved){
+                    yield put(createNotification('You do not have permission to upload documents', true))
+                }
+            }
+            else{
+                yield put(uploadComplete({
+                    documentId: action.payload.documentId
+                }));
+            }
+        }
+    }
+
+    function uploadDocumentProgressEmitter(url: string, documentId: string, data: any) {
+        return eventChannel((emitter) => {
+            // Create the form data object for uploading
+                
+            data = createFormBody(humps.decamelizeKeys(data), data.files);
+            const onUploadProgress = function(progressEvent: any) {
+                // Update uploading percentage
+                const progress = progressEvent.loaded / progressEvent.total;
+                emitter({progress: progress});
+            }
+
+            // Upload the document
+            const response = axios.post(/api/ + url, data, { onUploadProgress })
+                .then((response) => {
+                    emitter({data: response.data})
+                    return emitter(END);
+                })
+                .catch((e) => {
+                    emitter({status: EL.DocumentUploadStatus.Failed, error: e})
+                    emitter(END);
+                });
+
+            const unsubscribe = () => {};
+            return unsubscribe;
+        });
+    }
+}

@@ -34,6 +34,8 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
 
         case EL.ActionTypes.DELETE_RESOURCE_SUCCESS:
         case EL.ActionTypes.DELETE_RESOURCE_FAILURE:
+
+        case EL.ActionTypes.UPLOAD_COMPLETE:
             // Reset resources state to default
             if(action.meta && action.meta.invalidateList){
                 let invalidated = {};

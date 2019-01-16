@@ -7,6 +7,7 @@ import userReducer from './userReducer';
 import cpdprReducer from './cpdprReducer';
 import notificationsReducer from './notificationsReducer';
 import modals from './modalsReducer';
+import uploads from './uploads';
 import {
     dialogs,
     saved,
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     document,
     wizard,
     modals,
+    uploads,
     version
 });
 

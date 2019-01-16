@@ -38,6 +38,33 @@ export function deleteResource(url: string, meta?: EL.Actions.Meta) {
     };
 }
 
+let _documentId = 1;
+function getDocumentId() {
+    return (_documentId++).toString();
+}
+// Uploads
+
+export function uploadDocument(payload: EL.Actions.UploadDocumentPayload): EL.Actions.UploadDocument {
+    return {
+        type: EL.ActionTypes.UPLOAD_DOCUMENT,
+        payload: {...payload, documentId: getDocumentId()}
+    }
+}
+
+export function updateUpload(payload: EL.Actions.UpdateUploadPayload): EL.Actions.UpdateUpload {
+    return {
+        type: EL.ActionTypes.UPDATE_UPLOAD,
+        payload
+    }
+}
+
+export function uploadComplete(payload: EL.Actions.UploadCompletePayload): EL.Actions.UploadComplete{
+    return {
+        type: EL.ActionTypes.UPLOAD_COMPLETE,
+        payload
+    }
+}
+
 /**
  * CPDPR
  */
