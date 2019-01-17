@@ -273,25 +273,7 @@ async function getFile(fileEntry) {
     console.log(err);
   }
 }
-// Drop handler function to get all files
-async function getAllFileEntries(dataTransferItemList) {
-    let fileEntries = [];
-    // Use BFS to traverse entire directory/file structure
-    let queue = [];
-    // Unfortunately dataTransferItemList is not iterable i.e. no forEach
-    for (let i = 0; i < dataTransferItemList.length; i++) {
-        queue.push(dataTransferItemList[i].webkitGetAsEntry());
-    }
-    while (queue.length > 0) {
-        let entry = queue.shift();
-        fileEntries.push(entry);
-        if (entry.isDirectory) {
-            let reader = entry.createReader();
-            queue.push(...await readAllDirectoryEntries(reader));
-        }
-    }
-    return fileEntries;
-}
+
 
 // Get all the entries (files or sub-directories) in a directory by calling readEntries until it returns empty array
 async function readAllDirectoryEntries(directoryReader) {
@@ -314,7 +296,7 @@ function readEntriesPromise(directoryReader) {
     console.log(err);
   }
 }
-const UPLOAD_DELAY = 500;
+const UPLOAD_DELAY = 300;
 
 function *uploadDocumentTreeSaga() {
     yield takeEvery(EL.ActionTypes.UPLOAD_DOCUMENT_TREE, recurseDocs);
@@ -324,13 +306,15 @@ function *uploadDocumentTreeSaga() {
         let currentParent = parentId;
 
         function *loop(parentId, fileTree) {
-            const files = Array.from(fileTree) as  DataTransferItem[];
-            for(let i=0; i < files.length; i++) {
-                let file = files[i].webkitGetAsEntry && files[i].webkitGetAsEntry()
-                if(!file) {
-                    file = files[i];
+            const files = (Array.from(fileTree) as  DataTransferItem[]).map(file => {
+                if(file.webkitGetAsEntry){
+                    return file.webkitGetAsEntry();
                 }
-                if(file.isDirectory) {
+                return file;
+            })
+            for(let i=0; i < files.length; i++) {
+                let file =  files[i] as any;
+                if(file && file.isDirectory) {
                     const result = yield performUploadDocument(uploadDocument({url, parentId, newDirectory: file.name, name: file.name}));
                     if(result) {
                         yield call(delay, UPLOAD_DELAY)
@@ -340,13 +324,16 @@ function *uploadDocumentTreeSaga() {
                         let entries = yield readAllDirectoryEntries(file.createReader());
                         yield loop(newParentId, entries);
                     }
-                    // fail
+                    //
 
                 }
-                else{
+                else if(file) {
                     const filedata = yield getFile(file);
                     yield performUploadDocument(uploadDocument({url, parentId, name: filedata.name, files: [filedata]}));
                     yield call(delay, UPLOAD_DELAY)
+                }
+                else{
+                    debugger
                 }
             }
         }
