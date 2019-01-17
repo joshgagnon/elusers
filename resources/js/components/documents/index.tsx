@@ -227,7 +227,7 @@ interface  DocumentsProps {
 }
 
 @(connect((state: EL.State) => ({
-    canUpdate: hasPermission(state.user, 'administer organisation')
+    canUpdate: hasPermission(state.user, 'manage organisation documents')
 })) as any)
 @OrganisationDocumentsHOC({cache: true})
 export default  class Documents extends React.PureComponent<DocumentsProps> {

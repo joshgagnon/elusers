@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
-            'throttle:60,1',
+           // 'throttle:60,1',
             'bindings'
         ],
     ];

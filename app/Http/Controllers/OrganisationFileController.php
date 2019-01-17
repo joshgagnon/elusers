@@ -41,21 +41,24 @@ class OrganisationFileController extends Controller
         $newDirectory = $data['new_directory'] ?? null;
         if($newDirectory) {
             $organisation = $user->organisation()->first();
-            $organisation->files()->save(File::create([
+            $newFile = File::create([
                 'filename'  => $newDirectory,
                 'directory' => true,
                 'protected' => false,
                 'path' => '',
                 'mimetype' => '',
                 'parent_id' => $parentId
-            ]), ['created_by_user_id'  => $user->id]);
+            ], ['created_by_user_id'  => $user->id]);
+            $organisation->files()->save($newFile);
+
+            return response()->json(['message' => 'Folder created.', 'id' => $newFile->id], 201);
         }
 
-
+        $orgFiles = [];
         foreach ($files as $file) {
-            $this->saveFile($file, $request->user(), $parentId);
+            $orgFiles[] = $this->saveFile($file, $request->user(), $parentId);
         }
-        return response()->json(['message' => 'Files created.'], 201);
+        return response()->json(['message' => 'Files created.', 'id' => $orgFiles[count($orgFiles)-1]->file_id], 201);
     }
 
     public function update(Request $request, $documentId)

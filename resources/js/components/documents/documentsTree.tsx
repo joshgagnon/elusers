@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
 import Panel from 'components/panel';
 import * as moment from 'moment';
-import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, uploadDocument } from '../../actions';
+import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, uploadDocument, uploadDocumentTree } from '../../actions';
 import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
 
 import { Link } from 'react-router';
@@ -21,26 +21,14 @@ import { firstBy } from 'thenby'
 import classnames from 'classnames';
 
 import { DragSource, DropTarget } from 'react-dnd';
-import { NativeTypes } from 'react-dnd-html5-backend';
+import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { LoadingSmall } from 'components/loading';
 
 
 
 const documentFileTarget = {
     drop(props, monitor) {
-        if(props.documents.value){
-            props.documents.onChange([...props.documents.value, ...monitor.getItem().files]);
-        }
-        else{
-            props.documents.onChange(monitor.getItem().files);
-        }
-    }
-};
-
-
-const imageTarget = {
-    drop(props, monitor) {
-        props.onChange(monitor.getItem().files);
+        props.documents.onChange(monitor.getItem().dataTransfer.items);
     }
 };
 
@@ -56,7 +44,8 @@ class DocumentFormBase extends React.PureComponent<any> {
 
     onDrop(e) {
         const droppedFiles = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-        this.props.documents.onChange(Array.from(droppedFiles));
+        this.props.documents.onTreeDrop(e.dataTransfer.items);
+        //this.props.documents.onChange(Array.from(droppedFiles));
     }
 
     onFileDialogCancel() {
@@ -120,11 +109,12 @@ export const DocumentsForm = (DropTarget(NativeTypes.FILE, documentFileTarget, (
 const documentTypeClasses = (doc, showingSubTree) => {
     const map = {
         'Directory': 'fa fa-folder-o',
-        'Companies Office': 'fa fa-file-text',
+
         'image/png': 'fa fa-file-image-o',
         'image/jpeg': 'fa fa-file-image-o',
         'application/pdf': 'fa fa-file-pdf-o',
         'application/msword': 'fa fa-file-word-o',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'fa fa-file-word-o',
         'application/gzip': 'fa-file-archive-o',
         'application/zip': 'fa-file-archive-o'
     };
@@ -142,7 +132,7 @@ const documentTypeClasses = (doc, showingSubTree) => {
         return 'fa fa-folder';
     }
 
-    return map[doc.type] || 'fa fa-file-text';
+    return map[doc.mimeType] || 'fa fa-file-text';
 }
 
 function listToTree(documents: EL.Document[]){
@@ -201,6 +191,18 @@ const fileTarget = {
     drop(props, monitor) {
         const newParentid = props.item.id === 'root' ? null : props.item.id;
         const dragItem = monitor.getItem()
+
+        // let items = await getAllFileEntries(e.dataTransfer.items);
+        if(!dragItem.id && dragItem.dataTransfer){
+            if(!monitor.didDrop()) {
+                props.showSubTree(newParentid);
+                props.path.map(id =>  props.showSubTree(id))
+                props.upload(dragItem.dataTransfer.items, newParentid);
+                return;
+            }
+        }
+
+
         if(!dragItem.id && dragItem.files){
             if(!monitor.didDrop()) {
                 props.showSubTree(newParentid);
@@ -492,6 +494,7 @@ class FileTree extends React.PureComponent<any> {
  (dispatch, ownProps: any) => ({
     createNotification: (args) => dispatch(createNotification(args)),
     createDocuments: (data) => dispatch(uploadDocument({url: `${ownProps.basePath}/documents`, ...data})),
+    createDocumentTree: (data) => dispatch(uploadDocumentTree({url: `${ownProps.basePath}/documents`, ...data})),
     updateDocument: (documentId, data) => dispatch(updateResource(`${ownProps.basePath}/documents/${documentId}`, data)),
     deleteResource: (documentId) => {
         const deleteAction = deleteResource(`${ownProps.basePath}/documents/${documentId}`, {
@@ -532,6 +535,9 @@ export class DocumentsTree extends React.PureComponent<any> {
     }
 
     upload(files, parentId=null) {
+        if(files instanceof  DataTransferItemList) {
+            return this.props.createDocumentTree({fileTree: files, parentId});
+        }
         return this.props.createDocuments({files, parentId})
     }
 

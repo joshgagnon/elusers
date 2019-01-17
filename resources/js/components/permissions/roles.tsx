@@ -140,7 +140,7 @@ const formatRoleForm = (data: any) => {
 }
 
 const formatUserRolesForm = (data: any) => {
-    return  Object.keys(data || {}).map(key => {
+    return Object.keys(data || {}).map(key => {
             if(data[key]){
                 return key;
             }

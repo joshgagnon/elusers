@@ -272,6 +272,7 @@ declare global {
 
         interface DocumentUpload {
             files: File[];
+            name: string;
             uploadStatus: DocumentUploadStatus,
             progress: number,
             size?: number;
@@ -355,6 +356,7 @@ declare global {
             MOUNTED =  'MOUNTED',
 
             UPLOAD_DOCUMENT = 'UPLOAD_DOCUMENT',
+            UPLOAD_DOCUMENT_TREE = 'UPLOAD_DOCUMENT_TREE',
             UPDATE_UPLOAD = 'UPDATE_UPLOAD',
             UPLOAD_COMPLETE = 'UPLOAD_COMPLETE'
         }
@@ -499,9 +501,13 @@ declare global {
             };
         }
 
-        export interface UploadDocumentPayload extends Action {
-            files: File[],
+        export interface UploadDocumentPayload  {
+            files?: File[],
+            name: string,
+            newDirectory?: string,
             parentId: number;
+            url: string;
+
         }
 
 
@@ -509,9 +515,21 @@ declare global {
             payload: UploadDocumentPayload
         }
 
+        export interface UploadDocumentTreePayload  {
+            fileTree: any;
+            parentId: number;
+            url: string;
+
+        }
+
+
+        export interface UploadDocumentTree extends Action {
+            payload: UploadDocumentTreePayload
+        }
+
         export interface UpdateUploadPayload {
-            documentId: string;
             uploadStatus: DocumentUploadStatus;
+            name?: string;
             progress?: number;
         }
 
@@ -521,7 +539,7 @@ declare global {
         }
 
         export interface UploadCompletePayload {
-            documentId: string;
+
         }
 
         export interface UploadComplete extends Action {

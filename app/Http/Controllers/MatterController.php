@@ -171,14 +171,16 @@ class MatterController extends Controller
         $newDirectory = $data['new_directory'] ?? null;
         $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->first();
         if($newDirectory) {
-            $matter->files()->save(File::create([
+            $newFile = File::create([
                 'filename'  => $newDirectory,
                 'directory' => true,
                 'protected' => false,
                 'path' => '',
                 'mimetype' => '',
                 'parent_id' => $parentId
-            ]));
+            ]);
+            $matter->files()->save($newFile);
+            return response()->json(['message' => 'Folder created.', 'id' => $newFile->id], 201);
         }
         else {
             $fileIds = array_map(function($file) use ($user, $parentId) {
@@ -186,9 +188,9 @@ class MatterController extends Controller
             }, $request->file('file', []));
             $matter->files()->attach($fileIds);
         }
-
-        return response()->json(['message' => 'Documents Uploaded', 'id' => $matter->id], 200);
+        return response()->json(['message' => 'Documents Uploaded', 'id' => array_values(array_slice($fileIds, -1))[0]], 200);
     }
+
 
     public function updateDocument(Request $request, $matterId, $documentId)
     {

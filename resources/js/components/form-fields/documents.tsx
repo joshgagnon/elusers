@@ -1,7 +1,7 @@
 "use strict";
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import { NativeTypes } from 'react-dnd-html5-backend';
+import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { DropTarget } from 'react-dnd';
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';

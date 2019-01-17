@@ -2,7 +2,7 @@ import * as React from 'react';
 import Navbar from './navbar';
 import { connect } from 'react-redux';
 import Modals from './modals';
-import * as HTML5Backend from 'react-dnd-html5-backend';
+import * as HTML5Backend from 'react-dnd-html5-backend-filedrop';
 import { DragDropContext, DropTarget } from 'react-dnd';
 //import { CSSTransition } from 'react-transition-group';
 
@@ -15,12 +15,12 @@ export class Uploads extends React.PureComponent<{uploads?: EL.Uploads}> {
           // return <CSSTransition key={key} transitionName="progress" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
             return document.uploadStatus === EL.DocumentUploadStatus.InProgress &&
                 <Notification key={key} isError={false}>
-                    <div className="" style={{textAlign: 'center', marginBottom: 12}}>Uploading: { document.files[0].name }</div>
+                    <div className="" style={{textAlign: 'center', marginBottom: 12}}>Uploading: { document.name }</div>
                     <div className="progress" key="progress">
                         <div className="progress-bar progress-bar-striped active" style={{width: `${document.progress*100}%`}}></div>
                     </div>
                 </Notification>
-                
+
           //  </CSSTransition>
         }) }
         </React.Fragment>

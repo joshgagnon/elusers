@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as humps from 'humps';
 import * as FormData from 'form-data';
 import { downloadSaga, renderSaga } from 'jasons-formal/lib/sagas';
-import { mounted, showVersionWarningModal, createNotification, updateUpload, uploadComplete } from '../actions';
+import { mounted, showVersionWarningModal, createNotification, updateUpload, uploadComplete, uploadDocument } from '../actions';
 
 function* rootSagas() {
     yield [
@@ -14,6 +14,7 @@ function* rootSagas() {
         deleteResourceRequests(),
 
         uploadDocumentSaga(),
+        uploadDocumentTreeSaga(),
 
         resourceSuccess(),
         resourceFailure(),
@@ -264,70 +265,161 @@ export function* longPollVersion() {
     }
 }
 
-function *uploadDocumentSaga() {
-    yield takeEvery(EL.ActionTypes.UPLOAD_DOCUMENT, uploadDocument);
 
-    function *uploadDocument(action: EL.Actions.UploadDocument) {
-        const document = yield select((state: EL.State) => state.uploads[action.payload.documentId]);
-
-        yield put(updateUpload({
-            documentId: action.payload.documentId,
-            uploadStatus: EL.DocumentUploadStatus.InProgress,
-            progress: 0
-        }));
-
-        // Start the upload process
-        const {documentId, url, ...rest} = action.payload;
-        const channel = yield call(uploadDocumentProgressEmitter, url, documentId, rest);
-        let state : any;
-        try {
-            while (true) {
-                state = yield take(channel);
-
-                yield put(updateUpload({ documentId: action.payload.documentId, ...state }));
-            }
-        } finally {
-            // Set the document upload status to complete
-
-            if(state && state.error){
-                //yield put(removeDocument(action.payload.documentId));
-                const resolved = false; //yield handleErrors(state.error);
-                if(!resolved){
-                    yield put(createNotification('You do not have permission to upload documents', true))
-                }
-            }
-            else{
-                yield put(uploadComplete({
-                    documentId: action.payload.documentId
-                }));
-            }
+async function getFile(fileEntry) {
+  try {
+    return await new Promise((resolve, reject) => fileEntry.file(resolve, reject));
+  } catch (err) {
+    console.log(err);
+  }
+}
+// Drop handler function to get all files
+async function getAllFileEntries(dataTransferItemList) {
+    let fileEntries = [];
+    // Use BFS to traverse entire directory/file structure
+    let queue = [];
+    // Unfortunately dataTransferItemList is not iterable i.e. no forEach
+    for (let i = 0; i < dataTransferItemList.length; i++) {
+        queue.push(dataTransferItemList[i].webkitGetAsEntry());
+    }
+    while (queue.length > 0) {
+        let entry = queue.shift();
+        fileEntries.push(entry);
+        if (entry.isDirectory) {
+            let reader = entry.createReader();
+            queue.push(...await readAllDirectoryEntries(reader));
         }
     }
+    return fileEntries;
+}
 
-    function uploadDocumentProgressEmitter(url: string, documentId: string, data: any) {
-        return eventChannel((emitter) => {
-            // Create the form data object for uploading
-                
-            data = createFormBody(humps.decamelizeKeys(data), data.files);
-            const onUploadProgress = function(progressEvent: any) {
-                // Update uploading percentage
-                const progress = progressEvent.loaded / progressEvent.total;
-                emitter({progress: progress});
-            }
-
-            // Upload the document
-            const response = axios.post(/api/ + url, data, { onUploadProgress })
-                .then((response) => {
-                    emitter({data: response.data})
-                    return emitter(END);
-                })
-                .catch((e) => {
-                    emitter({status: EL.DocumentUploadStatus.Failed, error: e})
-                    emitter(END);
-                });
-
-            const unsubscribe = () => {};
-            return unsubscribe;
-        });
+// Get all the entries (files or sub-directories) in a directory by calling readEntries until it returns empty array
+async function readAllDirectoryEntries(directoryReader) {
+    let entries = [];
+    let readEntries = await readEntriesPromise(directoryReader) as any[];
+    while (readEntries.length > 0) {
+        entries.push(...readEntries);
+        readEntries = await readEntriesPromise(directoryReader) as any[];
     }
+    return entries;
+}
+
+// Wrap readEntries in a promise to make working with readEntries easier
+function readEntriesPromise(directoryReader) {
+  try {
+    return new Promise((resolve, reject) => {
+      directoryReader.readEntries(resolve, reject);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+const UPLOAD_DELAY = 500;
+
+function *uploadDocumentTreeSaga() {
+    yield takeEvery(EL.ActionTypes.UPLOAD_DOCUMENT_TREE, recurseDocs);
+
+    function *recurseDocs(action: EL.Actions.UploadDocumentTree) {
+        const { fileTree, url, parentId } = action.payload;
+        let currentParent = parentId;
+
+        function *loop(parentId, fileTree) {
+            const files = Array.from(fileTree) as  DataTransferItem[];
+            for(let i=0; i < files.length; i++) {
+                let file = files[i].webkitGetAsEntry && files[i].webkitGetAsEntry()
+                if(!file) {
+                    file = files[i];
+                }
+                if(file.isDirectory) {
+                    const result = yield performUploadDocument(uploadDocument({url, parentId, newDirectory: file.name, name: file.name}));
+                    if(result) {
+                        yield call(delay, UPLOAD_DELAY)
+
+                        const newParentId = result.payload.id;
+
+                        let entries = yield readAllDirectoryEntries(file.createReader());
+                        yield loop(newParentId, entries);
+                    }
+                    // fail
+
+                }
+                else{
+                    const filedata = yield getFile(file);
+                    yield performUploadDocument(uploadDocument({url, parentId, name: filedata.name, files: [filedata]}));
+                    yield call(delay, UPLOAD_DELAY)
+                }
+            }
+        }
+        return yield loop(parentId, fileTree);
+    }
+}
+
+function *performUploadDocument(action: EL.Actions.UploadDocument) {
+    const documentId = action.documentId;
+    const document = yield select((state: EL.State) => state.uploads[action.documentId]);
+
+    yield put(updateUpload(action.documentId, {
+        uploadStatus: EL.DocumentUploadStatus.InProgress,
+        name: action.payload.name,
+        progress: 0
+    }));
+
+    // Start the upload process
+    const {  url, ...rest} = action.payload;
+    const channel = yield call(uploadDocumentProgressEmitter, url, documentId, rest);
+    let state : any;
+    try {
+        while (true) {
+            state = yield take(channel);
+
+            yield put(updateUpload(documentId, { ...state }));
+        }
+    } finally {
+        // Set the document upload status to complete
+
+        if(state && state.error){
+            //yield put(removeDocument(action.payload.documentId));
+            const resolved = false; //yield handleErrors(state.error);
+            if(!resolved){
+                yield put(createNotification('You do not have permission to upload documents', true))
+            }
+        }
+        else{
+
+            return yield put(uploadComplete(documentId, {
+                id: state.data.id
+            }));
+        }
+    }
+}
+
+function uploadDocumentProgressEmitter(url: string, documentId: string, data: any) {
+    return eventChannel((emitter) => {
+        // Create the form data object for uploading
+
+        data = createFormBody(humps.decamelizeKeys(data), data.files);
+        const onUploadProgress = function(progressEvent: any) {
+            // Update uploading percentage
+            const progress = progressEvent.loaded / progressEvent.total;
+            emitter({progress: progress});
+        }
+
+        // Upload the document
+        const response = axios.post(/api/ + url, data, { onUploadProgress })
+            .then((response) => {
+                emitter({data: response.data})
+                return emitter(END);
+            })
+            .catch((e) => {
+                emitter({status: EL.DocumentUploadStatus.Failed, error: e})
+                emitter(END);
+            });
+
+        const unsubscribe = () => {};
+        return unsubscribe;
+    });
+}
+
+function *uploadDocumentSaga() {
+    yield takeEvery(EL.ActionTypes.UPLOAD_DOCUMENT, performUploadDocument);
 }
