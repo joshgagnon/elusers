@@ -327,8 +327,8 @@ class RenderFile extends React.PureComponent<any> {
         const canCreateDirectory = this.props.canUpdate;
         const renderedFile = (<div className="file-sub-tree">
               <span className="expand-control">
-                { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={props.hideSubTree} /> }
-                { item.directory   && !showingSubTree && <span className="fa fa-plus-square-o" onClick={props.showSubTree} /> }
+                { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={(e) =>  {e.stopPropagation && e.stopPropagation(); props.hideSubTree()}} /> }
+                { item.directory   && !showingSubTree && <span className="fa fa-plus-square-o" onClick={(e) =>  {e.stopPropagation && e.stopPropagation(); props.showSubTree()}} /> }
               </span>
                 { item.id !== "root" && !item.protected && !this.props.renaming ? connectDragSource(fileSpan()) : fileSpan() }
                 { item.directory  &&
