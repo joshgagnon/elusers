@@ -10,7 +10,7 @@ import Icon from '../icon';
 
 const fileTarget = {
     drop(props, monitor) {
-        props.onDrop(monitor.getItem().files);
+        props.onDrop(Array.from(monitor.getItem().dataTransfer.files));
     }
 };
 

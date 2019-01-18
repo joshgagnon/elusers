@@ -581,11 +581,11 @@ declare global {
         }
 
         interface ShowDocumentModalPayload {
-            fileId: fileId
+            fileId: string
         }
 
         interface ShowDocumentModal extends Action {
-            payload: ShowDocumentPayload
+            payload: ShowDocumentModalPayload
         }
 
     }

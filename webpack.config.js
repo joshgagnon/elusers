@@ -7,16 +7,17 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const  ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+//const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
+    cache: true,
     entry: path.resolve(__dirname, 'resources/js/index.tsx'),
     output: {
         filename: DEV ? 'js/app.js' : 'js/app.[hash].js',
         path: path.resolve(__dirname, 'public')
     },
     mode: DEV ? 'development' : 'production',
-    devtool: DEV ? "source-map" : false,
+    devtool: DEV ? "inline-source-map" : false,
     optimization: {
         minimize: !DEV
     },
@@ -27,7 +28,7 @@ module.exports = {
                 loader: 'ts-loader',
                 exclude: /node_modules/,
                 options: {
-                  // transpileOnly: true // IMPORTANT! use transpileOnly mode to speed-up compilation
+                 //  transpileOnly: true // IMPORTANT! use transpileOnly mode to speed-up compilation
                  },
             },
             /*{
@@ -99,7 +100,7 @@ module.exports = {
     },
 
     plugins: [
-      //  new ForkTsCheckerWebpackPlugin(),
+
         new CopyWebpackPlugin([{ from: 'resources/images', to: 'images' }]),
 
         //new ExtractTextPlugin(DEV ? 'css/[name].css' : 'css/[name].[hash].css'),
@@ -124,6 +125,7 @@ module.exports = {
             fileName: 'mix-manifest.json',
             basePath: '/'
         }),
-        new WebpackNotifierPlugin({ title: 'Evolution Users' })
+        new WebpackNotifierPlugin({ title: 'Evolution Users' }),
+      //  new ForkTsCheckerWebpackPlugin()
     ]
 };
