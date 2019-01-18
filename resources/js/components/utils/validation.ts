@@ -12,14 +12,14 @@ export function validate(fields: EL.IValidationFields, values: any): EL.Validati
 
         // Max length
         if (field.maxLength !== undefined) {
-            if (value.length > field.maxLength) {
+            if (!value || value.length > field.maxLength) {
                 error = field.name + ' cannot be more than ' + field.maxLength + '.';
             }
         }
 
         // min value
         if (field.minValue !== undefined) {
-            if (value < field.minValue) {
+            if (!value || value < field.minValue) {
                 error =  field.name + ' cannot be less than ' + field.minValue + '.';
             }
         }

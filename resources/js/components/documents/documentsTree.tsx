@@ -25,6 +25,11 @@ import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { LoadingSmall } from 'components/loading';
 
 
+class DocumentSideBar extends React.PureComponent<{file: EL.Document}> {
+    render() {
+        return <div />
+    }
+}
 
 const documentFileTarget = {
     drop(props, monitor) {
@@ -484,6 +489,7 @@ class FileTree extends React.PureComponent<any> {
             </div>
             { this.props.loading && <LoadingSmall /> }
             { this.props.canUpdate && <DocumentsForm documents={{onChange: (files) => this.upload(files)}} /> }
+            { this.state.selected && <DocumentSideBar  file={this.props.files.find(file => file.id === this.state.selected)} /> }
          </Panel>
     }
 
