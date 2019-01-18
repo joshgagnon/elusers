@@ -27,7 +27,7 @@ import { LoadingSmall } from 'components/loading';
 
 class DocumentSideBar extends React.PureComponent<{file: EL.Document}> {
     render() {
-        return <div />
+        return <div className="document-sidebar"/>
     }
 }
 
@@ -264,12 +264,16 @@ class RenderFile extends React.PureComponent<any> {
         }
 
         const defaultView = () => {
-            return  <span>{ !item.directory && <span onClick={() => viewDocument(item.id)} className="view">View</span> }
+            return  <span>{ !item.directory && <span onClick={(e) => {
+                 e.stopPropagation && e.stopPropagation();
+                viewDocument(item.id)}
+                } className="view">View</span> }
                     { this.props.canUpdate && !item.protected && <span onClick={() => startRename(item.id)} className="view">Rename</span> }
                     { this.props.canUpdate && !item.protected && <span onClick={() => deleteFile(item.id)} className="view">Delete</span> }</span>
         }
 
-        const submitRename = () => {
+        const submitRename = (e) => {
+             e.stopPropagation && e.stopPropagation();
             const value = this.input.value;
             if(value){
                 renameFile(item.id, value);
@@ -277,8 +281,8 @@ class RenderFile extends React.PureComponent<any> {
             }
         }
 
-        const submitCreateFolder = () => {
-
+        const submitCreateFolder = (e) => {
+             e.stopPropagation && e.stopPropagation();
             const value = this.input.value;
             if(value){
                 createDirectory(item.id === 'root' ? null : item.id, value);
@@ -307,20 +311,24 @@ class RenderFile extends React.PureComponent<any> {
                 </div>
         }
 
-        const fileSpan = () => <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})} onMouseDown={() => !props.selected && props.select()}>
+        const fileSpan = () => <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})} 
+            onClick={(e) => {
+                e.stopPropagation();
+                !props.selected && props.select()}
+            }>
                 <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
                 { !this.props.renaming && <span className="filename">{ item.filename } { !item.directory && item.createdAt ? ` - ${formatDateTime(item.createdAt)}` : '' }</span> }
                 { !this.props.renaming && defaultView() }
                 { this.props.renaming && <FormGroup><FormControl type="text" defaultValue={ item.filename } inputRef={ref => { this.input = ref; }} /></FormGroup> }
-                { this.props.renaming && <span onClick={() => submitRename()} className="view">Save</span> }
-                { this.props.renaming && <span onClick={() => endRename()} className="view">Cancel</span> }
+                { this.props.renaming && <span onClick={submitRename} className="view">Save</span> }
+                { this.props.renaming && <span onClick={endRename} className="view">Cancel</span> }
                 </span>
 
         const canCreateDirectory = this.props.canUpdate;
         const renderedFile = (<div className="file-sub-tree">
               <span className="expand-control">
-                { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={() => props.hideSubTree()} /> }
-                { item.directory   && !showingSubTree && <span className="fa fa-plus-square-o" onClick={() => props.showSubTree()} /> }
+                { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={props.hideSubTree} /> }
+                { item.directory   && !showingSubTree && <span className="fa fa-plus-square-o" onClick={props.showSubTree} /> }
               </span>
                 { item.id !== "root" && !item.protected && !this.props.renaming ? connectDragSource(fileSpan()) : fileSpan() }
                 { item.directory  &&
@@ -336,7 +344,7 @@ class RenderFile extends React.PureComponent<any> {
 }
 
 const SearchForm = (props) => {
-    return <div>
+    return <div >
             <h3 className="panel-title">{ props.title }</h3>
             <form className="form-inline pull-right">
             <FormGroup><FormControl type="text"  onChange={props.onSearchChange} placeholder="Search" value={props.filter}/></FormGroup>
@@ -458,8 +466,8 @@ class FileTree extends React.PureComponent<any> {
                     renameFile: this.props.renameFile && this.renameFile,
                     deleteFile: this.props.deleteFile && this.deleteFile,
                     creatingFolder: this.state.creatingFolder === item.id,
-                    startCreateFolder: () => this.startCreateFolder(item.id),
-                    endCreateFolder: () => this.endCreateFolder(),
+                    startCreateFolder: (e) => {  e.stopPropagation && e.stopPropagation(); this.startCreateFolder(item.id) },
+                    endCreateFolder: (e) => { e.stopPropagation && e.stopPropagation(); this.endCreateFolder() },
                     createDirectory: this.createDirectory,
                     upload: this.upload,
                     path: path,
@@ -482,7 +490,8 @@ class FileTree extends React.PureComponent<any> {
         };
 
         const files = filterTree(this.state.filter, this.props.files);
-        return <Panel formattedTitle={
+        return <div onClick={() => this.select(null)} >
+                <Panel formattedTitle={
             <SearchForm title={this.props.title} key="search" onSearchChange={this.onSearchChange} filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll} /> } className="document-panel">
             <div className="file-tree">
                 { loop(files, []) }
@@ -491,6 +500,7 @@ class FileTree extends React.PureComponent<any> {
             { this.props.canUpdate && <DocumentsForm documents={{onChange: (files) => this.upload(files)}} /> }
             { this.state.selected && <DocumentSideBar  file={this.props.files.find(file => file.id === this.state.selected)} /> }
          </Panel>
+         </div>
     }
 
 }
