@@ -34,6 +34,8 @@ interface DocumentSideBarProps {
     viewDocument: (file: EL.Document) => void;
     deleteFile: (id: number | string) => void;
     renameFile: (id: number | string, value: string) => void;
+    replace: (id: number | string, files: File[]) => void;
+    unselect: (any) => void;
     canUpdate: boolean;
     loading: boolean;
 
@@ -50,6 +52,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.startRename = this.startRename.bind(this);
         this.submitRename = this.submitRename.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.replace = this.replace.bind(this);
         this.state.value = props.file ? props.file.filename : '';
 
     }
@@ -69,9 +72,13 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.setState({value: e.target.value});
     }
 
+    replace(files) {
+        return this.props.replace(this.props.file.id, Array.from(files).map(file =>files[0].getAsFile()));
+    }
+
     render() {
         const { file } = this.props;
-        const { viewDocument, renameFile, deleteFile, canUpdate, loading } = this.props;
+        const { viewDocument, renameFile, deleteFile, canUpdate, loading, unselect } = this.props;
 
 
         const creator = file.pivot &&
@@ -82,6 +89,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         return <div className="document-sidebar" onClick={stopPropagation}>
         <div className="document-sidebar-body">
             { loading && <LoadingSmall /> }
+
             <div className="filename">
                 { !this.state.renaming && <React.Fragment>
                     <span className={ documentTypeClasses(file, false ) + " doc-icon"} />
@@ -112,8 +120,12 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
             <div className="button-row">
                 { !file.directory && <Button onClick={() => viewDocument(file)} >View</Button> }
                 { canUpdate && <Button bsStyle="danger" onClick={() => deleteFile(file.id)} >Delete</Button> }
+                <Button onClick={() => unselect(null)}>Close</Button>
 
             </div>
+
+           { canUpdate && !file.directory && <DocumentsForm documents={{onChange: (files) => this.replace(files)}} dropLabel="Drag or click here to replace this file with a new version" /> }
+
         </div>
 
         </div>
@@ -138,8 +150,7 @@ class DocumentFormBase extends React.PureComponent<any> {
 
     onDrop(e) {
         const droppedFiles = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-        this.props.documents.onTreeDrop(e.dataTransfer.items);
-        //this.props.documents.onChange(Array.from(droppedFiles));
+        this.props.documents.onChange(droppedFiles);
     }
 
     onFileDialogCancel() {
@@ -182,7 +193,7 @@ class DocumentFormBase extends React.PureComponent<any> {
             { this.props.label && <label className="control-label">{ this.props.label }</label>}
 
                 { connectDropTarget(<div className="dropzone" onClick={() => this.open()}>
-                      <div>Drop files here to upload or <a className="vanity-link">click to browse</a> your device</div>
+                      { this.props.dropLabel ||  <div>Drop files here to upload or <a className="vanity-link">click to browse</a> your device</div> }
                   <input {...inputAttributes} />
             </div>) }
            </div>
@@ -544,6 +555,7 @@ class FileTree extends React.PureComponent<any> {
                 accepts: item.directory ? [FILE, NativeTypes.FILE] : [],
                 fileTypes:  FILE,
                 select: () => this.select(item.id),
+                unselect: () => this.select(null),
                 selected: !this.state.creatingFolder && this.state.selected === item.id,
                 renaming: !this.state.creatingFolder && this.state.selected === item.id && this.state.renaming === item.id,
                 showingSubTree: this.state[item.id] || !!this.state.filter,
@@ -555,10 +567,11 @@ class FileTree extends React.PureComponent<any> {
                 renameFile: this.props.renameFile && this.renameFile,
                 deleteFile: this.props.deleteFile && this.deleteFile,
                 creatingFolder: this.state.creatingFolder === item.id,
-                startCreateFolder: (e) => {  e.stopPropagation && e.stopPropagation(); this.startCreateFolder(item.id) },
-                endCreateFolder: (e) => { e.stopPropagation && e.stopPropagation(); this.endCreateFolder() },
+                startCreateFolder: (e) => {  e && e.stopPropagation && e.stopPropagation(); this.startCreateFolder(item.id); },
+                endCreateFolder: (e) => { e && e.stopPropagation && e.stopPropagation(); this.endCreateFolder(); },
                 createDirectory: this.createDirectory,
                 upload: this.upload,
+                replace: this.props.replace,
                 path: path,
                 canUpdate: this.props.canUpdate,
                 loading: this.props.loading
@@ -606,6 +619,7 @@ class FileTree extends React.PureComponent<any> {
     createDocuments: (data) => dispatch(uploadDocument({url: `${ownProps.basePath}/documents`, ...data})),
     createDocumentTree: (data) => dispatch(uploadDocumentTree({url: `${ownProps.basePath}/documents`, ...data})),
     updateDocument: (documentId, data) => dispatch(updateResource(`${ownProps.basePath}/documents/${documentId}`, data)),
+    replaceDocument: (documentId, data) => dispatch(updateResource(`files/${documentId}/replace`, data)),
     deleteResource: (documentId) => {
         const deleteAction = deleteResource(`${ownProps.basePath}/documents/${documentId}`, {
             onSuccess: [createNotification('File deleted.')],
@@ -633,6 +647,7 @@ export class DocumentsTree extends React.PureComponent<any> {
         this.deleteFile = this.deleteFile.bind(this);
         this.createDirectory = this.createDirectory.bind(this);
         this.upload = this.upload.bind(this);
+        this.replace = this.replace.bind(this);
     }
 
     renderField(key, value) {
@@ -649,6 +664,11 @@ export class DocumentsTree extends React.PureComponent<any> {
             return this.props.createDocumentTree({fileTree: files, parentId});
         }
         return this.props.createDocuments({files, parentId})
+    }
+
+    replace(documentId, files) {
+        // Better make sure only one is going
+        return this.props.replaceDocument(documentId, {files: [files[0]]})
     }
 
     move(documentId, parentId) {
@@ -681,6 +701,7 @@ export class DocumentsTree extends React.PureComponent<any> {
                 renameFile={this.props.canUpdate && this.renameFile}
                 createDirectory={this.createDirectory}
                 upload={this.upload}
+                replace={this.replace}
                 canUpdate={this.props.canUpdate }
                 />
         </div>

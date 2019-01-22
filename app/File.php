@@ -10,7 +10,7 @@ use App\Library\Encryption;
 
 class File extends Model
 {
-    protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'protected'];
+    protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'previous_version_id', 'protected'];
 
     public static function boot()
     {

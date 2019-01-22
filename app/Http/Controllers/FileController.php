@@ -83,7 +83,36 @@ class FileController extends Controller
         ];
 
         return response($content, 200, $headers);
+    }
 
+    public function replace(Request $request, File $file)
+    {
+        $user = $request->user();
+
+        if (!File::canRead($file->id, $user)) {
+            abort(403);
+        }
+
+        $oldVersion = File::create($file->toArray());
+
+        $upload = $request->file('file', [])[0];
+        $uploadedFilePath = $upload->getRealPath();
+        $contents = file_get_contents($uploadedFilePath);
+
+        if($file->encrypted) {
+            $key = $user->organisation->encryption_key;
+            $encryption = new Encryption($key);
+            $contents = $encryption->encrypt($contents);
+        }
+
+        $path = explode('/', $file->path)[0].'/'.time() . uniqid();
+        // Store the file
+        Storage::put($path, $contents);
+
+          // put new content on file
+        $file->update(['path' => $path, 'previous_version_id' => $oldVersion->id]);
+
+        return response()->json(['message' => 'Documents Updated', 'id' => $file->id], 200);
     }
 
 }

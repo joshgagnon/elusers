@@ -192,12 +192,13 @@ class MatterController extends Controller
     }
 
 
-    public function updateDocument(Request $request, $matterId, $documentId)
+    public function updateDocument(Request $request, $matterId, $fileId)
     {
         $user = $request->user();
         $data = $request->allJson();
         $matter = Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
-        $document = $matter->files()->find($documentId);
+        $document = $matter->files()->find($fileId);
+        File::canRead($fileId, $user);
         $document->update($data);
         return response()->json(['message' => 'Documents Updated', 'id' => $matter->id], 200);
     }
@@ -208,10 +209,12 @@ class MatterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deleteDocument(Request $request, $matterId, $documentId)
+    public function deleteDocument(Request $request, $matterId, $fileId)
     {
+        $user = $request->user();
         $matter =Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
-        $document = $matter->files()->find($documentId);
+        File::canRead($fileId, $user);
+        $document = $matter->files()->find($fileId);
         $document->delete();
         return response()->json(['message' => 'Matter deleted', 'id' => $matter->id], 200);
     }

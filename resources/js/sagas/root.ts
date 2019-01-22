@@ -141,7 +141,7 @@ function createFormBody(data, uploadFiles) {
         return data;
     }
     body.append('__json', JSON.stringify(rest));
-    uploadFiles.map((d: any) => {
+    Array.from(uploadFiles).map((d: any) => {
         if(d.id){
             body.append('existing_files[]', d.id);
         }
@@ -367,6 +367,7 @@ function *performUploadDocument(action: EL.Actions.UploadDocument) {
         if(state && state.error){
             //yield put(removeDocument(action.payload.documentId));
             const resolved = false; //yield handleErrors(state.error);
+            yield put(updateUpload(documentId, {uploadStatus: EL.DocumentUploadStatus.Failed}));
             if(!resolved){
                 yield put(createNotification('You do not have permission to upload documents', true))
             }

@@ -82,8 +82,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('contacts-sync', 'ContactController@syncContacts');
 
     Route::post('contact/{contact}/documents', 'ContactController@uploadDocuments');
-    Route::put('contact/{contact}/documents/{document}', 'ContactController@updateDocument');
-    Route::delete('contact/{contact}/documents/{document}', 'ContactController@deleteDocument');
+    Route::put('contact/{contact}/documents/{file}', 'ContactController@updateDocument');
+    Route::delete('contact/{contact}/documents/{file}', 'ContactController@deleteDocument');
 
     Route::get('contact-files', 'ContactController@documents');
 
@@ -92,12 +92,13 @@ Route::group(['middleware' => ['auth']], function() {
      */
     Route::get('files/{file}', 'FileController@get')->name('file');
     Route::get('files/{file}/preview', 'FileController@preview');
-    Route::get('files/{file}/replace', 'FileController@replace');
+    Route::post('files/{file}/replace', 'FileController@replace');
+
 
     Route::get('organisation-files', 'OrganisationFileController@all');
     Route::post('organisation-files/documents', 'OrganisationFileController@create');
     Route::post('organisation-files/documents', 'OrganisationFileController@create');
-    Route::put('organisation-files/documents/{document}', 'OrganisationFileController@update');
+    Route::put('organisation-files/documents/{file}', 'OrganisationFileController@update');
     Route::delete('organisation-files/documents/{file}', 'OrganisationFileController@delete');
 
     /**
@@ -125,8 +126,8 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::post('matters/{matter}', 'MatterController@update');
     Route::post('matter/{matter}/documents', 'MatterController@uploadDocuments');
-    Route::put('matter/{matter}/documents/{document}', 'MatterController@updateDocument');
-    Route::delete('matter/{matter}/documents/{document}', 'MatterController@deleteDocument');
+    Route::put('matter/{matter}/documents/{file}', 'MatterController@updateDocument');
+    Route::delete('matter/{matter}/documents/{file}', 'MatterController@deleteDocument');
 
 
     Route::get('matter-files', 'MatterController@documents');

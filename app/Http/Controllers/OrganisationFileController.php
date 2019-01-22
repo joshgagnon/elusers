@@ -64,12 +64,16 @@ class OrganisationFileController extends Controller
         return response()->json(['message' => 'Files created.', 'id' => $orgFiles[count($orgFiles)-1]->file_id], 201);
     }
 
-    public function update(Request $request, $documentId)
+    public function update(Request $request, File $file)
     {
         $user = $request->user();
+        $user = $request->user();
+        if (!$this->canReadFile($user, $file)) {
+            abort(403);
+        }
+
         $data = $request->allJson();
-        $document = OrganisationFile::where('file_id', $documentId)->where('organisation_id', $request->user()->organisation_id)->first()->file;
-        $document->update($data);
+        $file->update($data);
         return response()->json(['message' => 'Document Updated'], 200);
     }
 
@@ -83,15 +87,17 @@ class OrganisationFileController extends Controller
     public function delete(Request $request, File $file)
     {
         $user = $request->user();
-
-        $canReadFile = SQLFile::run('can_read_file', ['user_id' => $user->id, 'file_id' => $file->id]);
-        $canReadFile = $canReadFile[0]->exists;
-
-        if (!$canReadFile) {
+        if (!$this->canReadFile($user, $file)) {
             abort(403);
         }
         OrganisationFile::where(['organisation_id' => $user->organisation_id, 'file_id' => $file->id])->delete();
         return response()->json(['message' => 'Document deleted.'], 200);
+    }
+
+    public function canReadFile($user, $file)
+    {
+        return File::canRead($file->id, $user);
+
     }
 
 
@@ -123,7 +129,6 @@ class OrganisationFileController extends Controller
             'mime_type' => $file->getMimeType(),
             'encrypted' => true,
             'parent_id' => $parentId
-
         ]);
         $orgFile = new OrganisationFile;
 

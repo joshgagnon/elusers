@@ -278,12 +278,13 @@ class ContactController extends Controller
         return response()->json(['message' => 'Documents Uploaded', 'id' => array_values(array_slice($fileIds, -1))[0]], 200);
     }
 
-    public function updateDocument(Request $request, $contactId, $documentId)
+    public function updateDocument(Request $request, $contactId, $fileId)
     {
         $user = $request->user();
         $data = $request->allJson();
         $contact = Contact::where('id', $contactId)->where('organisation_id', $request->user()->organisation_id)->first();
-        $document = $contact->files()->find($documentId);
+        File::canRead($fileId, $user);
+        $document = $contact->files()->find($fileId);
         $document->update($data);
         return response()->json(['message' => 'Documents Updated', 'id' => $contact->id], 200);
     }
@@ -294,10 +295,12 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deleteDocument(Request $request, $contactId, $documentId)
+    public function deleteDocument(Request $request, $contactId, $fileId)
     {
+        $user = $request->user();
         $contact =Contact::where('id', $contactId)->where('organisation_id', $request->user()->organisation_id)->first();
-        $document = $contact->files()->find($documentId);
+        File::canRead($fileId, $user);
+        $document = $contact->files()->find($fileId);
         $document->delete();
         return response()->json(['message' => 'Contact Document deleted', 'id' => $contact->id], 200);
     }
