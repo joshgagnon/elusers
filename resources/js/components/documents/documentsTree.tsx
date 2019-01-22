@@ -4,7 +4,7 @@ import PanelHOC from '../hoc/panelHOC';
 import Panel from 'components/panel';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, uploadDocument, uploadDocumentTree } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table, InputGroup } from 'react-bootstrap';
 
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -13,6 +13,7 @@ import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
 import { fullname, name, guessName, formatDate, formatDateTime } from '../utils';
+import { UsersHOC } from 'components/hoc/resourceHOCs';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 
 import { hasPermission } from '../utils/permissions';
@@ -25,9 +26,97 @@ import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { LoadingSmall } from 'components/loading';
 
 
-class DocumentSideBar extends React.PureComponent<{file: EL.Document}> {
+const stopPropagation = (e) => e.stopPropagation();
+
+interface DocumentSideBarProps {
+    file: EL.Document;
+    users?: EL.Resource<EL.User[]>
+    viewDocument: (file: EL.Document) => void;
+    deleteFile: (id: number | string) => void;
+    renameFile: (id: number | string, value: string) => void;
+    canUpdate: boolean;
+    loading: boolean;
+
+}
+
+
+@UsersHOC()
+class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
+    state = {renaming: false, value: ''}
+    input = null;
+
+    constructor(props: DocumentSideBarProps) {
+        super(props);
+        this.startRename = this.startRename.bind(this);
+        this.submitRename = this.submitRename.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.state.value = props.file ? props.file.filename : '';
+
+    }
+
+    startRename() {
+        this.setState({renaming: true});
+    }
+
+    submitRename() {
+        if(this.state.value) {
+            this.setState({renaming: false});
+            this.props.renameFile(this.props.file.id, this.state.value);
+        }
+    }
+
+    onChange(e) {
+        this.setState({value: e.target.value});
+    }
+
     render() {
-        return <div className="document-sidebar"/>
+        const { file } = this.props;
+        const { viewDocument, renameFile, deleteFile, canUpdate, loading } = this.props;
+
+
+        const creator = file.pivot &&
+            file.pivot.createdByUserId &&
+            this.props.users.data &&
+            this.props.users.data.find(user => user.id === file.pivot.createdByUserId);
+
+        return <div className="document-sidebar" onClick={stopPropagation}>
+        <div className="document-sidebar-body">
+            { loading && <LoadingSmall /> }
+            <div className="filename">
+                { !this.state.renaming && <React.Fragment>
+                    <span className={ documentTypeClasses(file, false ) + " doc-icon"} />
+                    { file.filename }
+                    {  canUpdate && <Icon iconName="pencil-square-o" className="actionable doc-edit" onClick={this.startRename}/>}
+                    </React.Fragment> }
+                { this.state.renaming && <FormGroup>
+                    <InputGroup>
+                       <FormControl type="text" placeholder={file.filename} value={this.state.value} onChange={this.onChange} />
+                       <InputGroup.Button onClick={this.submitRename}>
+                       <Button bsStyle="primary" onClick={this.submitRename}>Save</Button>
+                       </InputGroup.Button>
+                       </InputGroup>
+                       </FormGroup>}
+             </div>
+             <dl className="dl-horizontal">
+                 <dt>Created At</dt>
+                 <dd>{ formatDateTime(file.createdAt) }</dd>
+
+                 <dt>Type</dt>
+                 <dd>{ file.mimeType }</dd>
+
+                 <dt>Created By</dt>
+                 <dd>{ creator ? name(creator) : 'N/A' }</dd>
+            </dl>
+
+
+            <div className="button-row">
+                { !file.directory && <Button onClick={() => viewDocument(file)} >View</Button> }
+                { canUpdate && <Button bsStyle="danger" onClick={() => deleteFile(file.id)} >Delete</Button> }
+
+            </div>
+        </div>
+
+        </div>
     }
 }
 
@@ -114,7 +203,6 @@ export const DocumentsForm = (DropTarget(NativeTypes.FILE, documentFileTarget, (
 const documentTypeClasses = (doc, showingSubTree) => {
     const map = {
         'Directory': 'fa fa-folder-o',
-
         'image/png': 'fa fa-file-image-o',
         'image/jpeg': 'fa fa-file-image-o',
         'application/pdf': 'fa fa-file-pdf-o',
@@ -265,9 +353,9 @@ class RenderFile extends React.PureComponent<any> {
 
         const defaultView = () => {
             return  <span>{ !item.directory && <span onClick={(e) => {
-                 e.stopPropagation && e.stopPropagation();
-                viewDocument(item.id)}
-                } className="view">View</span> }
+                stopPropagation(e);
+                viewDocument(item.id)
+            }} className="view">View</span> }
                     { this.props.canUpdate && !item.protected && <span onClick={() => startRename(item.id)} className="view">Rename</span> }
                     { this.props.canUpdate && !item.protected && <span onClick={() => deleteFile(item.id)} className="view">Delete</span> }</span>
         }
@@ -304,24 +392,24 @@ class RenderFile extends React.PureComponent<any> {
             return <div className="file-sub-tree"><span className="expand-control"></span>
                     <span className="file selected" >
                         <span className="icon fa fa-plus-circle"></span>
-                        <FormGroup><FormControl type="text" placeholder={ 'New Folder' } inputRef={ref => { this.input = ref; }}  /></FormGroup>
+                        <FormGroup><FormControl type="text" onClick={e => e.stopPropagation()} placeholder={ 'New Folder' } inputRef={ref => { this.input = ref; }}  /></FormGroup>
                         <span onClick={submitCreateFolder} className="view">Create Folder</span>
                         <span onClick={endCreateFolder} className="view">Cancel</span>
                     </span>
                 </div>
         }
 
-        const fileSpan = () => <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})} 
+        const fileSpan = () => <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})}
             onClick={(e) => {
                 e.stopPropagation();
                 !props.selected && props.select()}
             }>
                 <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
-                { !this.props.renaming && <span className="filename">{ item.filename } { !item.directory && item.createdAt ? ` - ${formatDateTime(item.createdAt)}` : '' }</span> }
-                { !this.props.renaming && defaultView() }
+                <span className="filename">{ item.filename }</span>
+                { /* { !this.props.renaming && defaultView() }
                 { this.props.renaming && <FormGroup><FormControl type="text" defaultValue={ item.filename } inputRef={ref => { this.input = ref; }} /></FormGroup> }
                 { this.props.renaming && <span onClick={submitRename} className="view">Save</span> }
-                { this.props.renaming && <span onClick={endRename} className="view">Cancel</span> }
+                { this.props.renaming && <span onClick={endRename} className="view">Cancel</span> } */  }
                 </span>
 
         const canCreateDirectory = this.props.canUpdate;
@@ -445,41 +533,46 @@ class FileTree extends React.PureComponent<any> {
         this.props.upload(files, parentId)
     }
 
+
     render() {
+        const getProps = (item, path) => {
+            return {
+                key: item.id,
+                item: item,
+                file: item,
+                viewDocument: this.props.viewDocument,
+                accepts: item.directory ? [FILE, NativeTypes.FILE] : [],
+                fileTypes:  FILE,
+                select: () => this.select(item.id),
+                selected: !this.state.creatingFolder && this.state.selected === item.id,
+                renaming: !this.state.creatingFolder && this.state.selected === item.id && this.state.renaming === item.id,
+                showingSubTree: this.state[item.id] || !!this.state.filter,
+                showSubTree: (id) => this.showSubTree(id || item.id),
+                hideSubTree: (id) => this.hideSubTree(id || item.id),
+                move: this.move,
+                startRename: () => this.startRename(item.id),
+                endRename: () => this.endRename(),
+                renameFile: this.props.renameFile && this.renameFile,
+                deleteFile: this.props.deleteFile && this.deleteFile,
+                creatingFolder: this.state.creatingFolder === item.id,
+                startCreateFolder: (e) => {  e.stopPropagation && e.stopPropagation(); this.startCreateFolder(item.id) },
+                endCreateFolder: (e) => { e.stopPropagation && e.stopPropagation(); this.endCreateFolder() },
+                createDirectory: this.createDirectory,
+                upload: this.upload,
+                path: path,
+                canUpdate: this.props.canUpdate,
+                loading: this.props.loading
+            }
+        }
         const loop = (data, path) => {
             return data.map((item) => {
-                const props = {
-                    key: item.id,
-                    item: item,
-                    viewDocument: this.props.viewDocument,
-                    accepts: item.directory ? [FILE, NativeTypes.FILE] : [],
-                    fileTypes:  FILE,
-                    select: () => this.select(item.id),
-                    selected: !this.state.creatingFolder && this.state.selected === item.id,
-                    renaming: !this.state.creatingFolder && this.state.selected === item.id && this.state.renaming === item.id,
-                    showingSubTree: this.state[item.id] || !!this.state.filter,
-                    showSubTree: (id) => this.showSubTree(id || item.id),
-                    hideSubTree: (id) => this.hideSubTree(id || item.id),
-                    move: this.move,
-                    startRename: () => this.startRename(item.id),
-                    endRename: () => this.endRename(),
-                    renameFile: this.props.renameFile && this.renameFile,
-                    deleteFile: this.props.deleteFile && this.deleteFile,
-                    creatingFolder: this.state.creatingFolder === item.id,
-                    startCreateFolder: (e) => {  e.stopPropagation && e.stopPropagation(); this.startCreateFolder(item.id) },
-                    endCreateFolder: (e) => { e.stopPropagation && e.stopPropagation(); this.endCreateFolder() },
-                    createDirectory: this.createDirectory,
-                    upload: this.upload,
-                    path: path,
-                    canUpdate: this.props.canUpdate
-                }
+                 const props = getProps(item, path);
                 if (item.children && item.children.length) {
                     const newPath = [...path, item.id];
 
                     item.children.sort(firstBy(doc => {
                         return doc.userUploaded ? 1 : 0
                     }).thenBy('filename').thenBy('id'))
-
                     return <RenderFile  {...props}>
                        { loop( item.children, newPath) }
                     </RenderFile>
@@ -490,6 +583,7 @@ class FileTree extends React.PureComponent<any> {
         };
 
         const files = filterTree(this.state.filter, this.props.files);
+        const selectedFile = this.props.flatFiles.find(file => file.id === this.state.selected);
         return <div onClick={() => this.select(null)} >
                 <Panel formattedTitle={
             <SearchForm title={this.props.title} key="search" onSearchChange={this.onSearchChange} filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll} /> } className="document-panel">
@@ -498,7 +592,7 @@ class FileTree extends React.PureComponent<any> {
             </div>
             { this.props.loading && <LoadingSmall /> }
             { this.props.canUpdate && <DocumentsForm documents={{onChange: (files) => this.upload(files)}} /> }
-            { this.state.selected && <DocumentSideBar  file={this.props.files.find(file => file.id === this.state.selected)} /> }
+            { this.state.selected && selectedFile && <DocumentSideBar {...getProps(selectedFile, null) } /> }
          </Panel>
          </div>
     }
@@ -528,7 +622,7 @@ class FileTree extends React.PureComponent<any> {
         }));
 
     },
-    viewDocument: (fileId) => dispatch(showDocumentModal({fileId}))
+    viewDocument: (file) => dispatch(showDocumentModal({document: file}))
 })) as any)
 export class DocumentsTree extends React.PureComponent<any> {
 

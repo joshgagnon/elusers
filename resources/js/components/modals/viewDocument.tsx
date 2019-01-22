@@ -7,11 +7,14 @@ import PDF from 'react-pdf-component';
 
 interface ViewDocumentProps {
     closeModal: () => void;
-    fileId: string;
+    document: EL.Document
 }
 
 class ViewDocument extends React.PureComponent<ViewDocumentProps> {
     render() {
+        const filename = this.props.document.filename.toLowerCase();
+        const pdfLike = ['.pdf', '.doc', '.docx', '.odt'].some(suf => filename.endsWith(suf));
+        const image = ['.jpg', '.jpeg', '.png', '.gif', 'bmp'].some(suf => filename.endsWith(suf));
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal} bsSize="large">
                 <Modal.Header closeButton>
@@ -19,9 +22,10 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <div className="button-row"><a className="btn btn-primary" target="_blank" href={`/api/files/${this.props.fileId}`}>Download</a></div>
+                    <div className="button-row"><a className="btn btn-primary" target="_blank" href={`/api/files/${this.props.document.id}`}>Download</a></div>
                     <div className="pdf-wrapper">
-                        <PDF url={`/api/files/${this.props.fileId}/preview`} scale={2.5} noPDFMsg='Loading...' />
+                       { pdfLike && <PDF url={`/api/files/${this.props.document.id}/preview`} scale={2.5} noPDFMsg='Loading...' /> }
+                       { image && <img style={{maxWidth: '100%'}} src={`/api/files/${this.props.document.id}`} /> }
                     </div>
                 </Modal.Body>
 

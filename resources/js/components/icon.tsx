@@ -3,10 +3,13 @@ import * as React from 'react';
 
 interface IIconProps {
     iconName: string;
+    className?: string;
+    onClick?: any;
 }
 
 export default class Icon extends React.PureComponent<IIconProps> {
     render() {
-        return <i className={`fa fa-${this.props.iconName}`} aria-hidden="true"></i>;
+        const { iconName, className, ...rest } = this.props;
+        return <i {...rest} className={`fa fa-${iconName} ${className || '' }`} aria-hidden="true"></i>;
     }
 }

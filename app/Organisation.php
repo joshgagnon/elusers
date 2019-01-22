@@ -42,7 +42,7 @@ class Organisation extends Model
 
     public function files()
     {
-        return $this->belongsToMany(File::Class, 'organisation_files', "organisation_id", "file_id")->withTimestamps();
+        return $this->belongsToMany(File::Class, 'organisation_files', "organisation_id", "file_id")->withTimestamps()->withPivot('created_by_user_id');;
     }
 
 }

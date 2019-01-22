@@ -21,6 +21,7 @@
                 line-height: 30px;
             }
             &.selected{
+
                 background-color: lighten($brand-warning, 20%);
                 border: 1px solid $brand-warning;
             }
@@ -112,8 +113,9 @@
 
 
 .document-sidebar {
+    $width: 400px;
     position: fixed;
-    width: 300px;
+    width: $width;
     right: 0;
     top: 0;
     bottom: 0;
@@ -121,4 +123,35 @@
     background: white;
     border-left: 1px solid $table-border-color;
     padding-top: 50px;
+
+    .document-sidebar-body{
+        padding:12px;
+
+        .filename {
+            word-break: break-all;
+            font-size: 1.2em;
+            margin-bottom:20px;
+            width: $width+-64;
+        }
+        .dl-horizontal {
+
+            dt {
+                width:$width/3;
+            }
+            dd {
+                margin-left: $width/3+20;
+                word-break: break-word;
+            }
+        }
+    }
+
+    .doc-icon {
+        padding-right:8px;
+    }
+    .doc-edit {
+        padding-left:8px;
+    }
+    .loading-small{
+        top: 64px;
+    }
 }

@@ -11,6 +11,7 @@ use App\Library\EncryptionKey;
 use Illuminate\Support\Facades\Storage;
 use App\Library\SQLFile;
 
+
 class OrganisationFileController extends Controller
 {
     /**
@@ -21,7 +22,9 @@ class OrganisationFileController extends Controller
      */
     public function all(Request $request)
     {
-        return $request->user()->organisation()->first()->files;
+        return $request->user()->organisation()->first()->files; /*->map(function ($post) {
+             return $post->with('creator');
+         });; //*/
     }
 
 

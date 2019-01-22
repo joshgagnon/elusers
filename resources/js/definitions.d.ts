@@ -101,10 +101,14 @@ declare global {
             name?: string;
             id: number | string;
             createdAt?: string;
+            mimeType?: string;
             directory?: boolean;
             protected?: boolean;
             children?: Document[];
             parentId?: string;
+            pivot?: {
+                createdByUserId?: number;
+            }
         }
 
         interface OrganisationDocument {
@@ -581,7 +585,7 @@ declare global {
         }
 
         interface ShowDocumentModalPayload {
-            fileId: string
+            document: Document
         }
 
         interface ShowDocumentModal extends Action {
