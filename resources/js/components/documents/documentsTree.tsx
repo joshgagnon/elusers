@@ -591,7 +591,7 @@ class FileTree extends React.PureComponent<any> {
                     const newPath = [...path, item.id];
 
                     item.children.sort(firstBy(doc => {
-                        return doc.userUploaded ? 1 : 0
+                        return doc.directory ? -1 : 1
                     }).thenBy('filename').thenBy('id'))
                     return <RenderFile  {...props}>
                        { loop( item.children, newPath) }
