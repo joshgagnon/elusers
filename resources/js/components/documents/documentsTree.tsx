@@ -12,7 +12,7 @@ import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, C
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
-import { fullname, name, guessName, formatDate, formatDateTime } from '../utils';
+import { fullname, name, guessName, formatDate, formatDateTime, copyToClipboard } from '../utils';
 import { UsersHOC } from 'components/hoc/resourceHOCs';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 
@@ -53,6 +53,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.submitRename = this.submitRename.bind(this);
         this.onChange = this.onChange.bind(this);
         this.replace = this.replace.bind(this);
+        this.copyLink = this.copyLink.bind(this);
         this.state.value = props.file ? props.file.filename : '';
 
     }
@@ -74,6 +75,10 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
 
     replace(files) {
         return this.props.replace(this.props.file.id, Array.from(files).map(file =>files[0].getAsFile()));
+    }
+
+    copyLink() {
+        return copyToClipboard(`${window.location.origin}/api/files/${this.props.file.id}`);
     }
 
     render() {
@@ -117,8 +122,10 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
             </dl>
 
 
-            <div className="button-row">
+            <div className="btn-group">
                 { !file.directory && <Button onClick={() => viewDocument(file)} >View</Button> }
+                { !file.directory && <a className="btn btn-primary" target="_blank" href={`/api/files/${file.id}`}>Download</a> }
+                { !file.directory && <Button bsStyle="success" onClick={this.copyLink}>Copy Link</Button> }
                 { canUpdate && <Button bsStyle="danger" onClick={() => deleteFile(file.id)} >Delete</Button> }
                 <Button onClick={() => unselect(null)}>Close</Button>
 
