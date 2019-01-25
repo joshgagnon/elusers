@@ -213,7 +213,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
     }
 }
 
-@MattersHOC()
+@MattersHOC({cache:true})
 @(connect((state: EL.State) => ({user: state.user}), {
     showUploadModal: () => showUploadModal({uploadType: 'matters'})
 }) as any)

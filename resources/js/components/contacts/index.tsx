@@ -98,7 +98,7 @@ const addresses = (contact: EL.Contact) => {
 }
 
 @HasPermissionHOC('view contacts')
-@ContactsHOC()
+@ContactsHOC({cache:true})
 @(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
 @(connect((state: EL.State) => ({user: state.user}), {
     showUploadModal: () => showUploadModal({uploadType: 'contacts'})
