@@ -121,14 +121,17 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                  <dd>{ creator ? name(creator) : 'N/A' }</dd>
             </dl>
 
-
-            <div className="btn-group">
+        <div className="row">
+          <div className="col-md-12 text-center">
+            <div className="btn-group btn-group-sm">
                 { !file.directory && <Button onClick={() => viewDocument(file)} >View</Button> }
-                { !file.directory && <a className="btn btn-primary" target="_blank" href={`/api/files/${file.id}`}>Download</a> }
-                { !file.directory && <Button bsStyle="success" onClick={this.copyLink}>Copy Link</Button> }
-                { canUpdate && <Button bsStyle="danger" onClick={() => deleteFile(file.id)} >Delete</Button> }
-                <Button onClick={() => unselect(null)}>Close</Button>
+                { !file.directory && <a className="btn btn-primary " target="_blank" href={`/api/files/${file.id}`}>Download</a> }
+                { !file.directory && <Button  bsStyle="success" onClick={this.copyLink}>Copy Link</Button> }
+                { canUpdate && <Button  bsStyle="danger" onClick={() => deleteFile(file.id)} >Delete</Button> }
+                <Button  onClick={() => unselect(null)}>Close</Button>
 
+            </div>
+            </div>
             </div>
 
            { canUpdate && !file.directory && <DocumentsForm documents={{onChange: (files) => this.replace(files)}} dropLabel="Drag or click here to replace this file with a new version" /> }
