@@ -44,7 +44,10 @@ interface DocumentSideBarProps {
 
 @UsersHOC()
 class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
-    state = {renaming: false, value: ''}
+
+    permissions = ['manage organisation documents'];
+
+    state = {renaming: false, renameValue: ''}
     input = null;
 
     constructor(props: DocumentSideBarProps) {
@@ -54,7 +57,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.onChange = this.onChange.bind(this);
         this.replace = this.replace.bind(this);
         this.copyLink = this.copyLink.bind(this);
-        this.state.value = props.file ? props.file.filename : '';
+        this.state.renameValue = props.file ? props.file.filename : '';
 
     }
 
@@ -63,14 +66,14 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
     }
 
     submitRename() {
-        if(this.state.value) {
+        if(this.state.renameValue) {
             this.setState({renaming: false});
-            this.props.renameFile(this.props.file.id, this.state.value);
+            this.props.renameFile(this.props.file.id, this.state.renameValue);
         }
     }
 
     onChange(e) {
-        this.setState({value: e.target.value});
+        this.setState({renameValue: e.target.value});
     }
 
     replace(files) {
@@ -79,6 +82,20 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
 
     copyLink() {
         return copyToClipboard(`${window.location.origin}/api/files/${this.props.file.id}`);
+    }
+
+    listPermissions() {
+        return <React.Fragment>
+           <p/>
+           <FormGroup>
+        <ControlLabel>Permissions required</ControlLabel>
+         <FormControl componentClass="select" onChange={this.onChange} multiple>
+            { this.permissions.map(permission => {
+                return <option key={permission} value={permission}>{ permission }</option>
+            })}
+        </FormControl>
+        </FormGroup>
+        </React.Fragment>
     }
 
     render() {
@@ -103,7 +120,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                     </React.Fragment> }
                 { this.state.renaming && <FormGroup>
                     <InputGroup>
-                       <FormControl type="text" placeholder={file.filename} value={this.state.value} onChange={this.onChange} />
+                       <FormControl type="text" placeholder={file.filename} value={this.state.renameValue} onChange={this.onChange} />
                        <InputGroup.Button onClick={this.submitRename}>
                        <Button bsStyle="primary" onClick={this.submitRename}>Save</Button>
                        </InputGroup.Button>
@@ -133,7 +150,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
             </div>
             </div>
             </div>
-
+            { canUpdate && this.listPermissions() }
            { canUpdate && !file.directory && <DocumentsForm documents={{onChange: (files) => this.replace(files)}} dropLabel="Drag or click here to replace this file with a new version" /> }
 
         </div>
@@ -372,24 +389,6 @@ class RenderFile extends React.PureComponent<any> {
             return false;
         }
 
-        const defaultView = () => {
-            return  <span>{ !item.directory && <span onClick={(e) => {
-                stopPropagation(e);
-                viewDocument(item.id)
-            }} className="view">View</span> }
-                    { this.props.canUpdate && !item.protected && <span onClick={() => startRename(item.id)} className="view">Rename</span> }
-                    { this.props.canUpdate && !item.protected && <span onClick={() => deleteFile(item.id)} className="view">Delete</span> }</span>
-        }
-
-        const submitRename = (e) => {
-             e.stopPropagation && e.stopPropagation();
-            const value = this.input.value;
-            if(value){
-                renameFile(item.id, value);
-                endRename();
-            }
-        }
-
         const submitCreateFolder = (e) => {
              e.stopPropagation && e.stopPropagation();
             const value = this.input.value;
@@ -427,10 +426,6 @@ class RenderFile extends React.PureComponent<any> {
             }>
                 <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
                 <span className="filename">{ item.filename }</span>
-                { /* { !this.props.renaming && defaultView() }
-                { this.props.renaming && <FormGroup><FormControl type="text" defaultValue={ item.filename } inputRef={ref => { this.input = ref; }} /></FormGroup> }
-                { this.props.renaming && <span onClick={submitRename} className="view">Save</span> }
-                { this.props.renaming && <span onClick={endRename} className="view">Cancel</span> } */  }
                 </span>
 
         const canCreateDirectory = this.props.canUpdate;
@@ -553,7 +548,6 @@ class FileTree extends React.PureComponent<any> {
         parentId && this.showSubTree(parentId)
         this.props.upload(files, parentId)
     }
-
 
     render() {
         const getProps = (item, path) => {

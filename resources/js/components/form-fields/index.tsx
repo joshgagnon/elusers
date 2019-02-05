@@ -38,6 +38,7 @@ export interface SelectOption {
 interface SelectFieldProps extends FieldProps {
     options: SelectOption[] | string[];
     prompt?: boolean;
+    multiple?: boolean;
 }
 
 interface DropdownListProps extends FieldProps {
