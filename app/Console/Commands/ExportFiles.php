@@ -25,6 +25,7 @@ class ExportFiles extends Command
     }
 
     public function clear($path) {
+
         $it = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it,
                      \RecursiveIteratorIterator::CHILD_FIRST);
@@ -38,6 +39,14 @@ class ExportFiles extends Command
         rmdir($path);
     }
 
+    public function safeClear($path) {
+        try {
+            $this->clear($path);
+        } catch(\Exception $e) {
+
+        }
+    }
+
 
     public function contacts($org, $outputDir) {
         $contacts = Contact::where('organisation_id', $org->id)->with('contactable', 'files')->get();
@@ -49,7 +58,8 @@ class ExportFiles extends Command
                     continue;
                 }
                 $path = $outputDir.'/Contact Files/'.$contact->getName();
-                $this->clear($path);
+                $this->safeClear($path);
+
                 $subpath = $file->getFullPath();
                 if($subpath) {
                     $path = $path.'/'.$subpath;
@@ -70,7 +80,7 @@ class ExportFiles extends Command
                     continue;
                 }
                 $path = $outputDir.'/Matter Files/'.$matter->matter_number;
-                $this->clear($path);
+                $this->safeClear($path);
                 $subpath = $file->getFullPath();
                 if($subpath) {
                     $path = $path.'/'.$subpath;
@@ -85,7 +95,7 @@ class ExportFiles extends Command
     public function orgFiles($org, $outputDir) {
         $files = OrganisationFile::where('organisation_id', $org->id)->get();
         $path = $outputDir.'/Organisation Files';
-        $this->clear($path);
+        $this->safeClear($path);
 
         foreach($files as $file) {
             if($file->file->directory) {
