@@ -26,6 +26,15 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
                     data: action.payload.response
                 }
             };
+        case EL.ActionTypes.UPDATE_RESOURCE_REQUEST:
+            return {
+                ...state,
+                [action.payload.url]: {
+                    ...(state[action.payload.url] || {}),
+                    status: EL.RequestStatus.FETCHING
+                }
+            };
+
         case EL.ActionTypes.CREATE_RESOURCE_SUCCESS:
         case EL.ActionTypes.CREATE_RESOURCE_FAILURE:
 

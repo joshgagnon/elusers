@@ -18,6 +18,8 @@ use App\ContactInformation;
 use Illuminate\Http\Request;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
+use App\Library\Encoding;
+
 use App\Library\SQLFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -365,15 +367,19 @@ class ContactController extends Controller
         try {
             $orgId = $request->user()->organisation_id;
             $file = $request->file('file')[0];
+            $escaped = Encoding::convert_cp1252_to_ascii(file_get_contents($file->getRealPath()));
+            $lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
+            $rows   = array_map('str_getcsv', $lines);
 
-            $rows   = array_map('str_getcsv',file($file->getRealPath()));
             if(count($rows[0]) < 3){
                 array_shift($rows); //sep
             }
             $header = array_shift($rows);
             $csv    = array();
             foreach($rows as $row) {
-                $csv[] = array_combine($header, array_map('trim', $row));
+                if(count($row) == count($header)){
+                    $csv[] = array_combine($header, array_map('trim', $row));
+                }
             }
             foreach ($csv as $row) {
                 $actionstepId = $row['ID'];

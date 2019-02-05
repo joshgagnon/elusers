@@ -10,11 +10,11 @@ use App\MatterNote;
 use App\MatterFile;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
+use App\Library\Encoding;
 use Illuminate\Support\Facades\Storage;
 use DB;
 use Exception;
- use Carbon\Carbon;
-
+use Carbon\Carbon;
 
 function findClosestMatterType($input) {
     $best = -1;
@@ -28,8 +28,6 @@ function findClosestMatterType($input) {
     }
     return $match;
 }
-
-
 
 class MatterController extends Controller
 {
@@ -267,7 +265,8 @@ class MatterController extends Controller
         try {
             $orgId = $request->user()->organisation_id;
             $file = $request->file('file')[0];
-            $escaped = mb_convert_encoding(file_get_contents($file->getRealPath()),  'UTF-8', 'UTF-8');
+            $escaped = Encoding::convert_cp1252_to_ascii(file_get_contents($file->getRealPath()));
+            //$escaped = mb_convert_encoding(file_get_contents($file->getRealPath()),  'UTF-8', "auto");
 
             $lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
             $rows   = array_map('str_getcsv', $lines);
