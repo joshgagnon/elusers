@@ -52,20 +52,20 @@ class ExportFiles extends Command
         $contacts = Contact::where('organisation_id', $org->id)->with('contactable', 'files')->get();
 
         foreach($contacts as $contact) {
+            $path = $outputDir.'/Contact Files/'.$contact->getName();
+            $this->safeClear($path);
 
             foreach($contact->files as $file) {
                 if($file->directory) {
                     continue;
                 }
-                $path = $outputDir.'/Contact Files/'.$contact->getName();
-                $this->safeClear($path);
-
                 $subpath = $file->getFullPath();
+                $finalPath = $path;
                 if($subpath) {
-                    $path = $path.'/'.$subpath;
+                    $finalPath = $path.'/'.$subpath;
                 }
-                @mkdir($path, 0777, true); // ignore result
-                file_put_contents($path.'/'.$file->filename, $file->getContent($org->encryption_key));
+                @mkdir($finalPath, 0777, true); // ignore result
+                file_put_contents($finalPath.'/'.$file->filename, $file->getContent($org->encryption_key));
                 // put file into
             }
         }
@@ -75,18 +75,20 @@ class ExportFiles extends Command
         $matters = Matter::where('organisation_id', $org->id)->get();
 
         foreach($matters as $matter) {
+                
+            $path = $outputDir.'/Matter Files/'.$matter->matter_number;
+            $this->safeClear($path);
             foreach($matter->files as $file) {
                 if($file->directory) {
                     continue;
                 }
-                $path = $outputDir.'/Matter Files/'.$matter->matter_number;
-                $this->safeClear($path);
                 $subpath = $file->getFullPath();
+                $finalPath = $path;
                 if($subpath) {
-                    $path = $path.'/'.$subpath;
+                    $finalPath = $finalPath.'/'.$subpath;
                 }
-                @mkdir($path, 0777, true); // ignore result
-                file_put_contents($path.'/'.$file->filename, $file->getContent($org->encryption_key));
+                @mkdir($finalPath, 0777, true); // ignore result
+                file_put_contents($finalPath.'/'.$file->filename, $file->getContent($org->encryption_key));
                 // put file into
             }
         }
