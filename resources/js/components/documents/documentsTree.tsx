@@ -4,11 +4,12 @@ import PanelHOC from '../hoc/panelHOC';
 import Panel from 'components/panel';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, uploadDocument, uploadDocumentTree } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table, InputGroup } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table, InputGroup, Checkbox } from 'react-bootstrap';
 
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
+import CheckboxComponent from 'components/form-fields/checkboxComponent';
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
@@ -24,7 +25,6 @@ import classnames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { LoadingSmall } from 'components/loading';
-
 
 const stopPropagation = (e) => e.stopPropagation();
 
@@ -55,6 +55,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.startRename = this.startRename.bind(this);
         this.submitRename = this.submitRename.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onChangePermission = this.onChangePermission.bind(this);
         this.replace = this.replace.bind(this);
         this.copyLink = this.copyLink.bind(this);
         this.state.renameValue = props.file ? props.file.filename : '';
@@ -76,6 +77,11 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.setState({renameValue: e.target.value});
     }
 
+    onChangePermission(e) {
+        // this change permission
+        console.log(e);
+    }
+
     replace(files) {
         return this.props.replace(this.props.file.id, Array.from(files).map(file =>files[0].getAsFile()));
     }
@@ -88,12 +94,19 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         return <React.Fragment>
            <p/>
            <FormGroup>
-        <ControlLabel>Permissions required</ControlLabel>
-         <FormControl componentClass="select" onChange={this.onChange} multiple>
+        <ControlLabel>Restrict to Users with Permission:</ControlLabel>
             { this.permissions.map(permission => {
-                return <option key={permission} value={permission}>{ permission }</option>
-            })}
-        </FormControl>
+                const hasPermission = false;
+                return <div className="checkbox permission-check"  key={permission}>
+                    <label >
+                      <input
+                        type="checkbox"
+                        checked={hasPermission}
+                        onChange={(e: any) => this.onChangePermission(e.target.checked)} />
+                         {permission}
+                    </label>
+                    </div>
+             }) }
         </FormGroup>
         </React.Fragment>
     }
@@ -282,6 +295,7 @@ function listToTree(documents: EL.Document[]){
     });
     return [{
             id: 'root',
+            root: true,
             directory: true,
             protected: true,
             filename: 'Documents',
@@ -589,7 +603,10 @@ class FileTree extends React.PureComponent<any> {
 
                     item.children.sort(firstBy(doc => {
                         return doc.directory ? -1 : 1
-                    }).thenBy('filename').thenBy('id'))
+                    }).thenBy('filename').thenBy('id'));
+                    if(item.root) {
+                        return loop( item.children, newPath);
+                    }
                     return <RenderFile  {...props}>
                        { loop( item.children, newPath) }
                     </RenderFile>
