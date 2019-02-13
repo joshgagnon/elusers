@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\File;
+use App\FilePermission;
 use App\Library\Encryption;
 use App\Library\SQLFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+
 
 function endswith($string, $test) {
     $strlen = strlen($string);
@@ -113,6 +115,29 @@ class FileController extends Controller
         $file->update(['path' => $path, 'previous_version_id' => $oldVersion->id]);
 
         return response()->json(['message' => 'Documents Updated', 'id' => $file->id], 200);
+    }
+
+    public function permission(Request $request, File $file)
+    {
+        $user = $request->user();
+
+        if (!File::canRead($file->id, $user)) {
+            abort(403);
+        }
+
+        $data = $request->allJson();
+
+        $perm = $data['permission'];
+        foreach($perm as $permission => $value) {
+            if($value) {
+                FilePermission::create(['permission' => $permission, 'file_id' => $file->id]);
+            }
+            else{
+                FilePermission::where(['permission' => $permission, 'file_id' => $file->id])->delete();
+            }
+        }
+
+        return response()->json(['message' => 'Permission Updated', 'id' => $file->id], 200);
     }
 
 }

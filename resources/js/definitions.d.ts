@@ -109,6 +109,7 @@ declare global {
             pivot?: {
                 createdByUserId?: number;
             }
+            permissions?: string[];
         }
 
         interface OrganisationDocument {

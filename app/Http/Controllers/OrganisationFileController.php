@@ -22,9 +22,33 @@ class OrganisationFileController extends Controller
      */
     public function all(Request $request)
     {
-        return $request->user()->organisation()->first()->files; /*->map(function ($post) {
-             return $post->with('creator');
-         });; //*/
+        DB::enableQueryLog();
+        $user = $request->user();
+        $files = $user
+            ->organisation()
+            ->first()
+            ->files()
+            ->with('permissions:file_id,permission')
+            ->get()->toArray();
+
+        foreach($files as &$file) {
+            $file['permissions'] = array_map(function($perm) {
+                return $perm['permission'];
+            }, $file['permissions']);
+        }
+
+        $files = array_values(array_filter($files, function($file) use ($user) {
+            if(!$file['permissions']){
+                return true;
+            }
+            try{
+                return $user->hasAnyPermission($file['permissions']);
+            }catch(\Throwable $e) {
+                return false;
+            }
+        }));
+
+        return $files;
     }
 
 
@@ -71,12 +95,10 @@ class OrganisationFileController extends Controller
         if (!$this->canReadFile($user, $file)) {
             abort(403);
         }
-
         $data = $request->allJson();
         $file->update($data);
         return response()->json(['message' => 'Document Updated'], 200);
     }
-
 
     /**
      * Delete an address.
@@ -93,6 +115,7 @@ class OrganisationFileController extends Controller
         OrganisationFile::where(['organisation_id' => $user->organisation_id, 'file_id' => $file->id])->delete();
         return response()->json(['message' => 'Document deleted.'], 200);
     }
+
 
     public function canReadFile($user, $file)
     {

@@ -29,6 +29,7 @@ export default  class Documents extends React.PureComponent<DocumentsProps> {
             files={this.props.documents.data ? this.props.documents.data : []}
             basePath={`organisation-files`}
             cached={this.props.documents.cached}
+            permissionControls={true}
             canUpdate={this.props.canUpdate} />
     }
 }

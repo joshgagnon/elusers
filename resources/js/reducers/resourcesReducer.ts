@@ -23,7 +23,8 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
                 ...state,
                 [action.payload.key]: {
                     status: EL.RequestStatus.ERROR,
-                    data: action.payload.response
+                    data: undefined,
+                    errorData: action.payload.response
                 }
             };
         case EL.ActionTypes.UPDATE_RESOURCE_REQUEST:

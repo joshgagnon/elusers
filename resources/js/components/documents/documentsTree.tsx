@@ -26,7 +26,7 @@ import { DragSource, DropTarget } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { LoadingSmall } from 'components/loading';
 
-const stopPropagation = (e) => e.stopPropagation();
+const stopPropagation = (e) => e && e.stopPropagation && e.stopPropagation();
 
 interface DocumentSideBarProps {
     file: EL.Document;
@@ -35,10 +35,11 @@ interface DocumentSideBarProps {
     deleteFile: (id: number | string) => void;
     renameFile: (id: number | string, value: string) => void;
     replace: (id: number | string, files: File[]) => void;
+    updatePermission: (id: number | string, permission: string, value: boolean) => void;
     unselect: (any) => void;
     canUpdate: boolean;
     loading: boolean;
-
+    permissionControls: boolean;
 }
 
 
@@ -46,7 +47,6 @@ interface DocumentSideBarProps {
 class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
 
     permissions = ['manage organisation documents'];
-
     state = {renaming: false, renameValue: ''}
     input = null;
 
@@ -55,11 +55,9 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.startRename = this.startRename.bind(this);
         this.submitRename = this.submitRename.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.onChangePermission = this.onChangePermission.bind(this);
         this.replace = this.replace.bind(this);
         this.copyLink = this.copyLink.bind(this);
         this.state.renameValue = props.file ? props.file.filename : '';
-
     }
 
     startRename() {
@@ -77,11 +75,6 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         this.setState({renameValue: e.target.value});
     }
 
-    onChangePermission(e) {
-        // this change permission
-        console.log(e);
-    }
-
     replace(files) {
         return this.props.replace(this.props.file.id, Array.from(files).map(file =>files[0].getAsFile()));
     }
@@ -94,15 +87,16 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         return <React.Fragment>
            <p/>
            <FormGroup>
-        <ControlLabel>Restrict to Users with Permission:</ControlLabel>
+        <ControlLabel>Restrict Access to Users with Permission:</ControlLabel>
             { this.permissions.map(permission => {
-                const hasPermission = false;
+                const hasPermission = (this.props.file.permissions || []).includes(permission);
                 return <div className="checkbox permission-check"  key={permission}>
                     <label >
                       <input
                         type="checkbox"
                         checked={hasPermission}
-                        onChange={(e: any) => this.onChangePermission(e.target.checked)} />
+                        name={permission}
+                        onChange={(e: any) => this.props.updatePermission(this.props.file.id, permission, e.target.checked)} />
                          {permission}
                     </label>
                     </div>
@@ -113,7 +107,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
 
     render() {
         const { file } = this.props;
-        const { viewDocument, renameFile, deleteFile, canUpdate, loading, unselect } = this.props;
+        const { viewDocument, renameFile, deleteFile, canUpdate, loading, unselect, permissionControls } = this.props;
 
 
         const creator = file.pivot &&
@@ -163,7 +157,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
             </div>
             </div>
             </div>
-            { canUpdate && this.listPermissions() }
+            { canUpdate && permissionControls && this.listPermissions() }
            { canUpdate && !file.directory && <DocumentsForm documents={{onChange: (files) => this.replace(files)}} dropLabel="Drag or click here to replace this file with a new version" /> }
 
         </div>
@@ -264,7 +258,7 @@ const documentTypeClasses = (doc, showingSubTree) => {
     };
 
     if(doc.directory){
-        if(!doc.protected){
+        if(!doc.protected && !(doc.permissions || []).length){
             if(showingSubTree){
                 return 'fa fa-folder-open-o'
             }
@@ -279,18 +273,21 @@ const documentTypeClasses = (doc, showingSubTree) => {
     return map[doc.mimeType] || 'fa fa-file-text';
 }
 
-function listToTree(documents: EL.Document[]){
+function listToTree(documents: EL.Document[] = []){
     const roots = [];
     const map = documents.reduce((acc, d) => {
         acc[d.id] = {...d, children: []};
         return acc;
     }, {});
     documents.map(d => {
-        if(!d.parentId || !map[d.parentId]){
+        if(!d.parentId){
             roots.push(map[d.id]);
         }
-        else{
+        else if(map[d.parentId]){
             map[d.parentId].children.push(map[d.id]);
+        }
+        else{
+            //for now, ignore things in subtrees
         }
     });
     return [{
@@ -308,7 +305,7 @@ function filterTree(value, tree) {
         return tree;
     }
     function filter(value, tree){
-        return (tree || []).map(node => {
+        return (tree).map(node => {
             const children = filter(value, node.children);
             const newNode = {...node, children};
             let found = !!children.length;
@@ -443,6 +440,7 @@ class RenderFile extends React.PureComponent<any> {
                 </span>
 
         const canCreateDirectory = this.props.canUpdate;
+
         const renderedFile = (<div className="file-sub-tree">
               <span className="expand-control">
                 { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={(e) =>  {e.stopPropagation && e.stopPropagation(); props.hideSubTree()}} /> }
@@ -457,6 +455,14 @@ class RenderFile extends React.PureComponent<any> {
                     </div>
                 }
             </div>)
+
+        if(item.id === "root") {
+            return <React.Fragment>
+                { canCreateDirectory && !this.props.creatingFolder && showNew() }
+                { canCreateDirectory && this.props.creatingFolder && showNewForm() }
+                { props.children }
+            </React.Fragment>
+        }
         return connectDropTarget(renderedFile);
     }
 }
@@ -482,10 +488,6 @@ class FileTree extends React.PureComponent<any> {
         this.collapseAll = this.collapseAll.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
         this.upload = this.upload.bind(this);
-        this.move = this.move.bind(this);
-        this.renameFile = this.renameFile.bind(this);
-        this.deleteFile = this.deleteFile.bind(this);
-        this.createDirectory = this.createDirectory.bind(this);
     }
 
     select(id) {
@@ -535,22 +537,6 @@ class FileTree extends React.PureComponent<any> {
         this.setState({filter: value});
     }
 
-    move(...args){
-        this.props.move(...args)
-    }
-
-    renameFile(...args){
-        this.props.renameFile(...args)
-    }
-
-    deleteFile(...args){
-        this.props.deleteFile(...args)
-    }
-
-    createDirectory(...args){
-        this.props.createDirectory(...args)
-    }
-
     upload(files, parentId=null) {
         if(!parentId){
             const target = this.state.selected && this.props.flatFiles.find(f => f.id === this.state.selected);
@@ -579,19 +565,21 @@ class FileTree extends React.PureComponent<any> {
                 showingSubTree: this.state[item.id] || !!this.state.filter,
                 showSubTree: (id) => this.showSubTree(id || item.id),
                 hideSubTree: (id) => this.hideSubTree(id || item.id),
-                move: this.move,
+                move: this.props.move,
                 startRename: () => this.startRename(item.id),
                 endRename: () => this.endRename(),
-                renameFile: this.props.renameFile && this.renameFile,
-                deleteFile: this.props.deleteFile && this.deleteFile,
+                renameFile: this.props.renameFile,
+                deleteFile: this.props.deleteFile,
+                updatePermission: this.props.updatePermission,
                 creatingFolder: this.state.creatingFolder === item.id,
-                startCreateFolder: (e) => {  e && e.stopPropagation && e.stopPropagation(); this.startCreateFolder(item.id); },
-                endCreateFolder: (e) => { e && e.stopPropagation && e.stopPropagation(); this.endCreateFolder(); },
-                createDirectory: this.createDirectory,
+                startCreateFolder: (e) => {  stopPropagation(e); this.startCreateFolder(item.id); },
+                endCreateFolder: (e) => { stopPropagation(e); this.endCreateFolder(); },
+                createDirectory: this.props.createDirectory,
                 upload: this.upload,
                 replace: this.props.replace,
                 path: path,
                 canUpdate: this.props.canUpdate,
+                permissionControls: this.props.permissionControls,
                 loading: this.props.loading
             }
         }
@@ -599,16 +587,18 @@ class FileTree extends React.PureComponent<any> {
             return data.map((item) => {
                  const props = getProps(item, path);
                 if (item.children && item.children.length) {
+
                     const newPath = [...path, item.id];
 
-                    item.children.sort(firstBy(doc => {
-                        return doc.directory ? -1 : 1
-                    }).thenBy('filename').thenBy('id'));
-                    if(item.root) {
-                        return loop( item.children, newPath);
-                    }
+                    item.children
+                        .sort(firstBy(doc => {
+                            return doc.directory ? -1 : 1
+                        })
+                        .thenBy('filename', {ignoreCase:true})
+                        .thenBy('id'));
+
                     return <RenderFile  {...props}>
-                       { loop( item.children, newPath) }
+                       { props.showingSubTree && loop( item.children, newPath) }
                     </RenderFile>
                 }
 
@@ -641,6 +631,7 @@ class FileTree extends React.PureComponent<any> {
     createDocumentTree: (data) => dispatch(uploadDocumentTree({url: `${ownProps.basePath}/documents`, ...data})),
     updateDocument: (documentId, data) => dispatch(updateResource(`${ownProps.basePath}/documents/${documentId}`, data)),
     replaceDocument: (documentId, data) => dispatch(updateResource(`files/${documentId}/replace`, data)),
+    updatePermission: (documentId, data) => dispatch(updateResource(`files/${documentId}/permission`, data)),
     deleteResource: (documentId) => {
         const deleteAction = deleteResource(`${ownProps.basePath}/documents/${documentId}`, {
             onSuccess: [createNotification('File deleted.')],
@@ -667,6 +658,7 @@ export class DocumentsTree extends React.PureComponent<any> {
         this.renameFile = this.renameFile.bind(this);
         this.deleteFile = this.deleteFile.bind(this);
         this.createDirectory = this.createDirectory.bind(this);
+        this.updatePermission = this.updatePermission.bind(this);
         this.upload = this.upload.bind(this);
         this.replace = this.replace.bind(this);
     }
@@ -708,6 +700,10 @@ export class DocumentsTree extends React.PureComponent<any> {
         return this.props.createDocuments({parentId, newDirectory: name})
     }
 
+    updatePermission(documentId, permission, value) {
+        return this.props.updatePermission(documentId, {permission: {[permission]: value}});
+    }
+
     render() {
         const { files } = this.props;
         return  <div className="documents-view">
@@ -720,10 +716,12 @@ export class DocumentsTree extends React.PureComponent<any> {
                 move={this.move}
                 deleteFile={this.props.canUpdate && this.deleteFile}
                 renameFile={this.props.canUpdate && this.renameFile}
+                updatePermission={this.props.canUpdate && this.updatePermission}
                 createDirectory={this.createDirectory}
                 upload={this.upload}
                 replace={this.replace}
                 canUpdate={this.props.canUpdate }
+                permissionControls={this.props.permissionControls}
                 />
         </div>
     }

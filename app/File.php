@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\FilePermission;
 use App\Library\SQLFile;
 use App\Library\Encryption;
 
@@ -36,7 +37,16 @@ class File extends Model
     {
         $canReadFile = SQLFile::run('can_read_file', ['user_id' => $user->id, 'file_id' => $id]);
         $canReadFile = $canReadFile[0]->exists;
-        return !!$canReadFile;
+
+        $hasPermission = true;
+        $permissions = array_map(function($p) {
+            return $p['permission'];
+        }, FilePermission::where(['file_id' => $id])->get()->toArray());
+
+        if(count($permissions)) {
+            $hasPermission = $user->hasAnyPermission($permissions);
+        }
+        return !!$canReadFile && $hasPermission;
     }
 
     public function parent()
@@ -65,6 +75,12 @@ class File extends Model
         }
         return implode(DIRECTORY_SEPARATOR, array_reverse($path));
     }
+
+    public function permissions()
+    {
+        return $this->hasMany(FilePermission::class);
+    }
+
 }
 
 
