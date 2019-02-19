@@ -95,6 +95,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('files/{file}/replace', 'FileController@replace');
     Route::post('files/{file}/permission', 'FileController@permission');
     Route::put('files/{file}/permission', 'FileController@permission');
+    Route::put('files/{file}/note', 'FileController@note');
 
 
     Route::get('organisation-files', 'OrganisationFileController@all');

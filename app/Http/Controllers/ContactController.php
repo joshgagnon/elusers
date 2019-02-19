@@ -60,7 +60,7 @@ class ContactController extends Controller
             ->with('contactable', 'files', 'accessTokens',
                    'relationships', 'relationships.contact', 'relationships.contact.contactable',
                    'agents', 'agents.contact', 'agents.contact.contactable', 'contactInformations',
-                   'matters'
+                   'matters', 'files.notes'
                )->first();
 
         if (!$contact) {

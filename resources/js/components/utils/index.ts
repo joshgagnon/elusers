@@ -76,6 +76,17 @@ export function formatAddress(address: EL.IAddress): string {
     return formattedAddress;
 }
 
+export const debounce = (fn, time) => {
+  let timeout;
+
+  return function() {
+    const functionCall = (...args) => fn.apply(this, args);
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  }
+}
+
 
 export const copyToClipboard = str => {
   const el = document.createElement('textarea');  // Create a <textarea> element

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\FilePermission;
+use App\FileNote;
 use App\Library\SQLFile;
 use App\Library\Encryption;
 
@@ -81,6 +82,10 @@ class File extends Model
         return $this->hasMany(FilePermission::class);
     }
 
+    public function notes()
+    {
+        return $this->hasMany(FileNote::Class);
+    }
 }
 
 

@@ -29,6 +29,7 @@ class OrganisationFileController extends Controller
             ->first()
             ->files()
             ->with('permissions:file_id,permission')
+            ->with('notes')
             ->get()->toArray();
 
         foreach($files as &$file) {

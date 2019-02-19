@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\FilePermission;
+use App\FileNote;
 use App\Library\Encryption;
 use App\Library\SQLFile;
 use Illuminate\Http\Request;
@@ -138,6 +139,25 @@ class FileController extends Controller
         }
 
         return response()->json(['message' => 'Permission Updated', 'id' => $file->id], 200);
+    }
+
+    public function note(Request $request, File $file)
+    {
+        $user = $request->user();
+
+        if (!File::canRead($file->id, $user)) {
+            abort(403);
+        }
+
+        $data = $request->allJson();
+        $note = $data['note'];
+        if(count($file->notes)){
+            $file->notes->first()->update(['created_by_user_id' => $user->id, 'note' => $note]);
+        }
+        else{
+             $file->notes()->create(['created_by_user_id' => $user->id, 'note' => $note]);
+        }
+        return response()->json(['message' => 'Note Updated', 'id' => $file->id], 200);
     }
 
 }

@@ -94,7 +94,7 @@ class MatterController extends Controller
     public function show(Request $request, $id)
     {
         //
-        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator'])->first();
+        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator', 'files.notes'])->first();
         return $matter;
     }
 
@@ -220,7 +220,8 @@ class MatterController extends Controller
     public function documents(Request $request)
     {
         $orgId = $request->user()->organisation_id;
-        return MatterFile::with('file', 'matter')->whereHas('matter', function($q) use ($orgId) {
+        return MatterFile::with('file', 'matter')
+        ->whereHas('matter', function($q) use ($orgId) {
             $q->where('organisation_id', $orgId);
         })->get();
     }

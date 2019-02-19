@@ -13,7 +13,7 @@ import CheckboxComponent from 'components/form-fields/checkboxComponent';
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
-import { fullname, name, guessName, formatDate, formatDateTime, copyToClipboard } from '../utils';
+import { fullname, name, guessName, formatDate, formatDateTime, copyToClipboard, debounce } from '../utils';
 import { UsersHOC } from 'components/hoc/resourceHOCs';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 
@@ -41,6 +41,37 @@ interface DocumentSideBarProps {
     loading: boolean;
     permissionControls: boolean;
 }
+
+
+class DocumentNotes extends React.PureComponent<any> {
+    el = null;
+    debounceChange = null;
+
+    constructor(props) {
+        super(props);
+        this.debounceChange = debounce(this.onChange.bind(this), 500);
+    }
+
+    onChange() {
+        this.props.updateNote(this.props.file.id, this.el.value);
+    }
+
+    render() {
+        const note = (this.props.file.notes && this.props.file.notes[0] && this.props.file.notes[0].note)  || undefined;
+        return <React.Fragment>
+           <FormGroup>
+        <ControlLabel>Note:</ControlLabel>
+        <FormControl componentClass="textarea"
+            defaultValue={note}
+            placeholder={'Add a note here'}
+            rows={3}
+            inputRef={ref => { this.el = ref; }}
+            disabled={!this.props.canUpdate} onChange={this.debounceChange}/>
+        </FormGroup>
+        </React.Fragment>
+    }
+}
+
 
 
 @UsersHOC()
@@ -159,6 +190,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
             </div>
             { canUpdate && permissionControls && this.listPermissions() }
            { canUpdate && !file.directory && <DocumentsForm documents={{onChange: (files) => this.replace(files)}} dropLabel="Drag or click here to replace this file with a new version" /> }
+           { <DocumentNotes {...this.props} /> }
 
         </div>
 
@@ -580,6 +612,7 @@ class FileTree extends React.PureComponent<any> {
                 path: path,
                 canUpdate: this.props.canUpdate,
                 permissionControls: this.props.permissionControls,
+                updateNote: this.props.updateNote,
                 loading: this.props.loading
             }
         }
@@ -632,12 +665,12 @@ class FileTree extends React.PureComponent<any> {
     updateDocument: (documentId, data) => dispatch(updateResource(`${ownProps.basePath}/documents/${documentId}`, data)),
     replaceDocument: (documentId, data) => dispatch(updateResource(`files/${documentId}/replace`, data)),
     updatePermission: (documentId, data) => dispatch(updateResource(`files/${documentId}/permission`, data)),
+    updateNote: (documentId, data) => dispatch(updateResource(`files/${documentId}/note`, data)),
     deleteResource: (documentId) => {
         const deleteAction = deleteResource(`${ownProps.basePath}/documents/${documentId}`, {
             onSuccess: [createNotification('File deleted.')],
             onFailure: [createNotification('File deletion failed. Please try again.', true)],
         });
-
 
         return dispatch(confirmAction({
             title: 'Confirm Delete File',
@@ -661,6 +694,7 @@ export class DocumentsTree extends React.PureComponent<any> {
         this.updatePermission = this.updatePermission.bind(this);
         this.upload = this.upload.bind(this);
         this.replace = this.replace.bind(this);
+        this.updateNote = this.updateNote.bind(this);
     }
 
     renderField(key, value) {
@@ -704,6 +738,10 @@ export class DocumentsTree extends React.PureComponent<any> {
         return this.props.updatePermission(documentId, {permission: {[permission]: value}});
     }
 
+    updateNote(documentId, text) {
+        return this.props.updateNote(documentId, {note: text});
+    }
+
     render() {
         const { files } = this.props;
         return  <div className="documents-view">
@@ -722,6 +760,7 @@ export class DocumentsTree extends React.PureComponent<any> {
                 replace={this.replace}
                 canUpdate={this.props.canUpdate }
                 permissionControls={this.props.permissionControls}
+                updateNote={this.updateNote}
                 />
         </div>
     }
