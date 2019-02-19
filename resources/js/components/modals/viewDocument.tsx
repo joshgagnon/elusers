@@ -5,7 +5,9 @@ import { closeModal } from 'actions';
 import PDF from 'react-pdf-component';
 import EmailViewer from 'components/email-viewer';
 import Loading from 'components/loading';
+import PDFJS from 'pdfjs-dist'
 
+PDF.PDFJS.GlobalWorkerOptions.workerSrc = '/js/app.worker.js';
 
 interface ViewDocumentProps {
     closeModal: () => void;
@@ -19,6 +21,7 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
         const image = ['.jpg', '.jpeg', '.png', '.gif', 'bmp'].some(suf => filename.endsWith(suf));
         const eml = ['.eml'].some(suf => filename.endsWith(suf));
         const msg = ['.msg'].some(suf => filename.endsWith(suf));
+
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal} bsSize="large">
                 <Modal.Header closeButton>

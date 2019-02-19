@@ -91,6 +91,7 @@ module.exports = {
             'react-bootstrap': path.resolve('./node_modules/react-bootstrap'),
             moment: path.resolve('./node_modules/moment'),
             'react-widgets-moment': path.resolve('./node_modules/react-widgets-moment'),
+            'pdfjs-dist': path.resolve('./node_modules/pdfjs-dist')
           },
         modules:  [path.resolve(__dirname, 'resources/js'), 'node_modules']
     },
@@ -125,6 +126,10 @@ module.exports = {
             fileName: 'mix-manifest.json',
             basePath: '/'
         }),
+        new CopyWebpackPlugin([
+                { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: './js/app.worker.js'}
+        ]),
+
         new WebpackNotifierPlugin({ title: 'Evolution Users' }),
       //  new ForkTsCheckerWebpackPlugin()
     ]
