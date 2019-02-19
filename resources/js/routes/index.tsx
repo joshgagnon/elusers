@@ -21,6 +21,12 @@ import CPDPRIndex from '../components/cpdpr';
 import EditCPDPRRecord from '../components/cpdpr/edit';
 import CreateCPDPRRecord from '../components/cpdpr/create';
 
+
+import DeadlinesIndex from '../components/deadlines';
+import EditDeadline from '../components/deadlines/edit';
+import CreateDeadline from '../components/deadlines/create';
+
+
 import MyProfile from '../components/my-profile';
 import BasicDetails from '../components/my-profile/basicDetails';
 import EmergencyContact from '../components/my-profile/emergencyContact';
@@ -71,6 +77,13 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path='create' component={ CreateCPDPRRecord } />
             <Route path=':cpdprId/edit' component={ EditCPDPRRecord } />
         </Route>
+
+
+        <Route path='deadlines' component={ DeadlinesIndex }>
+            <Route path='create' component={ CreateDeadline } />
+            <Route path=':deadlines/edit' component={ EditDeadline} />
+        </Route>
+
 
         <Route path="my-profile" component={ MyProfile }>
             <IndexRoute component={ BasicDetails } />

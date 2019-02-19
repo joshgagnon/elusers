@@ -125,6 +125,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('roles', 'RoleController');
 
     Route::apiResource('permissions', 'PermissionController');
+    Route::apiResource('deadlines', 'DeadlineController');
 
     Route::post('matters/{matter}', 'MatterController@update');
     Route::post('matter/{matter}/documents', 'MatterController@uploadDocuments');

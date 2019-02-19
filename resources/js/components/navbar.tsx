@@ -33,6 +33,11 @@ export class NavMenu extends React.PureComponent<{routing: any, user: EL.User}> 
                             <NavItem>Contacts</NavItem>
                         </LinkContainer> }
 
+                        { hasPermission(this.props.user, 'view deadlines') && <LinkContainer to="/deadlines">
+                            <NavItem>Deadlines</NavItem>
+                        </LinkContainer> }
+
+
                          { hasPermission(this.props.user, 'view deeds') &&  <LinkContainer to="/deeds">
                             <NavItem>Deeds</NavItem>
                         </LinkContainer> }
@@ -49,9 +54,8 @@ export class NavMenu extends React.PureComponent<{routing: any, user: EL.User}> 
                             <NavItem>Templates</NavItem>
                         </LinkContainer> }
 
-
                         <LinkContainer to="/my-profile">
-                            <NavItem>Account & Settings</NavItem>
+                            <NavItem>Account</NavItem>
                         </LinkContainer>
 
                         <LogoutButton />

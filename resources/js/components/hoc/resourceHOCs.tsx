@@ -120,3 +120,5 @@ export const MatterHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory(
 
 export const TokenHOC = ({cache=false, name} : {cache?: boolean, name: string} = {name: ''}) => HOCFactory({ cache, location: (props) => `access_token/${props.token}`, propsName: name });
 export const RolesAndPermissionsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `roles`, propsName: 'rolesAndPermissions' });
+
+export const DeadlinesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `deadlines`, propsName: 'deadlines' });
