@@ -324,4 +324,12 @@ class MatterController extends Controller
         return response()->json(['message' => 'Matters updated.']);
     }
 
+    public function destroy(Request $request, $matterId) {
+        $user = $request->user();
+        $matter = Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
+        #TODO, check edit permissions
+        $matter->delete();
+        return response()->json(['message' => 'Matter deleted']);
+    }
+
 }
