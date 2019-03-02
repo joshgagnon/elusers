@@ -8,7 +8,7 @@ import { name } from 'components/utils';
 import { hasPermission } from 'components/utils/permissions';
 import { Link } from 'react-router';
 import Icon from 'components/icon';
-
+import Deadlines from 'components/deadlines';
 
 const HomeActions = (props: {user: EL.User}) => {
     return <div className="text-center">
@@ -30,7 +30,7 @@ class Home extends React.PureComponent<{user: EL.User}> {
             </Panel>
             </Col>
             <Col md={6}>
-
+                <Deadlines />
             </Col>
         </Row>
     }

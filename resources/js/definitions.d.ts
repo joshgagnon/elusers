@@ -168,6 +168,17 @@ declare global {
             files: Document[]
         }
 
+        interface Deadline {
+            id?: number;
+            createdAt: string;
+            updatedAt: string;
+            dueAt: string;
+            resolvedAt: string;
+            title: string;
+            description: string;
+            creator: User;
+        }
+
         interface AccessToken {
             token?: string;
             data: any;
@@ -353,6 +364,7 @@ declare global {
             SHOW_AMLCFT_MODAL = 'SHOW_AMLCFT_MODAL',
             SHOW_UPLOAD_MODAL = 'SHOW_UPLOAD_MODAL',
             SHOW_DOCUMENT_MODAL = 'SHOW_DOCUMENT_MODAL',
+            SHOW_DEADLINE_MODAL = 'SHOW_DEADLINE_MODAL',
             /**
              * Initial testing
              */
@@ -402,6 +414,7 @@ declare global {
             VERSION_WARNING = 'VERSION_WARNING',
             AMLCFT_TOKEN = 'AMLCFT_TOKEN',
             CREATE_CONTACT = 'CREATE_CONTACT',
+            DEADLINE = 'DEADLINE',
             UPLOAD = 'UPLOAD',
             DOCUMENT = 'DOCUMENT'
         }
@@ -423,6 +436,9 @@ declare global {
 
             CREATE_ROLE_FORM = 'CREATE_ROLE_FORM',
             EDIT_ROLE_FORM = 'EDIT_ROLE_FORM',
+
+            CREATE_DEADLINE = 'CREATE_DEADLINE',
+            EDIT_DEADLINE = 'EDIT_DEADLINE',
 
             EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM'
         }
@@ -484,6 +500,16 @@ declare global {
 
         interface CloseModal extends Action {
             payload: CloseModalPayload;
+        }
+
+
+        interface ShowDeadlineModalPayload {
+            date: string;
+
+        }
+
+        interface ShowDeadlineModal extends Action {
+            payload: ShowDeadlineModalPayload;
         }
 
         export interface CreateResourceAction extends Action {

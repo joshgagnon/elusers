@@ -25,6 +25,9 @@ export default function(state: EL.Modals = DEFAULT_STATE, action: any) {
          case EL.ActionTypes.SHOW_DOCUMENT_MODAL:
              return showDocumentModal(state, action);
 
+         case EL.ActionTypes.SHOW_DEADLINE_MODAL:
+             return showDeadlineModal(state, action);
+
         default:
             return state;
     }
@@ -89,5 +92,14 @@ function showDocumentModal(state: EL.Modals, action: EL.Actions.ShowDocumentModa
         ...state,
         visible: EL.ModalNames.DOCUMENT,
         [EL.ModalNames.DOCUMENT]: action.payload
+    };
+}
+
+
+function showDeadlineModal(state: EL.Modals, action: EL.Actions.ShowDeadlineModal) {
+    return {
+        ...state,
+        visible: EL.ModalNames.DEADLINE,
+        [EL.ModalNames.DEADLINE]: action.payload
     };
 }

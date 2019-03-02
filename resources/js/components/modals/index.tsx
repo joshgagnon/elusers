@@ -7,6 +7,7 @@ import AMLCFTToken from './amlcftToken';
 import CreateContact from './createContact';
 import Upload from './upload';
 import ViewDocument from './viewDocument';
+import Deadline from './deadline';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -27,6 +28,9 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <Upload />
             case EL.ModalNames.DOCUMENT:
                 return <ViewDocument />
+            case EL.ModalNames.DEADLINE:
+                return <Deadline />
+
             default:
                 return false;
         }

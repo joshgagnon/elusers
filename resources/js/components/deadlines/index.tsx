@@ -4,110 +4,148 @@ import Table from '../dataTable';
 import { DeadlinesHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { minutesToHoursString } from '../utils';
-import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
-import { deleteResource, confirmAction } from '../../actions/index';
+import { Button, ButtonGroup, ButtonToolbar, Form } from 'react-bootstrap';
+import { deleteResource, confirmAction, showDeadlineModal } from '../../actions/index';
 import * as moment from 'moment';
 import Icon from '../icon';
 import { Link } from 'react-router';
-
-interface IDeadlinesData {
-
-};
-
-interface IDeadlinesTableProps {
-    recordSet: IDeadlinesData;
-    deleteRecord: (deadlineId: number) => void;
-}
+import { Calendar } from 'react-widgets'
+import { formatDate } from 'components/utils';
+import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
+import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
 
 interface IDeadlinesProps {
-    userId: number;
-    Deadlines: EL.Resource<IDeadlinesData[]>;
-    prevYear: (currentIndex : number) => EL.Actions.Action;
-    nextYear: (currentIndex: number) => EL.Actions.Action;
-    yearEndingIndex: number;
-    deleteRecord: (deadlineId: number) => void;
+
+    deadlines: EL.Resource<EL.Deadline[]>;
+    showCreate: (string) => null;
+
 }
-
-interface IDeadlinesTableRowProps {
-    deleteRecord: () => void;
-}
-
-class DeadlinesTableRow extends React.PureComponent<IDeadlinesTableRowProps> {
-    renderButtons() {
-        if (this.props.record.editable) {
-            const editLink = `Deadlines/${this.props.record.id}/edit`;
-
-            return (
-                <ButtonToolbar>
-                    <Link to={editLink} className="btn btn-info btn-sm">Edit</Link>
-                    <Button bsStyle="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
-                </ButtonToolbar>
-            );
+@(reduxForm({
+    form: EL.FormNames.CREATE_DEADLINE,
+    validate: (values: any) => {
+        const errors = {} as any;
+        if (!values.title) {
+            errors.title = 'Required';
         }
+        if (!values.dueAt) {
+            errors.dateAt = 'Required';
+        }
+        if (!values.description) {
+            errors.description= 'Required';
+        }
+        return errors;
     }
-
+}) as any)
+export class DeadlineForm extends React.PureComponent {
     render() {
-        const { record } = this.props;
-        return (
-            <tr>
-                <td>{moment(record.date).format('D MMM YYYY')}</td>
-                <td>{record.title}</td>
-                <td>{record.reflection}</td>
-                <td>{minutesToHoursString(record.minutes)}</td>
-                <td>{this.renderButtons()}</td>
-            </tr>
-        );
+       return <Form onSubmit={this.props.handleSubmit} horizontal>
+           not finished
+            <InputField name="title" label="Title" type="text" required/>
+            <InputField name="description" label="Description" type="text" required/>
+           <DatePicker name="dueAt" label="Due Date" required />
+
+            </Form>
     }
 }
 
-class DeadlinesTable extends React.PureComponent<IDeadlinesTableProps> {
+
+class DeadlineDetails extends React.PureComponent<{deadline: EL.Deadline}> {
     render() {
-        const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours', 'Actions'];
+        const { deadline } = this.props;
+        return <div>
+            <dl>
+            <dt>Title</dt>
+            <dd>{ deadline.title }</dd>
 
-        return (
-            <Table headings={HEADINGS} manualBodyTag>
-                <tbody>
-                    {
-                        this.props.recordSet.records.map(record =>
-                            <DeadlinesTableRow
-                                key={record.id}
-                                record={record}
-                                deleteRecord={() => this.props.deleteRecord(record.id)} />)
-                    }
-                </tbody>
+            <dt>Due</dt>
+            <dd>{ formatDate(deadline.dueAt) }</dd>
 
-                <tfoot>
-                    <tr key="total">
-                        <th colSpan={3} className="text-right">Total:</th>
-                        <th>{minutesToHoursString(this.props.recordSet.minutes)}</th>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </Table>
-        );
+            <dt>Description</dt>
+            <dd>{ deadline.description }</dd>
+
+            </dl>
+
+        </div>
     }
 }
-
 
 @DeadlinesHOC()
 @PanelHOC<IDeadlinesProps>('Deadlines', props => props.deadlines)
 class Deadlines extends React.PureComponent<IDeadlinesProps> {
+    state = { selected: null }
+    _lookup = {};
+
+    constructor(props: IDeadlinesProps) {
+        super(props);
+        this.select = this.select.bind(this);
+    }
+
+    componentDidMount() {
+        this.formatLookup();
+    }
+
+    componentDidUpdate(oldProps) {
+        if(oldProps.deadlines !== this.props.deadlines) {
+            this.formatLookup();
+        }
+    }
+
+    formatLookup() {
+        if(this.props.deadlines.data) {
+            this._lookup = this.props.deadlines.data.reduce((acc, deadline) => {
+                acc[deadline.dueAt] = [...(acc[deadline.dueAt] || []), deadline];
+                return acc;
+            }, {});
+        }
+    }
+
+    select(date) {
+        this.setState({selected: date});
+    }
+
+    open(date) {
+        this.props.showCreate(date);
+    }
+
+    showSelection() {
+        const matches = this._lookup[this.state.selected] || [];
+        return <div>
+        <br />
+        <Button bsStyle="primary" className="pull-right" onClick={() => this.props.showCreate(this.state.selected)}>Add Deadline</Button>
+        <h3>{ formatDate(this.state.selected) }</h3>
+        { matches.map((m, i) => {
+            return <DeadlineDetails deadline={m} key={i} />
+        })}
+        { !matches.length && <div><i>No deadlines.</i></div> }
+        </div>
+    }
+
     render() {
 
+        let DayComponent = ({ date, label, ...rest }) => {
+            const dates = this.props.deadlines.data;
+            return <div style={{ }}>
+                { label }
+            </div>
+        };
 
         return (
             <div>
-            WIP
+            <Calendar dayComponent={DayComponent} onChange={this.select} value={this.state.selected}/>
+            { this.state.selected && this.showSelection() }
             </div>
         );
     }
 }
+
+
 
 const ConnectedDeadlines = (connect(
     (state: EL.State) => ({
         user: state.user
     }),
     {
+        showCreate: (date) => showDeadlineModal({ date }),
         deleteRecord: (deadlineId: number) => {
             const deleteAction = deleteResource(`deadlines/${deadlineId}`);
 

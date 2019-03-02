@@ -171,3 +171,10 @@ export function showDocumentModal(payload: EL.Actions.ShowDocumentModalPayload):
         payload
     };
 }
+
+export function showDeadlineModal(payload: EL.Actions.ShowDeadlineModalPayload): EL.Actions.ShowDeadlineModal{
+    return {
+        type: EL.ActionTypes.SHOW_DEADLINE_MODAL,
+        payload
+    };
+}

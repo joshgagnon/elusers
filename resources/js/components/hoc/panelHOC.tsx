@@ -11,6 +11,7 @@ type PanelHOCOptions = {
 function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TProps) => ResourceObjectOrArray, options?: PanelHOCOptions) {
     options = options || {};
     return function(ComposedComponent) {
+
         function some(arrayOrObject, func) {
             if (Array.isArray(arrayOrObject)) {
                 return arrayOrObject.some(func);
@@ -26,8 +27,6 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
 
             return func(arrayOrObject)
         }
-
-
 
         function PanelContent(props: TProps) {
             let status;
@@ -61,7 +60,7 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
             }
         }
 
-        return PanelWithContent;
+        return PanelWithContent as any;
     }
 }
 
