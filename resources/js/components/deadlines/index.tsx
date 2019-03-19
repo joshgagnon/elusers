@@ -23,6 +23,7 @@ interface IDeadlinesProps {
     showCreate: (date: string) => null;
     showUpdate: (deadline: EL.Deadline) => null;
     complete: (deadline: EL.Deadline) => null;
+    initialValues: any;
 }
 
 interface DeadlineFormProps{
@@ -62,6 +63,7 @@ export class DeadlineForm extends React.PureComponent<DeadlineFormProps> {
 class DeadlineDetails extends React.PureComponent<{deadline: EL.Deadline}> {
     render() {
         const { deadline, children } = this.props;
+        const matter = deadline.matters && deadline.matters.length  && deadline.matters[0];
         return <div className={`deadline-summary ${deadline.resolvedAt && 'resolved'}`}>
             { deadline.resolvedAt && <h4>Completed</h4> }
             <dl className="dl-horizontal">
@@ -75,13 +77,18 @@ class DeadlineDetails extends React.PureComponent<{deadline: EL.Deadline}> {
             <dt>Description</dt>
             <dd>{ deadline.description }</dd>
 
+            {matter && <React.Fragment>
+                <dt>Matter</dt>
+                <dd><Link to={`/matters/${matter.id}`}>{ matter.matterNumber }</Link></dd>
+            </React.Fragment>}
+
             </dl>
             { children }
         </div>
     }
 }
 
-@DeadlinesHOC()
+
 @PanelHOC<IDeadlinesProps>('Deadlines', props => props.deadlines)
 class Deadlines extends React.PureComponent<IDeadlinesProps> {
     state = { selected: null, _lookup: {} }
@@ -115,16 +122,13 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
         this.setState({selected: date});
     }
 
-    open(date) {
-        this.props.showCreate(date);
-    }
 
     showSelection() {
         const matches = this.state._lookup[formatDate(this.state.selected)] || [];
 
         return <div>
         <br />
-        <Button bsStyle="primary" className="pull-right" onClick={() => this.props.showCreate(formatDate(this.state.selected))}>Add Deadline</Button>
+        <Button bsStyle="primary" className="pull-right" onClick={() => this.props.showCreate({...this.props.initialValues, date: formatDate(this.state.selected)})}>Add Deadline</Button>
         <h3 className="deadline-date-title">{ formatDate(this.state.selected) }</h3>
         { matches.map((m, i) => {
             return <DeadlineDetails key={i}  deadline={m}>
@@ -139,11 +143,10 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
     }
 
     render() {
-
         let DayComponent = ({ date, label, ...rest }) => {
             date = formatDate(date);
             const matches = (this.state._lookup[date] || [])
-            const unresolved = matches.length && matches.some((m) => !m.resolvedAt); 
+            const unresolved = matches.length && matches.some((m) => !m.resolvedAt);
             let classes = '';
             if(matches.length && unresolved) {
                 classes = 'has-deadline';
@@ -166,13 +169,14 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
 }
 
 
+const AllDeadlines = DeadlinesHOC()(Deadlines);
 
-const ConnectedDeadlines = (connect(
+const ConnectDeadlines = (connect(
     (state: EL.State) => ({
         user: state.user
     }),
     {
-        showCreate: (date) => showDeadlineModal({ date }),
+        showCreate: (initialValues) => showDeadlineModal(initialValues),
         showUpdate: (deadline) => showDeadlineModal({ deadline }),
         complete: (deadline: EL.Deadline) => {
             const updateAction = updateResource(`deadlines/${deadline.id}`, {...deadline, resolvedAt: new Date()});
@@ -198,15 +202,34 @@ const ConnectedDeadlines = (connect(
             });
         }
     }
-) as any)(Deadlines);
+) as any);
+
+const ConnectedAllDeadlines = ConnectDeadlines(AllDeadlines);
+const ConnectedDeadlines = ConnectDeadlines(Deadlines);
 
 @HasPermission("view deadlines")
 export default class DeadlinesPage extends React.PureComponent {
     render() {
         return (
             <div>
-                <ConnectedDeadlines  />
+                <ConnectedAllDeadlines initialValues={{}}/>
                 {this.props.children && this.props.children}
+            </div>
+        );
+    }
+}
+
+const resourcify = (someData) => {
+    return { isFetching: false, hasErrored: false, hasStarted: true, data: someData };
+}
+
+
+@HasPermission("view deadlines")
+export class MatterDeadlines extends React.PureComponent<{matterId: string, matter: EL.Resource<EL.Matter>}> {
+    render() {
+        return (
+            <div>
+                <ConnectedDeadlines initialValues={{matterId: this.props.matterId}} deadlines={resourcify(this.props.matter.data ? this.props.matter.data.deadlines : [])}/>
             </div>
         );
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Deadline;
-
+use App\Matter;
 
 class DeadlineController extends Controller
 {
@@ -13,7 +13,7 @@ class DeadlineController extends Controller
         if(!$request->user()->hasPermissionTo('view deadlines')) {
             abort(403);
         }
-        return Deadline::where(['organisation_id' => $request->user()->organisation_id])->get();
+        return Deadline::where(['organisation_id' => $request->user()->organisation_id])->with('matters')->get();
     }
 
     public function store(Request $request)
@@ -33,6 +33,17 @@ class DeadlineController extends Controller
             ]
         ));
 
+        if($data['matter_id'] ?? null) {
+            if(!$request->user()->hasPermissionTo('edit matters')) {
+                abort(403);
+            }
+            $matter = Matter::where('id', $data['matter_id'])->where('organisation_id', $request->user()->organisation_id)->first();
+            if(!$matter) {
+                abort(403);
+            }
+            $deadline->matters()->attach($data['matter_id']);
+        }
+
         // FILES
         //$fileIds = array_map(function($file) use ($user) {
         //    return $this->saveUploadedFile($file, $user)->id;
@@ -41,7 +52,7 @@ class DeadlineController extends Controller
         //$deadline->files()->attach($fileIds);
 
 
-        //$newNotes = array_map(function ($i) use ($user)  { 
+        //$newNotes = array_map(function ($i) use ($user)  {
         //    return array_merge($i, ['created_by_user_id' => $user->id]);
         //}, $data['notes'] ?? []);
 

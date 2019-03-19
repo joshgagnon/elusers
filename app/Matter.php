@@ -3,6 +3,7 @@
 namespace App;
 
 use App\File;
+use App\Deadline;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\DefaultDirectoriesTrait;
@@ -76,5 +77,9 @@ class Matter extends Model
         return $this->hasMany(MatterNote::Class);
     }
 
+    public function deadlines()
+    {
+        return $this->belongsToMany(Deadline::Class, 'matter_deadlines', "matter_id", "deadline_id")->withTimestamps();
+    }
 
 }

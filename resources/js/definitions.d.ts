@@ -151,6 +151,7 @@ declare global {
             notes: Note[];
             clients: Contact[];
             filesCount?: number;
+            deadlines?: Deadline[];
 
         }
 
@@ -178,6 +179,7 @@ declare global {
             title: string;
             description: string;
             creator: User;
+            matters?: Matter[];
         }
 
         interface AccessToken {
@@ -506,6 +508,7 @@ declare global {
 
         type ShowDeadlineModalPayload = {
             date: string;
+            matterId: string;
         } | { deadline: EL.Deadline };
 
         interface ShowDeadlineModal extends Action {

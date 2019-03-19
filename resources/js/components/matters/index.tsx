@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
 import Panel from 'components/panel';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
+import { MatterDeadlines } from 'components/deadlines';
 import * as moment from 'moment';
 import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, Row, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
 
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -329,8 +330,17 @@ class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
 export class ViewMatter extends React.PureComponent<MatterProps> {
     render() {
         return <React.Fragment>
-            <MatterDetails {...this.props} />
-            <MatterDocuments {...this.props}  />
+            <Row>
+                <Col md={6}>
+                    <MatterDetails {...this.props} />
+                </Col>
+                <Col md={6}>
+                    <MatterDeadlines {...this.props} />
+               </Col>
+               <Col md={12}>
+                <MatterDocuments {...this.props} />
+                </Col>
+            </Row>
         </React.Fragment>
     }
 
@@ -342,6 +352,7 @@ interface MatterFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
+    cancelLocation: string;
     form: string;
 }
 
@@ -444,6 +455,7 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
 
                 <ButtonToolbar>
                     <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
+                    <Link className="btn btn-default pull-right" to={`${this.props.cancelLocation}`}>Cancel</Link>
                 </ButtonToolbar>
             </Form>
         );
@@ -496,7 +508,7 @@ const EditMatterForm = (reduxForm({
 @PanelHOC<CreateMatterProps>('Create Matter')
 export class CreateMatter extends React.PureComponent<CreateMatterProps> {
     render() {
-        return <CreateMatterForm initialValues={{clients: [{}]}} onSubmit={this.props.submit} saveButtonText="Create Matter" />
+        return <CreateMatterForm cancelLocation={`/matters`} initialValues={{clients: [{}]}} onSubmit={this.props.submit} saveButtonText="Create Matter" />
     }
 }
 
@@ -523,7 +535,7 @@ interface UnwrappedEditMatterProps {
 @PanelHOC<UnwrappedEditMatterProps>('Edit Matter', props => props.matter)
 class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> {
     render() {
-        return <EditMatterForm initialValues={this.props.matter.data} onSubmit={data => this.props.submit(this.props.matterId, data)} saveButtonText="Save Matter" />
+        return <EditMatterForm cancelLocation={`/matters/${this.props.matterId}`} initialValues={this.props.matter.data} onSubmit={data => this.props.submit(this.props.matterId, data)} saveButtonText="Save Matter" />
     }
 }
 

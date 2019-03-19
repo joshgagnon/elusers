@@ -13,6 +13,7 @@ interface CreateDeadlineProps {
     name: string;
     form: string;
     date?: string;
+    matterId?: string;
     deadline?: EL.Deadline;
     submit: (form: string, name: string, data: React.FormEvent<Form>, id?: number) => void;
     deleteDeadline: (deadlineId: number) => void;
@@ -22,7 +23,7 @@ interface CreateDeadlineProps {
 class CreateDeadline extends React.PureComponent<CreateDeadlineProps> {
     render() {
         const isNew = !this.props.deadline;
-        const initialValues = isNew ? { dueAt: this.props.date } : this.props.deadline;
+        const initialValues = isNew ? { dueAt: this.props.date, matterId: this.props.matterId } : this.props.deadline;
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal}>
                 <Modal.Header closeButton>
@@ -71,7 +72,7 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deadline created.'), (response) => change(form, name, response.deadlineId), closeModal({ modalName: EL.ModalNames.DEADLINE })],
                 onFailure: [createNotification('Deadline creation failed. Please try again.', true)],
-                invalidateList: ['deadlines', 'matters']
+                invalidateList: ['/deadlines', '/matters']
             };
             return createResource(url, data, meta)
         }
@@ -81,7 +82,7 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
             onFailure: [createNotification('Deadline update failed. Please try again.', true)],
             invalidateList: ['deadlines', 'matters']
         };
-        return updateResource(url, data, meta)   
+        return updateResource(url, data, meta)
 
     }
   },

@@ -96,7 +96,10 @@ class MatterController extends Controller
     public function show(Request $request, $id)
     {
         //
-        $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->with(['creator', 'referrer', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator', 'files.notes'])->first();
+        $matter = Matter::where('id', $id)
+            ->where('organisation_id', $request->user()->organisation_id)
+            ->with(['creator', 'referrer', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator', 'files.notes', 'deadlines'])
+            ->first();
         return $matter;
     }
 
