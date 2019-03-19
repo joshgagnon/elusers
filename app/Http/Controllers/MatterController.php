@@ -39,7 +39,9 @@ class MatterController extends Controller
     public function index(Request $request)
     {
         $orgId = $request->user()->organisation_id;
-        return Matter::where('organisation_id', $orgId)->with(['creator:preferred_name', 'clients', 'clients.contactable'])->get();
+        return Matter::where('organisation_id', $orgId)->with(['creator:preferred_name', 'clients', 'clients.contactable'])->withCount(['files' => function ($query) {
+            $query->where('protected', false);
+        }])->get();
     }
 
     /**

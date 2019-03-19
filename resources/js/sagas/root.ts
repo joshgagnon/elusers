@@ -34,7 +34,7 @@ export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
 }
 
 function *resourceRequests() {
-    yield takeFirstRequests(EL.ActionTypes.RESOURCE_REQUEST, checkAndRequest);
+    yield takeFirstRequest(EL.ActionTypes.RESOURCE_REQUEST, checkAndRequest);
 }
 
 function *createResourceRequests() {
@@ -94,16 +94,23 @@ function *fireOnFailureActions(action: EL.Actions.Action) {
 }
 
 
-const takeFirstRequests = (pattern, saga) => fork(function*() {
-  let requests = {};
-  while (true) {
-    const action = yield take(pattern)
-    if (!requests[action.payload.key]) {
-        requests[action.payload.key] = yield saga(action);
-        delete requests[action.payload.key];
-    }
-  }
-})
+function* takeFirstRequest(pattern, saga) {
+    let currentTasks = {};
+    const task = yield fork(function* () {
+        yield takeEvery(pattern, function* (action: EL.Actions.Action) {
+            if (currentTasks[action.payload.key]) {
+                return
+            }
+            currentTasks[action.payload.key] = true;
+            yield call(saga, action)
+        })
+        yield takeEvery([EL.ActionTypes.RESOURCE_SUCCESS, EL.ActionTypes.RESOURCE_FAILURE], function* (action: EL.Actions.Action) {
+            currentTasks[action.payload.key] = null
+            yield true;
+        })
+    })
+    return task
+}
 
 function *checkAndRequest(action: EL.Actions.Action) {
     // Check to see if this resource exists in state already
