@@ -20,7 +20,6 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                     time={false}
                     value={!value ? null : new Date(value)}
                     onBlur={() => onBlur(undefined)}
-                    //className="form-control"
                     ref="date"
                     defaultView={this.props.defaultView}
                     /*onFocus={(event: React.FocusEvent<any> as any) => {

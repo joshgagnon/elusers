@@ -411,3 +411,37 @@ table{
   // white-space: nowrap;
     }
 }
+
+.deadlines{
+    .deadline-date-title{
+        padding-bottom:20px;
+    }
+    .all-resolved {
+        background-color:lighten($brand-success, 20%);
+    }
+    .has-deadline{
+        background-color: $brand-danger;
+        color:white;
+        font-weight: bold;
+    }
+    .deadline-summary{
+        @extend .well;
+        @extend .well-sm;
+        margin:0.5em 0;
+        position: relative;
+        dl{
+            margin: 0;
+        }
+        &.resolved {
+            opacity: 0.5;
+        }
+    }
+    .deadline-controls {
+        @extend .btn-group;
+        @extend .btn-group-vertical;
+        position: absolute;
+        right: 8px;
+        top: 8px;
+
+    }
+}

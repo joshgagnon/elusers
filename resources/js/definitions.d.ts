@@ -503,10 +503,9 @@ declare global {
         }
 
 
-        interface ShowDeadlineModalPayload {
+        type ShowDeadlineModalPayload = {
             date: string;
-
-        }
+        } | { deadline: EL.Deadline };
 
         interface ShowDeadlineModal extends Action {
             payload: ShowDeadlineModalPayload;

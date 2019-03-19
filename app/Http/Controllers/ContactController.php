@@ -394,7 +394,7 @@ class ContactController extends Controller
                         'organisation_id' => $user->organisation_id,
                         'contactable_type' => $row['Type'],
                         'name' => $row['Name'],
-                        'metadata' => json_encode(['actionstepId' => $actionstepId]),
+                        'metadata' => json_encode(['actionstepId' => $actionstepId, 'Name' => $row['Name']]),
                         'contactable' => []
                     ];
 

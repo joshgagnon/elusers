@@ -314,7 +314,9 @@ class MatterController extends Controller
                 $matter->save(['timestamps' => false]);
                 Matter::where('matter_number', $actionstepId)->update(['created_at' => $created_at]);
                 $clients  = Contact::whereIn("metadata->Name", explode("\n", $row['Primary Participant']))->get();
-                $matter->clients()->sync($clients);
+                if(count($clients)) {
+                    $matter->clients()->sync($clients);
+                }
 
             }
 
