@@ -7,6 +7,7 @@ use App\Deadline;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\DefaultDirectoriesTrait;
+use App\Library\SQLFile;
 
 class Matter extends Model
 {
@@ -80,6 +81,15 @@ class Matter extends Model
     public function deadlines()
     {
         return $this->belongsToMany(Deadline::Class, 'matter_deadlines', "matter_id", "deadline_id")->withTimestamps();
+    }
+
+    public static function getAll($user)
+    {
+        $orgId = $user->organisation_id;
+        $query = new SQLFile('matters', ['orgId' => $orgId]);
+        $result = $query->get();
+
+        return $result[0]->matters;
     }
 
 }

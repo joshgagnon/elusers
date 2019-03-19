@@ -38,10 +38,45 @@ class MatterController extends Controller
      */
     public function index(Request $request)
     {
-        $orgId = $request->user()->organisation_id;
-        return Matter::where('organisation_id', $orgId)->with(['creator:preferred_name', 'clients', 'clients.contactable'])->withCount(['files' => function ($query) {
+        $data = Matter::getAll($request->user());
+        $response = \Response::make($data, 200);
+        $response->header('Content-Type', 'application/json');
+        return $response;
+        /*$orgId = $request->user()->organisation_id;
+        return Matter::where('organisation_id', $orgId)
+            ->with([/*'creator:preferred_name',*'clients', 'clients.contactable'])
+            /*->withCount(['files' => function ($query) {
             $query->where('protected', false);
-        }])->get();
+            }])
+        ->get();*/
+        /*return Matter::select(DB::raw('
+            with file_counts as (
+                select matter_id, count(files.id) as files_count
+                from "files"
+                join "matter_files" on "files"."id" = "matter_files"."file_id"
+                where "protected" = false
+                GROUP BY matter_id
+            ), clients as (
+                select matter_id, json_agg(row_to_json(c)::jsonb || jsonb_build_object(\'contactable\', ci.*)) as clients
+                from matter_clients mc
+                join contacts c on c.id = mc.contact_id
+                left outer join contact_individuals ci on ci.id = c.contactable_id and contactable_type = \'contact_individual\'
+                group by matter_id
+
+
+            )
+
+            select m.*, "files_count", c.clients as clients
+            from "matters" m
+
+            left outer join file_counts fc on fc.matter_id = m.id
+            left outer join clients c on c.matter_id = m.id
+            where m."organisation_id" = :orgId and m."deleted_at" is null
+
+            ', ['orgId', $orgId]
+
+        ))->get();/*/
+
     }
 
     /**
