@@ -408,6 +408,21 @@ const fileTarget = {
 
 }
 
+
+const FileSpan = (props) => {
+    const { selected, canDrop, isOver, item, select, showingSubTree } = props;
+    return <span className={classnames('file', {selected, 'can-drop': canDrop && isOver})}
+    onClick={(e) => {
+        e.stopPropagation();
+        !selected && select()}
+    }>
+        <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
+        <span className="filename">{ item.filename }</span>
+        { !!item.children && !!item.children.length && <i>({ item.children.length } { item.children.length > 0 ? 'Files' : 'File'})</i> }
+        </span>
+ }
+
+
 const FILE = 'FILE';
 
 @(DropTarget((props) => props.accepts, fileTarget, (connect, monitor) => ({
@@ -424,7 +439,7 @@ class RenderFile extends React.PureComponent<any> {
 
     render() {
         const props = this.props;
-        const { item, viewDocument, renameFile, deleteFile, startRename, endRename, createDirectory, startCreateFolder, endCreateFolder } = props;
+        const { selected, select, item, viewDocument, renameFile, deleteFile, startRename, endRename, createDirectory, startCreateFolder, endCreateFolder } = props;
         const { isDragging, connectDragSource, connectDropTarget, isOver, canDrop } = props;
         const showingSubTree =  props.showingSubTree || (canDrop && isOver);
 
@@ -462,14 +477,15 @@ class RenderFile extends React.PureComponent<any> {
                 </div>
         }
 
-        const fileSpan = () => <span className={classnames('file', {selected: props.selected, 'can-drop': canDrop && isOver})}
-            onClick={(e) => {
-                e.stopPropagation();
-                !props.selected && props.select()}
-            }>
-                <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
-                <span className="filename">{ item.filename }</span>
-                </span>
+         const fileProps = {
+             selected,
+             canDrop,
+             isOver,
+             item,
+             select,
+             showingSubTree
+         }
+
 
         const canCreateDirectory = this.props.canUpdate;
 
@@ -478,7 +494,7 @@ class RenderFile extends React.PureComponent<any> {
                 { item.directory  && showingSubTree && <span className="fa fa-minus-square-o" onClick={(e) =>  {e.stopPropagation && e.stopPropagation(); props.hideSubTree()}} /> }
                 { item.directory   && !showingSubTree && <span className="fa fa-plus-square-o" onClick={(e) =>  {e.stopPropagation && e.stopPropagation(); props.showSubTree()}} /> }
               </span>
-                { item.id !== "root" && !item.protected && !this.props.renaming ? connectDragSource(fileSpan()) : fileSpan() }
+              { item.id !== "root" && !item.protected && !this.props.renaming ? connectDragSource(<span><FileSpan {...fileProps} /></span>) :  <FileSpan  {...fileProps} />}
                 { item.directory  &&
                     <div className={classnames("children", {"showing": showingSubTree})}>
                     { canCreateDirectory && !this.props.creatingFolder && showNew() }

@@ -150,6 +150,7 @@ declare global {
             files: Document[];
             notes: Note[];
             clients: Contact[];
+            filesCount?: number;
 
         }
 

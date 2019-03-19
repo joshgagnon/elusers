@@ -76,7 +76,7 @@ function filterData(search: string, data: EL.Matter[]) {
 }
 
 function sortData(data: EL.Matter[], column: string, sortDown: boolean) {
-    const collator = new Intl.Collator(undefined, {numeric: column === 'matterNumber', sensitivity: 'base'});
+    const collator = new Intl.Collator(undefined, {numeric: column === 'matterNumber' || column === 'filesCount', sensitivity: 'base'});
 
     return data.sort(firstBy((a, b) => {
         if(!sortDown) {
@@ -97,6 +97,7 @@ const MATTER_STRINGS = {
     'status': 'Status',
     'clients': 'Clients',
     'createdAt': 'Created',
+    'filesCount': 'File Count',
     'actions': 'Actions'
 }
 
@@ -106,7 +107,8 @@ const MATTER_SORTABLE = {
     'matterName': true,
     'matterType': true,
     'status': true,
-    'createdAt': true
+    'createdAt': true,
+    'filesCount': true
 }
 
 
@@ -177,7 +179,9 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                             <td>
                                 { formatDate(matter.createdAt) }
                             </td>
-
+                            <td>
+                                { matter.filesCount }
+                            </td>
                             <td>
                             <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
                             {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link> }
@@ -189,7 +193,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                             return <Table responsive>
                             <thead>
                                 <tr>
-                                    { ['matterNumber', 'matterName', 'matterType', 'status', 'clients', 'createdAt'].map((heading: string, index) => {
+                                    { ['matterNumber', 'matterName', 'matterType', 'status', 'clients', 'createdAt', 'filesCount'].map((heading: string, index) => {
                                         return <th key={index} onClick={MATTER_SORTABLE[heading] ? () => this.sort(heading) : undefined } className={MATTER_SORTABLE[heading] ? 'actionable' : ''}>
                                             { MATTER_STRINGS[heading] }
                                             { this.state.sortColumn === heading && this.state.sortDown && <Icon iconName="chevron-down" /> }
