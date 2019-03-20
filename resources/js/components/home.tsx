@@ -22,8 +22,9 @@ const HomeActions = (props: {user: EL.User}) => {
 
 class Home extends React.PureComponent<{user: EL.User}> {
 
+
     render() {
-        return <Row>
+        return <Row className="sea-foreground">
             <Col md={6}>
             <Panel title={`Hello ${name(this.props.user)}`}>
                 <HomeActions {...this.props} />
@@ -37,4 +38,10 @@ class Home extends React.PureComponent<{user: EL.User}> {
 }
 
 
-export default connect((state: EL.State) => ({user: state.user}))(Home);
+
+const ConnectedHome = connect((state: EL.State) => ({user: state.user}))(Home);
+
+
+(ConnectedHome as any).BG_COMPONENT = (props) => <div className="sea-background" />;
+
+export default ConnectedHome;

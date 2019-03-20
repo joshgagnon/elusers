@@ -37,10 +37,11 @@ interface ILayoutProps {
 export class Layout extends React.PureComponent<ILayoutProps> {
     render() {
         const fluid = this.props.routes.some(c => c.component && c.component.FLUID_CONTAINER);
-
+        const Background =  this.props.routes.find(c => c.component && c.component.BG_COMPONENT);
         return (
             <div>
                 <Navbar />
+                { Background && <Background.component.BG_COMPONENT /> }
                 <div className={fluid ? 'container-fluid' : 'container'}>
                     { this.props.children }
                 </div>

@@ -11,9 +11,12 @@ export class NavMenu extends React.PureComponent<{routing: any, user: EL.User}> 
         return (
             <Navbar collapseOnSelect staticTop>
                 <Navbar.Header>
-                    <Navbar.Brand>
-                        <Link to={`/`}>Evolution Users</Link>
-                    </Navbar.Brand>
+            
+                        <Link to={`/`}>
+                             <img className="brand-logo" src="/images/cropped-evologo-768x92.png" alt="Home" />
+                        </Link>
+                       
+         
 
                     <Navbar.Toggle />
                 </Navbar.Header>

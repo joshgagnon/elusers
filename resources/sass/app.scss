@@ -93,6 +93,27 @@ $img-path: '~react-widgets/lib/img';
 @import 'buttons';
 @import 'documents';
 
+.sea-background {
+    background-image: url(/images/sea-50q.jpg);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index:-1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.sea-foreground {
+    background-image: linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), url(/images/sea-50q-blurred.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    padding-top: 15px;
+    border-radius: 4px;
+}
+
 .public-navbar{
     background-image: url(/images/cropped-evologo.png);
         background-color: transparent;
@@ -104,46 +125,12 @@ $img-path: '~react-widgets/lib/img';
     }
 }
 
-.sea {
-    position: relative;
-    padding: 50% 0 0;
-    background-color: transparent;
-    background-size: cover;
-    background-image: url(/images/sea-50q.jpg);
-    background-position: center 56%;
-}
-@media (min-width: 768px) {
-    .sea {
-        padding: 30% 0 0;
-    }
-}
-.sea p {
-    position: absolute;
-    top: 40%;
-    left: 1%;
-    right: 1%;
-    text-align: center;
-    letter-spacing: 2px;
-    font-size: 1.3em;
-    color: #fff;
-    font-weight: 400
-}
-
-@media (min-width: 768px) {
-    .sea {
-        padding:30% 0 0
-    }
-
-    .sea p {
-        font-size: 2em;
-        top: 45%
-    }
-}
-
-@media (min-width: 1200px) {
-    .sea p {
-        font-size:2.5em;
-        top: 45%
+.navbar {
+    .brand-logo{
+        filter: invert(100%);
+        height:24px;
+        margin-top:13px;
+        margin-left:13px;
     }
 }
 
