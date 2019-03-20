@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('contacts/{contact}/access_token', 'ContactController@createAccessToken');
 
     Route::post('contacts-sync', 'ContactController@syncContacts');
+    Route::get('contacts-dedupe', 'ContactController@dedupeContacts');
 
     Route::post('contact/{contact}/documents', 'ContactController@uploadDocuments');
     Route::put('contact/{contact}/documents/{file}', 'ContactController@updateDocument');

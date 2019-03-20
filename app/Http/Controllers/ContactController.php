@@ -351,12 +351,56 @@ class ContactController extends Controller
 
     public function amlcft(Request $request)
     {
-
         $loadData = [];
         $loadData['user'] = false;
         return view('index')->with([
             'loadData' => json_encode($loadData)
         ]);
+    }
+
+    public function  dedupeContacts(Request $request)
+    {
+         DB::beginTransaction();
+        try {
+            $orgId = $request->user()->organisation_id;
+            // for every contact without actionstepid, see if there is a version with the same name
+            $contacts = Contact::whereNull('metadata->actionstepId')->where(['organisation_id' => $orgId])->get();
+            $actionStepContacts = Contact::whereNotNull('metadata->actionstepId')->where(['organisation_id' => $orgId])->get();
+            $nameMap = $actionStepContacts->reduce(function($acc, $contact) {
+                $acc[$contact->getName()] = $contact;
+                return $acc;
+            }, []);
+
+            foreach($contacts as $contact) {
+                $name = $contact->getName();
+                $toRemove = $nameMap[$name] ?? false;
+                if($toRemove) {
+                    // we need to choose one of these guys, merge all the relations
+                    // lets say $contact is the one to keep
+                    $contact->update([
+                        'metadata' => $toRemove->metadata
+                    ]);
+                    /*
+                    DeedPacket
+                    contact_files
+                    contact_relationships
+                    contact_agents
+                    ContactAgent
+                    ContactInformation
+                    matter_clients */
+
+                    $toRemove->delete();
+
+                }
+            }
+
+            throw new Exception('lols');
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
+        return response()->json(['message' => 'Contacts merged.']);                
     }
 
 
@@ -383,7 +427,9 @@ class ContactController extends Controller
             }
             foreach ($csv as $row) {
                 $actionstepId = $row['ID'];
-                $contact = Contact::where('metadata->actionstepId', $actionstepId)->first();
+                $contact = Contact::where('metadata->actionstepId', $actionstepId)->where(['organisation_id' => $orgId])->first();
+
+
                 if ($contact) {
                     $contact->update([
                         'metadata' => json_encode(array_merge(['actionstepId' => $actionstepId], $row))
@@ -414,6 +460,7 @@ class ContactController extends Controller
 
                     $contact = Contact::create($fields);
                     $this->saveSubType($contact, $fields);
+                    // need to add contact information
                 }
                 /*if($row['Address']){
                     $address = [
