@@ -14,8 +14,8 @@ const HomeActions = (props: {user: EL.User}) => {
     return <div className="text-center">
     <div className="btn-group" >
         { hasPermission(props.user, 'create matter')  && <Link to="/matters/create" className="btn btn-primary"><Icon iconName="plus" />Create Matter</Link> }
-        { hasPermission(props.user, 'create contact')  && <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link> }
-        { <Link to="/cpdpr/create" className="btn btn-primary"><Icon iconName="plus" />Add CPDPR</Link> }
+        { hasPermission(props.user, 'create contact')  && <Link to="/contacts/create" className="btn btn-success"><Icon iconName="plus" />Create Contact</Link> }
+        { <Link to="/cpdpr/create" className="btn btn-warning"><Icon iconName="plus" />Add CPDPR</Link> }
     </div>
     </div>
 }

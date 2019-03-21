@@ -360,7 +360,8 @@ class ContactController extends Controller
 
     public function  dedupeContacts(Request $request)
     {
-         DB::beginTransaction();
+        DB::beginTransaction();
+        $results = [];
         try {
             $orgId = $request->user()->organisation_id;
             // for every contact without actionstepid, see if there is a version with the same name
@@ -388,19 +389,22 @@ class ContactController extends Controller
                     ContactAgent
                     ContactInformation
                     matter_clients */
-
-                    $toRemove->delete();
+                    $contact->matters();
+                    $results[] = [
+                        $contact->toArray()
+                    ];
+                    $toRemove->forceDelete();
 
                 }
             }
 
-            throw new Exception('lols');
+            #throw new Exception('lols');
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
             throw $e;
         }
-        return response()->json(['message' => 'Contacts merged.']);                
+        return response()->json(['message' => 'Contacts merged.', 'results' => $results]);
     }
 
 
@@ -476,6 +480,7 @@ class ContactController extends Controller
 
             }
             //throw new Exception('asdf');
+            $this->dedupeContacts($request);
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
