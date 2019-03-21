@@ -66,7 +66,7 @@ function filterData(search: string, data: EL.Matter[]) {
     if(search){
         search = search.toLocaleLowerCase();
         return data.filter(matter => {
-            return matter.clients.some(contact => fullname(contact).toLocaleLowerCase().includes(search)) ||
+            return (matter.clients || []).some(contact => fullname(contact).toLocaleLowerCase().includes(search)) ||
             //`ELF-${matter.id}`.toLocaleLowerCase().includes(search) ||
             matter.matterNumber.toLocaleLowerCase().includes(search) ||
             matter.matterName.toLocaleLowerCase().includes(search) ||

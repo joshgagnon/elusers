@@ -365,6 +365,8 @@ class ContactController extends Controller
         try {
             $orgId = $request->user()->organisation_id;
             // for every contact without actionstepid, see if there is a version with the same name
+            $contacts =Contact::get();
+
             $contacts = Contact::whereNull('metadata->actionstepId')->where(['organisation_id' => $orgId])->get();
             $actionStepContacts = Contact::whereNotNull('metadata->actionstepId')->where(['organisation_id' => $orgId])->get();
             $nameMap = $actionStepContacts->reduce(function($acc, $contact) {
@@ -375,6 +377,7 @@ class ContactController extends Controller
             foreach($contacts as $contact) {
                 $name = $contact->getName();
                 $toRemove = $nameMap[$name] ?? false;
+
                 if($toRemove) {
                     // we need to choose one of these guys, merge all the relations
                     // lets say $contact is the one to keep
@@ -389,10 +392,18 @@ class ContactController extends Controller
                     ContactAgent
                     ContactInformation
                     matter_clients */
-                    $contact->matters();
-                    $results[] = [
-                        $contact->toArray()
-                    ];
+                    /*$contact->contactInformations()->add*/
+                    ;
+                    $contact->matters()->attach($toRemove->matters);
+                    $contact->contactInformations()->attach($toRemove->contactInformations);
+                    $contact->deedPackets()->attach($toRemove->deedPackets);
+                    $contact->files()->attach($toRemove->files);
+                    if(count($toRemove->files)){
+                        $results[] = [
+                            $contact,
+                            $toRemove->files
+                        ];
+                    }
                     $toRemove->forceDelete();
 
                 }
