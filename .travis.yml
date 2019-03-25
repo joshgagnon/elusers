@@ -1,5 +1,5 @@
 sudo: required
-dist: trusty
+dist: xenial
 
 language: php
 
@@ -11,7 +11,7 @@ addons:
 
 
 before_script:
-  - sudo apt-get install -y php7-mailparse
+  - sudo apt-get install -y php-mailparse
   - cp .env.travis .env
   - psql -c 'create database evolution_users_test;' -U postgres
   - composer self-update
