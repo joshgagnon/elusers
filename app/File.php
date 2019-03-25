@@ -8,11 +8,16 @@ use App\FilePermission;
 use App\FileNote;
 use App\Library\SQLFile;
 use App\Library\Encryption;
-
+use Phemail\MessageParser;
+use pear\mail\Mail;
 
 class File extends Model
 {
-    protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'previous_version_id', 'protected'];
+    protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'previous_version_id', 'protected', 'metadata'];
+
+    protected $casts = [
+        'metadata' => 'array'
+    ];
 
     public static function boot()
     {
@@ -55,7 +60,7 @@ class File extends Model
         return $this->belongsTo(File::class, 'parent_id');
     }
 
-    public function getContent($key)
+    public function getContent($key=null)
     {
         $content = Storage::get($this->path);
         if ($this->encrypted) {
@@ -86,6 +91,40 @@ class File extends Model
     {
         return $this->hasMany(FileNote::Class);
     }
+
+    public function read($user) {
+        return $this->getContent($user->organisation->encryption_key);
+    }
+
+
+    public function parseMetadata($user)
+    {
+        $contents = $this->read($user);
+
+        if(endswith($this->filename, '.eml')) {
+            $parser = new MessageParser();
+            $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
+            function address($value) {
+                $addresses = (new \Mail_RFC822)->parseAddressList($value);
+                return array_map(function($address) {
+                    return [
+                        'name' => $address->personal,
+                        'address' => $address->mailbox.'@'.$address->host
+                    ];
+                }, $addresses);
+            }
+            return [
+                'date' => $message->getHeaderValue('subject'),
+                'subject' => $message->getHeaderValue('date'),
+                'to' => address($message->getHeaderValue('to')),
+                'from' =>  address($message->getHeaderValue('from'))
+            ];
+         }
+
+        return [];
+    }
+
+
 }
 
 

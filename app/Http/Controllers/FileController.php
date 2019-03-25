@@ -31,13 +31,8 @@ class FileController extends Controller
             abort(403);
         }
         // Get the file and return it
-        $content = Storage::get($file->path);
-
-        if ($file->encrypted) {
-            $key = $user->organisation->encryption_key;
-            $encryption = new Encryption($key);
-            $content = $encryption->decrypt($content);
-        }
+        $content = $file->read($user);
+        return $file->metadata;
 
         $headers = [
             'Content-Type' => $file->mime_type,
@@ -115,6 +110,8 @@ class FileController extends Controller
           // put new content on file
         $file->update(['path' => $path, 'previous_version_id' => $oldVersion->id]);
 
+        $file->update(['metadata' => $file->parseMetadata($user)]);
+
         return response()->json(['message' => 'Documents Updated', 'id' => $file->id], 200);
     }
 
@@ -159,5 +156,6 @@ class FileController extends Controller
         }
         return response()->json(['message' => 'Note Updated', 'id' => $file->id], 200);
     }
+
 
 }

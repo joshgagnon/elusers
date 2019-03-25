@@ -77,6 +77,7 @@ class OrganisationFileController extends Controller
                 'mimetype' => '',
                 'parent_id' => $parentId
             ], ['created_by_user_id'  => $user->id]);
+
             $organisation->files()->save($newFile);
 
             return response()->json(['message' => 'Folder created.', 'id' => $newFile->id], 201);
@@ -154,6 +155,7 @@ class OrganisationFileController extends Controller
             'encrypted' => true,
             'parent_id' => $parentId
         ]);
+        $file->update(['metadata' => $file->parseMetadata($user)]);
         $orgFile = new OrganisationFile;
 
         $orgFile->file_id = $file->id;

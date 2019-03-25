@@ -294,6 +294,7 @@ class MatterController extends Controller
             'encrypted' => true,
             'parent_id' => $parentId
         ]);
+        $file->update(['metadata' => $file->parseMetadata($user)]);
         return $file;
       }
 

@@ -335,6 +335,7 @@ class ContactController extends Controller
             'encrypted' => true,
             'parent_id' => $parentId
         ]);
+        $file->update(['metadata' => $file->parseMetadata($user)]);
         return $file;
       }
 
@@ -537,6 +538,7 @@ class ContactController extends Controller
             'mime_type' => $file->mime_type,
             'encrypted' => true,
         ]);
+        $file->update(['metadata' => $file->parseMetadata($user)]);
         $contactFile = new ContactFile;
 
         $contactFile->file_id = $file->id;
