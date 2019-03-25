@@ -138,7 +138,7 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
                 </div> }
             </DeadlineDetails>;
         })}
-        { !matches.length && <div><i>No deadlines.</i></div> }
+        { matches.length > 0 && <div><i>No deadlines.</i></div> }
         </div>
     }
 

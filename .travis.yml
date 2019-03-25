@@ -8,7 +8,8 @@ php:
 
 addons:
   postgresql: "9.5"
-
+  apt:
+    update: true
 
 before_script:
   - sudo apt-get install -y php-mailparse
