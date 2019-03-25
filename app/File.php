@@ -10,6 +10,8 @@ use App\Library\SQLFile;
 use App\Library\Encryption;
 use Phemail\MessageParser;
 use pear\mail\Mail;
+use Hfig\MAPI;
+use Hfig\MAPI\OLE\Pear;
 
 class File extends Model
 {
@@ -117,9 +119,30 @@ class File extends Model
                 'date' => $message->getHeaderValue('subject'),
                 'subject' => $message->getHeaderValue('date'),
                 'to' => address($message->getHeaderValue('to')),
-                'from' =>  address($message->getHeaderValue('from'))
+                'from' =>  address($message->getHeaderValue('from'))[0]
             ];
          }
+
+        if(endswith($this->filename, '.msg')) {
+            $messageFactory = new MAPI\MapiMessageFactory();
+            $messageFactory = new MAPI\MapiMessageFactory();
+            $documentFactory = new Pear\DocumentFactory();
+
+            $ole = $documentFactory->createFromStream($contents);
+            $message = $messageFactory->parseMessage($ole);
+
+
+            return [
+                'date' => $message->getSender(),
+                'subject' => $message->getHeaderValue('date'),
+                'to' => $message->getRecipients(),
+                'from' =>  $message->getSender()
+            ];
+         }
+
+
+
+
 
         return [];
     }
