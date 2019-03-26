@@ -72,7 +72,25 @@ class DocumentNotes extends React.PureComponent<any> {
     }
 }
 
+const RenderAddress = ({address = '', name = ''}) => {
+    return <span><strong>{ name }</strong> { address }</span>
+}
 
+class EmailFieldList extends React.PureComponent<{file: EL.Document}> {
+    render() {
+        const metadata = this.props.file.metadata || {};
+        return <React.Fragment>
+             <dt>Subject</dt>
+             <dd>{ metadata.subject }</dd>
+             <dt>Date</dt>
+             <dd>{ formatDateTime(metadata.date) }</dd>
+             <dt>To</dt>
+             <dd>{ (metadata.to || []).map((to, index) => <RenderAddress key={index} {...to} /> )}</dd>
+             <dt>From</dt>
+             <dd><RenderAddress {...metadata.from} /></dd>
+        </React.Fragment>
+    }
+}
 
 @UsersHOC()
 class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
@@ -174,6 +192,8 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
 
                  <dt>Created By</dt>
                  <dd>{ creator ? name(creator) : 'N/A' }</dd>
+
+                 { isEmail(file) && <EmailFieldList file={file} /> }
             </dl>
 
         <div className="row">
@@ -275,7 +295,13 @@ export const DocumentsForm = (DropTarget(NativeTypes.FILE, documentFileTarget, (
 
 
 
-
+const isEmail = (doc) => {
+    const extensions = [
+        '.msg',
+        '.eml'
+    ]
+    return extensions.some(ext => doc.filename.endsWith(ext));
+}
 
 const documentTypeClasses = (doc, showingSubTree) => {
     const map = {
@@ -302,7 +328,20 @@ const documentTypeClasses = (doc, showingSubTree) => {
         return 'fa fa-folder';
     }
 
+   if(isEmail(doc)) {
+       return 'fa fa-envelope-o';
+   }
     return map[doc.mimeType] || 'fa fa-file-text';
+}
+
+const documentDescriptor = (doc) => {
+    if(isEmail(doc) && doc.metadata && Object.keys(doc.metadata).length) {
+        try{
+            return <span>{ doc.metadata.subject } - <i>{ formatDateTime(doc.metadata.date) }</i></span>;
+        }
+        catch(e){}
+    }
+    return doc.filename;
 }
 
 function listToTree(documents: EL.Document[] = []){
@@ -417,7 +456,7 @@ const FileSpan = (props) => {
         !selected && select()}
     }>
         <span className={'icon ' + documentTypeClasses(item, showingSubTree)} />
-        <span className="filename">{ item.filename }</span>
+        <span className="filename">{ documentDescriptor(item) }</span>
         { !!item.children && !!item.children.length && <i>({ item.children.length } { item.children.length > 0 ? 'Files' : 'File'})</i> }
         </span>
  }

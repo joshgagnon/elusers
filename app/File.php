@@ -13,6 +13,7 @@ use pear\mail\Mail;
 use Hfig\MAPI;
 use Hfig\MAPI\OLE\Pear;
 
+
 class File extends Model
 {
     protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'previous_version_id', 'protected', 'metadata'];
@@ -103,40 +104,35 @@ class File extends Model
     {
         $contents = $this->read($user);
 
+        function address($value) {
+            $addresses = (new \Mail_RFC822)->parseAddressList($value);
+            return array_map(function($address) {
+                return [
+                    'name' => preg_replace('/^"|"$/', '', $address->personal),
+                    'address' => $address->mailbox.'@'.$address->host
+                ];
+            }, $addresses);
+        }
+
         if(endswith($this->filename, '.eml')) {
             $parser = new MessageParser();
             $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
-            function address($value) {
-                $addresses = (new \Mail_RFC822)->parseAddressList($value);
-                return array_map(function($address) {
-                    return [
-                        'name' => $address->personal,
-                        'address' => $address->mailbox.'@'.$address->host
-                    ];
-                }, $addresses);
-            }
             return [
-                'date' => $message->getHeaderValue('subject'),
-                'subject' => $message->getHeaderValue('date'),
+                'date' => $message->getHeaderValue('date'),
+                'subject' => $message->getHeaderValue('subject'),
                 'to' => address($message->getHeaderValue('to')),
                 'from' =>  address($message->getHeaderValue('from'))[0]
             ];
          }
 
         if(endswith($this->filename, '.msg')) {
-            $messageFactory = new MAPI\MapiMessageFactory();
-            $messageFactory = new MAPI\MapiMessageFactory();
-            $documentFactory = new Pear\DocumentFactory();
-
-            $ole = $documentFactory->createFromStream($contents);
-            $message = $messageFactory->parseMessage($ole);
-
-
+            $parser = new PhpMimeMailParser\Parser();
+            $parser->setText($contents);
             return [
-                'date' => $message->getSender(),
+                'date' => $parser->getHeader('subject'),
                 'subject' => $message->getHeaderValue('date'),
-                'to' => $message->getRecipients(),
-                'from' =>  $message->getSender()
+                'to' => address($parser->getHeader('to')),
+                'from' =>  address($parser->getHeader('from'))[0]
             ];
          }
 

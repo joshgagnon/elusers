@@ -32,6 +32,8 @@ class FileController extends Controller
         }
         // Get the file and return it
         $content = $file->read($user);
+        #return $file->metadata;
+
         $headers = [
             'Content-Type' => $file->mime_type,
             'Content-Disposition' => 'attachment; filename="' . $file->filename . '"',

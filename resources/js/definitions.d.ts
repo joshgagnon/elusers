@@ -110,6 +110,7 @@ declare global {
                 createdByUserId?: number;
             }
             permissions?: string[];
+            metadata?: any;
         }
 
         interface OrganisationDocument {
