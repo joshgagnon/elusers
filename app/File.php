@@ -145,12 +145,18 @@ class File extends Model
         $contents = $this->read($user);
         $parser = new MessageParser();
         $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
+
         return [
             'date' => $message->getHeaderValue('date'),
             'subject' => $message->getHeaderValue('subject'),
             'to' => address($message->getHeaderValue('to')),
             'from' =>  address($message->getHeaderValue('from'))[0],
-            'body' => implode('\n', array_map(function($parts) { return $parts->getContents(); }, $message->getParts(true)))
+            'body' => implode('\n', array_map(function($part) {
+                if($part->getHeaderValue('content-transfer-encoding') == 'quoted-printable'){
+                    return quoted_printable_decode($part->getContents());
+                }
+                return $part->getContents();
+            }, $message->getParts(true)))
         ];
 
     }
