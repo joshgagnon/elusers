@@ -19,10 +19,16 @@ export function fullname(user: EL.User | EL.Contact) {
 }
 
 export function name(user: EL.User) {
+    if(!user) {
+        return '';
+    }
     return user.preferredName || user.firstName;
 }
 
 export function guessName(user: EL.User | EL.Contact) {
+    if(!user) {
+        return '';
+    }
     return (<EL.User>user).preferredName ? name(user as EL.User) : fullname(user)
 }
 
