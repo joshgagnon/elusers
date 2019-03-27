@@ -13,6 +13,16 @@ use pear\mail\Mail;
 use Hfig\MAPI;
 use Hfig\MAPI\OLE\Pear;
 
+function address($value) {
+    $addresses = (new \Mail_RFC822)->parseAddressList($value);
+    return array_map(function($address) {
+        return [
+            'name' => preg_replace('/^"|"$/', '', $address->personal),
+            'address' => $address->mailbox.'@'.$address->host
+        ];
+    }, $addresses);
+}
+
 
 class File extends Model
 {
@@ -102,19 +112,11 @@ class File extends Model
 
     public function parseMetadata($user)
     {
-        $contents = $this->read($user);
 
-        function address($value) {
-            $addresses = (new \Mail_RFC822)->parseAddressList($value);
-            return array_map(function($address) {
-                return [
-                    'name' => preg_replace('/^"|"$/', '', $address->personal),
-                    'address' => $address->mailbox.'@'.$address->host
-                ];
-            }, $addresses);
-        }
+
 
         if(endswith($this->filename, '.eml')) {
+            $contents = $this->read($user);
             $parser = new MessageParser();
             $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
             return [
@@ -126,22 +128,47 @@ class File extends Model
          }
 
         if(endswith($this->filename, '.msg')) {
-            $parser = new PhpMimeMailParser\Parser();
+            $contents = $this->read($user);
+            $parser = new \PhpMimeMailParser\Parser();
             $parser->setText($contents);
             return [
                 'date' => $parser->getHeader('subject'),
-                'subject' => $message->getHeaderValue('date'),
+                'subject' => $message->getHeader('date'),
                 'to' => address($parser->getHeader('to')),
                 'from' =>  address($parser->getHeader('from'))[0]
             ];
          }
 
-
-
-
-
         return [];
     }
+    public function getEmlData($user) {
+        $contents = $this->read($user);
+        $parser = new MessageParser();
+        $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
+        return [
+            'date' => $message->getHeaderValue('date'),
+            'subject' => $message->getHeaderValue('subject'),
+            'to' => address($message->getHeaderValue('to')),
+            'from' =>  address($message->getHeaderValue('from'))[0],
+            'body' => implode('\n', array_map(function($parts) { return $parts->getContents(); }, $message->getParts(true)))
+        ];
+
+    }
+
+    public function getMsgData($user) {
+        $contents = $this->read($user);
+        $parser = new \PhpMimeMailParser\Parser();
+        $parser->setText($contents);
+        return [
+            'date' => $parser->getHeader('subject'),
+            'subject' => $parser->getHeader('date'),
+            'to' => address($parser->getHeader('to')),
+            'from' =>  address($parser->getHeader('from'))[0],
+            'body' => $parser->getMessageBody('text')
+        ];
+    }
+
+
 
 
 }

@@ -19,8 +19,8 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
         const filename = this.props.document.filename.toLowerCase();
         const pdfLike = ['.pdf', '.doc', '.docx', '.odt'].some(suf => filename.endsWith(suf));
         const image = ['.jpg', '.jpeg', '.png', '.gif', 'bmp'].some(suf => filename.endsWith(suf));
-        const eml = ['.eml'].some(suf => filename.endsWith(suf));
-        const msg = ['.msg'].some(suf => filename.endsWith(suf));
+        const email = ['.eml', '.msg'].some(suf => filename.endsWith(suf));
+
 
         return (
             <Modal backdrop="static" show={true} onHide={this.props.closeModal} bsSize="large">
@@ -33,8 +33,7 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
                     <div className="pdf-wrapper">
                        { pdfLike && <PDF url={`/api/files/${this.props.document.id}/preview`} scale={2.5} noPDFMsg='Loading...' /> }
                        { image && <img style={{maxWidth: '100%'}} src={`/api/files/${this.props.document.id}`} /> }
-                       { eml && <EmailViewer src={`/api/files/${this.props.document.id}`} format="eml" loading={<Loading />} /> }
-                       { msg && <EmailViewer src={`/api/files/${this.props.document.id}`} format="msg" loading={<Loading />} /> }
+                       { email && <EmailViewer src={`/api/files/${this.props.document.id}/preview`} loading={<Loading />} /> }
                     </div>
                 </Modal.Body>
 

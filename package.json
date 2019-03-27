@@ -9,7 +9,6 @@
   "main": "index.js",
   "scripts": {},
   "dependencies": {
-    "@freiraum/msgreader": "^1.1.1",
     "@types/bluebird": "^3.5.2",
     "@types/pdf": "0.0.31",
     "@types/react-addons-css-transition-group": "^15.0.1",

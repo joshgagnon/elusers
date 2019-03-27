@@ -8,10 +8,6 @@
   dependencies:
     classnames "^2.2.0"
 
-"@freiraum/msgreader@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@freiraum/msgreader/-/msgreader-1.1.1.tgz#79534071888b24210fd1d696d02ea5ad11436f8b"
-
 "@types/bluebird@^3.5.2":
   version "3.5.24"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.24.tgz#11f76812531c14f793b8ecbf1de96f672905de8a"

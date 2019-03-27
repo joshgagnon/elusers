@@ -337,7 +337,7 @@ const documentTypeClasses = (doc, showingSubTree) => {
 const documentDescriptor = (doc) => {
     if(isEmail(doc) && doc.metadata && Object.keys(doc.metadata).length) {
         try{
-            return <span>{ doc.metadata.subject } - <i>{ formatDateTime(doc.metadata.date) }</i></span>;
+            return <span>{ doc.metadata.subject } - <i>{ formatDateTime(doc.metadata.date) }</i> - <i>{ doc.metadata.to.map(to => to.name).join(', ') }</i></span>;
         }
         catch(e){}
     }
@@ -372,6 +372,7 @@ function listToTree(documents: EL.Document[] = []){
 }
 
 function filterTree(value, tree) {
+    return tree;
     if(!value){
         return tree;
     }

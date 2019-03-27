@@ -75,6 +75,13 @@ class FileController extends Controller
                 ->header('Content-Type', $res->getHeader('Content-Type'))
                 ->header('Content-Disposition', $disp);
         }
+        if(endswith($file->filename, '.msg')) {
+            return $file->getMsgData($user );
+        }
+        if(endswith($file->filename, '.eml')) {
+            return $file->getEmlData($user );
+        }
+
         $headers = [
             'Content-Type' => $file->mime_type,
             'Content-Disposition' => 'attachment; filename="' . $file->filename . '"',
