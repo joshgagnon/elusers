@@ -14,13 +14,16 @@ use Hfig\MAPI;
 use Hfig\MAPI\OLE\Pear;
 
 function address($value) {
-    $addresses = (new \Mail_RFC822)->parseAddressList($value);
+    if(!$value) {
+        return [];
+    }
+     $addresses = (new \Mail_RFC822)->parseAddressList($value);
     return array_map(function($address) {
         return [
             'name' => preg_replace('/^"|"$/', '', $address->personal),
             'address' => $address->mailbox.'@'.$address->host
         ];
-    }, $addresses || []);
+    }, $addresses);
 }
 
 
