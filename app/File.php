@@ -15,7 +15,7 @@ use Hfig\MAPI\OLE\Pear;
 
 function address($value) {
     if(!$value) {
-        return [];
+        return [{'name' => 'Unknown', 'address' => ''}];
     }
      $addresses = (new \Mail_RFC822)->parseAddressList($value);
     return array_map(function($address) {
