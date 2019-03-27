@@ -371,16 +371,20 @@ function listToTree(documents: EL.Document[] = []){
         }]
 }
 
-function filterTree(value, tree) {
-    return tree;
+function filterTree(value, tree, max=10e4) {
     if(!value){
-        return tree;
+        return {tree, limited: false}
     }
+    let count = 0;
     function filter(value, tree){
-        return (tree).map(node => {
+        return tree.map(node => {
+            if(count > max) {
+                return false;
+            }
             const children = filter(value, node.children);
             const newNode = {...node, children};
             let found = !!children.length;
+            count += children.length;
             if(node.filename.toLocaleLowerCase().indexOf(value) > -1){
                 found = true;
             }
@@ -388,7 +392,7 @@ function filterTree(value, tree) {
         }).filter(f => f)
     }
     const newTree = filter(value, tree);
-    return newTree;
+    return {tree: newTree, limited: count > max};
 }
 
 
@@ -568,8 +572,12 @@ const SearchForm = (props) => {
         </div>
 }
 
+
+const EMPTY_ARRAY = [];
+const ACCEPT_DROP_TYPES = [FILE, NativeTypes.FILE];
 class FileTree extends React.PureComponent<any> {
     state = {root: true, filter: '', creatingFolder: false, renaming: false, selected: false}
+    static MAX_FILTERED = 500;
     constructor(props){
         super(props);
         this.expandAll = this.expandAll.bind(this);
@@ -644,7 +652,7 @@ class FileTree extends React.PureComponent<any> {
                 item: item,
                 file: item,
                 viewDocument: this.props.viewDocument,
-                accepts: item.directory ? [FILE, NativeTypes.FILE] : [],
+                accepts: item.directory ? ACCEPT_DROP_TYPES : EMPTY_ARRAY,
                 fileTypes:  FILE,
                 select: () => this.select(item.id),
                 unselect: () => this.select(null),
@@ -683,25 +691,29 @@ class FileTree extends React.PureComponent<any> {
                         .sort(firstBy(doc => {
                             return doc.directory ? -1 : 1
                         })
+                        .thenBy(v => v.metadata && v.metadata.date && new Date(v.metadata.date))
                         .thenBy('filename', {ignoreCase:true})
                         .thenBy('id'));
 
-                    return <RenderFile  {...props}>
+                        return <RenderFile  {...props}>
                        { props.showingSubTree && loop( item.children, newPath) }
                     </RenderFile>
                 }
-
                 return <RenderFile {...props} />;
             });
         };
 
-        const files = filterTree(this.state.filter, this.props.files);
+        const { tree, limited } = filterTree(this.state.filter, this.props.files, FileTree.MAX_FILTERED);
+
         const selectedFile = this.props.flatFiles.find(file => file.id === this.state.selected);
         return <div onClick={() => this.select(null)} >
                 <Panel formattedTitle={
             <SearchForm title={this.props.title} key="search" onSearchChange={this.onSearchChange} filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll} /> } className="document-panel">
             <div className="file-tree">
-                { loop(files, []) }
+                { tree.length === 0 && <span>No files found.</span> }
+                 { limited  && <span>Results limited to first {FileTree.MAX_FILTERED}</span> }
+                { loop(tree, []) }
+
             </div>
             { this.props.loading && <LoadingSmall /> }
             { this.props.canUpdate && <DocumentsForm documents={{onChange: (files) => this.upload(files)}} /> }
@@ -802,7 +814,7 @@ export class DocumentsTree extends React.PureComponent<any> {
         const { files } = this.props;
         return  <div className="documents-view">
             <FileTree
-                loading={this.props.cached}
+                loading={this.props.cached || this.props.loading}
                 title={this.props.title}
                 files={listToTree(files)}
                 flatFiles={files}

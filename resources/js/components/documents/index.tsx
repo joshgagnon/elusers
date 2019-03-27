@@ -26,6 +26,7 @@ export default  class Documents extends React.PureComponent<DocumentsProps> {
     render() {
         return <DocumentsTree
             title="Organisation Documents"
+            loading={this.props.documents.isFetching}
             files={this.props.documents.data ? this.props.documents.data : []}
             basePath={`organisation-files`}
             cached={this.props.documents.cached}
