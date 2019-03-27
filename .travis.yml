@@ -13,6 +13,7 @@ addons:
 
 before_script:
   - cp .env.travis .env
+  - pecl install mailparse
   - psql -c 'create database evolution_users_test;' -U postgres
   - composer self-update
   - composer install --no-interaction

@@ -176,7 +176,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                     </React.Fragment> }
                 { this.state.renaming && <FormGroup>
                     <InputGroup>
-                       <FormControl type="text" placeholder={file.filename} value={this.state.renameValue} onChange={this.onChange} />
+                       <FormControl autoFocus type="text" placeholder={file.filename} value={this.state.renameValue} onChange={this.onChange} />
                        <InputGroup.Button onClick={this.submitRename}>
                        <Button bsStyle="primary" onClick={this.submitRename}>Save</Button>
                        </InputGroup.Button>
@@ -509,7 +509,7 @@ class RenderFile extends React.PureComponent<any> {
             return <div className="file-sub-tree"><span className="expand-control"></span>
                     <span className="file selected" >
                         <span className="icon fa fa-plus-circle"></span>
-                        <FormGroup><FormControl type="text" onClick={e => e.stopPropagation()} placeholder={ 'New Folder' } inputRef={ref => { this.input = ref; }}  /></FormGroup>
+                        <FormGroup><FormControl autoFocus type="text" onClick={e => e.stopPropagation()} placeholder={ 'New Folder' } inputRef={ref => { this.input = ref; }}  /></FormGroup>
                         <span onClick={submitCreateFolder} className="view">Create Folder</span>
                         <span onClick={endCreateFolder} className="view">Cancel</span>
                     </span>
