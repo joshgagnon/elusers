@@ -12,6 +12,8 @@ use Phemail\MessageParser;
 use pear\mail\Mail;
 use Hfig\MAPI;
 use Hfig\MAPI\OLE\Pear;
+use Illuminate\Support\Facades\Log;
+
 
 function address($value) {
     if(!$value) {
@@ -115,7 +117,38 @@ class File extends Model
 
     public function parseMetadata($user)
     {
-        if(endswith($this->filename, '.eml')) {
+        try{
+            if(endswith($this->filename, '.eml')) {
+                $contents = $this->read($user);
+                $parser = new MessageParser();
+                $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
+                return [
+                    'date' => $message->getHeaderValue('date'),
+                    'subject' => $message->getHeaderValue('subject'),
+                    'to' => address($message->getHeaderValue('to')),
+                    'from' =>  address($message->getHeaderValue('from'))[0]
+                ];
+             }
+
+            if(endswith($this->filename, '.msg')) {
+                $contents = $this->read($user);
+                $parser = new \PhpMimeMailParser\Parser();
+                $parser->setText($contents);
+                return [
+                    'date' => $parser->getHeader('subject'),
+                    'subject' => $message->getHeader('date'),
+                    'to' => address($parser->getHeader('to')),
+                    'from' =>  address($parser->getHeader('from'))[0]
+                ];
+             }
+        }
+        catch(\Throwable $e) {
+            Log::error($e);
+        }
+        return [];
+    }
+    public function getEmlData($user) {
+        try{
             $contents = $this->read($user);
             $parser = new MessageParser();
             $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
@@ -123,55 +156,38 @@ class File extends Model
                 'date' => $message->getHeaderValue('date'),
                 'subject' => $message->getHeaderValue('subject'),
                 'to' => address($message->getHeaderValue('to')),
-                'from' =>  address($message->getHeaderValue('from'))[0]
+                'from' =>  address($message->getHeaderValue('from'))[0],
+                'body' => implode('\n', array_map(function($part) {
+                    if($part->getHeaderValue('content-transfer-encoding') == 'quoted-printable'){
+                        return quoted_printable_decode($part->getContents());
+                    }
+                    return $part->getContents();
+                }, $message->getParts(true)))
             ];
-         }
+        }catch(\Throwable $e) {
+                Log::error($e);
+            }
+        return [];
 
-        if(endswith($this->filename, '.msg')) {
+    }
+
+    public function getMsgData($user) {
+        try{
             $contents = $this->read($user);
             $parser = new \PhpMimeMailParser\Parser();
             $parser->setText($contents);
             return [
                 'date' => $parser->getHeader('subject'),
-                'subject' => $message->getHeader('date'),
+                'subject' => $parser->getHeader('date'),
                 'to' => address($parser->getHeader('to')),
-                'from' =>  address($parser->getHeader('from'))[0]
+                'from' =>  address($parser->getHeader('from'))[0],
+                'body' => utf8_encode($parser->getMessageBody('text'))
             ];
-         }
-
+        }catch(\Throwable $e) {
+            Log::error($e);
+        }
         return [];
-    }
-    public function getEmlData($user) {
-        $contents = $this->read($user);
-        $parser = new MessageParser();
-        $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
 
-        return [
-            'date' => $message->getHeaderValue('date'),
-            'subject' => $message->getHeaderValue('subject'),
-            'to' => address($message->getHeaderValue('to')),
-            'from' =>  address($message->getHeaderValue('from'))[0],
-            'body' => implode('\n', array_map(function($part) {
-                if($part->getHeaderValue('content-transfer-encoding') == 'quoted-printable'){
-                    return quoted_printable_decode($part->getContents());
-                }
-                return $part->getContents();
-            }, $message->getParts(true)))
-        ];
-
-    }
-
-    public function getMsgData($user) {
-        $contents = $this->read($user);
-        $parser = new \PhpMimeMailParser\Parser();
-        $parser->setText($contents);
-        return [
-            'date' => $parser->getHeader('subject'),
-            'subject' => $parser->getHeader('date'),
-            'to' => address($parser->getHeader('to')),
-            'from' =>  address($parser->getHeader('from'))[0],
-            'body' => $parser->getMessageBody('text')
-        ];
     }
 
 
