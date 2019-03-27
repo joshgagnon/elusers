@@ -20,7 +20,7 @@ function address($value) {
             'name' => preg_replace('/^"|"$/', '', $address->personal),
             'address' => $address->mailbox.'@'.$address->host
         ];
-    }, $addresses);
+    }, $addresses || []);
 }
 
 
@@ -91,7 +91,7 @@ class File extends Model
         while($file->parent) {
             $file = $file->parent;
             $path[] = $file->filename;
-        }
+    }
         return implode(DIRECTORY_SEPARATOR, array_reverse($path));
     }
 
@@ -112,9 +112,6 @@ class File extends Model
 
     public function parseMetadata($user)
     {
-
-
-
         if(endswith($this->filename, '.eml')) {
             $contents = $this->read($user);
             $parser = new MessageParser();
