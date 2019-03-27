@@ -271,32 +271,48 @@ class MatterController extends Controller
         DB::beginTransaction();
         $user = $request->user();
         $results = [];
-
+        $count = 0;
         try {
             $orgId = $request->user()->organisation_id;
             $file = $request->file('file')[0];
+
             $escaped = Encoding::convert_cp1252_to_ascii(file_get_contents($file->getRealPath()));
             //$escaped = mb_convert_encoding(file_get_contents($file->getRealPath()),  'UTF-8', "auto");
 
-            $lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
-            $rows   = array_map('str_getcsv', $lines);
+            //$lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
+            //$rows   = array_map('str_getcsv', $lines);
+
+
+            $fiveMBs = 5 * 1024 * 1024;
+            $fp = fopen("php://temp/maxmemory:$fiveMBs", 'r+');
+            fputs($fp, $escaped);
+            rewind($fp);
+
+            $rows= [];
+            while ($row = fgetcsv($fp)) {
+                $rows[] = $row;
+            }
+            fclose($fp);
 
             if(count($rows[0]) < 3){
                 array_shift($rows); //sep
             }
             $header = array_shift($rows);
+
+
             $csv    = array();
             foreach($rows as $row) {
                 if(count($row) == count($header)){
                     $csv[] = array_combine($header, array_map('trim', $row));
                 }
             }
-
             foreach ($csv as $row) {
+
                 $actionstepId = $row['ID'];
                 if($row['Type'] == 'Deeds' or strpos($row['Type'], 'NA') === 0 || strpos($row['Type'], 'Evolution') !== false){
                     continue;
                 }
+
                 $matter_type = findClosestMatterType($row['Type']);
 
                 $created_at = Carbon::createFromFormat('d M Y', $row['Created']);
@@ -324,6 +340,7 @@ class MatterController extends Controller
                 if(count($clients)) {
                     $matter->clients()->sync($clients);
                 }
+                $count++;
 
             }
 
@@ -332,7 +349,7 @@ class MatterController extends Controller
             DB::rollback();
             throw $e;
         }
-        return response()->json(['message' => 'Matters updated.']);
+        return response()->json(['message' => $count.' Matters updated.']);
     }
 
     public function destroy(Request $request, $matterId) {

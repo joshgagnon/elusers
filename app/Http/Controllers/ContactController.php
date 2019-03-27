@@ -428,9 +428,19 @@ class ContactController extends Controller
             $orgId = $request->user()->organisation_id;
             $file = $request->file('file')[0];
             $escaped = Encoding::convert_cp1252_to_ascii(file_get_contents($file->getRealPath()));
-            $lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
+            /*$lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
             $rows   = array_map('str_getcsv', $lines);
+    */
+            $fiveMBs = 5 * 1024 * 1024;
+            $fp = fopen("php://temp/maxmemory:$fiveMBs", 'r+');
+            fputs($fp, $escaped);
+            rewind($fp);
 
+            $rows= [];
+            while ($row = fgetcsv($fp)) {
+                $rows[] = $row;
+            }
+            fclose($fp);
             if(count($rows[0]) < 3){
                 array_shift($rows); //sep
             }
@@ -450,6 +460,20 @@ class ContactController extends Controller
                     $contact->update([
                         'metadata' => json_encode(array_merge(['actionstepId' => $actionstepId], $row))
                     ]);
+                    //update name?
+                    if($row['Type'] == 'Individual'){
+                        $names = explode(" ", $row['Name']);
+                        $middle = null;
+                        if(count($names) > 2){
+                            $middle = array_slice($names, 1, count($names) - 2);
+                            $middle = implode(' ', $middle);
+                        }
+                        $contact->contactable->update([
+                            'first_name' => $names[0],
+                            'middle_name' => $middle,
+                            'surname' => $names[count($names) - 1]
+                        ]);
+                    }
                 }
                 else {
                     $fields = [
