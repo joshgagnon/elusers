@@ -15,6 +15,13 @@ interface ViewDocumentProps {
 }
 
 class ViewDocument extends React.PureComponent<ViewDocumentProps> {
+
+
+  componentDidCatch(error, info) {
+    // You can also log the error to an error reporting service
+   // handle error
+  }
+  
     render() {
         const filename = this.props.document.filename.toLowerCase();
         const pdfLike = ['.pdf', '.doc', '.docx', '.odt'].some(suf => filename.endsWith(suf));

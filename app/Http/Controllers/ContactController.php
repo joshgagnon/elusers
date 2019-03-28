@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
 use App\Library\Encoding;
+use App\Library\StringToStream;
 
 use App\Library\SQLFile;
 use Carbon\Carbon;
@@ -431,10 +432,8 @@ class ContactController extends Controller
             /*$lines = preg_split('/[\r\n]{1,2}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/', $escaped);
             $rows   = array_map('str_getcsv', $lines);
     */
-            $fiveMBs = 5 * 1024 * 1024;
-            $fp = fopen("php://temp/maxmemory:$fiveMBs", 'r+');
-            fputs($fp, $escaped);
-            rewind($fp);
+
+            $fp = StringToStream::create($escaped);
 
             $rows= [];
             while ($row = fgetcsv($fp)) {

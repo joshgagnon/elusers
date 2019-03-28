@@ -17,8 +17,6 @@ class SaveMetadata extends Command
     {
         $this->info('updating');
         MatterFile::whereNotNull('matter_id')->chunk(100, function($mfs) {
-
-
             foreach($mfs as $mf) {
                $file = $mf->file;
 

@@ -56,7 +56,13 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
 
         <dt>Body</dt>
         <dd>
-        <pre>{ fileData.body }></pre>
+        { (fileData.body || []).map((section, index) => {
+            if(section.contentType === 'text/html') {
+                return <div key={index}  dangerouslySetInnerHTML={{__html: section.value }} />
+            }
+            return <pre key={index}>{ section.value }</pre>
+
+        } )}
         </dd>
         </dl>
 

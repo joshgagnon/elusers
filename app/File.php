@@ -9,17 +9,21 @@ use App\FileNote;
 use App\Library\SQLFile;
 use App\Library\Encryption;
 use Phemail\MessageParser;
-use pear\mail\Mail;
-use Hfig\MAPI;
-use Hfig\MAPI\OLE\Pear;
 use Illuminate\Support\Facades\Log;
-
+use App\Library\StringToStream;
 
 function address($value) {
+    $default = [['name' => 'Unknown', 'address' => '']];
     if(!$value) {
-        return [['name' => 'Unknown', 'address' => '']];
+        return $default;
     }
-     $addresses = (new \Mail_RFC822)->parseAddressList($value);
+    $addresses = (new \Mail_RFC822)->parseAddressList($value);
+    if(!is_array($addresses)) {
+      $addresses = (new \Mail_RFC822)->parseAddressList(preg_replace('/\\\/', '', $value));      
+    }
+    if(!is_array($addresses)) {
+        return $default;
+    }
     return array_map(function($address) {
         return [
             'name' => preg_replace('/^"|"$/', '', $address->personal),
@@ -117,28 +121,14 @@ class File extends Model
 
     public function parseMetadata($user)
     {
-        try{
-            if(endswith($this->filename, '.eml')) {
-                $contents = $this->read($user);
-                $parser = new MessageParser();
-                $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
+         try{
+            if(Str::endsWith($this->filename, '.eml')) {
+                $metadata = $this->getEmlData($user);
                 return [
-                    'date' => $message->getHeaderValue('date'),
-                    'subject' => $message->getHeaderValue('subject'),
-                    'to' => address($message->getHeaderValue('to')),
-                    'from' =>  address($message->getHeaderValue('from'))[0]
-                ];
-             }
-
-            if(endswith($this->filename, '.msg')) {
-                $contents = $this->read($user);
-                $parser = new \PhpMimeMailParser\Parser();
-                $parser->setText($contents);
-                return [
-                    'date' => $parser->getHeader('subject'),
-                    'subject' => $message->getHeader('date'),
-                    'to' => address($parser->getHeader('to')),
-                    'from' =>  address($parser->getHeader('from'))[0]
+                    'date' => $metadata['date'],
+                    'subject' => $metadata['subject'],
+                    'to' => $metadata['to'],
+                    'from' => $metadata['from'],
                 ];
              }
         }
@@ -147,46 +137,118 @@ class File extends Model
         }
         return [];
     }
-    public function getEmlData($user) {
-        try{
-            $contents = $this->read($user);
-            $parser = new MessageParser();
-            $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
-            return [
-                'date' => $message->getHeaderValue('date'),
-                'subject' => $message->getHeaderValue('subject'),
-                'to' => address($message->getHeaderValue('to')),
-                'from' =>  address($message->getHeaderValue('from'))[0],
-                'body' => implode('\n', array_map(function($part) {
-                    if($part->getHeaderValue('content-transfer-encoding') == 'quoted-printable'){
-                        return quoted_printable_decode($part->getContents());
-                    }
-                    return $part->getContents();
-                }, $message->getParts(true)))
-            ];
-        }catch(\Throwable $e) {
-                Log::error($e);
+
+    protected function decodeContentTransfer($encodedString, $encodingType)
+    {
+        $encodingType = strtolower($encodingType);
+
+        if ($encodingType == 'base64') {
+            return base64_decode($encodedString);
+        } elseif ($encodingType == 'quoted-printable') {
+            return quoted_printable_decode($encodedString);
+        } else {
+            return $encodedString;
+        }
+    }
+
+    protected function upperListEncode() { //convert mb_list_encodings() to uppercase
+        $encodes=mb_list_encodings();
+        foreach ($encodes as $encode) $tencode[]=strtoupper($encode);
+        return $tencode;
+    }
+
+    protected function decode($string) {
+        $tabChaine=imap_mime_header_decode($string);
+        $texte='';
+        for ($i=0; $i<count($tabChaine); $i++) {
+            
+            switch (strtoupper($tabChaine[$i]->charset)) { //convert charset to uppercase
+                case 'UTF-8': $texte.= $tabChaine[$i]->text; //utf8 is ok
+                    break;
+                case 'DEFAULT': $texte.= $tabChaine[$i]->text; //no convert
+                    break;
+                default: if (in_array(strtoupper($tabChaine[$i]->charset),upperListEncode())) //found in mb_list_encodings()
+                            {$texte.= mb_convert_encoding($tabChaine[$i]->text,'UTF-8',$tabChaine[$i]->charset);}
+                         else { //try to convert with iconv()
+                              $ret = iconv($tabChaine[$i]->charset, "UTF-8", $tabChaine[$i]->text);    
+                              if (!$ret) $texte.=$tabChaine[$i]->text;  //an error occurs (unknown charset) 
+                              else $texte.=$ret;
+                            }                    
+                    break;
+                }
             }
-        return [];
+            
+        return $texte;    
+    }
+
+
+    public function processEmailData($contents)
+    {
+        $parser = new MessageParser();
+        $message = $parser->parse(preg_split("/\r\n|\n|\r/", $contents));
+        $encoding = $message->getHeaderValue('content-transfer-encoding');
+        $mainBody = $this->decodeContentTransfer($message->getContents(), $encoding);
+        if($mainBody) {
+            $body = [
+                ['value' => $mainBody, 'contentType' => $message->getHeaderValue('content-type')]
+            ];
+        } else {
+            $body = array_map(function($part) {
+                $value = $this->decodeContentTransfer($part->getContents(), $part->getHeaderValue('content-transfer-encoding'));
+                return ['value' => $value, 'contentType' => $part->getHeaderValue('content-type')];
+            }, $message->getParts(true)); 
+        }
+        return [
+            'date' => $message->getHeaderValue('date'),
+            'subject' => $this->decode($message->getHeaderValue('subject')),
+            'to' => address($message->getHeaderValue('to')),
+            'from' =>  address($message->getHeaderValue('from'))[0],
+            'body' => $body
+        ];
 
     }
 
-    public function getMsgData($user) {
+    public function getEmlData($user) {
         try{
             $contents = $this->read($user);
-            $parser = new \PhpMimeMailParser\Parser();
-            $parser->setText($contents);
-            return [
-                'date' => $parser->getHeader('subject'),
-                'subject' => $parser->getHeader('date'),
-                'to' => address($parser->getHeader('to')),
-                'from' =>  address($parser->getHeader('from'))[0],
-                'body' => utf8_encode($parser->getMessageBody('text'))
-            ];
+            return $this->processEmailData($contents);
         }catch(\Throwable $e) {
             Log::error($e);
         }
-        return [];
+        return [
+            'date' => null,
+            'subject' => 'Unknown Subject',
+            'to' => [],
+            'from' =>  ['name' => 'Unknown', 'address' => '' ],
+            'body' => 'Could not read message'
+        ];
+    }
+
+
+    public function getMsgData($user) {
+        try{
+             // convert to eml
+            $contents = $this->read($user);
+            $tmp = tmpfile();
+            $data = stream_get_meta_data($tmp);
+            $file = $data['uri'];
+            fwrite($tmp, $contents);
+            exec(sprintf('python3 %s %s', implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources','scripts', 'outlookmsgfile.py']), $file));
+            fclose($tmp);
+            $resultFile = $data['uri'].'.eml';
+            $results = file_get_contents($resultFile);
+            unlink($resultFile);
+            return $this->processEmailData($results);
+        }catch(\Throwable $e) {
+           Log::error($e);
+        }
+        return [
+            'date' => null,
+            'subject' => 'Unknown Subject',
+            'to' => [],
+            'from' =>  ['name' => 'Unknown', 'address' => '' ],
+            'body' => 'Could not read message'
+        ];
 
     }
 
