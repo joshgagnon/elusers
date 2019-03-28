@@ -11,6 +11,9 @@ use App\Library\Encryption;
 use Phemail\MessageParser;
 use Illuminate\Support\Facades\Log;
 use App\Library\StringToStream;
+use Illuminate\Support\Str;
+ use App\Library\Encoding;  
+
 
 function address($value) {
     $default = [['name' => 'Unknown', 'address' => '']];
@@ -177,8 +180,8 @@ class File extends Model
                     break;
                 }
             }
-            
-        return $texte;    
+
+        return Encoding::convert_from_latin1_to_utf8_recursively($texte);    
     }
 
 
@@ -233,11 +236,14 @@ class File extends Model
             $data = stream_get_meta_data($tmp);
             $file = $data['uri'];
             fwrite($tmp, $contents);
-            exec(sprintf('python3 %s %s', implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources','scripts', 'outlookmsgfile.py']), $file));
+            $command = sprintf('python3 %s %s', implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources','scripts', 'outlookmsgfile.py']), $file);
+            exec($command);
             fclose($tmp);
             $resultFile = $data['uri'].'.eml';
             $results = file_get_contents($resultFile);
+
             unlink($resultFile);
+
             return $this->processEmailData($results);
         }catch(\Throwable $e) {
            Log::error($e);

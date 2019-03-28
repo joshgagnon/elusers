@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-
+use Illuminate\Support\Str;
 
 function endswith($string, $test) {
     $strlen = strlen($string);
@@ -75,10 +75,10 @@ class FileController extends Controller
                 ->header('Content-Type', $res->getHeader('Content-Type'))
                 ->header('Content-Disposition', $disp);
         }
-        if(endswith($file->filename, '.msg')) {
+        if(Str::endsWith($file->filename, '.msg')) {
             return $file->getMsgData($user );
         }
-        if(endswith($file->filename, '.eml')) {
+        if(Str::endsWith($file->filename, '.eml')) {
             return $file->getEmlData($user );
         }
 
