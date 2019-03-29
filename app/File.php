@@ -134,6 +134,16 @@ class File extends Model
                     'from' => $metadata['from'],
                 ];
              }
+            if(Str::endsWith($this->filename, '.msg')) {
+                $metadata = $this->getMsgData($user);
+                return [
+                    'date' => $metadata['date'],
+                    'subject' => $metadata['subject'],
+                    'to' => $metadata['to'],
+                    'from' => $metadata['from'],
+                ];
+             }
+
         }
         catch(\Throwable $e) {
             Log::error($e);
@@ -180,8 +190,7 @@ class File extends Model
                     break;
                 }
             }
-
-        return Encoding::convert_from_latin1_to_utf8_recursively($texte);    
+        return $texte;    
     }
 
 
@@ -206,7 +215,7 @@ class File extends Model
             'subject' => $this->decode($message->getHeaderValue('subject')),
             'to' => address($message->getHeaderValue('to')),
             'from' =>  address($message->getHeaderValue('from'))[0],
-            'body' => $body
+            'body' => Encoding::utf8ize($body)
         ];
 
     }
@@ -241,9 +250,7 @@ class File extends Model
             fclose($tmp);
             $resultFile = $data['uri'].'.eml';
             $results = file_get_contents($resultFile);
-
             unlink($resultFile);
-
             return $this->processEmailData($results);
         }catch(\Throwable $e) {
            Log::error($e);

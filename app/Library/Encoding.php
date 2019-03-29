@@ -67,6 +67,16 @@ class Encoding {
         }
         return $input;
     }
+public static function utf8ize( $mixed ) {
+    if (is_array($mixed)) {
+        foreach ($mixed as $key => $value) {
+            $mixed[$key] = Encoding::utf8ize($value);
+        }
+    } elseif (is_string($mixed)) {
+        return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+    }
+    return $mixed;
+}
 
 public static function convert_from_latin1_to_utf8_recursively($dat)
    {
@@ -85,5 +95,5 @@ public static function convert_from_latin1_to_utf8_recursively($dat)
          return $dat;
       }
    }
-    
+
 }
