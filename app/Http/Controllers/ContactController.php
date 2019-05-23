@@ -501,6 +501,42 @@ class ContactController extends Controller
                     $this->saveSubType($contact, $fields);
                     // need to add contact information
                 }
+
+                // now update contact details
+                $contactInfos = [];
+                if(isset($row['Email Address'])) {
+                    $contactInfos[] = ['type' => 'email', 'data' => ['subtype' => 'Business', 'email' => $row['Email Address']]];
+                    //$this->saveContactInformations($contact, $data);
+                }
+                if(isset($row['Phone Numbers'])) {
+                     $numbers = preg_split("/\[([^]]+)] /", $row['Phone Numbers'], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+                    if(count($numbers)) {
+                        if(count($numbers) === 1) {
+                             $contactInfos[] = [
+                                'type' => 'phone',
+                                'data' => [
+                                    'subtype' => 'Mobile',
+                                    'phone' => $contact->phone
+                                ]
+                            ];
+                        }
+                        else{
+                            for ($n = 0; $n < count($numbers); $n+=2) {
+                                $contactInfos[] = [
+                                'type' => 'phone',
+                                'data' => [
+                                    'subtype' => $numbers[$n],
+                                    'phone' => $numbers[$n+1]
+                                ]];
+                            }
+                        }
+                     }
+                }
+                foreach($contactInfos as $contactInfo) {
+                    if(!$contact->contactInformations()->where('type', '=', $contactInfo['type'])->where('data->'.$contactInfo['type'], '=', $contactInfo['data'][$contactInfo['type']])->exists()) {
+                        $contact->contactInformations()->attach(ContactInformation::create($contactInfo));
+                    }
+                }
                 /*if($row['Address']){
                     $address = [
                         'address_one' => $row['Address'],
