@@ -22,6 +22,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 
 Route::get('amlcft/{token}', 'HomeController@amlcft')->name('home.amlcft');
+Route::get('contact-us', 'HomeController@contact')->name('home.contact');
 
 // Catch all and serve the main app
 Route::group(['middleware' => 'auth'], function() {

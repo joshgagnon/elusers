@@ -65,10 +65,10 @@ const AMLCFTFields = [
 
 @(reduxForm({
     form: EL.FormNames.EDIT_CONTACT_AMLCFT_FORM,
-    validate: values => validate({
+    validate: (values: any) : EL.ValidationErrors => ({contactable: validate({
     firstName: { name: 'First Name', required: true },
     surname: { name: 'Surname', required: true }
-    }, values),
+    }, values.contactable || {})}),
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)

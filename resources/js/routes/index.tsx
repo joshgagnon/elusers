@@ -6,7 +6,7 @@ import Users from '../components/users';
 
 import { Contact, Contacts, CreateContact, EditContact } from '../components/contacts';
 import {  ExternalAMLCFT, ExternalAMLCFTComplete, MergeContact  } from '../components/contacts/amlcft';
-
+import { ExternalContact } from '../components/contact-us/contactUs';
 import { DeedPacket, ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
 import { DeedRecord, EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
 
@@ -122,6 +122,8 @@ const routes = (routeComponent: RouteComponent) => (
 
         <Route path="amlcft/complete" component={ ExternalAMLCFTComplete } />
         <Route path="amlcft/:token" component={ ExternalAMLCFT } />
+
+        <Route path="contact-us" component={ ExternalContact } />        
 
         { WikiRoutes }
     </Route>

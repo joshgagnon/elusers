@@ -444,7 +444,8 @@ declare global {
             CREATE_DEADLINE = 'CREATE_DEADLINE',
             EDIT_DEADLINE = 'EDIT_DEADLINE',
 
-            EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM'
+            EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM',
+            CONTACT_US_FORM='CONTACT_US_FORM'
         }
 
         interface ConfirmActionModal {
