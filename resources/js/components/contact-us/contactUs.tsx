@@ -4,8 +4,8 @@ import WaitForResource from '../hoc/waitForResource';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
-import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
-import { reduxForm, formValueSelector, InjectedFormProps, FormSection } from 'redux-form';
+import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
+import { reduxForm, formValueSelector, InjectedFormProps, FormSection, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
 import { fullname } from '../utils';
 import { Link } from 'react-router';
@@ -16,6 +16,7 @@ import { createNotification, createResource, updateResource, deleteResource, con
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields, validationRules as addressValidationRules } from '../address/form';
 import { MATTER_TYPES } from '../matters';
+import { ContactInformationFields } from '../contact-information/contactInformation';
 /*
 What is your full legal name?
 By what name do you prefer to be addressed?
@@ -61,7 +62,7 @@ photo identification and a recent utilities bill showing your residential addres
 
 */
 
-                
+
 
 
 interface ContactFormProps {
@@ -74,21 +75,59 @@ const ExternalContactFields = [
     () => {
         return <React.Fragment>
             <h4 className={"text-center"}>What is your full legal name?</h4>
-            <InputField name="contactable.firstName" label="First Name" type="text" required/>
-            <InputField name="contactable.middleName" label="Middle Name" type="text" />
-            <InputField name="contactable.surname" label="Surname" type="text" required />
+            <FormSection name="contact">
+                <InputField name="contactable.firstName" label="First Name" type="text" required/>
+                <InputField name="contactable.middleName" label="Middle Name" type="text" />
+                <InputField name="contactable.surname" label="Surname" type="text" required />
+                <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
+            </FormSection>
         </React.Fragment>
     },
     () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Are you completing this form for yourself, another individual, or an organisation?</h4>
+             <SelectField name="contactRelationType" label="Capacity" options={['Myself', 'Another Individual', 'An Organisation']} required prompt/>
+        </React.Fragment>
+    },
 
+    (props) => {
         const matterOptions = ["Don't Know", ...MATTER_TYPES].map(matter => {
             return {value: matter, text: matter};
         });
         return <React.Fragment>
             <h4 className={"text-center"}>What type of legal services do you need?</h4>
+            <FormSection name="matter">
             <SelectField name="matterType" label="Matter Type" options={matterOptions} required prompt/>
+                { props.requiresAddress && <React.Fragment>
+                          <h4 className={"text-center"}>Please give the address of the property</h4>
+                        <AddressFields />
+                   </React.Fragment>}
+              <h4 className={"text-center"}>Please provide a brief description of the matter</h4>
+              <TextArea name="description" label="Description" required />
+              </FormSection>
         </React.Fragment>
     },
+    () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Contact Information</h4>
+                <FormSection name="contact">
+              <FieldArray name="contactInformations" component={ContactInformationFields as any} selector={formValueSelector(EL.FormNames.CONTACT_US_FORM)} />
+              </FormSection>
+            <FormSection name="address.data">
+                <AddressFields />
+            </FormSection>
+        </React.Fragment>
+    },
+
+    () => {
+        return <React.Fragment>
+            <h4 className={"text-center"}>Supporting Documents</h4>
+            <DocumentList name="files" label="Documents" help={
+                <span>Please provide a certified copy of your Photo ID and a proof of address</span>
+            }/>
+        </React.Fragment>
+    },
+
 
 ]
 
@@ -114,10 +153,13 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
     }
 }
 
-
 @(reduxForm({
     form: EL.FormNames.CONTACT_US_FORM,
-    validate: values => validate({}, values),
+    validate: (values: any) : EL.ValidationErrors => ({
+        contactable: validate({
+            firstName: { name: 'First Name', required: true },
+            surname: { name: 'Surname', required: true }
+      }, values.contactable || {})}),
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
@@ -132,11 +174,56 @@ class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPag
         </Form>
     }
 }
+
+
+@(reduxForm({
+    form: EL.FormNames.CONTACT_US_FORM,
+    validate: values => validate({}, values),
+      destroyOnUnmount: false,
+      forceUnregisterOnUnmount: true,
+}) as any)
+@(connect((state, ownProps) => ({
+    requiresAddress: ['Conveyancing – Sale / Purchase','Conveyancing – Refinance']
+        .includes(formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'matter.matterType'))
+})) as any)
+class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean}> {
+    fields = ExternalContactFields[2]
+    render(){
+        const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
+        return <Form horizontal onSubmit={handleSubmit}>
+            <Fields requiresAddress={this.props.requiresAddress}/>
+            { this.props.children }
+        </Form>
+    }
+}
+
+@(reduxForm({
+    form: EL.FormNames.CONTACT_US_FORM,
+    validate: values => validate({}, values),
+     destroyOnUnmount: false,
+     forceUnregisterOnUnmount: true,
+}) as any)
+class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+    fields = ExternalContactFields[3]
+    render(){
+        const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
+        return <Form horizontal onSubmit={handleSubmit}>
+            <Fields/>
+            { this.props.children }
+        </Form>
+    }
+}
+
+
 class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}> {
     state = {page: 0};
     pages=[
         ContactPage1,
         ContactPage2,
+        ContactPage3,
+        ContactPage4
     ];
     controls() {
         return <div className="button-row">
