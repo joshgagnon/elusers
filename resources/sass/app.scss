@@ -113,7 +113,7 @@ $img-path: '~react-widgets/lib/img';
     padding-top: 15px;
     border-radius: 4px;
 
-     animation: 1s ease-out 0s 1 focus-in;
+    animation: 1s ease-out 0s 1 focus-in;
 }
 
 @keyframes focus-in {
@@ -128,13 +128,13 @@ $img-path: '~react-widgets/lib/img';
 
 
 
-.public-navbar{
+.public-navbar {
     background-image: url(/images/cropped-evologo.png);
-        background-color: transparent;
+    background-color: transparent;
     background-position: center center;
-    background-color: #d3e0e9;
-     background-repeat: no-repeat;
-    .navbar-brand{
+    background-color: #333;
+    background-repeat: no-repeat;
+    .navbar-brand {
         display:none;
     }
 }
@@ -336,6 +336,11 @@ input.checkbox.form-control {
     }
 }
 
+p.form-question {
+    width: 100%;
+    text-align: center;
+    margin-top: 36px;
+}
 
 .preview{
     canvas{

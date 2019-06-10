@@ -376,7 +376,10 @@ declare global {
             UPLOAD_DOCUMENT = 'UPLOAD_DOCUMENT',
             UPLOAD_DOCUMENT_TREE = 'UPLOAD_DOCUMENT_TREE',
             UPDATE_UPLOAD = 'UPDATE_UPLOAD',
-            UPLOAD_COMPLETE = 'UPLOAD_COMPLETE'
+            UPLOAD_COMPLETE = 'UPLOAD_COMPLETE',
+
+            SAVE_TO_LOCAL_STORAGE = 'SAVE_TO_LOCAL_STORAGE',
+            LOAD_FROM_LOCAL_STORAGE = 'LOAD_FROM_LOCAL_STORAGE',
         }
 
         export const enum RequestStatus {
@@ -443,6 +446,7 @@ declare global {
 
             EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM',
             CONTACT_US_FORM='CONTACT_US_FORM'
+
         }
 
         interface ConfirmActionModal {

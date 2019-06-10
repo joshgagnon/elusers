@@ -71,38 +71,69 @@ interface ContactFormProps {
     saveButtonText: string;
 }
 
+//<DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
+
 const ExternalContactFields = [
-    () => {
+    (props: {capacity?: string; capacityType?: string; organisationType?: string;}) => {
+
         return <React.Fragment>
-            <h4 className={"text-center"}>What is your full legal name?</h4>
-            <FormSection name="contact">
+            <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
+
+                <p className="form-question">What is your full legal name?</p>
                 <InputField name="contactable.firstName" label="First Name" type="text" required/>
                 <InputField name="contactable.middleName" label="Middle Name" type="text" />
                 <InputField name="contactable.surname" label="Surname" type="text" required />
-                <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
-            </FormSection>
-        </React.Fragment>
-    },
-    () => {
-        return <React.Fragment>
-            <h4 className={"text-center"}>Are you completing this form for yourself, another individual, or an organisation?</h4>
-             <SelectField name="contactRelationType" label="Capacity" options={['Myself', 'Another Individual', 'An Organisation']} required prompt/>
+                <p className="form-question">By what name do you prefer to be addressed?</p>
+                <InputField name="contactable.preferredName" label="Preferred Name" type="text" required />
+                <p className="form-question">Are you completing this form for yourself, another individual, or an organisation?</p>
+
+                <SelectField name="capacity" label="Capacity" options={['Myself', 'Another Individual', 'An Organisation']} required prompt/>
+
+                { props.capacity === 'Another Individual' && <React.Fragment>
+                    <p className="form-question">What is the other person’s full legal name?</p>
+                    <InputField name="otherIndividual.firstName" label="First Name" type="text" required/>
+                    <InputField name="otherIndividual.middleName" label="Middle Name" type="text" />
+                    <InputField name="otherIndividual.surname" label="Surname" type="text" required />
+
+                    <p className="form-question">In what capacity are you completing this form for the other person?</p>
+                    <SelectField name="capacityType" label="Capacity Type" options={['Authorised Person', 'Attorney', 'Other']} required prompt/>
+                    { props.capacityType === 'Other' && <InputField name="otherIndividual.capacityType"
+                        label="Description" placeholder={'Please describe...'} type="text" required />  }
+                </React.Fragment> }
+
+                { props.capacity === 'An Organisation' && <React.Fragment>
+                    <p className="form-question">What is the organisation’s full legal name?</p>
+                    <InputField name="otherOrganisation.name" label="Name" type="text" required/>
+                    <SelectField name="organisationType" label="Organisation Type" options={['Company', 'Partnership', 'Trust', 'Other']} required prompt/>
+
+                    { props.organisationType === 'Company' && <React.Fragment>
+                        <InputField type="text" name="otherOrganisation.companyNumber" label="Company Number"/>
+                    </React.Fragment> }
+
+                    <p className="form-question">In what capacity are you completing this form for the organisation?</p>
+                    <SelectField name="capacityType" label="Capacity Type" options={['Authorised Person', 'Attorney', 'Director', 'Partner', 'Trustee', 'Other']} required prompt/>
+                    { props.capacityType === 'Other' && <InputField name="otherOrganisation.capacityType"
+                        label="Description" placeholder={'Please describe...'} type="text" required />  }
+
+                </React.Fragment> }
+
+
         </React.Fragment>
     },
 
-    (props) => {
+    (props: {requiresAddress: boolean;}) => {
         const matterOptions = ["Don't Know", ...MATTER_TYPES].map(matter => {
             return {value: matter, text: matter};
         });
         return <React.Fragment>
-            <h4 className={"text-center"}>What type of legal services do you need?</h4>
+            <p className="form-question">What type of legal services do you need?</p>
             <FormSection name="matter">
             <SelectField name="matterType" label="Matter Type" options={matterOptions} required prompt/>
                 { props.requiresAddress && <React.Fragment>
-                          <h4 className={"text-center"}>Please give the address of the property</h4>
+                          <h4 className={"text-center"}>What is the address of the relevant property?</h4>
                         <AddressFields />
                    </React.Fragment>}
-              <h4 className={"text-center"}>Please provide a brief description of the matter</h4>
+              <p className="form-question">Please provide a brief description of the matter</p>
               <TextArea name="description" label="Description" required />
               </FormSection>
         </React.Fragment>
@@ -121,10 +152,12 @@ const ExternalContactFields = [
 
     () => {
         return <React.Fragment>
-            <h4 className={"text-center"}>Supporting Documents</h4>
-            <DocumentList name="files" label="Documents" help={
-                <span>Please provide a certified copy of your Photo ID and a proof of address</span>
-            }/>
+            <h4 className={"text-center"}>Upload your documents</h4>
+            <p className="form-question">Upload any supporting documents that you would like us to review.</p>
+            <p className="form-question">We may require proof of your identity and residential address before being able to act. To avoid unnecessary delay, we recommend uploading a copy of your
+photo identification and a recent utilities bill showing your residential address.</p>
+            <p></p>
+            <DocumentList name="files" label="Documents" />
         </React.Fragment>
     },
 
@@ -133,21 +166,17 @@ const ExternalContactFields = [
 
 @(reduxForm({
     form: EL.FormNames.CONTACT_US_FORM,
-    validate: (values: any) : EL.ValidationErrors => ({
-        contactable: validate({
-            firstName: { name: 'First Name', required: true },
-            surname: { name: 'Surname', required: true }
-      }, values.contactable || {})}),
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
-class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+@(connect((state: EL.State) => formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'capacity', 'capacityType', 'organisationType')) as any)
+class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string; capacityType?: string; organisationType?: string}> {
     fields = ExternalContactFields[0]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields/>
+            <Fields capacity={this.props.capacity} capacityType={this.props.capacityType} organisationType={this.props.organisationType}/>
             { this.props.children }
         </Form>
     }
@@ -155,11 +184,6 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
 
 @(reduxForm({
     form: EL.FormNames.CONTACT_US_FORM,
-    validate: (values: any) : EL.ValidationErrors => ({
-        contactable: validate({
-            firstName: { name: 'First Name', required: true },
-            surname: { name: 'Surname', required: true }
-      }, values.contactable || {})}),
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
@@ -178,7 +202,6 @@ class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPag
 
 @(reduxForm({
     form: EL.FormNames.CONTACT_US_FORM,
-    validate: values => validate({}, values),
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
@@ -200,7 +223,6 @@ class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPag
 
 @(reduxForm({
     form: EL.FormNames.CONTACT_US_FORM,
-    validate: values => validate({}, values),
      destroyOnUnmount: false,
      forceUnregisterOnUnmount: true,
 }) as any)
@@ -227,6 +249,7 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
     ];
     controls() {
         return <div className="button-row">
+            <Button bsStyle="info" onClick={this.save} disabled>Save Progress</Button>
             { this.state.page > 0 && <Button onClick={() => this.setState({page: this.state.page-1})}>Back</Button>}
             { this.state.page < this.pages.length - 1  && <Button  bsStyle="primary" type="submit">Next</Button>}
             { this.state.page == this.pages.length - 1 && <Button bsStyle="primary" type="submit">Submit</Button> }
@@ -235,6 +258,10 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
 
     submit(values) {
         this.props.onSubmit(values);
+    }
+
+    save = () => {
+
     }
 
     render() {
@@ -254,11 +281,16 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
 }
 
 const EditContactUsForm = (reduxForm({
-    form: EL.FormNames.CONTACT_US_FORM
+    form: EL.FormNames.CONTACT_US_FORM,
+    /*validate: (values: any) : EL.ValidationErrors => ({
+        contactable: validate({
+            firstName: { name: 'First Name', required: true },
+            surname: { name: 'Surname', required: true }
+      }, values.contactable || {})}),*/
 })(ContactUsForm as any) as any);
 
 
-@PanelHOC<{}>('Contact Us')
+@PanelHOC<{}>('New Client Form')
 export class ExternalContact extends React.PureComponent<{}> {
     render() {
         const values ={};
