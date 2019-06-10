@@ -207,17 +207,11 @@ declare global {
 
         interface ContactTrust {
             trustType: string;
-            enhancedCcdRequired?: string;
-            enhancedCddReason?: string;
-            sourceOfFunds?: string;
             clauseOfTrustDeed?: string;
         }
 
         interface ContactCompany {
             companyNumber: string;
-            enhancedCcdRequired?: string;
-            enhancedCddReason?: string;
-            sourceOfFunds?: string;
         }
 
         interface ContactRelationship {
@@ -248,6 +242,9 @@ declare global {
             irdNumber?: string;
             bankAccountNumber?: string;
             cddRequired?: boolean;
+            enhancedCcdRequired?: string;
+            enhancedCddReason?: string;
+            sourceOfFunds?: string;
             reasonNoCddRequired?: string;
             cddType?: string;
             cddCompletionDate?: string;

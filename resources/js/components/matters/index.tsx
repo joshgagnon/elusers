@@ -184,8 +184,8 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                                 { matter.filesCount }
                             </td>
                             <td>
-                            <Link to={`/matters/${matter.id}`} className="btn btn-sm btn-default"><Icon iconName="eye" />View</Link>
-                            {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link> }
+                            <Link to={`/matters/${matter.id}`} className="btn btn-xs btn-default"><Icon iconName="eye" />View</Link>
+                            {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-xs btn-warning"><Icon iconName="pencil" />Edit</Link> }
 
                             </td>
 

@@ -138,9 +138,11 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
                             <td>{contact.contactableType}</td>
                             <td>{email || '' }</td>
                             <td>{phone || ''}</td>
+
                             <td className="actions">
-                                <Link className="btn btn-sm btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
-                                { hasPermission(this.props.user, 'edit contact') &&  <Link className="btn btn-sm btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link> }
+                                <Link className="btn btn-xs btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
+                                { hasPermission(this.props.user, 'edit contact') &&  <Link className="btn btn-xs btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link> }
+                            { contact.cddCompletionDate && <a className="btn btn-success btn-xs"><Icon iconName="check" />CDD</a> }
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
@@ -254,10 +256,10 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
         const individual = contact.contactableType === EL.Constants.INDIVIDUAL;
         const trust = contact.contactableType === EL.Constants.TRUST;
         const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
-        const enhancedCompanyCDD = contact.cddRequired && contact.contactableType === EL.Constants.COMPANY && contact.cddType === EL.Constants.ENHANCED;
-        const enhancedTrustCDD = contact.cddRequired && trust && contact.cddType === EL.Constants.ENHANCED;
-        const enhancedTrustShowBeneficiaryClasses = enhancedTrustCDD && (contact.contactable as EL.ContactTrust).trustType === 'Discretionary';
-        const enhancedTrustShowObjects = enhancedTrustCDD && (contact.contactable as EL.ContactTrust).trustType === 'Charitable';
+        const enhancedCDD = contact.cddRequired && contact.cddType === EL.Constants.ENHANCED;
+        const enhancedCddReason = contact.enhancedCddReason;
+        const enhancedTrustShowBeneficiaryClasses = enhancedCDD && (contact.contactable as EL.ContactTrust).trustType === 'Discretionary';
+        const enhancedTrustShowObjects = enhancedCDD && (contact.contactable as EL.ContactTrust).trustType === 'Charitable';
         return (
             <div>
                 <ButtonToolbar className="pull-right">
@@ -313,8 +315,11 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     <dt>Due Diligence</dt>
 
                     { (contact.cddRequired && contact.cddType && !contact.cddCompletionDate) && <dd>{contact.cddType } CDD required</dd> }
-                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dt>Enhanced CDD reason</dt>}
-                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dd>{(contact.contactable as EL.ContactCompany).enhancedCddReason}</dd>}
+
+                    { enhancedCddReason && <React.Fragment>
+                        <dt>Enhanced CDD reason</dt>
+                        <dd>{contact.enhancedCddReason}</dd>
+                        </React.Fragment> }
 
                     { enhancedTrustShowBeneficiaryClasses && (contact.contactable as EL.ContactTrust).clauseOfTrustDeed &&
                             <React.Fragment>
@@ -328,10 +333,10 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                                 <dd>{ (contact.contactable as EL.ContactTrust).clauseOfTrustDeed }</dd>
                             </React.Fragment> }
 
-                    { (enhancedCompanyCDD || enhancedTrustCDD) && (contact.contactable as EL.ContactCompany | EL.ContactTrust).sourceOfFunds &&
+                    { contact.sourceOfFunds &&
                         <React.Fragment>
                             <dt>Source of funds</dt>
-                            <dd>{(contact.contactable as EL.ContactCompany | EL.ContactTrust).sourceOfFunds}</dd>
+                            <dd>{contact.sourceOfFunds}</dd>
                         </React.Fragment>
                      }
 
@@ -403,39 +408,37 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
     render() {
         const { cddRequired, contactableType, cddType, contactable} = this.props;
         const trustType = contactable && contactable.trustType;
-        const enhancedCDD = cddRequired && (contactableType === EL.Constants.COMPANY || contactableType === EL.Constants.TRUST) && cddType === EL.Constants.ENHANCED;
+        const enhancedCDD = cddRequired && cddType === EL.Constants.ENHANCED;
         const enhancedCompanyCDD = enhancedCDD && contactableType === EL.Constants.COMPANY;
         const enhancedTrustCDD = enhancedCDD && contactableType === EL.Constants.TRUST;
-        /*const cddTypes = contactableType === 'Individual' ? [
-                    {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
-                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD}] :
-                    [ {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
-                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
-                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}];*/
 
         const cddTypes = [ {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
                     {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
                     {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}];
+
         if(!canCdd(contactableType)){
             return false;
         }
+
+
         return <React.Fragment>
              <FormHeading title="Customer Due Diligence" />
             <CheckboxField name="cddRequired" label="CDD Required" />
 
             { this.props.cddRequired && <React.Fragment>
                 <SelectField name='cddType' label='Type' options={cddTypes} required prompt />
-                   { enhancedCompanyCDD && <SelectField name='contactable.enhancedCddReason' label='CDD Reason' options={[
+                   { enhancedCompanyCDD && <SelectField name='enhancedCddReason' label='CDD Reason' options={[
                         'Company is a vehicle for holding personal assets',
                         'Company has nominee shareholders or shares in bearer form',
                         'Level of risk warrants enhanced CDD'
                     ]} required prompt />}
-                   { enhancedCDD && <TextArea name='contactable.sourceOfFunds' label='Source of Funds' required /> }
+
+                   { enhancedCDD && <TextArea name='sourceOfFunds' label='Source of Funds' required /> }
 
                  { enhancedTrustCDD && trustType === 'Discretionary' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Classes of Beneficiaries' /> }
                  { enhancedTrustCDD && trustType === 'Charitable' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Objects of Trust' /> }
 
-                <DatePicker name="cddCompletionDate" label="CDD Completion Date"/>
+                <DatePicker name="cddCompletionDate" label="CDD Completion Date" />
 
                </React.Fragment> }
 
@@ -670,17 +673,23 @@ const validateContact = (values: any) => {
        if(!values.cddType){
            errors.cddType = 'CDD Type Required';
        }
-       const enhancedCompanyCDD = values.cddRequired && values.contactableType === EL.Constants.COMPANY && values.cddType === EL.Constants.ENHANCED;
+       const enhancedCompanyCDD = values.contactableType === EL.Constants.COMPANY && values.cddType === EL.Constants.ENHANCED;
        const hasBeneficial = (values.relationships || []).some((relationship: EL.ContactRelationship) => {
            return relationship.relationshipType === 'Beneficial Owner';
        });
        if(enhancedCompanyCDD && !hasBeneficial){
            errors.relationships._error = 'At least one beneficial owner required';
        }
-       const enhancedTrustCDD = values.cddRequired && values.contactableType === EL.Constants.TRUST && values.cddType === EL.Constants.ENHANCED;
+       const enhancedTrustCDD = values.contactableType === EL.Constants.TRUST && values.cddType === EL.Constants.ENHANCED;
+
+       if(values.contactableType === EL.Constants.TRUST && values.cddType !== EL.Constants.ENHANCED) {
+           errors.cddType = 'Trusts must have Enhanced CDD'
+       }
+
        const hasBeneficary = (values.relationships || []).some((relationship: EL.ContactRelationship) => {
            return relationship.relationshipType === 'Beneficiary';
        });
+
        if(enhancedTrustCDD && !hasBeneficary && values.contactable && values.contactable.trustType === 'Fixed With 10 or Fewer Beneficiaries'){
            errors.relationships._error = 'At least one beneficiary required';
        }
