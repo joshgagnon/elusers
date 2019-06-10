@@ -316,9 +316,6 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dt>Enhanced CDD reason</dt>}
                     { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).enhancedCddReason && <dd>{(contact.contactable as EL.ContactCompany).enhancedCddReason}</dd>}
 
-                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).sourceOfFunds && <dt>Source of funds</dt>}
-                    { enhancedCompanyCDD && (contact.contactable as EL.ContactCompany).sourceOfFunds && <dd>{(contact.contactable as EL.ContactCompany).sourceOfFunds}</dd>}
-
                     { enhancedTrustShowBeneficiaryClasses && (contact.contactable as EL.ContactTrust).clauseOfTrustDeed &&
                             <React.Fragment>
                                 <dt>Trust Deed Describing Classes of Beneficiaries</dt>
@@ -409,14 +406,16 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
         const enhancedCDD = cddRequired && (contactableType === EL.Constants.COMPANY || contactableType === EL.Constants.TRUST) && cddType === EL.Constants.ENHANCED;
         const enhancedCompanyCDD = enhancedCDD && contactableType === EL.Constants.COMPANY;
         const enhancedTrustCDD = enhancedCDD && contactableType === EL.Constants.TRUST;
-        const cddTypes = contactableType !== 'Individual' ? [
+        /*const cddTypes = contactableType === 'Individual' ? [
                     {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
                     {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD}] :
                     [ {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
                     {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
+                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}];*/
+
+        const cddTypes = [ {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
+                    {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
                     {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}];
-
-
         if(!canCdd(contactableType)){
             return false;
         }
