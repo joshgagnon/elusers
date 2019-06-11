@@ -312,7 +312,7 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     }) }
                     { (contact.relationships || []).length === 0 && <dd>No relationships</dd> }
                     <br/>
-                    <dt>Due Diligence</dt>
+                    <dt>AMLCFT CDD</dt>
 
                     { (contact.cddRequired && contact.cddType && !contact.cddCompletionDate) && <dd>{contact.cddType } CDD required</dd> }
 
@@ -323,7 +323,7 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
 
                     { enhancedTrustShowBeneficiaryClasses && (contact.contactable as EL.ContactTrust).clauseOfTrustDeed &&
                             <React.Fragment>
-                                <dt>Trust Deed Describing Classes of Beneficiaries</dt>
+                                <dt>Classes of Beneficiaries</dt>
                                 <dd>{ (contact.contactable as EL.ContactTrust).clauseOfTrustDeed }</dd>
                             </React.Fragment> }
 
@@ -340,7 +340,7 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                         </React.Fragment>
                      }
 
-                    { (contact.cddRequired && contact.cddType && contact.cddCompletionDate) && <dd>{contact.cddType } CCD completed on {contact.cddCompletionDate}</dd> }
+                    { (contact.cddRequired && contact.cddType && contact.cddCompletionDate) && <dd>{contact.cddType } CDD completed on {contact.cddCompletionDate}</dd> }
                     { contact.cddRequired === false &&<dd>CDD not required{ !!contact.reasonNoCddRequired && ` - ${contact.reasonNoCddRequired}`}</dd> }
                     { (!contact.cddRequired && contact.cddRequired !== false) &&<dd>CDD requirements unknown</dd> }
 
@@ -435,7 +435,7 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
 
                    { enhancedCDD && <TextArea name='sourceOfFunds' label='Source of Funds' required /> }
 
-                 { enhancedTrustCDD && trustType === 'Discretionary' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Classes of Beneficiaries' /> }
+                 { enhancedTrustCDD && trustType === 'Discretionary' && <TextArea name='contactable.clauseOfTrustDeed' label='Classes of Beneficiaries' /> }
                  { enhancedTrustCDD && trustType === 'Charitable' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Objects of Trust' /> }
 
                 <DatePicker name="cddCompletionDate" label="CDD Completion Date" />
@@ -480,7 +480,6 @@ class ContactTypeFields extends React.PureComponent<{'contactableType':string}> 
             return <React.Fragment>
                    <FormHeading title="Individual Fields" />
                     <DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="year"/>
-                    <DatePicker name="contactable.dateOfDeath" label="Date of Death" defaultView="year"/>
                     <InputField name="contactable.occupation" label="Occupation" type="text" />
                     <InputField name="contactable.countryOfCitizenship" label="Country of Citizenship" type="text" />
                     <SelectField name="contactable.maritalStatus" label="Marital Status" options={

@@ -8,6 +8,13 @@ import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 
 momentLocalizer(moment);
 
+
+let formats = [
+    "D MMM YYYY",
+    "d/MM/YY",
+    "YYYY MM DD"
+];
+
 export default class DatePickerField extends React.PureComponent<IFieldComponentProps & {defaultView?: string}> {
     render() {
         const { input: { onChange, onBlur, value } } = this.props;
@@ -18,10 +25,12 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                     onChange={(date, string) => onChange(string)}
                     format="D MMM YYYY"
                     time={false}
+                    parser={formats}
                     value={!value ? null : new Date(value)}
                     onBlur={() => onBlur(undefined)}
                     ref="date"
                     defaultView={this.props.defaultView}
+
                     /*onFocus={(event: React.FocusEvent<any> as any) => {
                         const target : any = event.target;
                         const shouldOpen = target.tagName === 'INPUT' && !this.props.value;
