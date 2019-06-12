@@ -681,6 +681,14 @@ const validateContact = (values: any) => {
                relationshipType: { name: 'Type', required: true }
        }, relationship);
    })
+   if(values.contactInformations){
+       errors.contactInformations = validateContactInformation(values.contactInformations);
+   }
+   return errors;
+}
+
+const warnContact = (values: any) => {
+   let errors = {} as any;
    if(values.cddRequired){
        if(!values.cddType){
            errors.cddType = 'CDD Type Required';
@@ -706,8 +714,10 @@ const validateContact = (values: any) => {
            errors.relationships._error = 'At least one beneficiary required';
        }
    }
-   if(values.contactInformations){
-       errors.contactInformations = validateContactInformation(values.contactInformations);
+   else{
+        if(!values.reasonNoCddRequired) {
+            errors.reasonNoCddRequired = 'Please give the reason why CDD is not required';
+        }
    }
    return errors;
 }
@@ -715,16 +725,19 @@ const validateContact = (values: any) => {
 export const CreateContactForm = (reduxForm({
     form: EL.FormNames.CREATE_CONTACT_FORM,
     validate: validateContact,
+    warn: warnContact,
 })(ContactForm as any) as any);
 
 export const CreateContactFormSimple = (reduxForm({
     form: EL.FormNames.CREATE_CONTACT_FORM_SIMPLE,
-    validate: validateContact
+    validate: validateContact,
+    warn: warnContact,
 })(ContactFormSimple as any) as any);
 
 const EditContactForm = (reduxForm({
     form: EL.FormNames.EDIT_CONTACT_FORM,
     validate: validateContact,
+    warn: warnContact,
 })(ContactForm as any) as any);
 
 

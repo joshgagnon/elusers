@@ -19,21 +19,28 @@ export interface IBaseFieldComponentProps extends IFieldComponentProps {
 }
 
 export class NakedBaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
-    validationState(touched: boolean, error: string) {
+    validationState(touched: boolean, error: string, warning: string) {
         if (!touched) {
             return null;
         }
-
-        return error ? 'error' : 'success';
+        if(error) {
+            return 'error'
+        }
+        if(warning) {
+            return 'warning';
+        }
+        return 'success';
     }
 
     render() {
-        const { label, meta: { touched, error } } = this.props;
-        const displayError = touched && error;
+        const { label, meta: { touched, error, warning } } = this.props;
+        const displayError = touched && warning
+        const displayWarning = touched && warning;
         return (
-            <FormGroup validationState={this.validationState(touched, error)} className={ 'naked '  + (this.props.required ? 'required' : '')}>
+            <FormGroup validationState={this.validationState(touched, error, warning)} className={ 'naked '  + (this.props.required ? 'required' : '')}>
                     {this.props.children}
                     { displayError && <HelpBlock>{error}</HelpBlock>}
+                    { displayWarning && <HelpBlock>{warning}</HelpBlock> }
                     <HelpBlock>{this.props.help}</HelpBlock>
             </FormGroup>
      );
@@ -42,28 +49,35 @@ export class NakedBaseFieldComponent extends React.PureComponent<IBaseFieldCompo
 
 
 export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
-    validationState(touched: boolean, error: string) {
+    validationState(touched: boolean, error: string, warning: string) {
         if (!touched) {
             return null;
         }
-
-        return error ? 'error' : 'success';
+        if(error) {
+            return 'error'
+        }
+        if(warning) {
+            return 'warning';
+        }
+        return 'success';
     }
 
     render() {
-        const { label, meta: { touched, error }, naked } = this.props;
+        const { label, meta: { touched, error, warning }, naked } = this.props;
         const displayError = touched && error;
+        const displayWarning = touched && warning;
         if(naked){
             return <NakedBaseFieldComponent {...this.props} />
         }
         return (
-            <FormGroup validationState={this.validationState(touched, error)} className={this.props.required ? 'required' : null}>
+            <FormGroup validationState={this.validationState(touched, error, warning)} className={this.props.required ? 'required' : null}>
                 <Col componentClass={ControlLabel} md={3}>
                     {label}
                 </Col>
                 <Col md={8}>
                     {this.props.children}
                     { displayError && <HelpBlock>{error}</HelpBlock>}
+                    { displayWarning && <HelpBlock>{warning}</HelpBlock>}
                     <HelpBlock>{this.props.help}</HelpBlock>
                 </Col>
                 {!!this.props.showRemoveButton &&

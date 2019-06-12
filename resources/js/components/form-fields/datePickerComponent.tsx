@@ -9,7 +9,7 @@ import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 momentLocalizer(moment);
 
 
-let formats = [
+const formats = [
     "D MMM YYYY",
     "d/MM/YY",
     "YYYY MM DD"
@@ -23,11 +23,14 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
             <BaseFieldComponent {...this.props}>
                 <Picker
                     onChange={(date, string) => onChange(string)}
+                    
                     format="D MMM YYYY"
                     time={false}
-                    parser={formats}
+                    parse={formats}
                     value={!value ? null : new Date(value)}
-                    onBlur={() => onBlur(undefined)}
+                    onBlur={() => {
+                        onBlur(!value ? null : value)
+                    }}
                     ref="date"
                     defaultView={this.props.defaultView}
 
