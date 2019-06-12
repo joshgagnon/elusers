@@ -132,7 +132,13 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
                                 return false;
                             }
                             const email = emails(contact, true);
-                            const phone = phones(contact)
+                            const phone = phones(contact);
+                            const cddComplete = !!contact.cddCompletionDate;
+                            const cddNotNeeded = (!cddComplete && [EL.Constants.COURT, EL.Constants.BANK, EL.Constants.LOCAL_AUTHORITY, EL.Constants.GOVERNMENT_BODY].includes(contact.contactableType as EL.Constants))
+                                || contact.reasonNoCddRequired;
+                            const cddIncomplete = contact.cddRequired && !cddComplete && !cddNotNeeded;
+                            const cddUnknown = !cddNotNeeded && !cddComplete && !cddIncomplete;
+
                             return <tr key={contact.id}>
                             <td>{fullname(contact)}</td>
                             <td>{contact.contactableType}</td>
@@ -142,7 +148,10 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
                             <td className="actions">
                                 <Link className="btn btn-xs btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
                                 { hasPermission(this.props.user, 'edit contact') &&  <Link className="btn btn-xs btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link> }
-                            { contact.cddCompletionDate && <a className="btn btn-success btn-xs"><Icon iconName="check" />CDD</a> }
+                                { cddComplete && <a className="btn btn-success btn-xs" title="CDD complete"><Icon iconName="check" />CDD</a> }
+                                { cddNotNeeded && <a className="btn btn-default btn-xs" title="CDD not required"><Icon iconName="check" />CDD</a> }
+                                { cddIncomplete && <a className="btn btn-warning btn-xs" title="CDD incomplete"><Icon iconName="times" />CDD</a> }
+                                { cddUnknown && <a className="btn btn-danger btn-xs" title="CDD requires unknown"><Icon iconName="question" />CDD</a> }
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
@@ -560,6 +569,8 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     <FormHeading title="Name" />
 
                     <ConnectedContactName selector={selector} />
+                                              <hr />
+                    <ConnectedCustomerDueDiligence  selector={selector} />    
                      <hr />
                     <ContactInformations selector={selector}/>
                     <hr />
@@ -573,8 +584,7 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     <Agents />
                                           <hr />
                     <Relationships />
-                                          <hr />
-                    <ConnectedCustomerDueDiligence  selector={selector} />
+            
                     </div>
                 <hr />
 

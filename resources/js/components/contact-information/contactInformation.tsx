@@ -87,7 +87,7 @@ export class ContactInformationSwitch extends React.PureComponent<{name: string,
             case 'address':
                 return <React.Fragment>
                         <Combobox name="subtype" label="Address Type" required  placeholder="Subtype" data={[
-                        'Billing', 'Postal', 'Residential'
+                        'Billing', 'Postal', 'Residential', 'Registered Office'
                         ]}/>
                     <AddressFields />
                     </React.Fragment>
