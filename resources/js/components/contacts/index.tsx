@@ -3,7 +3,7 @@ import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar, Alert, FormControl } from 'react-bootstrap';
-import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
+import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea, Combobox } from '../form-fields';
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
@@ -442,7 +442,10 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
 
                </React.Fragment> }
 
-              {! this.props.cddRequired && <TextArea name='reasonNoCddRequired' label='Reason CDD not required' /> }
+              { !this.props.cddRequired && <Combobox name='reasonNoCddRequired' label='Reason CDD not required'  data={[
+                        'Business relationship established before 1 July 2018',
+                        'Contact is not a client, a beneficial owner of a client, nor an agent of a client'
+                         ]}/> }
         </React.Fragment>
     }
 }
@@ -457,12 +460,12 @@ class ContactName extends React.PureComponent<{'contactableType':string; 'contac
         const { contactableType } = this.props;
         if(contactableType === EL.Constants.INDIVIDUAL){
             return <div>
-                    <ReadOnlyComponent label="Full Name" value={fullname({contactableType, contactable: this.props.contactable as EL.ContactIndividual})} />
-                    <InputField name="contactable.title" label="Title" type="text" />
-                    <InputField name="contactable.firstName" label="First Name" type="text" required/>
-                    <InputField name="contactable.middleName" label="Middle Name" type="text" />
-                    <InputField name="contactable.surname" label="Surname" type="text" required />
-                    <InputField name="contactable.preferredName" label="Perferred Name" type="text" />
+                <ReadOnlyComponent label="Full Name" value={fullname({contactableType, contactable: this.props.contactable as EL.ContactIndividual})} />
+                <InputField name="contactable.title" label="Title" type="text" />
+                <InputField name="contactable.firstName" label="First Name" type="text" required/>
+                <InputField name="contactable.middleName" label="Middle Name" type="text" />
+                <InputField name="contactable.surname" label="Surname" type="text" required />
+                <InputField name="contactable.preferredName" label="Perferred Name" type="text" />
             </div>
         }
         return <InputField name="name" label="Name" type="text" required />
