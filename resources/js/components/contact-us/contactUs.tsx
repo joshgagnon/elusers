@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { ContactsHOC, ContactHOC, TokenHOC } from '../hoc/resourceHOCs';
+import { ContactsHOC, ContactHOC, ClientRequestTokenHOC } from '../hoc/resourceHOCs';
 import WaitForResource from '../hoc/waitForResource';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
 import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
-import { reduxForm, formValueSelector, InjectedFormProps, FormSection, FieldArray } from 'redux-form';
+import { reduxForm, formValueSelector, InjectedFormProps, FormSection, FieldArray, getFormValues } from 'redux-form';
 import { validate } from '../utils/validation';
 import { fullname } from '../utils';
 import { Link } from 'react-router';
@@ -17,6 +17,7 @@ import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields, validationRules as addressValidationRules } from '../address/form';
 import { MATTER_TYPES } from '../matters';
 import { ContactInformationFields } from '../contact-information/contactInformation';
+
 /*
 What is your full legal name?
 By what name do you prefer to be addressed?
@@ -69,6 +70,10 @@ interface ContactFormProps {
     handleSubmit?: (data: React.FormEvent<Form>) => void;
     onSubmit: (data: React.FormEvent<Form>) => void;
     saveButtonText: string;
+    token: string;
+    values: () => any;
+    save: (token: string, values: any) => void;
+    form: string;
 }
 
 //<DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
@@ -156,7 +161,7 @@ const ExternalContactFields = [
             <p className="form-question">Upload any supporting documents that you would like us to review.</p>
             <p className="form-question">We may require proof of your identity and residential address before being able to act. To avoid unnecessary delay, we recommend uploading a copy of your
 photo identification and a recent utilities bill showing your residential address.</p>
-            <p></p>
+            <br/>
             <DocumentList name="files" label="Documents" />
         </React.Fragment>
     },
@@ -239,6 +244,19 @@ class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPag
 }
 
 
+@(connect((state, ownProps: any) => ({
+    values: () => getFormValues(ownProps.form)(state),
+}), {
+    save: (token: string, data: React.FormEvent<Form>) => {
+        const url = `client_request/${token}`;
+        const meta: EL.Actions.Meta = {
+            onSuccess: [createNotification('Progress saved.')],
+            onFailure: [createNotification('Progress saving failed. Please try again.', true)],
+        };
+
+        return updateResource(url, data, meta);
+    }
+}) as any)
 class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}> {
     state = {page: 0};
     pages=[
@@ -249,7 +267,7 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
     ];
     controls() {
         return <div className="button-row">
-            <Button bsStyle="info" onClick={this.save} disabled>Save Progress</Button>
+            <Button bsStyle="info" onClick={this.save} >Save Progress</Button>
             { this.state.page > 0 && <Button onClick={() => this.setState({page: this.state.page-1})}>Back</Button>}
             { this.state.page < this.pages.length - 1  && <Button  bsStyle="primary" type="submit">Next</Button>}
             { this.state.page == this.pages.length - 1 && <Button bsStyle="primary" type="submit">Submit</Button> }
@@ -261,7 +279,7 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
     }
 
     save = () => {
-
+        this.props.save(this.props.token, this.props.values());
     }
 
     render() {
@@ -289,12 +307,17 @@ const EditContactUsForm = (reduxForm({
       }, values.contactable || {})}),*/
 })(ContactUsForm as any) as any);
 
+interface ExternalContactProps {
+    clientRequest: EL.Resource<EL.ClientRequest>
+}
 
-@PanelHOC<{}>('New Client Form')
-export class ExternalContact extends React.PureComponent<{}> {
+@MapParamsToProps(['token'])
+@ClientRequestTokenHOC({name: 'clientRequest'})
+@PanelHOC<ExternalContactProps>('New Client Form', props => props.clientRequest)
+export class ExternalContact extends React.PureComponent<{clientRequest: EL.Resource<EL.ClientRequest>, token: string}> {
     render() {
-        const values ={};
-        return <EditContactUsForm initialValues={values} onSubmit={data => {}}  />
+        const values = this.props.clientRequest.data;
+        return <EditContactUsForm initialValues={values} token={this.props.token} onSubmit={data => {}}  />
     }
 }
 

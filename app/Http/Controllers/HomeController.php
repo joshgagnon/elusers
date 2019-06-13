@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\ClientRequest;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -26,6 +28,13 @@ class HomeController extends Controller
         ]);
     }
 
+
+    public function startContact(Request $request)
+    {
+       $token = Str::random(40);
+       ClientRequest::create(['token' => $token]);
+       return redirect('contact-us/'.$token);
+    }
 
     public function contact(Request $request)
     {

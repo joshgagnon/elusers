@@ -191,6 +191,13 @@ declare global {
         }
 
 
+        interface ClientRequest {
+            token: string;
+            data: any;
+            submitted: boolean;
+            files: any;
+        }
+
         interface ContactIndividual {
             firstName: string;
             middleName?: string;

@@ -149,3 +149,8 @@ Route::get('access_token/{token}', 'AccessTokenController@get')->name('AccessTok
 Route::put('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
 Route::post('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
 Route::delete('access_token/{token}', 'AccessTokenController@delete')->name('AccessToken.delete');
+
+Route::get('client_request/{token}', 'ClientRequestController@get')->name('ClientRequest.get');
+Route::put('client_request/{token}', 'ClientRequestController@update')->name('ClientRequest.update');
+Route::post('client_request/{token}', 'ClientRequestController@update')->name('ClientRequest.update');
+Route::delete('client_request/{token}', 'ClientRequestController@delete')->name('ClientRequest.delete');

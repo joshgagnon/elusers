@@ -123,7 +123,7 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="amlcft/complete" component={ ExternalAMLCFTComplete } />
         <Route path="amlcft/:token" component={ ExternalAMLCFT } />
 
-        <Route path="contact-us" component={ ExternalContact } />        
+        <Route path="contact-us/:token" component={ ExternalContact } />        
 
         { WikiRoutes }
     </Route>
