@@ -66,7 +66,7 @@ class ClientRequestController extends Controller
         $clientRequestFile = new ClientRequestFile;
 
         $clientRequestFile->file_id = $file->id;
-        $clientRequestFile->client_token_id  = $clientRequest->id;
+        $clientRequestFile->client_request_id  = $clientRequest->id;
         $clientRequestFile->save();
         return $clientRequestFile;
 
