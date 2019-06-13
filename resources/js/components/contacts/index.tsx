@@ -147,11 +147,13 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
 
                             <td className="actions">
                                 <Link className="btn btn-xs btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
+
                                 { hasPermission(this.props.user, 'edit contact') &&  <Link className="btn btn-xs btn-warning" to={`/contacts/${contact.id}/edit`}><Icon iconName="pencil" />Edit</Link> }
+
                                 { cddComplete && <a className="btn btn-success btn-xs" title="CDD complete"><Icon iconName="check" />CDD</a> }
                                 { cddNotNeeded && <a className="btn btn-default btn-xs" title="CDD not required"><Icon iconName="check" />CDD</a> }
-                                { cddIncomplete && <a className="btn btn-warning btn-xs" title="CDD incomplete"><Icon iconName="times" />CDD</a> }
-                                { cddUnknown && <a className="btn btn-danger btn-xs" title="CDD requires unknown"><Icon iconName="question" />CDD</a> }
+                                { cddIncomplete && <a className="btn btn-danger btn-xs" title="CDD incomplete"><Icon iconName="times" />CDD</a> }
+                                { cddUnknown && <a className="btn btn-warning btn-xs" title="CDD requires unknown"><Icon iconName="question" />CDD</a> }
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
