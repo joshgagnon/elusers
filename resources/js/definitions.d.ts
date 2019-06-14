@@ -190,13 +190,15 @@ declare global {
             files: any;
         }
 
-
         interface ClientRequest {
+            id?: number;
             token: string;
             data: any;
             submitted: boolean;
             files: any;
         }
+
+        type ClientRequests = ClientRequest[];
 
         interface ContactIndividual {
             firstName: string;

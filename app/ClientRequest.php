@@ -3,15 +3,17 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClientRequest extends Model
 {
-    protected $fillable = ['token', 'data', 'submitted'];
-    protected $visible = ['token', 'data', 'submitted'];
+    protected $fillable = ['token', 'data', 'submitted', 'organisation_id'];
+    protected $visible = ['id', 'token', 'data', 'submitted'];
     protected $casts = [
         'data' => 'array',
     ];
-
+    use SoftDeletes;
+    
    public function model()
     {
         return $this->morphTo();

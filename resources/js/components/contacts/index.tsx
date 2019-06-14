@@ -39,7 +39,7 @@ interface ContactState {
 
 
 const  requestAMLCFT = (contactId: string) => {
-    const createAction = createResource(`contacts/${contactId}/access_token`, {}, {
+    const createAction = createResource(`contacts/${contactId}/access-token`, {}, {
         onSuccess: [createNotification('Contact AML/CFT request send.'), (response) => {
             return showAMLCFTToken({contactId, token: response.token});
         }],
@@ -251,7 +251,7 @@ class ContactDocuments extends React.PureComponent<ContactDocumentProps> {
             title="Contact Documents"
             files={this.props.contact.data ? this.props.contact.data.files : []}
             matterId={this.props.contactId}
-            basePath={`contact/${this.props.contactId}`}
+            basePath={`contacts/${this.props.contactId}`}
             cached={this.props.contact.cached}
             canUpdate={this.props.canUpdate} />
     }

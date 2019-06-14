@@ -77,7 +77,7 @@ class DeadlineDetails extends React.PureComponent<{deadline: EL.Deadline}> {
             <dt>Description</dt>
             <dd>{ deadline.description }</dd>
 
-            {matter && <React.Fragment>
+            {!!matter && <React.Fragment>
                 <dt>Matter</dt>
                 <dd><Link to={`/matters/${matter.id}`}>{ matter.matterNumber }</Link></dd>
             </React.Fragment>}
@@ -138,7 +138,7 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
                 </div> }
             </DeadlineDetails>;
         })}
-        { matches.length > 0 && <div><i>No deadlines.</i></div> }
+        { matches.length === 0 && <div><i>No deadlines.</i></div> }
         </div>
     }
 

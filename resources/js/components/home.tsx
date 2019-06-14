@@ -6,6 +6,7 @@ import { Row, Col } from 'react-bootstrap';
 import { UserHOC } from 'components/hoc/resourceHOCs';
 import { name } from 'components/utils';
 import { hasPermission } from 'components/utils/permissions';
+import { ClientRequestsPanel } from 'components/client-requests';
 import { Link } from 'react-router';
 import Icon from 'components/icon';
 import Deadlines from 'components/deadlines';
@@ -26,9 +27,10 @@ class Home extends React.PureComponent<{user: EL.User}> {
     render() {
         return <Row className="sea-foreground">
             <Col md={6}>
-            <Panel title={`Hello ${name(this.props.user)}`}>
-                <HomeActions {...this.props} />
-            </Panel>
+                <Panel title={`Hello ${name(this.props.user)}`}>
+                    <HomeActions {...this.props} />
+                </Panel>
+                <ClientRequestsPanel />
             </Col>
             <Col md={6}>
                 <Deadlines />

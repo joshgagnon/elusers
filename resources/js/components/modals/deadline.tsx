@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deadline created.'), (response) => change(form, name, response.deadlineId), closeModal({ modalName: EL.ModalNames.DEADLINE })],
                 onFailure: [createNotification('Deadline creation failed. Please try again.', true)],
-                invalidateList: ['/deadlines', '/matters']
+                invalidateList: ['deadlines', 'matters']
             };
             return createResource(url, data, meta)
         }

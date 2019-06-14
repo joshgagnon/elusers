@@ -11,6 +11,7 @@ import { fullname } from '../utils';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { createNotification, createResource, updateResource, deleteResource, confirmAction } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
@@ -83,13 +84,14 @@ const ExternalContactFields = [
 
         return <React.Fragment>
             <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
-
-                <p className="form-question">What is your full legal name?</p>
-                <InputField name="contactable.firstName" label="First Name" type="text" required/>
-                <InputField name="contactable.middleName" label="Middle Name" type="text" />
-                <InputField name="contactable.surname" label="Surname" type="text" required />
-                <p className="form-question">By what name do you prefer to be addressed?</p>
-                <InputField name="contactable.preferredName" label="Preferred Name" type="text" required />
+                <FormSection name="contact">
+                    <p className="form-question">What is your full legal name?</p>
+                    <InputField name="contactable.firstName" label="First Name" type="text" required/>
+                    <InputField name="contactable.middleName" label="Middle Name" type="text" />
+                    <InputField name="contactable.surname" label="Surname" type="text" required />
+                    <p className="form-question">By what name do you prefer to be addressed?</p>
+                    <InputField name="contactable.preferredName" label="Preferred Name" type="text" required />
+                </FormSection>
                 <p className="form-question">Are you completing this form for yourself, another individual, or an organisation?</p>
 
                 <SelectField name="capacity" label="Capacity" options={['Myself', 'Another Individual', 'An Organisation']} required prompt/>
@@ -248,7 +250,7 @@ class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPag
     values: () => getFormValues(ownProps.form)(state),
 }), {
     save: (token: string, data: React.FormEvent<Form>) => {
-        const url = `client_request/${token}`;
+        const url = `client-requests/${token}`;
         const meta: EL.Actions.Meta = {
             onSuccess: [createNotification('Progress saved.')],
             onFailure: [createNotification('Progress saving failed. Please try again.', true)],
@@ -312,12 +314,43 @@ interface ExternalContactProps {
 }
 
 @MapParamsToProps(['token'])
+@(connect(undefined, (dispatch, ownProps: {token: string}) => ({
+    submit: bindActionCreators((values) => {
+        values['submitted'] = true;
+        const url = `client-requests/${ownProps.token}`;
+        const meta: EL.Actions.Meta = {
+            onSuccess: [createNotification('Request submitted.'), (response) => push('/contact-us/complete')],
+            onFailure: [createNotification('Request submission failed. Please try again.', true)],
+        };
+
+        return updateResource(url, values, meta);
+    }, dispatch)
+})) as any)
 @ClientRequestTokenHOC({name: 'clientRequest'})
-@PanelHOC<ExternalContactProps>('New Client Form', props => props.clientRequest)
-export class ExternalContact extends React.PureComponent<{clientRequest: EL.Resource<EL.ClientRequest>, token: string}> {
+@PanelHOC<ExternalContactProps>('New Client Form', props => props.clientRequest, {
+    errorComponent: () => <div>Saved data could not be found.  Click <a href="/contact-us">here</a> to start a new enquiry.</div>
+})
+export class ExternalContact extends React.PureComponent<{clientRequest: EL.Resource<EL.ClientRequest>, token: string, submit: (any) => void}> {
     render() {
-        const values = this.props.clientRequest.data;
-        return <EditContactUsForm initialValues={values} token={this.props.token} onSubmit={data => {}}  />
+        let values = this.props.clientRequest.data as any;
+        if(!values.contact){
+            values = {
+                contact: {
+                    contactableType: EL.Constants.INDIVIDUAL
+                }
+            }
+        }
+        return <EditContactUsForm initialValues={values} token={this.props.token} onSubmit={this.props.submit}  />
     }
 }
 
+
+
+@PanelHOC('New Client Form')
+export class ExternalContactComplete extends React.PureComponent {
+    render() {
+        return <div>
+            <p>Thank you for your submission.  We will be in touch shortly.</p>
+        </div>
+    }
+}

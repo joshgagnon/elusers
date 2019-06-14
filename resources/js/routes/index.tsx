@@ -6,7 +6,7 @@ import Users from '../components/users';
 
 import { Contact, Contacts, CreateContact, EditContact } from '../components/contacts';
 import {  ExternalAMLCFT, ExternalAMLCFTComplete, MergeContact  } from '../components/contacts/amlcft';
-import { ExternalContact } from '../components/contact-us/contactUs';
+import { ExternalContact, ExternalContactComplete } from '../components/contact-us/contactUs';
 import { DeedPacket, ListDeedPackets, CreateDeedPacket, EditDeedPacket } from '../components/deeds/packets';
 import { DeedRecord, EditDeedRecord, CreateDeedRecord } from '../components/deeds/records';
 
@@ -26,6 +26,7 @@ import DeadlinesIndex from '../components/deadlines';
 import EditDeadline from '../components/deadlines/edit';
 import CreateDeadline from '../components/deadlines/create';
 
+import ClientRequestsIndex, { ViewClientRequest } from 'components/client-requests';
 
 import MyProfile from '../components/my-profile';
 import BasicDetails from '../components/my-profile/basicDetails';
@@ -84,6 +85,10 @@ const routes = (routeComponent: RouteComponent) => (
             <Route path=':deadlines/edit' component={ EditDeadline} />
         </Route>
 
+        <Route path='client-requests' component={ClientRequestsIndex}>
+
+            <Route path=':clientRequestId' component={ViewClientRequest} />
+        </Route>
 
         <Route path="my-profile" component={ MyProfile }>
             <IndexRoute component={ BasicDetails } />
@@ -123,6 +128,7 @@ const routes = (routeComponent: RouteComponent) => (
         <Route path="amlcft/complete" component={ ExternalAMLCFTComplete } />
         <Route path="amlcft/:token" component={ ExternalAMLCFT } />
 
+        <Route path="contact-us/complete" component={ ExternalContactComplete } />        
         <Route path="contact-us/:token" component={ ExternalContact } />        
 
         { WikiRoutes }

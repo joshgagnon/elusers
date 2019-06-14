@@ -82,12 +82,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('contacts-sync', 'ContactController@syncContacts');
     Route::get('contacts-dedupe', 'ContactController@dedupeContacts');
 
-    Route::post('contact/{contact}/documents', 'ContactController@uploadDocuments');
-    Route::put('contact/{contact}/documents/{file}', 'ContactController@updateDocument');
-    Route::delete('contact/{contact}/documents/{file}', 'ContactController@deleteDocument');
+    Route::post('contacts/{contact}/documents', 'ContactController@uploadDocuments');
+    Route::put('contacts/{contact}/documents/{file}', 'ContactController@updateDocument');
+    Route::delete('contacts/{contact}/documents/{file}', 'ContactController@deleteDocument');
 
     Route::get('contact-files', 'ContactController@documents');
 
+
+    /* client requests */
+    Route::get('client-requests', 'ClientRequestController@getSubmitted');
+    Route::get('client-requests/{clientRequestId}/full', 'ClientRequestController@getFullRequest');
+    Route::delete('client-requests/{clientRequestId}', 'ClientRequestController@delete')->name('ClientRequest.delete');
     /**
      * Files
      */
@@ -129,9 +134,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::apiResource('deadlines', 'DeadlineController');
 
     Route::post('matters/{matter}', 'MatterController@update');
-    Route::post('matter/{matter}/documents', 'MatterController@uploadDocuments');
-    Route::put('matter/{matter}/documents/{file}', 'MatterController@updateDocument');
-    Route::delete('matter/{matter}/documents/{file}', 'MatterController@deleteDocument');
+    Route::post('matters/{matter}/documents', 'MatterController@uploadDocuments');
+    Route::put('matters/{matter}/documents/{file}', 'MatterController@updateDocument');
+    Route::delete('matters/{matter}/documents/{file}', 'MatterController@deleteDocument');
 
 
     Route::get('matter-files', 'MatterController@documents');
@@ -145,12 +150,11 @@ Route::group(['middleware' => ['auth']], function() {
 
 
 
-Route::get('access_token/{token}', 'AccessTokenController@get')->name('AccessToken.get');
-Route::put('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
-Route::post('access_token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
-Route::delete('access_token/{token}', 'AccessTokenController@delete')->name('AccessToken.delete');
+Route::get('access-token/{token}', 'AccessTokenController@get')->name('AccessToken.get');
+Route::put('access-token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
+Route::post('access-token/{token}', 'AccessTokenController@update')->name('AccessToken.update');
+Route::delete('access-token/{token}', 'AccessTokenController@delete')->name('AccessToken.delete');
 
-Route::get('client_request/{token}', 'ClientRequestController@get')->name('ClientRequest.get');
-Route::put('client_request/{token}', 'ClientRequestController@update')->name('ClientRequest.update');
-Route::post('client_request/{token}', 'ClientRequestController@update')->name('ClientRequest.update');
-Route::delete('client_request/{token}', 'ClientRequestController@delete')->name('ClientRequest.delete');
+Route::get('client-requests/{token}', 'ClientRequestController@get')->name('ClientRequest.get');
+Route::put('client-requests/{token}', 'ClientRequestController@update')->name('ClientRequest.update');
+Route::post('client-requests/{token}', 'ClientRequestController@update')->name('ClientRequest.update');

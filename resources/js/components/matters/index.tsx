@@ -301,7 +301,7 @@ class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
             title="Matter Documents"
             files={this.props.matter.data ? this.props.matter.data.files : []}
             matterId={this.props.matterId}
-            basePath={`matter/${this.props.matterId}`}
+            basePath={`matters/${this.props.matterId}`}
             cached={this.props.matter.cached}
             canUpdate={this.props.canUpdate} />
     }

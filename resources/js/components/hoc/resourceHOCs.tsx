@@ -108,6 +108,9 @@ export const OfficesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory
 export const ContactsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => 'contacts', propsName: 'contacts' });
 export const ContactHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `contacts/${props.contactId}`, propsName: 'contact' });
 
+export const ClientRequestsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `client-requests`, propsName: 'clientRequests' });
+export const ClientRequestHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `client-requests/${props.clientRequestId}/full`, propsName: 'clientRequest' });
+
 export const ContactAddressesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `contacts/${props.contactId}/addresses`, propsName: 'addresses' });
 export const ContactAddressHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `addresses/${props.addressId}`, propsName: 'address' });
 
@@ -118,8 +121,8 @@ export const MatterDocumentsHOC = ({cache=false} : {cache?: boolean} = {}) => HO
 export const MattersHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `matters`, propsName: 'matters' });
 export const MatterHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `matters/${props.matterId}`, propsName: 'matter' });
 
-export const TokenHOC = ({cache=false, name} : {cache?: boolean, name: string} = {name: ''}) => HOCFactory({ cache, location: (props) => `access_token/${props.token}`, propsName: name });
-export const ClientRequestTokenHOC = ({cache=false, name} : {cache?: boolean, name: string} = {name: ''}) => HOCFactory({ cache, location: (props) => `client_request/${props.token}`, propsName: name });
+export const TokenHOC = ({cache=false, name} : {cache?: boolean, name: string} = {name: ''}) => HOCFactory({ cache, location: (props) => `access-token/${props.token}`, propsName: name });
+export const ClientRequestTokenHOC = ({cache=false, name} : {cache?: boolean, name: string} = {name: ''}) => HOCFactory({ cache, location: (props) => `client-requests/${props.token}`, propsName: name });
 export const RolesAndPermissionsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `roles`, propsName: 'rolesAndPermissions' });
 
 export const DeadlinesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `deadlines`, propsName: 'deadlines' });

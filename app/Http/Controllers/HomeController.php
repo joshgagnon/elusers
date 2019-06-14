@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ClientRequest;
+use App\Organisation;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -31,8 +32,10 @@ class HomeController extends Controller
 
     public function startContact(Request $request)
     {
+       // grab id for evolution lawyers
+        $orgId = Organisation::where('legal_name', 'like', 'Evolution Lawyers%')->first()->id;
        $token = Str::random(40);
-       ClientRequest::create(['token' => $token]);
+       ClientRequest::create(['token' => $token, 'organisation_id' => $orgId]);
        return redirect('contact-us/'.$token);
     }
 

@@ -250,7 +250,7 @@ interface UnwrappedExternalContactAMLCFTProps {
           undefined,
     {
         submit: (token: string, data: React.FormEvent<Form>) => {
-           const url = `access_token/${token}`;
+           const url = `access-token/${token}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Information updated.'), (response) => push('/amlcft/complete')],
                 onFailure: [createNotification('Update failed. Please try again.', true)],
@@ -333,7 +333,7 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
             };
             const actions = [updateResource(url, merged, meta)] as any;
 
-            actions.push(deleteResource(`access_token/${token}`));
+            actions.push(deleteResource(`access-token/${token}`));
 
             return confirmAction({
                 title: 'Merge Information',

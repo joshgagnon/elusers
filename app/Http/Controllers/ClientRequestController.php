@@ -10,29 +10,61 @@ use Illuminate\Support\Facades\Storage;
 
 class ClientRequestController extends Controller
 {
+
+    public function getSubmitted(Request $request)
+    {
+        if(!$request->user()->hasPermissionTo('view client requests')) {
+            abort(403);
+        }
+        $orgId = $request->user()->organisation_id;
+        return  ClientRequest::where('submitted', true)->where('organisation_id', $orgId)->with('files')->get();
+    }
+
     public function get(Request $request, $token)
     {
-        $clientRequest = ClientRequest::where('token', $token)->with('files')->first();
+        $clientRequest = ClientRequest::where('token', $token)->where('submitted', false)->with('files')->first();
         if(!$clientRequest){
             abort(404);
         }
-        if($clientRequest['submitted']){
-            $data = $clientRequest['data'];
-            $data['files'] = array_map(function ($i) {
-                return $i;
-            }, $clientRequest['files']->toArray());
+        $data = $clientRequest['data'];
+        $data['files'] = array_map(function ($i) {
+            return $i;
+        }, $clientRequest['files']->toArray());
+        return $data;
+    }
 
-            return $data;
+    public function getFullRequest(Request $request, $clientRequestId)
+    {
+        if(!$request->user()->hasPermissionTo('view client requests')) {
+            abort(403);
         }
+        $orgId = $request->user()->organisation_id;
+        $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->with('files')->first();
+        if(!$clientRequest){
+            abort(404);
+        }
+        $data = $clientRequest['data'];
+        $data['files'] = array_map(function ($i) {
+            return $i;
+        }, $clientRequest['files']->toArray());
         return $clientRequest;
+    }
+
+    public function delete(Request $request,  $clientRequestId)
+    {
+        if(!$request->user()->hasPermissionTo('process client requests')) {
+            abort(403);
+        }
+        $clientRequest = ClientRequest::where('id', $clientRequestId)->first();       
+        $clientRequest->delete();        return response()->json(['message' => 'Client request deleted.']);
     }
 
     public function update(Request $request, $token)
     {
 
         $clientRequest = ClientRequest::where('token', $token)->first();
-
-        $clientRequest->update(['data' => $request->allJson(), 'submitted' => true]);
+        $data =  $request->allJson();
+        $clientRequest->update(['data' => $data, 'submitted' => $data['submitted'] ?? false]);
 
         $files = $request->file('file', []);
         foreach ($files as $file) {
@@ -72,10 +104,5 @@ class ClientRequestController extends Controller
 
     }
 
-    public function delete(Request $request, $token)
-    {
-        $clientRequest = ClientRequest::where('token', $token)->with('files')->first();
-        $clientRequest->delete();
-        return response()->json(['message' => 'Resource deleted.'], 200);
-    }
+
 }
