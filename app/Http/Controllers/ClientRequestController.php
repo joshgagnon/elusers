@@ -122,6 +122,7 @@ class ClientRequestController extends Controller
             abort(403);
         }
         $data =  $request->allJson();
+        $user = $request->user();
         $orgId = $request->user()->organisation_id;
         DB::beginTransaction();
         $results = [];
@@ -180,7 +181,7 @@ class ClientRequestController extends Controller
             }
 
             $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->first();
-            $clientRequest->delete();
+            #$clientRequest->delete();
             throw new Exception('lols');
             DB::commit();
         } catch (\Throwable $e) {
