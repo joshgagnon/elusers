@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth']], function() {
     /* client requests */
     Route::get('client-requests', 'ClientRequestController@getSubmitted');
     Route::get('client-requests/{clientRequestId}/full', 'ClientRequestController@getFullRequest');
+    Route::post('client-requests/{clientRequestId}/create-entities', 'ClientRequestController@createEntities');
     Route::delete('client-requests/{clientRequestId}', 'ClientRequestController@delete')->name('ClientRequest.delete');
     /**
      * Files

@@ -33,7 +33,8 @@ class Matter extends Model
         "Property Advice",
         "Wills and Estates",
         "Trust Advice",
-        "Trust Creation and Administration"
+        "Trust Creation and Administration",
+        "Other"
     ];
 
 

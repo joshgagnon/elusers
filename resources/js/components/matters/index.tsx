@@ -54,7 +54,8 @@ export const MATTER_TYPES = [
     "Property Advice",
     "Wills and Estates",
     "Trust Advice",
-    "Trust Creation and Administration"
+    "Trust Creation and Administration",
+    "Other"
 ];
 
 
