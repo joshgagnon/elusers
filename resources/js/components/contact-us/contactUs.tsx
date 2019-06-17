@@ -3,7 +3,7 @@ import { ContactsHOC, ContactHOC, ClientRequestTokenHOC } from '../hoc/resourceH
 import WaitForResource from '../hoc/waitForResource';
 import Table from '../dataTable';
 import PanelHOC from '../hoc/panelHOC';
-import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, ProgressBar, Col, FormGroup, ControlLabel, Alert } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
 import { reduxForm, formValueSelector, InjectedFormProps, FormSection, FieldArray, getFormValues } from 'redux-form';
 import { validate } from '../utils/validation';
@@ -64,6 +64,47 @@ photo identification and a recent utilities bill showing your residential addres
 
 */
 
+class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
+    render() {
+        const { fields } = this.props;
+        return <div>
+            { fields.map((person, index) => (
+              <div key={index}>
+                <FormGroup className="no-margin">
+                    <Col componentClass={ControlLabel} md={3}>
+                         Other Individual #{index+1}
+                    </Col>
+                    <Col md={8}>
+                        <InputField name={`${person}.firstName`} label="First Name" type="text" required/>
+                        <InputField name={`${person}.middleName`} label="Middle Name" type="text" />
+                        <InputField name={`${person}.surname`} label="Surname" type="text" required />
+                    </Col>
+
+                    <Col md={1}>
+                        <Button className="btn-icon-only" onClick={(e) => {
+                                e.preventDefault();
+                                fields.remove(index)
+                              }}><Icon iconName="trash-o" /></Button>
+                    </Col>
+                    </FormGroup>
+
+                      { index !== fields.length -1  && <hr /> }
+              </div>
+            )) }
+              <div className="button-row">
+                  <Button onClick={() => fields.push({})}>
+                Add Another Individual
+                </Button>
+            { this.props.meta.error && <Alert bsStyle="danger">
+                <p className="text-center">
+                { this.props.meta.error }
+                </p>
+            </Alert> }
+              </div>
+          </div>
+    }
+}
+
 
 
 
@@ -92,17 +133,20 @@ const ExternalContactFields = [
                     <p className="form-question">By what name do you prefer to be addressed?</p>
                     <InputField name="contactable.preferredName" label="Preferred Name" type="text" required />
                 </FormSection>
-                <p className="form-question">Are you completing this form for yourself, another individual, or an organisation?</p>
+                <p className="form-question">Are you completing this form for yourself, yourself and others, another individual, or an organisation?</p>
 
-                <SelectField name="capacity" label="Capacity" options={['Myself', 'Another Individual', 'An Organisation']} required prompt/>
+                <SelectField name="capacity" label="Capacity" options={['Myself', 'Myself and Others', 'Other Individuals', 'An Organisation']} required prompt/>
 
-                { props.capacity === 'Another Individual' && <React.Fragment>
-                    <p className="form-question">What is the other person’s full legal name?</p>
-                    <InputField name="otherIndividual.firstName" label="First Name" type="text" required/>
-                    <InputField name="otherIndividual.middleName" label="Middle Name" type="text" />
-                    <InputField name="otherIndividual.surname" label="Surname" type="text" required />
+                { props.capacity === 'Myself and Others' && <React.Fragment>
+                    <p className="form-question">What are the other person’s full legal names?</p>
+                    <FieldArray name="otherIndividuals" component={OtherIndividuals} />
+                    </React.Fragment> }
 
-                    <p className="form-question">In what capacity are you completing this form for the other person?</p>
+                { props.capacity === 'Other Individuals' && <React.Fragment>
+                    <p className="form-question">What are the other person’s full legal names?</p>
+                    <FieldArray name="otherIndividuals" component={OtherIndividuals} />
+
+                    <p className="form-question">In what capacity are you completing this form for the other person(s)?</p>
                     <SelectField name="capacityType" label="Capacity Type" options={['Authorised Person', 'Attorney', 'Other']} required prompt/>
                     { props.capacityType === 'Other' && <InputField name="otherIndividual.capacityType"
                         label="Description" placeholder={'Please describe...'} type="text" required />  }
@@ -148,9 +192,10 @@ const ExternalContactFields = [
     () => {
         return <React.Fragment>
             <h4 className={"text-center"}>Contact Information</h4>
-                <FormSection name="contact">
-              <FieldArray name="contactInformations" component={ContactInformationFields as any} selector={formValueSelector(EL.FormNames.CONTACT_US_FORM)} />
-              </FormSection>
+
+                 <InputField name="emailSimple" label="Email" type="text" required />
+                 <InputField name="phoneNumberSimple" label="Phone Number" type="text" required />
+                 <p className="form-question">Residential Address</p>
             <FormSection name="address.data">
                 <AddressFields />
             </FormSection>
@@ -297,18 +342,58 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
             <Page onSubmit={onSubmit}>
                 { this.controls() }
             </Page>
+
             </div>
     }
 }
 
-const EditContactUsForm = (reduxForm({
-    form: EL.FormNames.CONTACT_US_FORM,
-    /*validate: (values: any) : EL.ValidationErrors => ({
+
+class ReviewContactUs extends React.PureComponent {
+    pages=[
+        ContactPage1,
+        ContactPage2,
+        ContactPage3,
+        ContactPage4
+    ];
+
+    render() {
+        return <React.Fragment>
+            { this.pages.map((page, i) => {
+                const Page = page as any;
+                return <Page key={i} />
+            })}
+        </React.Fragment>
+    }
+}
+
+const validateContact = (values: any) => {
+    return {
         contactable: validate({
             firstName: { name: 'First Name', required: true },
-            surname: { name: 'Surname', required: true }
-      }, values.contactable || {})}),*/
-})(ContactUsForm as any) as any);
+            surname: { name: 'Surname', required: true },
+      }, values.contactable || {})
+    };
+}
+
+const validateContactUs = (values: any) : EL.ValidationErrors => {
+        return {
+            contact: validateContact(values.contact),
+            ...validate({
+                capacity: { name: 'Capacity', required: true },
+                emailSimple: { name: 'Email', required: true},
+                phoneNumberSimple: { name: 'Email', required: true},
+            }, values)
+        };
+}
+
+const EditContactUsForm = (reduxForm({
+    form: EL.FormNames.CONTACT_US_FORM,
+    validate: validateContactUs})(ContactUsForm as any) as any);
+
+export const ReviewContactUsForm = (reduxForm({
+    form: EL.FormNames.CONTACT_US_FORM,
+    validate: validateContactUs})(ReviewContactUs as any) as any);
+
 
 interface ExternalContactProps {
     clientRequest: EL.Resource<EL.ClientRequest>
@@ -320,7 +405,7 @@ interface ExternalContactProps {
         values['submitted'] = true;
         const url = `client-requests/${ownProps.token}`;
         const meta: EL.Actions.Meta = {
-            onSuccess: [createNotification('Request submitted.'), (response) => push('/contact-us/complete')],
+            onSuccess: [(response) => push('/contact-us/complete'), createNotification('Request submitted.')],
             onFailure: [createNotification('Request submission failed. Please try again.', true)],
         };
 
@@ -337,7 +422,10 @@ export class ExternalContact extends React.PureComponent<{clientRequest: EL.Reso
         if(!values.contact){
             values = {
                 contact: {
-                    contactableType: EL.Constants.INDIVIDUAL
+                    contactableType: EL.Constants.INDIVIDUAL,
+                    contactInformations: [{
+
+                    }]
                 }
             }
         }

@@ -45,9 +45,19 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
                 if (some(resources, r => (r.isFetching || !r.hasStarted) && !r.cached)) {
                     return <Loading />;
                 }
+                if (some(resources, r => r.cached)) {
+                    return <React.Fragment>
+                        <Loading overlay show={true}/>
+                        <ComposedComponent key={'component'} {...props} />
+                       </React.Fragment>
+                }
+
             }
 
-            return <ComposedComponent {...props} />;
+            return <React.Fragment>
+                 <Loading overlay show={false}/>
+                <ComposedComponent  key={'component'} {...props} />
+             </React.Fragment>
         }
 
         class PanelWithContent extends React.PureComponent<TProps, TState> {

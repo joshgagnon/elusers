@@ -116,8 +116,6 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
         const data = filterData(this.state.searchValue, this.props.contacts.data);
         return (
             <React.Fragment>
-
-
                 { hasPermission(this.props.user, 'create contact') && <ButtonToolbar>
                     <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
                     <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Contact List</Button>

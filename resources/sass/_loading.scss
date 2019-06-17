@@ -83,3 +83,30 @@
 .modal-backdrop{
     opacity: 0.5;
 }
+
+
+.panel .panel-body{
+    position: relative;
+
+    .loading-overlay {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+            background-color: rgba(0,0,0,0.1);
+        .loading-offset{
+            top: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            left: 50%;
+        }
+    }
+    .fade-transition.full-size{
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+    }
+}

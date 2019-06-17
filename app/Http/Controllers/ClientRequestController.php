@@ -17,7 +17,7 @@ class ClientRequestController extends Controller
             abort(403);
         }
         $orgId = $request->user()->organisation_id;
-        return  ClientRequest::where('submitted', true)->where('organisation_id', $orgId)->with('files')->get();
+        return  ClientRequest::where('submitted', true)->where('organisation_id', $orgId)->with('files')->orderBy('updated_at')->get();
     }
 
     public function get(Request $request, $token)
@@ -43,11 +43,13 @@ class ClientRequestController extends Controller
         if(!$clientRequest){
             abort(404);
         }
+        $clientRequest = $clientRequest;
         $data = $clientRequest['data'];
         $data['files'] = array_map(function ($i) {
             return $i;
         }, $clientRequest['files']->toArray());
-        return $clientRequest;
+
+        return array_merge($clientRequest->toArray(), ['data' => $data]);
     }
 
     public function delete(Request $request,  $clientRequestId)
@@ -55,7 +57,7 @@ class ClientRequestController extends Controller
         if(!$request->user()->hasPermissionTo('process client requests')) {
             abort(403);
         }
-        $clientRequest = ClientRequest::where('id', $clientRequestId)->first();       
+        $clientRequest = ClientRequest::where('id', $clientRequestId)->first();
         $clientRequest->delete();        return response()->json(['message' => 'Client request deleted.']);
     }
 

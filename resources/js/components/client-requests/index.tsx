@@ -10,7 +10,7 @@ import MapParamsToProps from 'components/hoc/mapParamsToProps';
 import { Button } from 'react-bootstrap';
 import { createNotification, createResource, updateResource, deleteResource, confirmAction } from 'actions';
 import { push } from 'react-router-redux';
-
+import { ReviewContactUsForm  } from 'components/contact-us/contactUs';
 
 interface ClientRequestsPanelProps {
     clientRequests?: EL.Resource<EL.ClientRequests>
@@ -19,6 +19,7 @@ interface ClientRequestsPanelProps {
 interface ClientRequestPanelProps {
     clientRequest?: EL.Resource<EL.ClientRequest>
     deleteRequest: (string) => void;
+    submit: (string) => void;
 }
 
 
@@ -41,7 +42,7 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
                { clientRequests.map(clientRequest => <ClientRequestSummaryLink clientRequest={clientRequest} key={clientRequest.id} />) }
 
                { clientRequests.length === 0 && <i>No client requests.</i>  }
-         
+
             </div>
         );
     }
@@ -51,8 +52,11 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
 @HasPermission("view client requests")
 @MapParamsToProps(['clientRequestId'])
 @ClientRequestHOC()
-@PanelHOC<ClientRequestPanelProps>('Client Requests', props => props.clientRequest)
+@PanelHOC<ClientRequestPanelProps>('Review Client Request', props => props.clientRequest)
 @(connect(undefined, {
+    submit: (values) => {
+
+    },
     deleteRequest: (clientRequestId: string) => {
         const deleteAction = deleteResource(`client-requests/${clientRequestId}`, {
             onSuccess: [createNotification('Client request deleted.'), (response) => push('/')],
@@ -74,6 +78,7 @@ export  class ViewClientRequest extends React.PureComponent<ClientRequestPanelPr
     render() {
         return (
             <div>
+            <ReviewContactUsForm initialValues={this.props.clientRequest.data.data} onSubmit={this.props.submit} />
            <div className="button-row">
                 <Button bsStyle="danger" onClick={this.deleteRequest}>Delete Client Request</Button>
             </div>

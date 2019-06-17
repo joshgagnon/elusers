@@ -12,7 +12,7 @@ use Phemail\MessageParser;
 use Illuminate\Support\Facades\Log;
 use App\Library\StringToStream;
 use Illuminate\Support\Str;
- use App\Library\Encoding;  
+ use App\Library\Encoding;
 
 
 function address($value) {
@@ -22,7 +22,7 @@ function address($value) {
     }
     $addresses = (new \Mail_RFC822)->parseAddressList($value);
     if(!is_array($addresses)) {
-      $addresses = (new \Mail_RFC822)->parseAddressList(preg_replace('/\\\/', '', $value));      
+      $addresses = (new \Mail_RFC822)->parseAddressList(preg_replace('/\\\/', '', $value));
     }
     if(!is_array($addresses)) {
         return $default;
@@ -174,7 +174,7 @@ class File extends Model
         $tabChaine=imap_mime_header_decode($string);
         $texte='';
         for ($i=0; $i<count($tabChaine); $i++) {
-            
+
             switch (strtoupper($tabChaine[$i]->charset)) { //convert charset to uppercase
                 case 'UTF-8': $texte.= $tabChaine[$i]->text; //utf8 is ok
                     break;
@@ -183,14 +183,14 @@ class File extends Model
                 default: if (in_array(strtoupper($tabChaine[$i]->charset),upperListEncode())) //found in mb_list_encodings()
                             {$texte.= mb_convert_encoding($tabChaine[$i]->text,'UTF-8',$tabChaine[$i]->charset);}
                          else { //try to convert with iconv()
-                              $ret = iconv($tabChaine[$i]->charset, "UTF-8", $tabChaine[$i]->text);    
-                              if (!$ret) $texte.=$tabChaine[$i]->text;  //an error occurs (unknown charset) 
+                              $ret = iconv($tabChaine[$i]->charset, "UTF-8", $tabChaine[$i]->text);
+                              if (!$ret) $texte.=$tabChaine[$i]->text;  //an error occurs (unknown charset)
                               else $texte.=$ret;
-                            }                    
+                            }
                     break;
                 }
             }
-        return $texte;    
+        return $texte;
     }
 
 
@@ -208,7 +208,7 @@ class File extends Model
             $body = array_map(function($part) {
                 $value = $this->decodeContentTransfer($part->getContents(), $part->getHeaderValue('content-transfer-encoding'));
                 return ['value' => $value, 'contentType' => $part->getHeaderValue('content-type')];
-            }, $message->getParts(true)); 
+            }, $message->getParts(true));
         }
         return [
             'date' => $message->getHeaderValue('date'),
