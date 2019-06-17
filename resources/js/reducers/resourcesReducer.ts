@@ -6,7 +6,7 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
             return {
                 ...state,
                 [action.payload.key]: {
-                    ...(state[action.payload.key] || {}),
+                    data: undefined,
                     status: EL.RequestStatus.FETCHING
                 }
             };
@@ -31,7 +31,7 @@ export default function resources(state=DEFAULT_STATE, action: EL.Actions.Action
             return {
                 ...state,
                 [action.payload.url]: {
-                    ...(state[action.payload.url] || {}),
+                    data: undefined,
                     status: EL.RequestStatus.FETCHING
                 }
             };

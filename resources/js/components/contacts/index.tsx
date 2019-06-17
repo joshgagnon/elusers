@@ -23,19 +23,13 @@ import * as ReactList from 'react-list';
 import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
 import { DocumentsTree } from 'components/documents/documentsTree';
+import { ClientRequestsPanel } from 'components/client-requests';
 
 
-interface ContactsProps {
-    contacts: EL.Resource<EL.Contact[]>;
-    showUploadModal: () => void;
-}
 
 const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
 
 
-interface ContactState {
-    searchValue: string;
-}
 
 
 const  requestAMLCFT = (contactId: string) => {
@@ -97,13 +91,22 @@ const addresses = (contact: EL.Contact) => {
         </React.Fragment>);
 }
 
+
+interface ContactsProps {
+    contacts?: EL.Resource<EL.Contact[]>;
+    showUploadModal?: () => void;
+}
+interface ContactState {
+    searchValue: string;
+}
+
 @HasPermissionHOC('view contacts')
 @ContactsHOC({cache:true})
-@(PanelHOC<ContactsProps>('Contacts', props => props.contacts) as any)
-@(connect((state: EL.State) => ({user: state.user}), {
+@PanelHOC<{contacts: EL.Resource<EL.Contact[]>}>('Contacts', props => props.contacts)
+@(connect<{user: EL.User}, {showUploadModal: () => void;}, {contacts: EL.Resource<EL.Contact[]>}>((state: EL.State) => ({user: state.user}), {
     showUploadModal: () => showUploadModal({uploadType: 'contacts'})
 }) as any)
-export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User}, ContactState> {
+export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: EL.User}, ContactState> {
 
     state = {
         searchValue: ''
@@ -112,7 +115,9 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
     render() {
         const data = filterData(this.state.searchValue, this.props.contacts.data);
         return (
-            <div>
+            <React.Fragment>
+
+
                 { hasPermission(this.props.user, 'create contact') && <ButtonToolbar>
                     <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
                     <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Contact List</Button>
@@ -164,12 +169,16 @@ export class Contacts extends React.PureComponent<ContactsProps & {user: EL.User
                         length={data.length+1} // for the header
                       />
                       </div>
-            </div>
+            </React.Fragment>
         );
     }
 }
 
 
+export const Contacts = props => <React.Fragment>
+  <ClientRequestsPanel />
+  <ContactsPanel />
+  </React.Fragment>
 
 interface ContactProps {
     contact: EL.Resource<EL.Contact>;
@@ -572,7 +581,7 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
 
                     <ConnectedContactName selector={selector} />
                                               <hr />
-                    <ConnectedCustomerDueDiligence  selector={selector} />    
+                    <ConnectedCustomerDueDiligence  selector={selector} />
                      <hr />
                     <ContactInformations selector={selector}/>
                     <hr />
@@ -586,7 +595,7 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     <Agents />
                                           <hr />
                     <Relationships />
-            
+
                     </div>
                 <hr />
 
@@ -794,6 +803,7 @@ class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps
         return <EditContactForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, data)} saveButtonText="Save Contact" />
     }
 }
+
 
 
 @(connect((state: EL.State) => ({user: state.user})) as any)

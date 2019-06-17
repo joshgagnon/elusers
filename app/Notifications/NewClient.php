@@ -9,28 +9,20 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Lang;
 
 
-
-class MyResetPassword extends Notification
+class NewClient extends Notification
 {
     use Queueable;
-
-    public $token;
-
-    /**
-     * The callback that should be used to build the mail message.
-     *
-     * @var \Closure|null
-     */
-    public static $toMailCallback;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($token)
+    public $newClientId;
+
+    public function __construct($newClientId)
     {
-        $this->token = $token;
+        $this->newClientId = $newClientId;
     }
 
     /**
@@ -52,16 +44,10 @@ class MyResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
-        if (static::$toMailCallback) {
-            return call_user_func(static::$toMailCallback, $notifiable, $this->token);
-        }
-
-
         return (new MailMessage)
-            ->subject(Lang::getFromJson('Reset Password Notification'))
-            ->line(Lang::getFromJson('You are receiving this email because we received a password reset request for your account.'))
-            ->action(Lang::getFromJson('Reset Password'), url(config('app.url').route('password.reset', $this->token, false)))
-            ->line(Lang::getFromJson('If you did not request a password reset, no further action is required.'));
+            ->subject(Lang::getFromJson('New Client Request'))
+            ->line(Lang::getFromJson('Evolution Lawyers has recieved a new client request.'))
+            ->action(Lang::getFromJson('View'), config('app.url').'/client-requests/'.$this->newClientId);
     }
 
     /**

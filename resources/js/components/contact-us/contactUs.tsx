@@ -137,7 +137,7 @@ const ExternalContactFields = [
             <FormSection name="matter">
             <SelectField name="matterType" label="Matter Type" options={matterOptions} required prompt/>
                 { props.requiresAddress && <React.Fragment>
-                          <h4 className={"text-center"}>What is the address of the relevant property?</h4>
+                          <p className="form-question">What is the address of the relevant property?</p>
                         <AddressFields />
                    </React.Fragment>}
               <p className="form-question">Please provide a brief description of the matter</p>
@@ -189,22 +189,6 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
     }
 }
 
-@(reduxForm({
-    form: EL.FormNames.CONTACT_US_FORM,
-      destroyOnUnmount: false,
-      forceUnregisterOnUnmount: true,
-}) as any)
-class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
-    fields = ExternalContactFields[1]
-    render(){
-        const { handleSubmit, pristine, previousPage, submitting } = this.props;
-        const Fields = this.fields;
-        return <Form horizontal onSubmit={handleSubmit}>
-            <Fields/>
-            { this.props.children }
-        </Form>
-    }
-}
 
 
 @(reduxForm({
@@ -213,16 +197,33 @@ class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPag
       forceUnregisterOnUnmount: true,
 }) as any)
 @(connect((state, ownProps) => ({
-    requiresAddress: ['Conveyancing – Sale / Purchase','Conveyancing – Refinance']
+    requiresAddress: ['Conveyancing – Sale / Purchase', 'Conveyancing – Refinance']
         .includes(formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'matter.matterType'))
 })) as any)
-class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean}> {
-    fields = ExternalContactFields[2]
+class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean}> {
+    fields = ExternalContactFields[1]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
             <Fields requiresAddress={this.props.requiresAddress}/>
+            { this.props.children }
+        </Form>
+    }
+}
+
+@(reduxForm({
+    form: EL.FormNames.CONTACT_US_FORM,
+      destroyOnUnmount: false,
+      forceUnregisterOnUnmount: true,
+}) as any)
+class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+    fields = ExternalContactFields[2]
+    render(){
+        const { handleSubmit, pristine, previousPage, submitting } = this.props;
+        const Fields = this.fields;
+        return <Form horizontal onSubmit={handleSubmit}>
+            <Fields/>
             { this.props.children }
         </Form>
     }
@@ -252,7 +253,7 @@ class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPag
     save: (token: string, data: React.FormEvent<Form>) => {
         const url = `client-requests/${token}`;
         const meta: EL.Actions.Meta = {
-            onSuccess: [createNotification('Progress saved.')],
+            onSuccess: [createNotification('Progress saved, you can bookmark this page to return later.')],
             onFailure: [createNotification('Progress saving failed. Please try again.', true)],
         };
 
@@ -326,7 +327,7 @@ interface ExternalContactProps {
         return updateResource(url, values, meta);
     }, dispatch)
 })) as any)
-@ClientRequestTokenHOC({name: 'clientRequest'})
+@ClientRequestTokenHOC({name: 'clientRequest', cache: true})
 @PanelHOC<ExternalContactProps>('New Client Form', props => props.clientRequest, {
     errorComponent: () => <div>Saved data could not be found.  Click <a href="/contact-us">here</a> to start a new enquiry.</div>
 })

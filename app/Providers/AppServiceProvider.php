@@ -9,7 +9,8 @@ use App\Matter;
 use App\Observers\MatterObserver;
 use App\Contact;
 use App\Observers\ContactObserver;
-
+use App\ClientRequest;
+use App\Observers\ClientRequestObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,9 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+
         Matter::observe(MatterObserver::class);
         Contact::observe(ContactObserver::class);
+        ClientRequest::observe(ClientRequestObserver::class);
     }
 
     /**

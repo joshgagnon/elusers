@@ -13,7 +13,7 @@ class ClientRequest extends Model
         'data' => 'array',
     ];
     use SoftDeletes;
-    
+
    public function model()
     {
         return $this->morphTo();

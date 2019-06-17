@@ -42,7 +42,7 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
                     return <h1>Error</h1>;
                 }
 
-                if (some(resources, r => r.isFetching || !r.hasStarted)) {
+                if (some(resources, r => (r.isFetching || !r.hasStarted) && !r.cached)) {
                     return <Loading />;
                 }
             }

@@ -23,11 +23,11 @@ class ContactObserver
      * @param  \App\Contact  $Contact
      * @return void
      */
-    public function created(Contact $Contact)
+    public function created(Contact $contact)
     {
         // create folder named after Contact id,
         // populate with default directories
-        $Contact->populateDirectories();
+        $contact->populateDirectories();
     }
 
     /**
