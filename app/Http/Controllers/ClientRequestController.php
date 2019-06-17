@@ -156,7 +156,7 @@ class ClientRequestController extends Controller
             $matter = Matter::create(
                 [
                     'matter_number' => '',
-                    'matter_name' => 'New Matter for '.$contact->firstName.' '.$contact->lastName,
+                    'matter_name' => 'New Matter for '.$contact->contactable->first_name.' '.$contact->contactable->surname,
                     'matter_type' => $matterType,
                     'created_by_user_id' =>  $user->id,
                     'organisation_id' => $orgId
@@ -181,8 +181,10 @@ class ClientRequestController extends Controller
             }
 
             $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->first();
-            #$clientRequest->delete();
-            throw new Exception('lols');
+            $clientRequest->delete();
+
+            #throw new Exception('lols');
+            $results['matter'] = $matter;
             DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();

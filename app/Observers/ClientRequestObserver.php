@@ -42,7 +42,7 @@ class ClientRequestObserver
         if($clientRequest->isDirty('submitted') && $clientRequest->submitted && !$clientRequest->getOriginal('submitted')){
             $users = User::where(['organisation_id' => $clientRequest->organisation_id])->get();
             foreach($users as $user) {
-                if($user->hasPermissionTo('view client requests') && $user->first_name === 'Joshua') {
+                if($user->hasPermissionTo('view client requests')) {
                     $user->notify(new NewClient($clientRequest->id));
                 }
             }

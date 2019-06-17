@@ -59,7 +59,7 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
     triggerSubmit: () => dispatch(submit(EL.FormNames.CONTACT_US_FORM)),
     submit: (values) => {
         const createAction = createResource(`client-requests/${ownProps.clientRequestId}/create-entities`, values, {
-            onSuccess: [createNotification('Client request processed.'), (response) => push(`/matters/${response.matter.id}`)],
+            onSuccess: [createNotification('Client request processed.'), (response) => push(`/matters/${response.results.matter.id}`)],
             onFailure: [createNotification('Client request processing failed. Please try again.', true)],
         });
 
