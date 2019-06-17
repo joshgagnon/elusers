@@ -11,6 +11,7 @@ import { Button } from 'react-bootstrap';
 import { createNotification, createResource, updateResource, deleteResource, confirmAction } from 'actions';
 import { push } from 'react-router-redux';
 import { ReviewContactUsForm  } from 'components/contact-us/contactUs';
+import { submit } from 'redux-form';
 
 interface ClientRequestsPanelProps {
     clientRequests?: EL.Resource<EL.ClientRequests>
@@ -19,7 +20,8 @@ interface ClientRequestsPanelProps {
 interface ClientRequestPanelProps {
     clientRequest?: EL.Resource<EL.ClientRequest>
     deleteRequest: (string) => void;
-    submit: (string) => void;
+    triggerSubmit: () => void;
+    submit: (any) => void;
 }
 
 
@@ -53,9 +55,21 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
 @MapParamsToProps(['clientRequestId'])
 @ClientRequestHOC()
 @PanelHOC<ClientRequestPanelProps>('Review Client Request', props => props.clientRequest)
-@(connect(undefined, {
+@(connect(undefined, (dispatch, ownProps: {clientRequestId: string}) => ({
+    triggerSubmit: () => dispatch(submit(EL.FormNames.CONTACT_US_FORM)),
     submit: (values) => {
+        const createAction = createResource(`client-requests/${ownProps.clientRequestId}/create-entities`, values, {
+            onSuccess: [createNotification('Client request processed.'), (response) => push(`/matters/${response.matter.id}`)],
+            onFailure: [createNotification('Client request processing failed. Please try again.', true)],
+        });
 
+        return dispatch(confirmAction({
+            title: 'Confirm Create',
+            content: 'Selecting \'Create\' will create the contacts and matter above',
+            acceptButtonText: 'Create',
+            declineButtonText: 'Cancel',
+            onAccept: createAction
+        }));
     },
     deleteRequest: (clientRequestId: string) => {
         const deleteAction = deleteResource(`client-requests/${clientRequestId}`, {
@@ -63,15 +77,15 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
             onFailure: [createNotification('Client request failed. Please try again.', true)],
         });
 
-        return confirmAction({
+        return dispatch(confirmAction({
             title: 'Confirm Delete Client Request',
             content: 'Are you sure you want to delete this client request?',
             acceptButtonText: 'Delete',
             declineButtonText: 'Cancel',
             onAccept: deleteAction
-        });
+        }));
     }
-}) as any)
+})) as any)
 export  class ViewClientRequest extends React.PureComponent<ClientRequestPanelProps> {
     deleteRequest = () => this.props.deleteRequest(this.props.clientRequest.data.id);
 
@@ -81,6 +95,7 @@ export  class ViewClientRequest extends React.PureComponent<ClientRequestPanelPr
             <ReviewContactUsForm initialValues={this.props.clientRequest.data.data} onSubmit={this.props.submit} />
            <div className="button-row">
                 <Button bsStyle="danger" onClick={this.deleteRequest}>Delete Client Request</Button>
+                <Button bsStyle="primary" onClick={this.props.triggerSubmit} >Create Contacts and Matter</Button>
             </div>
             </div>
         );

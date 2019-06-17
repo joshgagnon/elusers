@@ -360,7 +360,10 @@ class ReviewContactUs extends React.PureComponent {
         return <React.Fragment>
             { this.pages.map((page, i) => {
                 const Page = page as any;
-                return <Page key={i} />
+                return <React.Fragment key={i}>
+                    <Page  />
+                    <hr/>
+                </React.Fragment>
             })}
         </React.Fragment>
     }
