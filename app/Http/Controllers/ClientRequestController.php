@@ -179,7 +179,9 @@ class ClientRequestController extends Controller
             if($capacity == 'Myself') {
                 $matter->clients()->save($contact);
             }
-
+            else{
+                throw new Exception('lols');
+            }
             $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->first();
             $clientRequest->delete();
 

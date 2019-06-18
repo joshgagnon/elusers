@@ -129,7 +129,8 @@ $img-path: '~react-widgets/lib/img';
 
 
 .public-navbar {
-    background-image: url(/images/cropped-evologo.png);
+    background-image: url(/images/cropped-evologo-large.png);
+    background-size: contain;
     background-color: transparent;
     background-position: center center;
     background-color: #333;
