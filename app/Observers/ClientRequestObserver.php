@@ -5,6 +5,9 @@ namespace App\Observers;
 use App\ClientRequest;
 use App\User;
 use App\Notifications\NewClient;
+use App\Notifications\NewClientThankYou;
+use Illuminate\Notifications\Notification;
+
 
 class ClientRequestObserver
 {
@@ -46,6 +49,9 @@ class ClientRequestObserver
                     $user->notify(new NewClient($clientRequest->id));
                 }
             }
+            Notification::send([[
+                'email' => $clientRequest->data['emailSimple']
+            ]], new NewClientThankYou($invoice));   
         }
     }
 

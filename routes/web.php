@@ -29,6 +29,11 @@ Route::get('contact-us/{token}', 'HomeController@contact')->name('home.contact')
 
 // Catch all and serve the main app
 Route::group(['middleware' => 'auth'], function() {
+    Route::get('render-mail', function() {
+        return  (new \App\Notifications\NewClientThankYou())->toMail(null);
+        $markdown = new \Illuminate\Mail\Markdown(view(), config('mail.markdown'));
+        return $markdown->render('vendor.notifications.email', $message->data());
+    });;
     Route::get('{path?}', 'HomeController@index')->where('path', '.*');
 });
 Auth::routes();
