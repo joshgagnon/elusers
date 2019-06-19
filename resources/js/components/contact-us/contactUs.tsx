@@ -19,50 +19,6 @@ import { AddressFields, validationRules as addressValidationRules } from '../add
 import { MATTER_TYPES } from '../matters';
 import { ContactInformationFields } from '../contact-information/contactInformation';
 
-/*
-What is your full legal name?
-By what name do you prefer to be addressed?
-Are you completing this form for yourself, another individual, or an organisation?
-[If another individual]:
-• What is the other person’s full legal name?
-• In what capacity are you completing this form for the other person? [Authorised Person, Attorney, Other – Please State]
-[if an organisation]
-• What is the organisation’s full legal name?
-• What type of organisation is it? [Company, Partnership, Trust, Other – Please State]
-• In what capacity are you completing this form for the organisation? [Authorised Person, Attorney, Director, Partner, Trustee, Other – Please State]
-[if company]
-• What is the company number?
-[Save Progress][Next]
-
-
-[THIRD SCREEN OF FORM]
-Tell us what you need
-What type of legal services do you need? [Options are ELF Matter types but add “Don’t Know” as first option]
-[If Conveyancing matter types chosen]
-• What is the address of the relevant property?
-Briefly describe what you would like to achieve: [Max word limit 1,000 words]
-[Save Progress][Next]
-
-
-[FOURTH SCREEN OF FORM]
-Let us know how to contact you
-What is your email address?
-What is your mobile phone number?
-[If “Yourself” chosen in screen one]What is your residential address?
-[If “Another Person” chosen in screen one]What is the other person’s residential address?
-[If “Organisation - Company” chosen in screen one]What is the registered office of the company?
-[If any other “Organisation” chosen in screen one]What is the physical address of the organisation?
-[Save Progress][Next]
-
-
-
-[FIFTH SCREEN OF FORM]
-Upload your documents
-Upload any supporting documents that you would like us to review.
-We may require proof of your identity and residential address before being able to act. To avoid unnecessary delay, we recommend uploading a copy of your
-photo identification and a recent utilities bill showing your residential address.
-
-*/
 
 class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
     render() {
@@ -442,7 +398,12 @@ export class ExternalContact extends React.PureComponent<{clientRequest: EL.Reso
 export class ExternalContactComplete extends React.PureComponent {
     render() {
         return <div>
-            <p>Thank you for your submission.  We will be in touch shortly.</p>
+            <p>Thank you for your submission.</p>
+            <p>We will review the information and documents provided and get back to you shortly.  We aim to answer all new client requests within one business day. </p>
+            <p>If you wish to add to or follow up your submission, please contact us by email 
+            at <a href="mailto:mail@evolutionlawyers.nz">mail@evolutionlawyers.nz</a> or call us on <a href="tel:0800352993">0800 352 993.</a></p>
+
+            <p>To return to our website, click <a href="https://evolutionlawyers.nz">here</a></p>
         </div>
     }
 }
