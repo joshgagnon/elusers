@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="icon" type="image/png" sizes="32x32" href="https://evolutionlawyers.nz/icons-6655226e3c0b7ded0eafcdf071a6166e/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="https://evolutionlawyers.nz/icons-6655226e3c0b7ded0eafcdf071a6166e/favicon-32x32.png">
 
         <meta name="apple-mobile-web-app-title" content="Evolution Lawyers">
         <meta name="application-name" content="Evolution Lawyers">
