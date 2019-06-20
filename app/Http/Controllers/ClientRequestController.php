@@ -249,7 +249,7 @@ class ClientRequestController extends Controller
 
 
             $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->first();
-            //$clientRequest->delete();
+            $clientRequest->delete();
 
             #throw new Exception('lols');
             $results['matter'] = $matter;
