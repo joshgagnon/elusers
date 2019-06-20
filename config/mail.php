@@ -60,6 +60,7 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Evolution Lawyers'),
     ],
 
+
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol
