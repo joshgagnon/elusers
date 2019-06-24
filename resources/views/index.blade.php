@@ -35,6 +35,7 @@
 
         <script type="application/json" id="load-data">{!! $loadData !!}</script>
         <script type="application/json" id="version">{ "ASSET_HASH": "{{mix('main.js')}}"}</script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALYyZ308c1u99l4VkNVoeadBWm9HdltSE&libraries=places"></script>
     </head>
     <body>
         <div id="main"></div>
