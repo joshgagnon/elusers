@@ -38,7 +38,7 @@ const resultMap = {
     'sublocality_level_1': 'addressTwo',
     "locality": 'city',
     'administrative_area_level_1': 'state',
-    'postal_code': 'postalCode',
+    'postal_code': 'postCode',
     'country': 'country'
 }
 
