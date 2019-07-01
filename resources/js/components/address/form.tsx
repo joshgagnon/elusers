@@ -111,8 +111,8 @@ export class AddressFields extends React.PureComponent<IAddressFormProps> {
                 /*<InputField key={"county"} name="county" label="County" type="text" />,*/
                 <InputField key={"state"} name="state" label="State" type="text" />,
                 /*<InputField key={"addressType"} name="addressType" label="Address Type" type="text" required />, */
-                <InputField key={"postCode"} name="postCode" label="Post Code" type="text" required />,
-                <InputField key={"country"} name="country" label="Country" type="text" required />
+                <InputField key={"postCode"} name="postCode" label="Post Code" type="text" />,
+                <InputField key={"country"} name="country" label="Country" type="text" />
                 ]
     }
 }
