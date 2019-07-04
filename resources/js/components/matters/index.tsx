@@ -67,7 +67,7 @@ function filterData(search: string, data: EL.Matter[]) {
     if(search){
         search = search.toLocaleLowerCase();
         return data.filter(matter => {
-            return (matter.clients || []).some(contact => fullname(contact).toLocaleLowerCase().includes(search)) ||
+            return (matter.clients || []).some(contact => contact && fullname(contact).toLocaleLowerCase().includes(search)) ||
             //`ELF-${matter.id}`.toLocaleLowerCase().includes(search) ||
             matter.matterNumber.toLocaleLowerCase().includes(search) ||
             matter.matterName.toLocaleLowerCase().includes(search) ||
@@ -261,7 +261,7 @@ class MatterDetails extends React.PureComponent<MatterProps> {
                     <dt>Clients</dt>
                     <dd>
                         { (matter.clients || []).map((client, i) => {
-                            return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
+                            return client && <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
                         }) }
 
                     </dd>
