@@ -175,7 +175,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                             <td><MatterStatus matter={matter}/></td>
                             <td>
                                 { (matter.clients || []).map((client, i) => {
-                                    return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
+                                    return client && <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
                                 }) }
                             </td>
                             <td>
