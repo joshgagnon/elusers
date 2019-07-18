@@ -98,7 +98,7 @@ class MatterController extends Controller
         //
         $matter = Matter::where('id', $id)
             ->where('organisation_id', $request->user()->organisation_id)
-            ->with(['creator', 'referrer', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator', 'files.notes', 'deadlines'])
+            ->with(['creator', 'referrer', 'referrer.contactable', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator', 'files.notes', 'deadlines'])
             ->first();
         if(!$matter) {
             abort(404);

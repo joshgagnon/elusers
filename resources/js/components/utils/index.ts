@@ -5,6 +5,9 @@ export const DATE_TIME_FORMAT = 'D MMM YYYY hh:mmA';
 
 // Infer the users full name
 export function fullname(user: EL.User | EL.Contact) {
+    if(!user) {
+      return '';
+    }
     if(!('contactable' in user)){
          return [user.title, user.firstName, user.middleName, user.surname].filter(x => !!x).join(' ');
     }

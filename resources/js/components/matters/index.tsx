@@ -131,7 +131,7 @@ const MatterStatus = ({matter} : {matter: EL.Matter}) => {
 class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User}, {searchValue: string, sortColumn: string, sortDown: boolean}> {
     state = {
         searchValue: '',
-        sortColumn: 'matterNumber',
+        sortColumn: 'createdAt',
         sortDown: true
     }
 
@@ -174,7 +174,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                             <td>{matter.matterType}</td>
                             <td><MatterStatus matter={matter}/></td>
                             <td>
-                                { (matter.clients || []).map((client, i) => {
+                                { (matter.clients || []).filter(c => c).map((client, i) => {
                                     return <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
                                 }) }
                             </td>
