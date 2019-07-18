@@ -198,8 +198,6 @@ class ContactController extends Controller
     }
 
 
-
-
     public function delete(Contact $contact)
     {
         $contact->delete();
@@ -261,38 +259,6 @@ class ContactController extends Controller
         $document->delete();
         return response()->json(['message' => 'Contact Document deleted', 'id' => $contact->id], 200);
     }
-
-    private function saveUploadedFile($file, $user, $parentId)
-    {
-        // Get the uploaded file contents
-        $uploadedFilePath = $file->getRealPath();
-        $contents = file_get_contents($uploadedFilePath);
-
-        // Get the user's organisation's encryption key
-        $encryptionKey = $user->organisation()->first()->encryption_key;
-
-        // Encrypt the file contents
-        $encryption = new Encryption($encryptionKey);
-        $encryptedContents = $encryption->encrypt($contents);
-
-        // Create a unique path for the file
-        do {
-            $storageName = time() . uniqid();
-            $storagePath = 'contact-files/' . $storageName;
-        } while (Storage::exists($storagePath));
-
-        // Store the file
-        Storage::put($storagePath, $encryptedContents);
-        $file = File::create([
-            'path'      => $storagePath,
-            'filename'  => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
-            'encrypted' => true,
-            'parent_id' => $parentId
-        ]);
-        $file->update(['metadata' => $file->parseMetadata($user)]);
-        return $file;
-      }
 
 
     public function createAccessToken(Contact $contact)

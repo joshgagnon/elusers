@@ -19,10 +19,12 @@ class NewClient extends Notification
      * @return void
      */
     public $newClientId;
+    public $name;
 
-    public function __construct($newClientId)
+    public function __construct($newClientId, $name)
     {
         $this->newClientId = $newClientId;
+        $this->name = $name;
     }
 
     /**
@@ -45,7 +47,7 @@ class NewClient extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(Lang::getFromJson('New Client Request'))
+            ->subject(Lang::getFromJson('New Client Request - '.$this->name))
             ->line(Lang::getFromJson('Evolution Lawyers has recieved a new client request.'))
             ->action(Lang::getFromJson('View'), config('app.url').'/client-requests/'.$this->newClientId);
     }

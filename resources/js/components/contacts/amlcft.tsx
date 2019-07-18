@@ -318,7 +318,7 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
         submit: (contactId: number, token: string, originalContact: EL.Contact, data: any) => {
             const url = `contacts/${contactId}`;
             const merged = {...originalContact, ...data, filesToCopy: data.files, files: originalContact.files};
-            debugger
+
             const addressIndex = (merged.contactInformations || []).findIndex(info => data.address && data.address.id && data.address.id === info.id);
             if(addressIndex >= 0) {
                 merged.contactInformations[addressIndex] = data.address;

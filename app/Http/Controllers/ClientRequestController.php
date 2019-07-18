@@ -113,8 +113,8 @@ class ClientRequestController extends Controller
         $clientRequestFile->client_request_id  = $clientRequest->id;
         $clientRequestFile->save();
         return $clientRequestFile;
-
     }
+
 
     public function createEntities(Request $request, $clientRequestId)
     {
@@ -132,7 +132,7 @@ class ClientRequestController extends Controller
             $contactData = $data['contact'] ?? [];
             $contact = Contact::create(array_merge([
                 'organisation_id' => $orgId
-            ], $data));
+            ], []));
 
             $this->saveSubType($contact, $contactData);
             $this->saveContactInformations($contact, ['contact_informations' => [[
@@ -176,12 +176,78 @@ class ClientRequestController extends Controller
                 ]);
             }
 
+            $otherIndividuals = [];
+
+            foreach(($data['other_individuals'] ?? []) as $other) {
+                $otherContact = Contact::create(array_merge([
+                    'organisation_id' => $orgId
+                ], []));
+                $this->saveSubType($otherContact, [
+                    'contactable_type' => "Individual",
+                    'contactable' => $other
+                ]);
+                $otherIndividuals[] = $otherContact;
+            }
+
+            $otherOrg = null;
+
+            if($data['other_organisation'] ?? false) {
+                $otherOrg = Contact::create(array_merge([
+                    'organisation_id' => $orgId
+                ], $data['other_organisation']));
+                $this->saveSubType($otherOrg, [
+                    'contactable_type' => $data['organisation_type'],
+                    'contactable' => $data['other_organisation']
+                ]);
+            }
+
+
             if($capacity == 'Myself') {
                 $matter->clients()->save($contact);
             }
-            else{
-                throw new Exception('lols');
+            else if($capacity == 'Myself and Others') {
+                $matter->clients()->saveMany(array_merge([$contact],  $otherIndividuals));
             }
+            else if($capacity == 'Other Individuals') {
+                if($data['capacity_type'] ?? false) {
+                    $relationMap = [];
+                    foreach ($otherIndividuals as $other) {
+                         $relationMap[$other->id] = ['relationship_type' => $data['capacity_type'], 'second_contact_id' => $other->id];
+                    }
+                    $contact->relationshipsSyncable()->sync($relationMap);
+                    $this->inverseRelationships($contact->id, $relationMap);
+                }
+                $matter->clients()->saveMany($otherIndividuals);
+            }
+            else{
+                if($data['capacity_type'] ?? false) {
+
+                    $relationMap = [$otherOrg->id => ['relationship_type' => $data['capacity_type'], 'second_contact_id' => $otherOrg->id]];
+
+                    $contact->relationshipsSyncable()->sync($relationMap);
+                    $this->inverseRelationships($contact->id, $relationMap);
+                }
+                $matter->clients()->save($otherOrg);
+            }
+
+            $fileIds = array_map(function($file) use ($request) {
+                return $this->saveUploadedFile($file, $request->user())->id;
+            }, $request->file('file', []));
+
+
+            $contact->files()->sync($fileIds);
+
+            if(isset($data['existing_files'])){
+                // can read file
+                foreach ($data['existing_files'] as $fileId) {
+                    if(File::canRead($fileId, $user)){
+
+                        $this->copyFile(File::find($fileId), $request->user(), $contact);
+                    }
+                }
+            }
+
+
             $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->first();
             $clientRequest->delete();
 

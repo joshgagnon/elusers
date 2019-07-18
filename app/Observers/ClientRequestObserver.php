@@ -6,7 +6,7 @@ use App\ClientRequest;
 use App\User;
 use App\Notifications\NewClient;
 use App\Notifications\NewClientThankYou;
-use Illuminate\Notifications\Notification;
+use Notification;
 
 
 class ClientRequestObserver
@@ -42,16 +42,18 @@ class ClientRequestObserver
      */
     public function updated(ClientRequest $clientRequest)
     {
+
+
         if($clientRequest->isDirty('submitted') && $clientRequest->submitted && !$clientRequest->getOriginal('submitted')){
             $users = User::where(['organisation_id' => $clientRequest->organisation_id])->get();
+            $contactable = ($clientRequest->data['contact'] ?? [])['contactable'] ?? [];
             foreach($users as $user) {
                 if($user->hasPermissionTo('view client requests')) {
-                    $user->notify(new NewClient($clientRequest->id));
+
+                    $user->notify(new NewClient($clientRequest->id, $contactable['first_name'].' '.$contactable['surname']));
                 }
             }
-            Notification::send([[
-                'email' => $clientRequest->data['emailSimple']
-            ]], new NewClientThankYou($invoice));   
+            Notification::route('mail', $clientRequest->data['email_simple'])->notify(new NewClientThankYou());
         }
     }
 
