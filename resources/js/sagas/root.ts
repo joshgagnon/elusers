@@ -80,7 +80,10 @@ function *setNotificationTimeout(action: EL.Actions.ICreateNotificationAction) {
 function *fireOnSuccessActions(action: EL.Actions.Action) {
     if (action.meta && action.meta.onSuccess) {
         for (const successAction of action.meta.onSuccess) {
-            yield put(typeof successAction === 'function' ? successAction(action.payload) : successAction);
+            const resultAction = typeof successAction === 'function' ? successAction(action.payload) : successAction;
+            if(resultAction) {
+                yield put(resultAction);
+            }
         }
     }
 }
@@ -88,7 +91,10 @@ function *fireOnSuccessActions(action: EL.Actions.Action) {
 function *fireOnFailureActions(action: EL.Actions.Action) {
     if (action.meta && action.meta.onFailure) {
         for (const failureAction of action.meta.onFailure) {
-            yield put(typeof failureAction === 'function' ? failureAction(action.payload) : failureAction);
+            const resultAction = typeof failureAction === 'function' ? failureAction(action.payload) : failureAction;
+            if(resultAction) {
+                yield put(resultAction);
+            }            
         }
     }
 }

@@ -62,6 +62,11 @@ class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
 }
 
 
+const FIND_OUT_OPTIONS = [
+    'Google Search',
+    'Referral',
+    'Other'
+]
 
 
 interface ContactFormProps {
@@ -77,10 +82,10 @@ interface ContactFormProps {
 //<DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
 
 const ExternalContactFields = [
-    (props: {capacity?: string; capacityType?: string; organisationType?: string;}) => {
+    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string}) => {
 
         return <React.Fragment>
-            <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
+                <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
                 <FormSection name="contact">
                     <p className="form-question">What is your full legal name?</p>
                     <InputField name="contactable.firstName" label="First Name" type="text" required/>
@@ -124,6 +129,12 @@ const ExternalContactFields = [
 
                 </React.Fragment> }
 
+                <p className="form-question">How did you find out about Evolution Lawyers?</p>
+
+                <SelectField name="howDidYouFindUs" label="Method" options={FIND_OUT_OPTIONS} prompt/>
+
+                { props.howDidYouFindUs === 'Referral' &&  <InputField name="referrer" label="Name of Referrer" type="text" /> }
+                { props.howDidYouFindUs === 'Other' &&  <InputField name="findOutOther" label="Description" type="text" /> }
 
         </React.Fragment>
     },
@@ -177,14 +188,14 @@ photo identification and a recent utilities bill showing your residential addres
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
-@(connect((state: EL.State) => formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'capacity', 'capacityType', 'organisationType')) as any)
-class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string; capacityType?: string; organisationType?: string}> {
+@(connect((state: EL.State) => formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'capacity', 'capacityType', 'organisationType', 'howDidYouFindUs')) as any)
+class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string; capacityType?: string; organisationType?: string, howDidYouFindUs?: string;}> {
     fields = ExternalContactFields[0]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields capacity={this.props.capacity} capacityType={this.props.capacityType} organisationType={this.props.organisationType}/>
+            <Fields capacity={this.props.capacity} capacityType={this.props.capacityType} organisationType={this.props.organisationType} howDidYouFindUs={this.props.howDidYouFindUs}/>
             { this.props.children }
         </Form>
     }
@@ -358,13 +369,15 @@ interface ExternalContactProps {
     clientRequest: EL.Resource<EL.ClientRequest>
 }
 
+const CONTACT_COMPLETE_URL = 'https://evolutionlawyers.nz/new-client-complete';
+
 @MapParamsToProps(['token'])
 @(connect(undefined, (dispatch, ownProps: {token: string}) => ({
     submit: bindActionCreators((values) => {
         values['submitted'] = true;
         const url = `client-requests/${ownProps.token}`;
         const meta: EL.Actions.Meta = {
-            onSuccess: [(response) => push('/contact-us/complete'), createNotification('Request submitted.')],
+            onSuccess: [(response) => window.location.href = CONTACT_COMPLETE_URL],
             onFailure: [createNotification('Request submission failed. Please try again.', true)],
         };
 

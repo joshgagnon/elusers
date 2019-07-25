@@ -49,11 +49,18 @@ class ClientRequestObserver
             $contactable = ($clientRequest->data['contact'] ?? [])['contactable'] ?? [];
             foreach($users as $user) {
                 if($user->hasPermissionTo('view client requests')) {
+                    try {
+                        $user->notify(new NewClient($clientRequest->id, $contactable['first_name'].' '.$contactable['surname']));
+                    } catch(\Swift_TransportException $e) {
 
-                    $user->notify(new NewClient($clientRequest->id, $contactable['first_name'].' '.$contactable['surname']));
+                    }
                 }
             }
-            Notification::route('mail', $clientRequest->data['email_simple'])->notify(new NewClientThankYou());
+            try {
+                Notification::route('mail', $clientRequest->data['email_simple'])->notify(new NewClientThankYou());
+            } catch(\Swift_TransportException $e) {
+
+            }                
         }
     }
 
