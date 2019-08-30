@@ -117,7 +117,7 @@ trait ContactTrait {
         return $contactFile;
     }
 
-    private function saveUploadedFile($file, $user, $parentId)
+    private function saveUploadedFile($file, $user, $parentId=null)
     {
         // Get the uploaded file contents
         $uploadedFilePath = $file->getRealPath();

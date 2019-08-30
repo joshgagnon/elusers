@@ -365,7 +365,7 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                      <br/>
                     <dt>Matters</dt>
                     <dd>{ (contact.matters || []).map((matter, i) => {
-                        return <div key={matter.id}><Link to={`/matters/${matter.id}`}>{matter.matterNumber}</Link></div>
+                        return <div key={matter.id}><Link to={`/matters/${matter.id}`}>{matter.matterNumber || matter.matterName}</Link></div>
                     }) }
                        { (contact.matters || []).length === 0 && 'No Matters' }
                     </dd>

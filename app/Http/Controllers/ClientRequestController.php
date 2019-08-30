@@ -143,9 +143,10 @@ class ClientRequestController extends Controller
                 'data'=> ['email' => $data['email_simple'] ?? '', 'subtype' => 'Personal']
             ], [
                 'type' => 'address',
-                'data' => array_merge(['subtype' => "Residential"], $data['address'] ?? [])
+                'data' => array_merge(['subtype' => "Residential"], $data['address']['data'] ?? [])
             ]]]);
-
+            #DB::rollback();
+            #return array_merge(['subtype' => "Residential"], $data['address'] ?? []);
 
             $matterData = $data['matter'] ?? [];
             $matterType = $matterData['matter_type'] ?? 'Other';
@@ -249,7 +250,7 @@ class ClientRequestController extends Controller
 
 
             $clientRequest = ClientRequest::where('id', $clientRequestId)->where('organisation_id', $orgId)->first();
-            $clientRequest->delete();
+            #$clientRequest->delete();
 
             #throw new Exception('lols');
             $results['matter'] = $matter;
