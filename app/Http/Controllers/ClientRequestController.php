@@ -160,6 +160,8 @@ class ClientRequestController extends Controller
                     'matter_name' => 'New Matter for '.$contact->contactable->first_name.' '.$contact->contactable->surname,
                     'matter_type' => $matterType,
                     'created_by_user_id' =>  $user->id,
+                    'referrer_type' => $matterData['referrer_type'] ?? null,
+                    'referrer_id' => $matterData['referrer_id'] ?? null,
                     'organisation_id' => $orgId
                 ]
             );

@@ -18,7 +18,7 @@ import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields, validationRules as addressValidationRules } from '../address/form';
 import { MATTER_TYPES } from '../matters';
 import { ContactInformationFields } from '../contact-information/contactInformation';
-
+import Referrer from '../matters/referrer';
 
 class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
     render() {
@@ -82,7 +82,7 @@ interface ContactFormProps {
 //<DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
 
 const ExternalContactFields = [
-    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string, caseButton?: boolean}) => {
+    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string, caseButton?: boolean, referrerLookUp?: boolean, form?: string }) => {
 
         return <React.Fragment>
                 <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
@@ -135,6 +135,11 @@ const ExternalContactFields = [
 
                 { props.howDidYouFindUs === 'Referral' &&  <InputField name="referrer" label="Name of Referrer" type="text" /> }
                 { props.howDidYouFindUs === 'Other' &&  <InputField name="findOutOther" label="Description" type="text" /> }
+
+                 <FormSection name="matter">
+                { props.howDidYouFindUs === 'Referral' && props.referrerLookUp && <p className="form-question">Please find the referrer mentioned above</p>}
+                { props.howDidYouFindUs === 'Referral' && props.referrerLookUp && <Referrer formSection="matter" selector={formValueSelector(props.form)} required/> }
+                </FormSection>
 
         </React.Fragment>
     },
@@ -190,7 +195,7 @@ photo identification and a recent utilities bill showing your residential addres
 }) as any)
 @(connect((state: EL.State) => formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'capacity', 'capacityType', 'organisationType', 'howDidYouFindUs')) as any)
 class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string;
-    capacityType?: string; organisationType?: string, howDidYouFindUs?: string, caseButton?: boolean}> {
+    capacityType?: string; organisationType?: string, howDidYouFindUs?: string, reviewMode?: boolean}> {
     fields = ExternalContactFields[0]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
@@ -199,7 +204,9 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
             <Fields capacity={this.props.capacity} capacityType={this.props.capacityType}
             organisationType={this.props.organisationType}
             howDidYouFindUs={this.props.howDidYouFindUs}
-            caseButton={this.props.caseButton}
+            caseButton={this.props.reviewMode}
+            referrerLookUp={this.props.reviewMode}
+            form={EL.FormNames.CONTACT_US_FORM}
             />
             { this.props.children }
         </Form>
@@ -217,14 +224,15 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
     requiresAddress: ['Conveyancing – Sale / Purchase', 'Conveyancing – Refinance']
         .includes(formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'matter.matterType'))
 })) as any)
-class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean, caseButton?: boolean}> {
+class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean, reviewMode?: boolean}> {
     fields = ExternalContactFields[1]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields requiresAddress={this.props.requiresAddress}
-            caseButton={this.props.caseButton} />
+            <Fields
+            requiresAddress={this.props.requiresAddress}
+            caseButton={this.props.reviewMode} />
             { this.props.children }
         </Form>
     }
@@ -235,13 +243,13 @@ class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPag
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
-class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, caseButton?: boolean}> {
+class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, reviewMode?: boolean}> {
     fields = ExternalContactFields[2]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields caseButton={this.props.caseButton}/>
+            <Fields caseButton={this.props.reviewMode}/>
             { this.props.children }
         </Form>
     }
@@ -252,13 +260,13 @@ class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPag
      destroyOnUnmount: false,
      forceUnregisterOnUnmount: true,
 }) as any)
-class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, caseButton?: boolean}> {
+class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, reviewMode?: boolean}> {
     fields = ExternalContactFields[3]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields caseButton={this.props.caseButton}/>
+            <Fields caseButton={this.props.reviewMode}/>
             { this.props.children }
         </Form>
     }
@@ -334,7 +342,7 @@ class ReviewContactUs extends React.PureComponent {
             { this.pages.map((page, i) => {
                 const Page = page as any;
                 return <React.Fragment key={i}>
-                    <Page  caseButton={true}/>
+                    <Page reviewMode={true} />
                     <hr/>
                 </React.Fragment>
             })}
