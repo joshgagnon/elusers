@@ -16,7 +16,8 @@ declare global {
             GOVERNMENT_BODY = 'Government Body',
             SIMPLIFIED = 'Simplified',
             STANDARD = 'Standard',
-            ENHANCED = 'Enhanced'
+            ENHANCED = 'Enhanced',
+            OTHER_CDD = 'Other'
         }
 
         const enum DocumentUploadStatus {
@@ -253,6 +254,7 @@ declare global {
             cddRequired?: boolean;
             enhancedCcdRequired?: string;
             enhancedCddReason?: string;
+            otherCddReason?: string;
             sourceOfFunds?: string;
             reasonNoCddRequired?: string;
             cddType?: string;

@@ -11,7 +11,7 @@ class Contact extends Model
     use DefaultDirectoriesTrait;
 
     protected $fillable = ['name',  'organisation_id',  'metadata', 'agent_id', 'cdd_required', 'reason_no_cdd_required', 'cdd_type',
-                            'enhanced_cdd_reason', 'source_of_funds', 'enhanced_ccd_required',
+                            'enhanced_cdd_reason', 'other_cdd_reason', 'source_of_funds', 'enhanced_ccd_required',
                             'cdd_completion_date', 'bank_account_number', 'ird_number'];
 
     public static $validationRules = [

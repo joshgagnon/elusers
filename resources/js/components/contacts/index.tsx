@@ -275,7 +275,9 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
         const trust = contact.contactableType === EL.Constants.TRUST;
         const hasSubmitted = !!contact.accessTokens.length && contact.accessTokens[0].submitted;
         const enhancedCDD = contact.cddRequired && contact.cddType === EL.Constants.ENHANCED;
-        const enhancedCddReason = contact.enhancedCddReason;
+        const otherCDD = contact.cddRequired && contact.cddType === EL.Constants.OTHER_CDD;
+        const enhancedCddReason = enhancedCDD && contact.enhancedCddReason;
+        const otherCddReason = otherCDD && contact.otherCddReason;
         const enhancedTrustShowBeneficiaryClasses = enhancedCDD && (contact.contactable as EL.ContactTrust).trustType === 'Discretionary';
         const enhancedTrustShowObjects = enhancedCDD && (contact.contactable as EL.ContactTrust).trustType === 'Charitable';
         return (
@@ -337,6 +339,11 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { enhancedCddReason && <React.Fragment>
                         <dt>Enhanced CDD reason</dt>
                         <dd>{contact.enhancedCddReason}</dd>
+                        </React.Fragment> }
+
+                    { otherCddReason && <React.Fragment>
+                        <dt>Other CDD reason</dt>
+                        <dd>{contact.otherCddReason }</dd>
                         </React.Fragment> }
 
                     { enhancedTrustShowBeneficiaryClasses && (contact.contactable as EL.ContactTrust).clauseOfTrustDeed &&
@@ -427,12 +434,15 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
         const { cddRequired, contactableType, cddType, contactable} = this.props;
         const trustType = contactable && contactable.trustType;
         const enhancedCDD = cddRequired && cddType === EL.Constants.ENHANCED;
+        const otherCDD = cddRequired && cddType === EL.Constants.OTHER_CDD
         const enhancedCompanyCDD = enhancedCDD && contactableType === EL.Constants.COMPANY;
         const enhancedTrustCDD = enhancedCDD && contactableType === EL.Constants.TRUST;
 
         const cddTypes = [ {value: EL.Constants.SIMPLIFIED, text: EL.Constants.SIMPLIFIED},
                     {value: EL.Constants.STANDARD, text: EL.Constants.STANDARD},
-                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED}];
+                    {value: EL.Constants.ENHANCED, text: EL.Constants.ENHANCED},
+                    {value: EL.Constants.OTHER_CDD, text: EL.Constants.OTHER_CDD},
+                    ];
 
         if(!canCdd(contactableType)){
             return false;
@@ -451,7 +461,8 @@ class CustomerDueDiligence extends React.PureComponent<{'cddRequired': boolean, 
                         'Level of risk warrants enhanced CDD'
                     ]} required prompt />}
 
-                   { enhancedCDD && <TextArea name='sourceOfFunds' label='Source of Funds' required /> }
+                 { enhancedCDD && <TextArea name='sourceOfFunds' label='Source of Funds' required /> }
+                 { otherCDD && <TextArea name='otherCddReason' label='Other CDD Reason' required /> }
 
                  { enhancedTrustCDD && trustType === 'Discretionary' && <TextArea name='contactable.clauseOfTrustDeed' label='Classes of Beneficiaries' /> }
                  { enhancedTrustCDD && trustType === 'Charitable' && <TextArea name='contactable.clauseOfTrustDeed' label='Clause of Trust Deed Describing Objects of Trust' /> }
