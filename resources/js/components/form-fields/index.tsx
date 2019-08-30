@@ -27,6 +27,7 @@ interface ComboboxProps extends FieldProps {
 
 interface InputFieldProps extends FieldProps {
     type: string;
+    caseButton?: boolean;
     readOnly?: boolean;
 }
 

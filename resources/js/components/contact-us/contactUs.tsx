@@ -31,9 +31,9 @@ class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
                          Other Individual #{index+1}
                     </Col>
                     <Col md={8}>
-                        <InputField name={`${person}.firstName`} label="First Name" type="text" required/>
-                        <InputField name={`${person}.middleName`} label="Middle Name" type="text" />
-                        <InputField name={`${person}.surname`} label="Surname" type="text" required />
+                        <InputField name={`${person}.firstName`} label="First Name" type="text" required caseButton />
+                        <InputField name={`${person}.middleName`} label="Middle Name" type="text" caseButton />
+                        <InputField name={`${person}.surname`} label="Surname" type="text" required caseButton />
                     </Col>
 
                     <Col md={1}>
@@ -82,17 +82,17 @@ interface ContactFormProps {
 //<DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
 
 const ExternalContactFields = [
-    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string}) => {
+    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string, caseButton?: boolean}) => {
 
         return <React.Fragment>
                 <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
                 <FormSection name="contact">
                     <p className="form-question">What is your full legal name?</p>
-                    <InputField name="contactable.firstName" label="First Name" type="text" required/>
-                    <InputField name="contactable.middleName" label="Middle Name" type="text" />
-                    <InputField name="contactable.surname" label="Surname" type="text" required />
+                    <InputField name="contactable.firstName" label="First Name" type="text" required caseButton={props.caseButton} />
+                    <InputField name="contactable.middleName" label="Middle Name" type="text" caseButton={props.caseButton} />
+                    <InputField name="contactable.surname" label="Surname" type="text" required caseButton={props.caseButton} />
                     <p className="form-question">By what name do you prefer to be addressed?</p>
-                    <InputField name="contactable.preferredName" label="Preferred Name" type="text" required />
+                    <InputField name="contactable.preferredName" label="Preferred Name" type="text" required caseButton={props.caseButton} />
                 </FormSection>
                 <p className="form-question">Are you completing this form for yourself, yourself and others, another individual, or an organisation?</p>
 
@@ -189,13 +189,18 @@ photo identification and a recent utilities bill showing your residential addres
       forceUnregisterOnUnmount: true,
 }) as any)
 @(connect((state: EL.State) => formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'capacity', 'capacityType', 'organisationType', 'howDidYouFindUs')) as any)
-class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string; capacityType?: string; organisationType?: string, howDidYouFindUs?: string;}> {
+class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string;
+    capacityType?: string; organisationType?: string, howDidYouFindUs?: string, caseButton?: boolean}> {
     fields = ExternalContactFields[0]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields capacity={this.props.capacity} capacityType={this.props.capacityType} organisationType={this.props.organisationType} howDidYouFindUs={this.props.howDidYouFindUs}/>
+            <Fields capacity={this.props.capacity} capacityType={this.props.capacityType}
+            organisationType={this.props.organisationType}
+            howDidYouFindUs={this.props.howDidYouFindUs}
+            caseButton={this.props.caseButton}
+            />
             { this.props.children }
         </Form>
     }
@@ -212,13 +217,14 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
     requiresAddress: ['Conveyancing – Sale / Purchase', 'Conveyancing – Refinance']
         .includes(formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'matter.matterType'))
 })) as any)
-class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean}> {
+class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean, caseButton?: boolean}> {
     fields = ExternalContactFields[1]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields requiresAddress={this.props.requiresAddress}/>
+            <Fields requiresAddress={this.props.requiresAddress}
+            caseButton={this.props.caseButton} />
             { this.props.children }
         </Form>
     }
@@ -229,13 +235,13 @@ class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPag
       destroyOnUnmount: false,
       forceUnregisterOnUnmount: true,
 }) as any)
-class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, caseButton?: boolean}> {
     fields = ExternalContactFields[2]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields/>
+            <Fields caseButton={this.props.caseButton}/>
             { this.props.children }
         </Form>
     }
@@ -246,13 +252,13 @@ class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPag
      destroyOnUnmount: false,
      forceUnregisterOnUnmount: true,
 }) as any)
-class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void}> {
+class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, caseButton?: boolean}> {
     fields = ExternalContactFields[3]
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
         return <Form horizontal onSubmit={handleSubmit}>
-            <Fields/>
+            <Fields caseButton={this.props.caseButton}/>
             { this.props.children }
         </Form>
     }
@@ -328,7 +334,7 @@ class ReviewContactUs extends React.PureComponent {
             { this.pages.map((page, i) => {
                 const Page = page as any;
                 return <React.Fragment key={i}>
-                    <Page  />
+                    <Page  caseButton={true}/>
                     <hr/>
                 </React.Fragment>
             })}
@@ -413,7 +419,7 @@ export class ExternalContactComplete extends React.PureComponent {
         return <div>
             <p>Thank you for your submission.</p>
             <p>We will review the information and documents provided and get back to you shortly.  We aim to answer all new client requests within one business day. </p>
-            <p>If you wish to add to or follow up your submission, please contact us by email 
+            <p>If you wish to add to or follow up your submission, please contact us by email
             at <a href="mailto:mail@evolutionlawyers.nz">mail@evolutionlawyers.nz</a> or call us on <a href="tel:0800352993">0800 352 993.</a></p>
 
             <p>To return to our website, click <a href="https://evolutionlawyers.nz">here</a></p>
