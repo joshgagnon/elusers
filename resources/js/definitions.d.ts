@@ -138,6 +138,13 @@ declare global {
             creator: User;
             createdAt: string;
         }
+        interface MatterClient {
+            contactId:  string | number;
+            authorisedContactId:  string | number;
+            client?: EL.Contact;
+            authorisedContact?: EL.Contact;
+        }
+
 
         interface Matter {
             id?: number;
@@ -151,7 +158,7 @@ declare global {
             referrer: EL.User | EL.Contact;
             files: Document[];
             notes: Note[];
-            clients: Contact[];
+            matterClients: MatterClient[];
             filesCount?: number;
             deadlines?: Deadline[];
 

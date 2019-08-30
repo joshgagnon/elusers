@@ -69,9 +69,15 @@ class Matter extends Model
         return $this->morphTo();
     }
 
-    public function clients()
+    /*public function clients()
     {
         return $this->belongsToMany(Contact::Class, 'matter_clients', 'matter_id', 'contact_id')->using('App\MatterClient');
+    }
+    */
+
+    public function matterClients()
+    {
+        return $this->hasMany(MatterClient::class);
     }
 
     public function notes()

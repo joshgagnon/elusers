@@ -189,7 +189,7 @@ class ClientRequestController extends Controller
                     'contactable_type' => "Individual",
                     'contactable' => $other
                 ]);
-                $otherIndividuals[] = $otherContact;
+                $otherIndividuals[] = ['contact_id' => $otherContact->id];
             }
 
             $otherOrg = null;
@@ -206,10 +206,11 @@ class ClientRequestController extends Controller
 
 
             if($capacity == 'Myself') {
-                $matter->clients()->save($contact);
+                $matter->matterClients()->create(['contact_id' => $contact->id]);
             }
             else if($capacity == 'Myself and Others') {
-                $matter->clients()->saveMany(array_merge([$contact],  $otherIndividuals));
+
+                $matter->matterClients()->createMany(array_merge([['contact_id' => $contact->id]],  $otherIndividuals));
             }
             else if($capacity == 'Other Individuals') {
                 if($data['capacity_type'] ?? false) {
@@ -220,7 +221,7 @@ class ClientRequestController extends Controller
                     $contact->relationshipsSyncable()->sync($relationMap);
                     $this->inverseRelationships($contact->id, $relationMap);
                 }
-                $matter->clients()->saveMany($otherIndividuals);
+                $matter->matterClients()->createMany($otherIndividuals);
             }
             else{
                 if($data['capacity_type'] ?? false) {
@@ -230,7 +231,7 @@ class ClientRequestController extends Controller
                     $contact->relationshipsSyncable()->sync($relationMap);
                     $this->inverseRelationships($contact->id, $relationMap);
                 }
-                $matter->clients()->save($otherOrg);
+                $matter->matterClients()->create(['contact_id' => $otherOrg->id]);
             }
 
             $fileIds = array_map(function($file) use ($request) {

@@ -67,7 +67,7 @@ function filterData(search: string, data: EL.Matter[]) {
     if(search){
         search = search.toLocaleLowerCase();
         return data.filter(matter => {
-            return (matter.clients || []).some(contact => contact && fullname(contact).toLocaleLowerCase().includes(search)) ||
+            return (matter.matterClients  || []).map(matterClient => matterClient.client).some(contact => contact && fullname(contact).toLocaleLowerCase().includes(search)) ||
             //`ELF-${matter.id}`.toLocaleLowerCase().includes(search) ||
             matter.matterNumber.toLocaleLowerCase().includes(search) ||
             matter.matterName.toLocaleLowerCase().includes(search) ||
@@ -174,8 +174,8 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
                             <td>{matter.matterType}</td>
                             <td><MatterStatus matter={matter}/></td>
                             <td>
-                                { (matter.clients || []).map((client, i) => {
-                                    return client && <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
+                                { (matter.matterClients || []).map((matterClient, i) => {
+                                    return matterClient.client && <div key={i}><Link to={`/contacts/${matterClient.client.id}`}>{ fullname(matterClient.client) } </Link></div>
                                 }) }
                             </td>
                             <td>
@@ -260,10 +260,13 @@ class MatterDetails extends React.PureComponent<MatterProps> {
                 <dl>
                     <dt>Clients</dt>
                     <dd>
-                        { (matter.clients || []).map((client, i) => {
-                            return client && <div key={i}><Link to={`/contacts/${client.id}`}>{ fullname(client) } </Link></div>
-                        }) }
+                        { (matter.matterClients || []).map((matterClient, i) => {
+                            return <React.Fragment>
 
+                           { matterClient.client && <div key={i}><Link to={`/contacts/${matterClient.client.id}`}>{ fullname(matterClient.client) } </Link></div> }
+                            { matterClient.authorisedContact && <div key={i}>Authorised Contact: <Link to={`/contacts/${matterClient.authorisedContact.id}`}>{ fullname(matterClient.authorisedContact) } </Link></div> }
+                                 </React.Fragment>
+                        }) }
                     </dd>
 
                     <dt>Created At</dt>
@@ -366,7 +369,7 @@ interface EditMatterProps {
 }
 
 
-const Clients = ({ fields, meta: { error, submitFailed } }) => (
+const MatterClients = ({ fields, meta: { error, submitFailed } }) => (
   <div>
     { fields.map((contact, index) => (
       <div key={index}>
@@ -377,7 +380,9 @@ const Clients = ({ fields, meta: { error, submitFailed } }) => (
             </Button>
             </h4>
         </div>
-        <ContactSelector name={`${contact}.id`}  label="Client" required/>
+
+        <ContactSelector name={`${contact}.contactId`}  label="Client" required/>
+        <ContactSelector name={`${contact}.authorisedContactId`}  label="Authorised Person" />
       </div>
     )) }
 
@@ -444,7 +449,8 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
 
 
 
-                <FieldArray name="clients" component={Clients as any} />
+                <FieldArray name="matterClients" component={MatterClients as any} />
+
                 <hr />
                 {/* <DocumentList name="files" label="Documents" /> */ }
 
@@ -468,7 +474,7 @@ const matterValidationRules: EL.IValidationFields = {
     matterName: { name: 'Name', required: true },
     matterType: { name: 'Matter Type', required: true },
     status: { name: 'Status', required: true },
-    clients: { name: 'Client', minItems: 1, map: {id: { name: 'Client', required: true}}},
+    matterClients: { name: 'Client', minItems: 1, map: {id: { name: 'Client', required: true}}},
     notes: { name: 'Notes',  map: {note: { name: 'Note', required: true}}}
 }
 

@@ -70,12 +70,11 @@ class MatterController extends Controller
 
         $matter->files()->attach($fileIds);
 
-        $clients =  array_map(function ($i) {
-            return $i['id'];
-        }, $data['clients'] ?? []);
+        $clients = $data['matter_clients'] ?? [];
 
+        $matter->matterClients()->createMany($clients);
 
-        $matter->clients()->sync($clients);
+        $matter->matterClients-> clients()->sync($clients);
 
         $newNotes = array_map(function ($i) use ($user)  {
             return array_merge($i, ['created_by_user_id' => $user->id]);
@@ -98,7 +97,7 @@ class MatterController extends Controller
         //
         $matter = Matter::where('id', $id)
             ->where('organisation_id', $request->user()->organisation_id)
-            ->with(['creator', 'referrer', 'referrer.contactable', 'files', 'clients', 'clients.contactable',  'notes', 'notes.creator', 'files.notes', 'deadlines'])
+            ->with(['creator', 'referrer', 'referrer.contactable', 'files', 'matterClients', 'matterClients.client', 'matterClients.client.contactable', 'matterClients.authorisedContact', 'matterClients.authorisedContact.contactable', 'notes', 'notes.creator', 'files.notes', 'deadlines'])
             ->first();
         if(!$matter) {
             abort(404);
@@ -130,12 +129,18 @@ class MatterController extends Controller
 
         $matter->files()->sync(array_merge($fileIds, $existingFileIds));
 
-        $clients =  array_map(function ($i) {
+        /*$matterClients =  array_map(function ($i) {
             return $i['id'];
-        }, $data['clients'] ?? []);
+        }, $data['matterClients'] ?? []);
 
+        $matter->clients()->sync($clients);*/
 
-        $matter->clients()->sync($clients);
+        $clients = $data['matter_clients'] ?? [];
+
+        $matter->matterClients()->delete();
+
+        return $matter->matterClients()->createMany($clients);
+
 
         $notes = array_filter($data['notes'] ?? [], function($note){
             return isset($note['id']);
@@ -337,8 +342,9 @@ class MatterController extends Controller
                 $matter->save(['timestamps' => false]);
                 Matter::where('matter_number', $actionstepId)->update(['created_at' => $created_at]);
                 $clients  = Contact::whereIn("metadata->Name", explode("\n", $row['Primary Participant']))->get();
+                $matter->matterClients()->delete();
                 if(count($clients)) {
-                    $matter->clients()->sync($clients);
+                    $matter->matterClients()->createMany($clients->map(function ($i) { return ['contact_id' => $i->id]; })->toArray());
                 }
                 $count++;
 
