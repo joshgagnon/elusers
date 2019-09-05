@@ -26,10 +26,7 @@ import { DocumentsTree } from 'components/documents/documentsTree';
 import { ClientRequestsPanel } from 'components/client-requests';
 
 
-
 const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
-
-
 
 
 const  requestAMLCFT = (contactId: string) => {
