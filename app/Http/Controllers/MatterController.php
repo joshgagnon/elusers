@@ -74,7 +74,7 @@ class MatterController extends Controller
 
         $matter->matterClients()->createMany($clients);
 
-        $matter->matterClients-> clients()->sync($clients);
+        //$matter->matterClients->clients()->sync($clients);
 
         $newNotes = array_map(function ($i) use ($user)  {
             return array_merge($i, ['created_by_user_id' => $user->id]);
@@ -139,7 +139,7 @@ class MatterController extends Controller
 
         $matter->matterClients()->delete();
 
-        return $matter->matterClients()->createMany($clients);
+        $matter->matterClients()->createMany($clients);
 
 
         $notes = array_filter($data['notes'] ?? [], function($note){

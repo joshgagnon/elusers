@@ -264,7 +264,7 @@ class MatterDetails extends React.PureComponent<MatterProps> {
                             return <React.Fragment>
 
                            { matterClient.client && <div key={i}><Link to={`/contacts/${matterClient.client.id}`}>{ fullname(matterClient.client) } </Link></div> }
-                            { matterClient.authorisedContact && <div key={i}>Authorised Contact: <Link to={`/contacts/${matterClient.authorisedContact.id}`}>{ fullname(matterClient.authorisedContact) } </Link></div> }
+                            { matterClient.authorisedContact && <div key={i}>&nbsp;- Authorised Contact: <Link to={`/contacts/${matterClient.authorisedContact.id}`}>{ fullname(matterClient.authorisedContact) } </Link></div> }
                                  </React.Fragment>
                         }) }
                     </dd>
