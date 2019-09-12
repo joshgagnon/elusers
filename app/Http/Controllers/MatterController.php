@@ -129,11 +129,6 @@ class MatterController extends Controller
 
         $matter->files()->sync(array_merge($fileIds, $existingFileIds));
 
-        /*$matterClients =  array_map(function ($i) {
-            return $i['id'];
-        }, $data['matterClients'] ?? []);
-
-        $matter->clients()->sync($clients);*/
 
         $clients = $data['matter_clients'] ?? [];
 
@@ -145,6 +140,8 @@ class MatterController extends Controller
         $notes = array_filter($data['notes'] ?? [], function($note){
             return isset($note['id']);
         });
+
+        $matter->notes()->delete();
 
         $notes = array_reduce($notes,  function ($acc, $i) use ($id) {
             $acc[$i['id']] = MatterNote::where(['id' => $i['id'], 'matter_id' => $id])->first();
