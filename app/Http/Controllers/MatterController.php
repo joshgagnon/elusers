@@ -16,6 +16,10 @@ use DB;
 use Exception;
 use Carbon\Carbon;
 
+use Illuminate\Support\Collection;
+
+
+
 function findClosestMatterType($input) {
     $best = -1;
     $match = null;
@@ -97,8 +101,14 @@ class MatterController extends Controller
         //
         $matter = Matter::where('id', $id)
             ->where('organisation_id', $request->user()->organisation_id)
-            ->with(['creator', 'referrer', 'referrer.contactable', 'files', 'matterClients', 'matterClients.client', 'matterClients.client.contactable', 'matterClients.authorisedContact', 'matterClients.authorisedContact.contactable', 'notes', 'notes.creator', 'files.notes', 'deadlines'])
+            ->with(['creator', 'referrer',
+                   'files', 'matterClients', 'matterClients.client', 'matterClients.client.contactable', 'matterClients.authorisedContact', 'matterClients.authorisedContact.contactable', 'notes', 'notes.creator', 'files.notes', 'deadlines'])
+            ->get()
+            ->loadMorph('referrer', [
+                Contact::class => 'contactable',
+            ])
             ->first();
+
         if(!$matter) {
             abort(404);
         }
