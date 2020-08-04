@@ -25,15 +25,6 @@ interface ListDeedPacketsState {
 
 const HEADINGS = ['ID', 'Document Name', 'Document Date', 'Matter ID', 'Created By', 'Actions'];
 
-const data = [{
-    id: 1,
-    clientName: 'Jeff',
-    documentDate: '2017-11-16',
-    parties: 'parties',
-    matter: 'matter',
-    createdBy: 'testing',
-}];
-
 @UsersHOC()
 @DeedPacketsHOC()
 @PanelHOC<DeedPacketsProps, ListDeedPacketsState>('Deed Packets', props => [props.deedPackets, props.users])
@@ -59,10 +50,18 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
                 return true;
             }
 
+            if (isSearchMatch(packet.id + '')) {
+                return true;
+            }
+
             const records = packet.records;
 
             for (let index = 0; index < records.length; index++) {
                 const record = records[index];
+
+                if (isSearchMatch(record.id + '')) {
+                    return true;
+                }
 
                 if (isSearchMatch(record.documentName)) {
                     return true;
