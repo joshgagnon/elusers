@@ -78,13 +78,14 @@ class MatterController extends Controller
 
         $matter->matterClients()->createMany($clients);
 
-        //$matter->matterClients->clients()->sync($clients);
 
         $newNotes = array_map(function ($i) use ($user)  {
             return array_merge($i, ['created_by_user_id' => $user->id]);
         }, $data['notes'] ?? []);
 
         $matter->notes()->createMany($newNotes);
+
+        $matter->setDeadlines($user);
 
         return response()->json(['message' => 'Matter created', 'id' => $matter->id], 201);
     }
@@ -127,6 +128,7 @@ class MatterController extends Controller
         $user = $request->user();
         $data = $request->allJson();
         $matter = Matter::where('id', $id)->where('organisation_id', $request->user()->organisation_id)->first();
+
         $matter->update($data);
 
         $fileIds = array_map(function($file) use ($user) {
@@ -138,7 +140,6 @@ class MatterController extends Controller
         }, $data['existing_files'] ?? []);
 
         $matter->files()->sync(array_merge($fileIds, $existingFileIds));
-
 
         $clients = $data['matter_clients'] ?? [];
 
@@ -162,8 +163,6 @@ class MatterController extends Controller
             return $acc;
         }, []);
 
-
-
         $matter->notes()->saveMany($notes);
 
         $newNotes = array_filter($data['notes'] ?? [], function($note){
@@ -176,6 +175,8 @@ class MatterController extends Controller
 
 
         $matter->notes()->createMany($newNotes);
+
+        $matter->setDeadlines($user);
 
         return response()->json(['message' => 'Matter updated', 'id' => $matter->id], 200);
     }

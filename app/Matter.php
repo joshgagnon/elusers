@@ -105,4 +105,31 @@ class Matter extends Model
         return $result[0]->matters;
     }
 
+    public function setDeadlines($user)
+    {
+
+        $this->deadlines()->where('type', 'settlement_date')->delete();
+        if($this->matter_fields && !empty($this->matter_fields['settlement_date'])) {
+            $this->deadlines()->create([
+                'title' => 'Settlement Date: '.$this->matter_name,
+                'due_at' => $this->matter_fields['settlement_date'],
+                'type' => 'settlement_date',
+                'created_by_user_id' =>  $user->id,
+                'organisation_id' => $user->organisation_id
+            ]);
+        }
+
+        $this->deadlines()->where('type', 'condition_date')->delete();
+        if($this->matter_fields && !empty($this->matter_fields['condition_date'])) {
+            $this->deadlines()->create([
+                'title' => 'Condition Date: '.$this->matter_name,
+                'due_at' => $this->matter_fields['condition_date'],
+                'type' => 'condition_date',
+                'created_by_user_id' =>  $user->id,
+                'organisation_id' => $user->organisation_id
+            ]);
+        }
+    }
+
+
 }
