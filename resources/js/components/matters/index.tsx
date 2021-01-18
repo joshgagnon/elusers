@@ -11,7 +11,7 @@ import { Form, ButtonToolbar, Button, Col, Row, FormGroup, ControlLabel, Alert, 
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
-import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
+import { reduxForm, formValueSelector, formValues, FieldArray, FormSection } from 'redux-form';
 import { validate } from '../utils/validation';
 import { push } from 'react-router-redux';
 import { fullname, name, guessName, formatDate, formatDateTime } from '../utils';
@@ -35,6 +35,8 @@ interface  MattersViewProps {
       showUploadModal: () => void;
 }
 
+export const CONVEYANCING_SALE_PURCHASER = "Conveyancing – Sale / Purchase";
+
 export const MATTER_TYPES = [
     "Bankruptcy and Liquidation",
     "Business Acquisitions and Investment",
@@ -42,7 +44,7 @@ export const MATTER_TYPES = [
     "Commercial Documentation",
     "Company Governance and Shareholding",
     "Company Incorporation and Administration",
-    "Conveyancing – Sale / Purchase",
+    CONVEYANCING_SALE_PURCHASER,
     "Conveyancing – Refinance",
     "Criminal Process",
     "Debt Recovery",
@@ -281,6 +283,16 @@ class MatterDetails extends React.PureComponent<MatterProps> {
                     <dt>Referrer</dt>
                     <dd>{ matter.referrer ? guessName(matter.referrer) : 'None'}</dd>
 
+                    { matter.matterType === CONVEYANCING_SALE_PURCHASER  && <React.Fragment>
+
+                    <dt>Settlement Date</dt>
+                    <dd>{ matter.matterFields && matter.matterFields.settlementDate ? formatDate(matter.matterFields.settlementDate) : 'Unknown'}</dd>
+
+                    <dt>Condition Date</dt>
+                    <dd>{ matter.matterFields && matter.matterFields.conditionDate? formatDate(matter.matterFields.conditionDate) : 'Unknown'}</dd>
+
+                    </React.Fragment> }
+
 
 
                     <dt>Notes</dt>
@@ -427,6 +439,26 @@ const Notes = ({ fields, meta: { error, submitFailed } }) => (
   </div>
 )
 
+interface MatterFieldsProps {
+    matterType?: string;
+}
+
+
+@(formValues('matterType') as any)
+class MatterFields extends React.PureComponent<MatterFieldsProps> {
+    render() {
+
+        if(this.props.matterType === CONVEYANCING_SALE_PURCHASER ) {
+            return <FormSection name="matterFields">
+                <DatePicker name="settlementDate" label="Settlement Date" />
+                <DatePicker name="conditionDate" label="Condition Date" />
+            </FormSection>
+        }
+        return false;
+    }
+}
+
+
 class MatterForm extends React.PureComponent<MatterFormProps> {
 
     matterOptions = MATTER_TYPES.map(matter => {
@@ -442,6 +474,9 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
                 <SelectField name="status" label="Status" options={['Unapproved', 'Active', 'Closed', 'Inactive']} required prompt/>
 
                 <SelectField name="matterType" label="Matter Type" options={this.matterOptions} required prompt/>
+
+                <MatterFields />
+
                 <hr />
                 <Referrer selector={formValueSelector(this.props.form)}/>
 

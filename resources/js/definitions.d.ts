@@ -145,6 +145,10 @@ declare global {
             authorisedContact?: EL.Contact;
         }
 
+        interface MatterFields {
+            conditionDate?: string;
+            settlementDate?: string;
+        }
 
         interface Matter {
             id?: number;
@@ -154,6 +158,7 @@ declare global {
             status: string;
             createdAt: string;
             updatedAt?: string;
+            matterFields?: MatterFields;
             creator: EL.User;
             referrer: EL.User | EL.Contact;
             files: Document[];

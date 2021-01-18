@@ -38,6 +38,11 @@ class Matter extends Model
     ];
 
 
+    protected $casts = [
+        'metadata' => 'json',
+        'matter_fields' => 'json'
+    ];
+
     const DEFAULT_DIRECTORIES = [
         'Accounts',
         'Documents',
@@ -45,7 +50,8 @@ class Matter extends Model
         'Letters and Faxes'
     ];
 
-    protected $fillable = ['matter_number', 'matter_name', 'matter_type', 'status', 'approved_by_user_id', 'metadata', 'created_by_user_id',  'organisation_id', 'referrer_id', 'referrer_type'];
+    protected $fillable = ['matter_number', 'matter_name', 'matter_type', 'status', 'approved_by_user_id', 'metadata', 'matter_fields', 'created_by_user_id',  'organisation_id', 'referrer_id', 'referrer_type'];
+
    # protected $visible = ['id', 'matter_number', 'matter_name', 'matter_type', 'created_by_user_id', 'referrer_id', 'organisation_id', 'created_at', 'updated_at'];
 
     public static $validationRules = [
