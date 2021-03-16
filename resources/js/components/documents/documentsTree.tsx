@@ -688,10 +688,10 @@ class FileTree extends React.PureComponent<any> {
                     const newPath = [...path, item.id];
 
                     item.children
-                        .sort(firstBy(doc => {
+                        .sort(firstBy((doc: EL.Document) => {
                             return doc.directory ? -1 : 1
                         })
-                        .thenBy(v => v.metadata && v.metadata.date && new Date(v.metadata.date))
+                        .thenBy((v: EL.Document) => v.metadata && v.metadata.date && new Date(v.metadata.date))
                         .thenBy('filename', {ignoreCase:true})
                         .thenBy('id'));
 

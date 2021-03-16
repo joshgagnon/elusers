@@ -5,7 +5,8 @@ import { closeModal } from 'actions';
 import PDF from 'react-pdf-component';
 import EmailViewer from 'components/email-viewer';
 import Loading from 'components/loading';
-import PDFJS from 'pdfjs-dist'
+// might have to fix
+import * as PDFJS from 'pdfjs-dist'
 
 PDF.PDFJS.GlobalWorkerOptions.workerSrc = '/js/app.worker.js';
 

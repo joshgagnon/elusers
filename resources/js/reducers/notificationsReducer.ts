@@ -1,6 +1,6 @@
 const DEFAULT_STATE = {};
 
-export default function notificationsReducer(state=DEFAULT_STATE, action: EL.Actions.ICreateNotificationAction) {
+export default function notificationsReducer(state=DEFAULT_STATE, action: EL.Actions.ICreateNotificationAction & EL.Actions.IRemoveNotificationAction) {
     switch (action.type) {
         case EL.ActionTypes.CREATE_NOTIFICATION:
             return {
@@ -11,8 +11,7 @@ export default function notificationsReducer(state=DEFAULT_STATE, action: EL.Act
                 }
             };
         case EL.ActionTypes.REMOVE_NOTIFICATION:
-            const { [action.payload.id]: any, ...rest } = state;
-            return rest;
+            return {...state, [action.payload.id]: null};
         default:
             return state;
     }

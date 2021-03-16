@@ -8,7 +8,8 @@ export default function mapParamsToProps(paramNames: string[]) {
 
                 paramNames.map(paramName => paramProps[paramName] = this.props.params[paramName]);
 
-                return <ComposedComponent {...this.props} {...paramProps} />; //React.cloneElement(ComposedComponent, props);
+                // @ts-ignore
+                return <ComposedComponent {...this.props} {...paramProps} /> ; //React.cloneElement(ComposedComponent, props);
             }
         }
 

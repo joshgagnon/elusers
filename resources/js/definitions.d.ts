@@ -606,7 +606,7 @@ declare global {
             payload: UploadCompletePayload
         }
 
-        interface ICreateNotificationAction extends Action {
+        export interface ICreateNotificationAction extends Action {
             payload: EL.INotification;
         }
 

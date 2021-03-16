@@ -82,7 +82,7 @@ interface ContactFormProps {
 //<DatePicker name="contactable.dateOfBirth" label="Date of Birth" defaultView="decade" />
 
 const ExternalContactFields = [
-    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string, caseButton?: boolean, referrerLookUp?: boolean, form?: string }) => {
+    (props: {capacity?: string; capacityType?: string; organisationType?: string; howDidYouFindUs?: string, caseButton?: boolean, referrerLookUp?: boolean, form?: string, requiresAddress?: boolean }) => {
 
         return <React.Fragment>
                 <h4 className={"text-center"}>Tell us a little bit about yourself</h4>
@@ -100,12 +100,12 @@ const ExternalContactFields = [
 
                 { props.capacity === 'Myself and Others' && <React.Fragment>
                     <p className="form-question">What are the other person’s full legal names?</p>
-                    <FieldArray name="otherIndividuals" component={OtherIndividuals} />
+                    <FieldArray name="otherIndividuals" component={OtherIndividuals as any} />
                     </React.Fragment> }
 
                 { props.capacity === 'Other Individuals' && <React.Fragment>
                     <p className="form-question">What are the other person’s full legal names?</p>
-                    <FieldArray name="otherIndividuals" component={OtherIndividuals} />
+                    <FieldArray name="otherIndividuals" component={OtherIndividuals as any} />
 
                     <p className="form-question">In what capacity are you completing this form for the other person(s)?</p>
                     <SelectField name="capacityType" label="Capacity Type" options={['Authorised Person', 'Attorney', 'Other']} required prompt/>
@@ -196,7 +196,7 @@ photo identification and a recent utilities bill showing your residential addres
 @(connect((state: EL.State) => formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'capacity', 'capacityType', 'organisationType', 'howDidYouFindUs')) as any)
 class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, capacity?: string;
     capacityType?: string; organisationType?: string, howDidYouFindUs?: string, reviewMode?: boolean}> {
-    fields = ExternalContactFields[0]
+    fields = ExternalContactFields[0] as any;
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
@@ -225,7 +225,7 @@ class ContactPage1 extends React.PureComponent<InjectedFormProps & { previousPag
         .includes(formValueSelector(EL.FormNames.CONTACT_US_FORM)(state, 'matter.matterType'))
 })) as any)
 class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, requiresAddress?: boolean, reviewMode?: boolean}> {
-    fields = ExternalContactFields[1]
+    fields = ExternalContactFields[1] as any;
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
@@ -244,7 +244,7 @@ class ContactPage2 extends React.PureComponent<InjectedFormProps & { previousPag
       forceUnregisterOnUnmount: true,
 }) as any)
 class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, reviewMode?: boolean}> {
-    fields = ExternalContactFields[2]
+    fields = ExternalContactFields[2] as any;
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
@@ -261,7 +261,7 @@ class ContactPage3 extends React.PureComponent<InjectedFormProps & { previousPag
      forceUnregisterOnUnmount: true,
 }) as any)
 class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPage?: () => void, reviewMode?: boolean}> {
-    fields = ExternalContactFields[3]
+    fields = ExternalContactFields[3] as any;
     render(){
         const { handleSubmit, pristine, previousPage, submitting } = this.props;
         const Fields = this.fields;
