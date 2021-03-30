@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\ContactFile;
 use App\File;
 use App\Contact;
+use App\ContactNote;
 use App\ContactIndividual;
 use App\ContactCompany;
 use App\ContactTrust;
@@ -63,7 +64,7 @@ class ContactController extends Controller
             ->with('contactable', 'files', 'accessTokens',
                    'relationships', 'relationships.contact', 'relationships.contact.contactable',
                    'agents', 'agents.contact', 'agents.contact.contactable', 'contactInformations',
-                   'matters', 'files.notes'
+                   'matters', 'files.notes', 'notes'
                )->first();
 
         if (!$contact) {
@@ -123,6 +124,12 @@ class ContactController extends Controller
         }, $request->file('file', []));
         $contact->files()->sync($fileIds);
 
+        $newNotes = array_map(function ($i) use ($user)  {
+            return array_merge($i, ['created_by_user_id' => $user->id]);
+        }, $data['notes'] ?? []);
+
+        $contact->notes()->createMany($newNotes);
+
         //agent_id, must be owned by org, can't be self
         return response()->json(['message' => 'Contact created.', 'contact_id' => $contact->id], 201);
     }
@@ -140,7 +147,7 @@ class ContactController extends Controller
 
         $user = $request->user();
         $data = $request->allJson();
-
+        $id = $data['id'];
         $orgId = $user->organisation_id;
 
         if(isset($data['agent_id'])){
@@ -193,6 +200,35 @@ class ContactController extends Controller
                 }
             }
         }
+
+        $notes = array_filter($data['notes'] ?? [], function($note){
+            return isset($note['id']);
+        });
+
+        $contact->notes()->delete();
+
+        $notes = array_reduce($notes,  function ($acc, $i) use ($id) {
+            $acc[$i['id']] = ContactNote::where(['id' => $i['id'], 'contact_id' => $id])->first();
+            if(!$acc[$i['id']]) {
+                $acc[$i['id']] = new ContactNote($i);
+            }
+            $acc[$i['id']]->update($i);
+            return $acc;
+        }, []);
+
+        $contact->notes()->saveMany($notes);
+
+        $newNotes = array_filter($data['notes'] ?? [], function($note){
+            return !isset($note['id']);
+        });
+
+        $newNotes = array_map(function ($i) use ($user) {
+            return array_merge($i, ['created_by_user_id' => $user->id]);
+        }, $newNotes);
+
+
+        $contact->notes()->createMany($newNotes);
+
 
         return response()->json(['message' => 'Contact updated.', 'contact_id' => $contact->id]);
     }

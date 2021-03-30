@@ -80,6 +80,10 @@ class Contact extends Model
         return $this->morphMany(AccessToken::class, 'model');
     }
 
+    public function notes()
+    {
+        return $this->hasMany(ContactNote::Class);
+    }
 
     public function tokenExtras() {
         $this->load('contactInformations');
