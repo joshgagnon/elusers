@@ -23,7 +23,6 @@ class FileNotes extends Migration
             $table->foreign('created_by_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->text('note');
             $table->softDeletes();
-
         });
     }
 

@@ -409,7 +409,7 @@ const MatterClients = ({ fields, meta: { error, submitFailed } }) => (
   </div>
 )
 
-const Notes = ({ fields, meta: { error, submitFailed } }) => (
+export const Notes = ({ fields, meta: { error, submitFailed } }) => (
   <div>
     { fields.map((note, index) => (
         <FormGroup key={index}>

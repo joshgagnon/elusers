@@ -2502,6 +2502,10 @@ ee-first@1.1.1:
   version "1.0.0"
   resolved "https://codeload.github.com/joshgagnon/el-templates/tar.gz/0dc7e720b4d8bd5a2c34984948bf5267352e243d"
 
+"el-templates@github:joshgagnon/el-templates#c5976be":
+  version "1.0.0"
+  resolved "https://codeload.github.com/joshgagnon/el-templates/tar.gz/c5976be3cf320d4663a7c20fa6da59683299f58e"
+
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30:
   version "1.3.79"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.79.tgz#774718f06284a4bf8f578ac67e74508fe659f13a"

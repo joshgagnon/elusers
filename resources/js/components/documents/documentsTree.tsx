@@ -204,7 +204,6 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                 { !file.directory && <Button  bsStyle="success" onClick={this.copyLink}>Copy Link</Button> }
                 { canUpdate && <Button  bsStyle="danger" onClick={() => deleteFile(file.id)} >Delete</Button> }
                 <Button  onClick={() => unselect(null)}>Close</Button>
-
             </div>
             </div>
             </div>

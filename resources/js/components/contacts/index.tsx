@@ -7,7 +7,7 @@ import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, C
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
-import { fullname } from '../utils';
+import { fullname, name } from '../utils';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
@@ -24,7 +24,7 @@ import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
 import { DocumentsTree } from 'components/documents/documentsTree';
 import { ClientRequestsPanel } from 'components/client-requests';
-
+import { Notes } from 'components/matters';
 
 const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
 
@@ -373,7 +373,10 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     }) }
                        { (contact.matters || []).length === 0 && 'No Matters' }
                     </dd>
-
+                    <dt>Notes</dt>
+                    <dd>{ (contact.notes || []).map((note, i) => {
+                        return <div key={note.id}>{ name(note.creator) } -  {note.note}</div>
+                    }) } </dd>
                 </dl>
                 { hasSubmitted && <Alert  bsStyle="success">
                 <p className="text-center">
@@ -601,7 +604,8 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     <Agents />
                                           <hr />
                     <Relationships />
-
+                        <hr/>
+                    <FieldArray name="notes" component={Notes as any} />
                     </div>
                 <hr />
 

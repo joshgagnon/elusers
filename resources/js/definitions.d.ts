@@ -278,6 +278,7 @@ declare global {
             contactableType: string;
             contactInformations?: ContactInformation[];
             matters?: Matter[];
+            notes?: Note[];
         }
 
         interface Office {
