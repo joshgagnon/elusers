@@ -374,4 +374,16 @@ class MatterController extends Controller
         return response()->json(['message' => 'Matter deleted']);
     }
 
+
+    public function addNote(Request $request, $matterId) {
+        $user = $request->user();
+        $data = $request->allJson();
+        $matter = Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $newNote = array_merge($data, ['created_by_user_id' => $user->id]);
+        $matter->notes()->create($newNote);
+        return response()->json(['message' => 'Note Added']);
+    }
+
+
+
 }

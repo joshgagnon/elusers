@@ -64,7 +64,7 @@ class ContactController extends Controller
             ->with('contactable', 'files', 'accessTokens',
                    'relationships', 'relationships.contact', 'relationships.contact.contactable',
                    'agents', 'agents.contact', 'agents.contact.contactable', 'contactInformations',
-                   'matters', 'files.notes', 'notes'
+                   'matters', 'files.notes', 'notes',  'notes.creator'
                )->first();
 
         if (!$contact) {
@@ -524,6 +524,13 @@ class ContactController extends Controller
         })->get();
     }
 
-
+    public function addNote(Request $request, $contactId) {
+        $user = $request->user();
+        $data = $request->allJson();
+        $contact = Contact::where('id', $contactId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $newNote = array_merge($data, ['created_by_user_id' => $user->id]);
+        $contact->notes()->create($newNote);
+        return response()->json(['message' => 'Note Added']);
+    }
 
 }

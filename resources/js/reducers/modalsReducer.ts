@@ -28,6 +28,8 @@ export default function(state: EL.Modals = DEFAULT_STATE, action: any) {
          case EL.ActionTypes.SHOW_DEADLINE_MODAL:
              return showDeadlineModal(state, action);
 
+        case EL.ActionTypes.SHOW_ADD_NOTE_MODAL:
+            return showAddNoteModal(state, action);
         default:
             return state;
     }
@@ -101,5 +103,13 @@ function showDeadlineModal(state: EL.Modals, action: EL.Actions.ShowDeadlineModa
         ...state,
         visible: EL.ModalNames.DEADLINE,
         [EL.ModalNames.DEADLINE]: action.payload
+    };
+}
+
+function showAddNoteModal(state: EL.Modals, action: EL.Actions.ShowAddNoteModal) {
+    return {
+        ...state,
+        visible: EL.ModalNames.ADD_NOTE,
+        [EL.ModalNames.ADD_NOTE]: action.payload
     };
 }

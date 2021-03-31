@@ -390,6 +390,7 @@ declare global {
             SHOW_UPLOAD_MODAL = 'SHOW_UPLOAD_MODAL',
             SHOW_DOCUMENT_MODAL = 'SHOW_DOCUMENT_MODAL',
             SHOW_DEADLINE_MODAL = 'SHOW_DEADLINE_MODAL',
+            SHOW_ADD_NOTE_MODAL = 'SHOW_ADD_NOTE_MODAL',
             /**
              * Initial testing
              */
@@ -444,7 +445,8 @@ declare global {
             CREATE_CONTACT = 'CREATE_CONTACT',
             DEADLINE = 'DEADLINE',
             UPLOAD = 'UPLOAD',
-            DOCUMENT = 'DOCUMENT'
+            DOCUMENT = 'DOCUMENT',
+            ADD_NOTE = 'ADD_NOTE'
         }
 
         export const enum FormNames {
@@ -469,7 +471,8 @@ declare global {
             EDIT_DEADLINE = 'EDIT_DEADLINE',
 
             EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM',
-            CONTACT_US_FORM='CONTACT_US_FORM'
+            CONTACT_US_FORM='CONTACT_US_FORM',
+            ADD_NOTE='ADD_NOTE'
 
         }
 
@@ -541,6 +544,17 @@ declare global {
         interface ShowDeadlineModal extends Action {
             payload: ShowDeadlineModalPayload;
         }
+
+        type ShowAddNoteModalPayload = {
+            id: string;
+            type: string;
+        };
+
+        interface ShowAddNoteModal extends Action {
+            payload: ShowAddNoteModalPayload;
+        }
+
+
 
         export interface CreateResourceAction extends Action {
             payload: {

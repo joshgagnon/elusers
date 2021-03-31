@@ -12,7 +12,7 @@ import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
 import { connect } from 'react-redux';
-import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken, showUploadModal  } from '../../actions';
+import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken, showUploadModal, showAddNoteModal  } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields, validationRules as addressValidationRules } from '../address/form';
 import { ContactCapacity } from './amlcft';
@@ -181,6 +181,7 @@ interface ContactProps {
     contactId: string;
     canUpdate: boolean;
     deleteContact: (contactId: string) => void;
+    addNote: (contactId: string) => void;
     requestAMLCFT: (contactId: string) => void;
 }
 
@@ -284,7 +285,8 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
                          <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
-                     { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="info" bsSize="sm" onClick={() => this.props.addNote(contact.id.toString())}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
                 </ButtonToolbar>
 
                 <h3>{fullname(contact)}</h3>
@@ -405,6 +407,9 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                 declineButtonText: 'Cancel',
                 onAccept: deleteAction
             });
+        },
+        addNote: (contactId: string) => {
+            return showAddNoteModal({id: contactId, type: 'contact'})
         },
         requestAMLCFT,
     }
