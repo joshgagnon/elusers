@@ -180,7 +180,7 @@ return [
         /*
          * 3rd Party Service Providers...
          */
-        Mmieluch\LaravelVfsProvider\LaravelVfsServiceProvider::class
+        #Mmieluch\LaravelVfsProvider\LaravelVfsServiceProvider::class
     ],
 
     /*

@@ -5,13 +5,16 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.2.5",
         "doctrine/dbal": "^2.5",
+        "facade/ignition": "^2.0",
         "fideloper/proxy": "~4.0",
         "guzzlehttp/guzzle": "^6.3",
         "hfig/mapi": "^1.0",
-        "laravel/framework": "6.9.0",
-        "laravel/tinker": "~1.0",
+        "laravel/framework": "^7.0",
+        "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.0",
+        "nunomaduro/collision": "^4.1",
         "pear/mail": "^1.4",
         "pear/ole": "^1.0.0RC5",
         "php-mime-mail-parser/php-mime-mail-parser": "^4.0",
@@ -20,10 +23,8 @@
         "vaibhavpandeyvpz/phemail": "^1.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
-        "mmieluch/laravel-vfs-provider": "^1.0",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~7.0",
+        "phpunit/phpunit": "^8.5",
         "filp/whoops": "~2.0"
     },
     "autoload": {
