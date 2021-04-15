@@ -30,7 +30,15 @@ class DeedPacketRecordControllerTest extends TestCase
         // Get the expected file contents and create an instance of UploadedFile for it
         $expectedContents = Storage::disk('test_assets')->get('encryption.txt');
         $filesToUpload = [new UploadedFile(base_path('tests/test-assets/encryption.txt'), 'testing.txt')];
-
+        $this->actingAs($user)
+            ->post('/api/deed-packet-records', [
+                'deed_packet_id' => $packet->id,
+                'document_date'  => Carbon::now(),
+                'document_name'  => 'document_name',
+                'parties'        => 'parties',
+                'matter_id'      => 'matter_id',
+                'file'           => $filesToUpload,
+            ])->dump();
         $createDeedResponse = $this->actingAs($user)
                                    ->post('/api/deed-packet-records', [
                                        'deed_packet_id' => $packet->id,
@@ -41,6 +49,7 @@ class DeedPacketRecordControllerTest extends TestCase
                                        'file'           => $filesToUpload,
                                    ])
                                    ->assertStatus(201);
+
 
         // Get the deed record we created
         $recordId = $createDeedResponse->getData()->record_id;
