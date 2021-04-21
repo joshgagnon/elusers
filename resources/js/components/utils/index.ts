@@ -56,11 +56,11 @@ export function minutesToHoursString(minutes: number) {
     return seperateValues.hours + ':' + seperateValues.minutes.toString().padStart(2, '0');
 }
 
-export function formatDate(date: string) {
+export function formatDate(date: string | Date) {
     return moment(date).format(DATE_FORMAT)
 }
 
-export function formatDateTime(date: string) {
+export function formatDateTime(date: string| Date) {
     return moment(date).format(DATE_TIME_FORMAT)
 }
 

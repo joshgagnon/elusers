@@ -6,7 +6,7 @@ import { UsersHOC, UserHOC, ContactsHOC, OrganisationDocumentsHOC } from '../hoc
 import Loading from '../loading';
 import { Field as ReduxField } from 'redux-form';
 import DocumentComponent from '../form-fields/documents';
-
+import { formatDate } from '../utils'
 @OrganisationDocumentsHOC()
 class FileList extends React.PureComponent<{values: any, documents: EL.Resource<EL.Document[]>}> {
     render() {
@@ -33,7 +33,7 @@ export default class Templates extends React.PureComponent<any> {
             <div>
                 <FormLoader
                     initialValues={{category: 'Evolution Templates', schema: 'letter'}}
-                    formValues={{senders: [this.props.user]}}
+                    formValues={{senders: [this.props.user], dateString: formatDate(new Date())}}
                     context={{
                         users: this.props.users.data.map(user => {
                             return {value: user, title: `${user.firstName} ${user.surname}`}
