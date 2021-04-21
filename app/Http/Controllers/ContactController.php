@@ -316,7 +316,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function  dedupeContacts(Request $request)
+    public function dedupeContacts(Request $request)
     {
         DB::beginTransaction();
         $results = [];
