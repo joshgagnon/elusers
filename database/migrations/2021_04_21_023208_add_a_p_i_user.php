@@ -21,7 +21,7 @@ class AddAPIUser extends Migration
     {
         $apiAdmin = Role::create(['name' => 'organisation api']);
         $apiAdmin->givePermissionTo('administer matters');
-        $evolutionLawyers = Organisation::where('legal_name', 'Evolution Lawyers Limited')->first();
+        $evolutionLawyers = Organisation::where('legal_name', 'Evolution Lawyers')->first();
 
         $apiUser = User::forceCreate([
             'title' => 'Mr',
