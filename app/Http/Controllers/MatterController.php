@@ -388,12 +388,10 @@ class MatterController extends Controller
 
                 $created_at = Carbon::createFromFormat('d M Y', $row['Created']);
 
-
-
                 $matter = Matter::where('matter_number', $actionstepId)->first();
                 $params = [
                         'matter_number' => $actionstepId,
-                        'matter_name' => $row['Matter Name'],
+                        'matter_name' => $row['Matter Name'] ?? '',
                         'matter_type' => $matter_type,
                         'created_at' => $created_at,
                         'status' => $row['Status'],
