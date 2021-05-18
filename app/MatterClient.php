@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MatterClient extends Pivot
 {
 
+
     public $table = 'matter_clients';
     protected $fillable = ['matter_id', 'contact_id', 'authorised_contact_id'];
 

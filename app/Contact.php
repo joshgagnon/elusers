@@ -5,10 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Traits\DefaultDirectoriesTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Contact extends Model
+class Contact extends Model  implements Auditable
 {
     use DefaultDirectoriesTrait;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['name',  'organisation_id',  'metadata', 'agent_id', 'cdd_required', 'reason_no_cdd_required', 'cdd_type',
                             'enhanced_cdd_reason', 'other_cdd_reason', 'source_of_funds', 'enhanced_ccd_required',

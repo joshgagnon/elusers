@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-
-class ContactIndividual extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class ContactIndividual extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['first_name', 'middle_name', 'surname', 'date_of_birth', 'date_of_death', 'occupation', 'gender', 'marital_status', 'country_of_citizenship', 'preferred_name'];
 

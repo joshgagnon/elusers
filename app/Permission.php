@@ -15,6 +15,7 @@ use Spatie\Permission\Contracts\Permission as PermissionContract;
 
 class Permission extends Model implements PermissionContract
 {
+
     use HasRoles;
     use RefreshesPermissionCache;
 

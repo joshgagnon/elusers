@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class ClientRequest extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class ClientRequest extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     protected $fillable = ['token', 'data', 'submitted', 'organisation_id'];
     protected $visible = ['id', 'token', 'data', 'submitted'];
     protected $casts = [
