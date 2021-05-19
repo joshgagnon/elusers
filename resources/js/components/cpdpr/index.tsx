@@ -68,7 +68,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps> {
         const HEADINGS = ['Date', 'Title', 'Reflection', 'Hours', 'Actions'];
 
         return (
-            <Table headings={HEADINGS} manualBodyTag>
+            <Table headings={HEADINGS} manualBodyTag lastColIsActions>
                 <tbody>
                     {
                         this.props.recordSet.records.map(record =>

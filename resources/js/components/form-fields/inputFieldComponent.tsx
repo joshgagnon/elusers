@@ -2,7 +2,6 @@ import * as React from 'react';
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { FormControl, InputGroup, Button } from 'react-bootstrap';
 import * as namecase from 'namecase';
-console.log(namecase)
 
 interface IInputFieldComponentProps extends IFieldComponentProps {
     type: string;

@@ -7,14 +7,15 @@ interface IDataTableProps {
     manualBodyTag?: boolean;
     lastColIsActions?: boolean;
     bodyRef?: any;
+    className?: string;
 }
 
 const NO_SORT = (key: string) => {};
 
 class DataTable extends React.PureComponent<IDataTableProps>{
     render() {
-        const { headings, children, manualBodyTag, lastColIsActions, bodyRef } = this.props;
-        return <Table responsive>
+        const { headings, children, manualBodyTag, lastColIsActions, bodyRef, className } = this.props;
+        return <Table responsive className={className}>
         <thead>
             <tr>
                 {headings.map((heading, index) => {

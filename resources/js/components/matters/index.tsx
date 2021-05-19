@@ -171,30 +171,29 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
 
                             return <tr key={index}>
                             {/* <td>ELF-{matter.id}</td> */ }
-                            <td>{matter.matterNumber}</td>
-                            <td>{matter.matterName}</td>
-                            <td>{matter.matterType}</td>
-                            <td><MatterStatus matter={matter}/></td>
-                            <td>
+                            <td data-th={MATTER_STRINGS['matterNumber']}>{matter.matterNumber}</td>
+                            <td data-th={MATTER_STRINGS['matterName']}>{matter.matterName}</td>
+                            <td data-th={MATTER_STRINGS['matterType']}>{matter.matterType}</td>
+                            <td data-th={MATTER_STRINGS['status']}><MatterStatus matter={matter}/></td>
+                            <td data-th={MATTER_STRINGS['clients']}>
                                 { (matter.matterClients || []).map((matterClient, i) => {
                                     return matterClient.client && <div key={i}><Link to={`/contacts/${matterClient.client.id}`}>{ fullname(matterClient.client) } </Link></div>
                                 }) }
                             </td>
-                            <td>
+                            <td data-th={MATTER_STRINGS['createdAt']}>
                                 { formatDate(matter.createdAt) }
                             </td>
-                            <td>
+                            <td data-th={MATTER_STRINGS['filesCount']}>
                                 { matter.filesCount }
                             </td>
                             <td>
                             <Link to={`/matters/${matter.id}`} className="btn btn-xs btn-default"><Icon iconName="eye" />View</Link>
                             {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-xs btn-warning"><Icon iconName="pencil" />Edit</Link> }
-
                             </td>
 
                         </tr>}}
                         itemsRenderer={(items, ref) => {
-                            return <Table responsive>
+                            return <Table responsive className={"better-responsive"}>
                             <thead>
                                 <tr>
                                     { ['matterNumber', 'matterName', 'matterType', 'status', 'clients', 'createdAt', 'filesCount'].map((heading: string, index) => {

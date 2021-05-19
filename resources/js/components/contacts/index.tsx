@@ -140,10 +140,10 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
                             const cddUnknown = !cddNotNeeded && !cddComplete && !cddIncomplete;
 
                             return <tr key={contact.id}>
-                            <td>{fullname(contact)}</td>
-                            <td>{contact.contactableType}</td>
-                            <td>{email || '' }</td>
-                            <td>{phone || ''}</td>
+                            <td data-th={HEADINGS[0]}>{fullname(contact)}</td>
+                            <td data-th={HEADINGS[1]}>{contact.contactableType}</td>
+                            <td data-th={HEADINGS[2]}>{email || ' '  }</td>
+                            <td data-th={HEADINGS[3]}>{phone || ' '}</td>
 
                             <td className="actions">
                                 <Link className="btn btn-xs btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
@@ -157,7 +157,7 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
-                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref}>
+                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref} className={"better-responsive"}>
                                 { items }
                             </Table>
                         }}

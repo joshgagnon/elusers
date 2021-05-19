@@ -171,6 +171,9 @@ table.table>tbody>tr>td {
 }
 
 table.table {
+    th {
+        min-width:66px;
+    }
     th.actions {
         min-width: 180px;
     }
@@ -179,6 +182,47 @@ table.table {
         padding-left:8px;
     }
 }
+
+@media only screen and (max-width: $screen-xs-max) {
+    .navbar {
+        margin-bottom:0;
+        border:none;
+    }
+    #main > div > .container {
+        padding:0;
+        .panel {
+            border-width: 1px 0 0 0;
+            border-radius: 0;
+            .btn-toolbar {
+                margin-left: -5px;
+                width: 100%;
+                padding-bottom: 12px;
+            }
+        }
+    }
+    .table-responsive table.table.better-responsive {
+        thead {
+            display: none;
+        }
+        td, th {
+            display: block;
+            clear: both;
+        }
+        td[data-th]:before {
+            content: attr(data-th);
+            padding-right:8px;
+            text-align:right;
+            font-weight:bold;
+            float: left;
+        }
+        td:last-child {
+            text-align: center;
+            width:100%;
+            background-color: #efefef66;
+        }
+    }
+}
+
 
 .panel h3 {
     margin: 5px 0;
