@@ -7,9 +7,11 @@ use App\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\DefaultDirectoriesTrait;
-
-class Organisation extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class Organisation extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $table = 'organisations';
     use SoftDeletes;
     use DefaultDirectoriesTrait;

@@ -91,7 +91,8 @@ module.exports = {
             'react-bootstrap': path.resolve('./node_modules/react-bootstrap'),
             moment: path.resolve('./node_modules/moment'),
             'react-widgets-moment': path.resolve('./node_modules/react-widgets-moment'),
-            'pdfjs-dist': path.resolve('./node_modules/pdfjs-dist')
+            'pdfjs-dist': path.resolve('./node_modules/pdfjs-dist'),
+            'el-templates': path.resolve('./node_modules/el-templates'),
           },
         modules:  [path.resolve(__dirname, 'resources/js'), 'node_modules']
     },

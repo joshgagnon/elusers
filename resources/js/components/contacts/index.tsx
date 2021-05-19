@@ -7,12 +7,12 @@ import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, C
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
 import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 import { validate } from '../utils/validation';
-import { fullname } from '../utils';
+import { fullname, name } from '../utils';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import Icon from '../icon';
 import { connect } from 'react-redux';
-import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken, showUploadModal  } from '../../actions';
+import { createNotification, createResource, updateResource, deleteResource, confirmAction, showAMLCFTToken, showUploadModal, showAddNoteModal  } from '../../actions';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { AddressFields, validationRules as addressValidationRules } from '../address/form';
 import { ContactCapacity } from './amlcft';
@@ -24,7 +24,7 @@ import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
 import { DocumentsTree } from 'components/documents/documentsTree';
 import { ClientRequestsPanel } from 'components/client-requests';
-
+import { Notes } from 'components/matters';
 
 const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
 
@@ -140,10 +140,10 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
                             const cddUnknown = !cddNotNeeded && !cddComplete && !cddIncomplete;
 
                             return <tr key={contact.id}>
-                            <td>{fullname(contact)}</td>
-                            <td>{contact.contactableType}</td>
-                            <td>{email || '' }</td>
-                            <td>{phone || ''}</td>
+                            <td data-th={HEADINGS[0]}>{fullname(contact)}</td>
+                            <td data-th={HEADINGS[1]}>{contact.contactableType}</td>
+                            <td data-th={HEADINGS[2]}>{email || ' '  }</td>
+                            <td data-th={HEADINGS[3]}>{phone || ' '}</td>
 
                             <td className="actions">
                                 <Link className="btn btn-xs btn-default" to={`/contacts/${contact.id}`}><Icon iconName="eye" />View</Link>
@@ -157,7 +157,7 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
                             </td>
                         </tr>}}
                         itemsRenderer={(items, ref) => {
-                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref}>
+                            return <Table headings={HEADINGS} lastColIsActions bodyRef={ref} className={"better-responsive"}>
                                 { items }
                             </Table>
                         }}
@@ -181,6 +181,7 @@ interface ContactProps {
     contactId: string;
     canUpdate: boolean;
     deleteContact: (contactId: string) => void;
+    addNote: (contactId: string) => void;
     requestAMLCFT: (contactId: string) => void;
 }
 
@@ -284,7 +285,8 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
                          <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
-                     { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="info" bsSize="sm" onClick={() => this.props.addNote(contact.id.toString())}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
                 </ButtonToolbar>
 
                 <h3>{fullname(contact)}</h3>
@@ -373,7 +375,10 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     }) }
                        { (contact.matters || []).length === 0 && 'No Matters' }
                     </dd>
-
+                    <dt>Notes</dt>
+                    <dd>{ (contact.notes || []).map((note, i) => {
+                        return <div key={note.id}>{ name(note.creator) } -  {note.note}</div>
+                    }) } </dd>
                 </dl>
                 { hasSubmitted && <Alert  bsStyle="success">
                 <p className="text-center">
@@ -402,6 +407,9 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                 declineButtonText: 'Cancel',
                 onAccept: deleteAction
             });
+        },
+        addNote: (contactId: string) => {
+            return showAddNoteModal({id: contactId, type: 'contact'})
         },
         requestAMLCFT,
     }
@@ -601,7 +609,8 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     <Agents />
                                           <hr />
                     <Relationships />
-
+                        <hr/>
+                    <FieldArray name="notes" component={Notes as any} />
                     </div>
                 <hr />
 

@@ -5,7 +5,7 @@ import Panel from 'components/panel';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import { MatterDeadlines } from 'components/deadlines';
 import * as moment from 'moment';
-import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal } from '../../actions';
+import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, showAddNoteModal } from '../../actions';
 import { Form, ButtonToolbar, Button, Col, Row, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
 
 import { Link } from 'react-router';
@@ -171,30 +171,29 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
 
                             return <tr key={index}>
                             {/* <td>ELF-{matter.id}</td> */ }
-                            <td>{matter.matterNumber}</td>
-                            <td>{matter.matterName}</td>
-                            <td>{matter.matterType}</td>
-                            <td><MatterStatus matter={matter}/></td>
-                            <td>
+                            <td data-th={MATTER_STRINGS['matterNumber']}>{matter.matterNumber}</td>
+                            <td data-th={MATTER_STRINGS['matterName']}>{matter.matterName}</td>
+                            <td data-th={MATTER_STRINGS['matterType']}>{matter.matterType}</td>
+                            <td data-th={MATTER_STRINGS['status']}><MatterStatus matter={matter}/></td>
+                            <td data-th={MATTER_STRINGS['clients']}>
                                 { (matter.matterClients || []).map((matterClient, i) => {
                                     return matterClient.client && <div key={i}><Link to={`/contacts/${matterClient.client.id}`}>{ fullname(matterClient.client) } </Link></div>
                                 }) }
                             </td>
-                            <td>
+                            <td data-th={MATTER_STRINGS['createdAt']}>
                                 { formatDate(matter.createdAt) }
                             </td>
-                            <td>
+                            <td data-th={MATTER_STRINGS['filesCount']}>
                                 { matter.filesCount }
                             </td>
                             <td>
                             <Link to={`/matters/${matter.id}`} className="btn btn-xs btn-default"><Icon iconName="eye" />View</Link>
                             {  hasPermission(this.props.user, 'edit matters')  && <Link to={`/matters/${matter.id}/edit`} className="btn btn-xs btn-warning"><Icon iconName="pencil" />Edit</Link> }
-
                             </td>
 
                         </tr>}}
                         itemsRenderer={(items, ref) => {
-                            return <Table responsive>
+                            return <Table responsive className={"better-responsive"}>
                             <thead>
                                 <tr>
                                     { ['matterNumber', 'matterName', 'matterType', 'status', 'clients', 'createdAt', 'filesCount'].map((heading: string, index) => {
@@ -241,6 +240,7 @@ interface MatterProps {
     matterId: string;
     canUpdate: boolean;
     deleteMatter: (matterId: string) => any;
+    addNote: (matterId: string) => any;
 }
 
 @PanelHOC<MatterProps>('Matter', props => props.matter)
@@ -251,7 +251,8 @@ class MatterDetails extends React.PureComponent<MatterProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    <Button bsSize="small" bsStyle="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button>
+                    { this.props.canUpdate  && <Button bsStyle="info" bsSize="sm" onClick={() => this.props.addNote(this.props.matterId)}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { this.props.canUpdate  && <Button bsSize="small" bsStyle="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button> }
                 </ButtonToolbar>
 
                 <h3>{ matter.matterNumber }</h3>
@@ -263,7 +264,7 @@ class MatterDetails extends React.PureComponent<MatterProps> {
                     <dt>Clients</dt>
                     <dd>
                         { (matter.matterClients || []).map((matterClient, i) => {
-                            return <React.Fragment>
+                            return <React.Fragment key={i}>
 
                            { matterClient.client && <div key={i}><Link to={`/contacts/${matterClient.client.id}`}>{ fullname(matterClient.client) } </Link></div> }
                             { matterClient.authorisedContact && <div key={i}>&nbsp;- Authorised Contact: <Link to={`/contacts/${matterClient.authorisedContact.id}`}>{ fullname(matterClient.authorisedContact) } </Link></div> }
@@ -339,7 +340,10 @@ class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
             declineButtonText: 'Cancel',
             onAccept: deleteAction
         });
-    }
+    },
+    addNote: (matterId: string) => {
+        return showAddNoteModal({id: matterId, type: 'matter'})
+    },
 }) as any)
 @MapParamsToProps(['matterId'])
 @MatterHOC({cache: true})
@@ -409,7 +413,7 @@ const MatterClients = ({ fields, meta: { error, submitFailed } }) => (
   </div>
 )
 
-const Notes = ({ fields, meta: { error, submitFailed } }) => (
+export const Notes = ({ fields, meta: { error, submitFailed } }) => (
   <div>
     { fields.map((note, index) => (
         <FormGroup key={index}>

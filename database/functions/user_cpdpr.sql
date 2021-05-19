@@ -22,7 +22,7 @@ WITH  RECURSIVE
     events AS (
         SELECT year_ending, pdr.*
         FROM financial_years
-            LEFT OUTER JOIN professional_development_records pdr ON date >= start_date AND date < end_date AND user_id = $1
+            LEFT OUTER JOIN professional_development_records pdr ON date > start_date AND date <= end_date AND user_id = $1
             JOIN date_range ON end_date >= first_record AND start_date <= last_record
         WHERE deleted_at IS NULL
         ORDER BY year_ending ASC
@@ -65,7 +65,7 @@ WITH  RECURSIVE
             array_to_json(array_remove(array_agg(pdr ORDER BY date ASC, id ASC NULLS FIRST), null)) as records,
             year_ending
         FROM financial_years
-            LEFT OUTER JOIN all_events pdr ON date >= start_date AND date < end_date AND user_id = $1
+            LEFT OUTER JOIN all_events pdr ON date > start_date AND date <= end_date AND user_id = $1
             JOIN date_range ON end_date >= first_record AND start_date <= last_record
         GROUP BY year_ending
         ORDER BY year_ending DESC

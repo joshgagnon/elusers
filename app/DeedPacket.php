@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class DeedPacket extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class DeedPacket extends Model  implements Auditable
 {
     use SoftDeletes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['title', 'created_by_user_id'];
 

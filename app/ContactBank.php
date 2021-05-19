@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-
-class ContactBank extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class ContactBank extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [];
 

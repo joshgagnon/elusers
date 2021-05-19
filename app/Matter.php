@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\DefaultDirectoriesTrait;
 use App\Library\SQLFile;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Matter extends Model
+class Matter extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     use SoftDeletes;
     use DefaultDirectoriesTrait;
 

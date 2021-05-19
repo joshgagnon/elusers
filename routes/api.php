@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::put('contacts/{contact}', 'ContactController@update');
     Route::delete('contacts/{contact}', 'ContactController@delete');
     Route::post('contacts/{contact}/access_token', 'ContactController@createAccessToken');
+    Route::post('contacts/{contact}/notes', 'ContactController@addNote');
 
     Route::post('contacts-sync', 'ContactController@syncContacts');
     Route::get('contacts-dedupe', 'ContactController@dedupeContacts');
@@ -139,7 +140,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::put('matters/{matter}/documents/{file}', 'MatterController@updateDocument');
     Route::delete('matters/{matter}/documents/{file}', 'MatterController@deleteDocument');
 
-
+    Route::post('matters/{matter}/notes', 'MatterController@addNote');
     Route::get('matter-files', 'MatterController@documents');
 
     Route::post('matters-sync', 'MatterController@syncMatters');

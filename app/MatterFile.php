@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-class MatterFile extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class MatterFile extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $fillable = [];
 
     public function file()

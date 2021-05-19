@@ -15,6 +15,7 @@ use Spatie\Permission\Contracts\Permission as PermissionContract;
 
 class Permission extends Model implements PermissionContract
 {
+
     use HasRoles;
     use RefreshesPermissionCache;
 
@@ -39,10 +40,6 @@ class Permission extends Model implements PermissionContract
 
         if ($permission) {
             throw PermissionAlreadyExists::create($attributes['name'], $attributes['guard_name']);
-        }
-
-        if (isNotLumen() && app()::VERSION < '5.4') {
-            return parent::create($attributes);
         }
 
         return static::query()->create($attributes);

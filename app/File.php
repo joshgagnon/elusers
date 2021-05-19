@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Library\StringToStream;
 use Illuminate\Support\Str;
  use App\Library\Encoding;
-
+use OwenIt\Auditing\Contracts\Auditable;
 
 function address($value) {
     $default = [['name' => 'Unknown', 'address' => '']];
@@ -36,8 +36,9 @@ function address($value) {
 }
 
 
-class File extends Model
+class File extends Model  implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     protected $fillable = ['path', 'filename', 'mime_type', 'encrypted', 'directory', 'parent_id', 'previous_version_id', 'protected', 'metadata'];
 
     protected $casts = [

@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-class OfficeLocation extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class OfficeLocation extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $fillable = ['name'];
 
     /**

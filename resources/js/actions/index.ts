@@ -178,3 +178,11 @@ export function showDeadlineModal(payload: EL.Actions.ShowDeadlineModalPayload):
         payload
     };
 }
+
+
+export function showAddNoteModal(payload: EL.Actions.ShowAddNoteModalPayload): EL.Actions.ShowAddNoteModal{
+    return {
+        type: EL.ActionTypes.SHOW_ADD_NOTE_MODAL,
+        payload
+    };
+}

@@ -4,9 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class ProfessionalDevelopmentRecord extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class ProfessionalDevelopmentRecord extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     use SoftDeletes;
 
     protected $fillable = ['title', 'date', 'minutes', 'reflection'];

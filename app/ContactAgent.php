@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
-
+use OwenIt\Auditing\Contracts\Auditable;
 
 class ContactAgent extends Pivot
 {
+
+
     public $table = 'contact_agents';
     protected $fillable = ['contact_id', 'agent_id', 'start_date', 'end_date'];
 

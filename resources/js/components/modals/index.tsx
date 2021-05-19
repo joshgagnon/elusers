@@ -8,6 +8,7 @@ import CreateContact from './createContact';
 import Upload from './upload';
 import ViewDocument from './viewDocument';
 import Deadline from './deadline';
+import AddNote from './addNote';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -30,7 +31,8 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <ViewDocument />
             case EL.ModalNames.DEADLINE:
                 return <Deadline />
-
+            case EL.ModalNames.ADD_NOTE:
+                return <AddNote />
             default:
                 return false;
         }

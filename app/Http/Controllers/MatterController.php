@@ -17,7 +17,7 @@ use Exception;
 use Carbon\Carbon;
 
 use Illuminate\Support\Collection;
-
+use XeroPHP\Models\Accounting\Organisation;
 
 
 function findClosestMatterType($input) {
@@ -222,6 +222,32 @@ class MatterController extends Controller
         return response()->json(['message' => 'Documents Updated', 'id' => $matter->id], 200);
     }
 
+    public function addEmailToMatter(Request $request)
+    {
+        $user = $request->user();
+        $matter = Matter::where('matter_number', $request->query('matter-number'))->where('organisation_id', $request->user()->organisation_id)->first();
+        if($matter) {
+            $emailDirectory = $matter->files()->where(['filename'=>'Emails', 'protected' => true, 'directory' => true])->first();
+            $file = $this->saveEmail($request->getContent(), $user, $emailDirectory->id);
+            $matter->files()->attach($file);
+        }
+        else{
+            $org = $user->organisation()->first();
+            $emailDirectory = $org->files()->where(['filename'=>'Unsorted Emails', 'protected' => true, 'directory' => true])->first();
+            if(!$emailDirectory) {
+                $emailDirectory = File::create([
+                    'filename'=>'Unsorted Emails', 'protected' => true, 'directory' => true, 'path' => '',
+                    'mimetype' => '',
+                ]);
+                $org->files()->attach($emailDirectory);
+            }
+            $file = $this->saveEmail($request->getContent(), $user, $emailDirectory->id);
+            $org->files()->attach($file);
+        }
+
+        return response()->json(['message' => 'Email Uploaded', 'file' => $file->toArray()], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -277,7 +303,39 @@ class MatterController extends Controller
         ]);
         $file->update(['metadata' => $file->parseMetadata($user)]);
         return $file;
-      }
+    }
+
+    private function saveEmail($contents, $user, $parentId)
+    {
+        $f = new File;
+        // Get the user's organisation's encryption key
+        $encryptionKey = $user->organisation()->first()->encryption_key;
+
+        // Encrypt the file contents
+        $encryption = new Encryption($encryptionKey);
+        $encryptedContents = $encryption->encrypt($contents);
+
+        // Create a unique path for the file
+        do {
+            $storageName = time() . uniqid();
+            $storagePath = 'matter-files/' . $storageName;
+        } while (Storage::exists($storagePath));
+
+        // Store the file
+        Storage::put($storagePath, $encryptedContents);
+        $file = File::create([
+            'path'      => $storagePath,
+            'filename'  => 'Email '.date('Y-m-d H:i:s').'.eml',
+            'mime_type' => 'message/rfc822',
+            'encrypted' => true,
+            'parent_id' => $parentId
+        ]);
+        $file->update(['metadata' => $file->parseMetadata($user)]);
+        if($file->metadata['subject'] ?? false) {
+            $file->update(['filename' => $file->metadata['subject'].".eml"]);
+        }
+        return $file;
+    }
 
    public function syncMatters(Request $request)
     {
@@ -330,12 +388,10 @@ class MatterController extends Controller
 
                 $created_at = Carbon::createFromFormat('d M Y', $row['Created']);
 
-
-
                 $matter = Matter::where('matter_number', $actionstepId)->first();
                 $params = [
                         'matter_number' => $actionstepId,
-                        'matter_name' => $row['Matter Name'],
+                        'matter_name' => $row['Matter Name'] ?? '',
                         'matter_type' => $matter_type,
                         'created_at' => $created_at,
                         'status' => $row['Status'],
@@ -373,5 +429,17 @@ class MatterController extends Controller
         $matter->delete();
         return response()->json(['message' => 'Matter deleted']);
     }
+
+
+    public function addNote(Request $request, $matterId) {
+        $user = $request->user();
+        $data = $request->allJson();
+        $matter = Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $newNote = array_merge($data, ['created_by_user_id' => $user->id]);
+        $matter->notes()->create($newNote);
+        return response()->json(['message' => 'Note Added']);
+    }
+
+
 
 }
