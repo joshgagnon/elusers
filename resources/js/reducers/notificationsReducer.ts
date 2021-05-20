@@ -11,7 +11,8 @@ export default function notificationsReducer(state=DEFAULT_STATE, action: EL.Act
                 }
             };
         case EL.ActionTypes.REMOVE_NOTIFICATION:
-            return {...state, [action.payload.id]: null};
+            const {[action.payload.id]: _, ...rest} = state as any;
+            return rest;
         default:
             return state;
     }

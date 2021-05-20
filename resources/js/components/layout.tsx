@@ -46,7 +46,7 @@ export class Layout extends React.PureComponent<ILayoutProps> {
                     { this.props.children }
                 </div>
                 <div className="notifications">
-                    {Object.keys(this.props.notifications).map(notificationKey =>
+                    {Object.keys(this.props.notifications).filter(notificationKey => this.props.notifications[notificationKey]).map(notificationKey =>
                         <Notification key={notificationKey} isError={this.props.notifications[notificationKey].isError}>
                             {this.props.notifications[notificationKey].message}
                         </Notification>)
