@@ -396,11 +396,11 @@ class MatterController extends Controller
                         'created_at' => $created_at,
                         'status' => $row['Status'],
                         'metadata' => json_encode($row),
-                        'created_by_user_id' =>  $user->id,
                         'organisation_id' => $user->organisation_id
                     ];
                 if(!$matter) {
                     $matter = new Matter;
+                    $matter->created_by_user_id = $user->id;
                 }
                 $matter->fill($params);
                 $matter->save(['timestamps' => false]);
