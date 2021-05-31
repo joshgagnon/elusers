@@ -22,17 +22,18 @@ class AddAPIUser extends Migration
         $apiAdmin = Role::create(['name' => 'organisation api']);
         $apiAdmin->givePermissionTo('administer matters');
         $evolutionLawyers = Organisation::where('legal_name', 'Evolution Lawyers')->first();
-
-        $apiUser = User::forceCreate([
-            'title' => 'Mr',
-            'first_name' => 'Evolution',
-            'surname' => 'API',
-            'preferred_name' => 'Elf API',
-            'email' => 'api@evolutionlawyers.nz',
-            'password' => Hash::make('thiscanneverlogin'),
-            'organisation_id' => $evolutionLawyers->id
-        ]);
-        $apiUser->roles()->save($apiAdmin);
+        if($evolutionLawyers) {
+            $apiUser = User::forceCreate([
+                'title'           => 'Mr',
+                'first_name'      => 'Evolution',
+                'surname'         => 'API',
+                'preferred_name'  => 'Elf API',
+                'email'           => 'api@evolutionlawyers.nz',
+                'password'        => Hash::make('thiscanneverlogin'),
+                'organisation_id' => $evolutionLawyers->id
+            ]);
+            $apiUser->roles()->save($apiAdmin);
+        }
     }
 
     /**
