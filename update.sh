@@ -19,6 +19,8 @@ sudo -u $1 composer dump-autoload
 sudo -u $1 NODE_ENV=production node_modules/.bin/webpack
 sudo -u $1 php artisan migrate --force
 sudo -u $1 php artisan db:update-functions
-
+sudo service ntp stop
+sudo ntpd -gq
+sudo service ntp start
 
 php artisan up

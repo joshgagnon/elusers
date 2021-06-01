@@ -57,6 +57,7 @@ declare global {
             bankAccountNumber?: string;
             roles?: Role[];
             permissions?: Permission[];
+            requires2FA?: boolean;
         }
 
         interface StateResources {

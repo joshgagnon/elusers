@@ -182,6 +182,8 @@ return [
          */
         #Mmieluch\LaravelVfsProvider\LaravelVfsServiceProvider::class
         OwenIt\Auditing\AuditingServiceProvider::class,
+
+
     ],
 
     /*

@@ -18,6 +18,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \PragmaRX\Google2FALaravel\Middleware::class
     ];
 
     /**
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'clearance' => \App\Http\Middleware\ClearanceMiddleware::class
+        'clearance' => \App\Http\Middleware\ClearanceMiddleware::class,
+        '2fa' => \PragmaRX\Google2FALaravel\Middleware::class
     ];
 }

@@ -4,7 +4,7 @@ import axios from 'axios';
 import * as humps from 'humps';
 import * as FormData from 'form-data';
 import { downloadSaga, renderSaga } from 'jasons-formal/lib/sagas';
-import { mounted, showVersionWarningModal, createNotification, updateUpload, uploadComplete, uploadDocument } from '../actions';
+import { mounted, showVersionWarningModal, createNotification, updateUpload, uploadComplete, uploadDocument, confirmAction } from '../actions';
 
 function* rootSagas() {
     yield [
@@ -26,12 +26,19 @@ function* rootSagas() {
         renderSaga(),
         downloadSaga(),
 
+        onMount()
+
     ];
 }
 
 export default function runSagas(sagaMiddleware: SagaMiddleware<{}>){
     sagaMiddleware.run(rootSagas);
 }
+
+function *onMount() {
+    yield takeEvery(EL.ActionTypes.MOUNTED, handleMount);
+}
+
 
 function *resourceRequests() {
     yield takeFirstRequest(EL.ActionTypes.RESOURCE_REQUEST, checkAndRequest);
@@ -423,4 +430,20 @@ function uploadDocumentProgressEmitter(url: string, documentId: string, data: an
 
 function *uploadDocumentSaga() {
     yield takeEvery(EL.ActionTypes.UPLOAD_DOCUMENT, performUploadDocument);
+}
+
+
+function *handleMount() {
+    const require2FA = yield select((state: EL.State) => state.user.requires2FA);
+    if(require2FA) {
+        yield put(confirmAction({
+            title: '2-Factor Authentication',
+            content: 'Because of your organisation policy, you must now set up 2-Factor Authentication',
+            acceptButtonText: 'Setup',
+            declineButtonText: 'Later',
+            onAccept: {type: 'NAV_TO_SETUP_2FA'}
+        }));
+        yield take('NAV_TO_SETUP_2FA');
+        window.location.pathname = '/setup-2fa';
+    }
 }
