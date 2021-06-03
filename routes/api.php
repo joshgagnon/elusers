@@ -148,8 +148,10 @@ Route::group(['middleware' => ['auth', '2fa']], function() {
     Route::post('render', 'RenderController@render');
 
 });
-Route::get('version', 'VersionController@index');
 
+
+// public routes
+Route::get('version', 'VersionController@index');
 
 
 Route::get('access-token/{token}', 'AccessTokenController@get')->name('AccessToken.get');

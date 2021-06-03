@@ -21,7 +21,7 @@ class HomeController extends Controller
         $loadData['user'] = $request->user()->toArray();
         $loadData['user']['roles'] = $request->user()->roles->pluck('name');
         $loadData['user']['permissions'] = $request->user()->getAllPermissions();
-        $loadData['user']['requires2FA'] = $request->user()->organisation->require_2fa && !$request->user()->google2fa_secret;
+        $loadData['user']['requires2FA'] = $request->user()->organisation->require_2fa && !$request->user()->google2fa_secret && env('OTP_ENABLED', true);
         return view('index')->with([
             'loadData' => json_encode($loadData)
         ]);
