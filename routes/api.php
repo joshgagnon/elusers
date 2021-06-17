@@ -149,6 +149,10 @@ Route::group(['middleware' => ['auth', '2fa']], function() {
 
 });
 
+Route::group(['middleware' => ['auth', '2fa', 'MsGraphAuthenticated']], function() {
+    return Route::get('outlook-emails', 'MsgraphController@search');
+});
+
 
 // public routes
 Route::get('version', 'VersionController@index');

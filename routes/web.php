@@ -12,6 +12,8 @@
 */
 
 // Authentication routes
+
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
@@ -26,6 +28,11 @@ Route::post('contact-us', 'HomeController@startContact')->name('home.startContac
 Route::get('contact-us', 'HomeController@startContact')->name('home.startContact');
 Route::get('contact-us/{token}', 'HomeController@contact')->name('home.contact');
 
+Route::group(['middleware' => ['auth', '2fa']], function() {
+    Route::get('/msgraph/connect', 'MsgraphController@connect');
+    Route::get('/msgraph/disconnect', 'MsgraphController@disconnect');
+    Route::get('/msgraph/oauth',  'MsgraphController@connect');
+});
 
 // Catch all and serve the main app
 Route::group(['middleware' => ['auth', '2fa']], function() {
@@ -39,6 +46,9 @@ Route::group(['middleware' => ['auth', '2fa']], function() {
     Route::post('otp', 'HomeController@otp');
     Route::get('{path?}', 'HomeController@index')->where('path', '.*');
 });
+
+
+
 Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->name('home');

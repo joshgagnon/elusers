@@ -7,6 +7,7 @@
     "require": {
         "php": ">=7.2.5",
         "bacon/bacon-qr-code": "^2.0",
+        "dcblogdev/laravel-microsoft-graph": "^3.0",
         "doctrine/dbal": "^2.5",
         "facade/ignition": "^2.0",
         "fideloper/proxy": "~4.0",

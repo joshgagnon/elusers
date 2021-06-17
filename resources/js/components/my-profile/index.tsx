@@ -50,6 +50,10 @@ class MyProfileNavigation extends React.Component { // Cannot be pure component 
                         <ListGroupItem>Change Password</ListGroupItem>
                     </LinkContainer>
 
+                    <LinkContainer to="/my-profile/integrations">
+                        <ListGroupItem>Integrations</ListGroupItem>
+                    </LinkContainer>
+
                 </ListGroup>
             </Panel>
         );

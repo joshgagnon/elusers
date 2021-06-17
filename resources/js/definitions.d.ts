@@ -43,6 +43,9 @@ declare global {
             permissions: Permission[]
         }
 
+        interface IntegrationDetails {
+            msgraph: boolean;
+        }
 
         interface User {
             id?: number;
@@ -58,6 +61,7 @@ declare global {
             roles?: Role[];
             permissions?: Permission[];
             requires2FA?: boolean;
+            integrations: IntegrationDetails;
         }
 
         interface StateResources {
