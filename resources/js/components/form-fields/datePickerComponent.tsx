@@ -24,7 +24,7 @@ export default class DatePickerField extends React.PureComponent<IFieldComponent
                 <Picker
                     onChange={(date, string) => onChange(string)}
                     
-                    format="D MMM YYYY"
+                    format="D MMMM YYYY"
                     time={false}
                     parse={formats}
                     value={!value ? null : new Date(value)}
