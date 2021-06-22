@@ -50,10 +50,10 @@ return [
     set the scopes to be used, Microsoft Graph API will accept up to 20 scopes
     */
 
-    'scopes' => 'offline_access openid calendars.readwrite contacts.readwrite files.readwrite mail.readwrite mail.send tasks.readwrite mailboxsettings.readwrite user.readwrite',
+    'scopes' => 'offline_access openid calendars.readwrite contacts.readwrite files.readwrite mail.read mail.readwrite mail.send tasks.readwrite mailboxsettings.readwrite user.readwrite',
 
     /*
-    The default timezone is set to Europe/London this option allows you to set your prefered timetime
+    The default timezone is set to Pacific/Auckland this option allows you to set your prefered timetime
     */
-    'preferTimezone' => env('MSGRAPH_PREFER_TIMEZONE', 'outlook.timezone="Europe/London"'),
+    'preferTimezone' => env('MSGRAPH_PREFER_TIMEZONE', 'outlook.timezone="Pacific/Auckland"'),
 ];
