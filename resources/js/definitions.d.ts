@@ -328,6 +328,57 @@ declare global {
             [documentId: string]: DocumentUpload
         }
 
+        interface MsGraphMailRecipient {
+            emailAddress: {
+                name: string;
+                address: string;
+            }
+        }
+
+        interface MsGraphResource {
+            "@odata.type": string;
+            bodyPreview: string;
+            conversationId: string;
+            createdDateTime: string;
+            from: MsGraphMailRecipient;
+            hasAttachments: boolean;
+            importance: string;
+            inferenceClassification: string;
+            internetMessageId: string;
+            isDraft: boolean;
+            isRead: boolean;
+            lastModifiedDateTime: string;
+            parentFolderId: string;
+            receivedDateTime: string;
+            replyTo: MsGraphMailRecipient[];
+            sender: MsGraphMailRecipient;
+            sentDateTime: string;
+            subject: string;
+            webLink: string;
+        }
+
+        interface MsGraphHit {
+            hitId: string,
+            rank: number,
+            resource: MsGraphResource
+            summary: string;
+        }
+
+        interface MsGraphHitContainer {
+            hits: MsGraphHit[];
+            moreResultsAvailable: boolean;
+            total: number;
+        }
+
+        interface MsGraphValue {
+            searchTerms: string[];
+            hitsContainers: MsGraphHitContainer[];
+        }
+
+        interface MsGraphSearch {
+            value: MsGraphValue[];
+        }
+
         interface INotifications extends ObjectOf<INotification> {}
 
         export interface State {
@@ -496,6 +547,8 @@ declare global {
             visible: string;
             confirmActionModal?: ConfirmActionModal;
         }
+
+
     }
 
     namespace EL.Actions {

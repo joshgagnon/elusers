@@ -1,33 +1,53 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import {Modal, ButtonToolbar, Button, Form, FormControl} from 'react-bootstrap';
+import {Modal, ButtonToolbar, Button, Form, FormControl, ListGroup, ListGroupItem} from 'react-bootstrap';
 import { closeModal } from '../../actions';
-import { TextArea } from '../form-fields';
+import {CheckboxField, TextArea} from '../form-fields';
 import {  submit, reduxForm } from 'redux-form';
 import { createResource, createNotification, confirmAction } from '../../actions';
 import {OutlookSearchHOC} from "../hoc/resourceHOCs";
-
-
-const importFromOutlook = () => <TextArea name={`note`}  naked required />
-
-
-
-export const importFromOutlookForm = (reduxForm({
-    form: EL.FormNames.IMPORT_FROM_OUTLOOK
-})(importFromOutlook as any) as any);
+import Loading from "../loading";
 
 
 
-class MessageResults extends React.PureComponent<{}, {}> {
+
+interface MessageResultsProps {
+    outlookEmails: EL.Resource<EL.MsGraphSearch>
+}
+
+function ListGroupCustom({ children }) {
+    return (
+        <li className="list-group-item" onClick={() => {}}>
+            {children}
+        </li>
+    );
+}
+
+class MessageResults extends React.PureComponent<MessageResultsProps, {}> {
     render() {
-        return <div>
+        if(this.props.outlookEmails.isFetching || !this.props.outlookEmails.data) {
+            return <Loading/>
+        }
+        const outlookEmails = this.props.outlookEmails.data;
+        const total = outlookEmails.value[0].hitsContainers[0].total;
+        const hits = outlookEmails.value[0].hitsContainers[0].hits || [];
+        return  <div className={"outlook-results"}>
+                <div className={"outlook-results-count"}>{ total  } Results Found</div>
+                <ListGroup>
+                    { hits.map((hit, index) => {
+                        return <ListGroupCustom key={index}>
+                            <CheckboxField name={hit.hitId} naked />
+                            { hit.summary }
+                        </ListGroupCustom>
+                    })}
 
-        </div>
+                </ListGroup>
+            </div>
     }
 }
 
-const ConnectedMessageResults = OutlookSearchHOC({cache: true})(MessageResults);
+const ConnectedMessageResults = OutlookSearchHOC({cache: false})(MessageResults);
 
 class OutlookSearch extends React.PureComponent<{}, {query: string, messages: string[]}> {
     state = {query: '', messages: []}
@@ -35,11 +55,18 @@ class OutlookSearch extends React.PureComponent<{}, {query: string, messages: st
         return <form>
             <div className="search-bar">
                 <FormControl type="text" value={this.state.query} placeholder="Search" onChange={(e: any) => this.setState({query: e.target.value})} />
-                <ConnectedMessageResults query={this.state.query} debounce={1000} />
+                { this.state.query && <ConnectedMessageResults query={this.state.query} debounce={1000} /> }
             </div>
         </form>
     }
 }
+
+
+
+export const OutlookSearchForm = (reduxForm({
+    form: EL.FormNames.IMPORT_FROM_OUTLOOK
+})(OutlookSearch as any) as any);
+
 
 interface importFromOutlookProps {
     closeModal: () => void;
@@ -60,7 +87,7 @@ class importFromOutlookModal extends React.PureComponent<importFromOutlookProps>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <OutlookSearch />
+                    <OutlookSearchForm />
                 </Modal.Body>
 
                 <Modal.Footer>
