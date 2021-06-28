@@ -1,3 +1,4 @@
+
 const DEFAULT_STATE: EL.Modals = {
     visible: null
 };
@@ -30,6 +31,10 @@ export default function(state: EL.Modals = DEFAULT_STATE, action: any) {
 
         case EL.ActionTypes.SHOW_ADD_NOTE_MODAL:
             return showAddNoteModal(state, action);
+
+        case EL.ActionTypes.SHOW_OUTLOOK_MODAL:
+            return showOutlookModal(state, action);
+
         default:
             return state;
     }
@@ -111,5 +116,14 @@ function showAddNoteModal(state: EL.Modals, action: EL.Actions.ShowAddNoteModal)
         ...state,
         visible: EL.ModalNames.ADD_NOTE,
         [EL.ModalNames.ADD_NOTE]: action.payload
+    };
+}
+
+
+function showOutlookModal(state: EL.Modals, action: EL.Actions.ShowOutlookModal) {
+    return {
+        ...state,
+        visible: EL.ModalNames.IMPORT_FROM_OUTLOOK,
+        [EL.ModalNames.IMPORT_FROM_OUTLOOK]: action.payload
     };
 }

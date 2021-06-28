@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Dcblogdev\MsGraph\Facades\MsGraph;
 use Facades\App\Library\MsGraphage;
+use Illuminate\Http\Request;
 
 class MsgraphController extends Controller
 {
@@ -18,8 +19,19 @@ class MsgraphController extends Controller
         return MsGraph::disconnect('/', false);
     }
 
-    public function search($skip=0)
+    public function search(Request $request)
     {
+        return MsGraph::post('/search/query', [
+            "requests" => [
+                [
+                    "entityTypes" => ["message"],
+                    "query" => ["queryString" => $request->query('query', '')],
+                    "from" => 0,
+                    "size" => 100
+                ],
+            ]
+        ]);
+        /*
         $params = http_build_query([
             "\$top" => 1000,
             "\$skip" => $skip,
@@ -34,18 +46,9 @@ class MsgraphController extends Controller
         $mime = MsGraph::get('/me/messages/'.$id.'/$value');
         return $mime;
         return MsGraph::emails()->find($id);
-        dd(count($mime));
+        dd(count($mime));*/
 
-        return MsGraph::post('/search/query', [
-            "requests" => [
-                [
-                    "entityTypes" => ["message"],
-                    "query" => ["queryString" => "josh"],
-                    "from" => 0,
-                    "size" => 100
-                ],
-            ]
-        ]);
+
     }
 
 }

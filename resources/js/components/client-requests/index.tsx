@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import PanelHOC from '../hoc/panelHOC';
 import HasPermission from 'components/hoc/hasPermission';
-import { hasPermission } from 'components/utils/permissions';
 import { ClientRequestsHOC, ClientRequestHOC } from 'components/hoc/resourceHOCs';
 import { Link } from 'react-router';
 import { fullname } from 'components/utils';

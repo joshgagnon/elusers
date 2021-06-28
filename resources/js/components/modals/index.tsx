@@ -9,6 +9,7 @@ import Upload from './upload';
 import ViewDocument from './viewDocument';
 import Deadline from './deadline';
 import AddNote from './addNote';
+import ImportFromOutlook from './importFromOutlook';
 
 interface ModalsProps {
     modalState: EL.Modals;
@@ -33,6 +34,8 @@ class Modals extends React.PureComponent<ModalsProps> {
                 return <Deadline />
             case EL.ModalNames.ADD_NOTE:
                 return <AddNote />
+            case EL.ModalNames.IMPORT_FROM_OUTLOOK:
+                return <ImportFromOutlook />
             default:
                 return false;
         }

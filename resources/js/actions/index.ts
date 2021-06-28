@@ -186,3 +186,10 @@ export function showAddNoteModal(payload: EL.Actions.ShowAddNoteModalPayload): E
         payload
     };
 }
+
+export function showOutlookModal(payload: EL.Actions.ShowOutlookModalPayload): EL.Actions.ShowOutlookModal{
+    return {
+        type: EL.ActionTypes.SHOW_OUTLOOK_MODAL,
+        payload
+    };
+}

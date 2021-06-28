@@ -5,7 +5,17 @@ import Panel from 'components/panel';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import { MatterDeadlines } from 'components/deadlines';
 import * as moment from 'moment';
-import { createNotification, createResource, deleteResource, updateResource, confirmAction, showUploadModal, showDocumentModal, showAddNoteModal } from '../../actions';
+import {
+    createNotification,
+    createResource,
+    deleteResource,
+    updateResource,
+    confirmAction,
+    showUploadModal,
+    showDocumentModal,
+    showAddNoteModal,
+    showOutlookModal
+} from '../../actions';
 import { Form, ButtonToolbar, Button, Col, Row, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
 
 import { Link } from 'react-router';
@@ -24,6 +34,7 @@ import * as ReactList from 'react-list';
 import { firstBy } from 'thenby'
 import classnames from 'classnames';
 import { DocumentsTree } from 'components/documents/documentsTree';
+import HasIntegration from "../hoc/hasIntegration";
 
 
 interface  MattersProps {
@@ -241,6 +252,7 @@ interface MatterProps {
     canUpdate: boolean;
     deleteMatter: (matterId: string) => any;
     addNote: (matterId: string) => any;
+    msgraph: boolean;
 }
 
 @PanelHOC<MatterProps>('Matter', props => props.matter)
@@ -310,11 +322,13 @@ interface MatterDocumentProps {
     matter: EL.Resource<EL.Matter>;
     matterId: string;
     canUpdate: boolean;
+    importFromOutlook?: () => void
 }
 
 class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
     render() {
         return <DocumentsTree
+            importFromOutlook={this.props.importFromOutlook}
             title="Matter Documents"
             files={this.props.matter.data ? this.props.matter.data.files : []}
             matterId={this.props.matterId}
@@ -323,6 +337,12 @@ class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
             canUpdate={this.props.canUpdate} />
     }
 }
+
+const DispatchToMatterDocuments = (dispatch, ownProps) => ({
+    importFromOutlook: () => ownProps.msgraph ? dispatch(showOutlookModal({type: 'matter', matterId: ownProps.matterId})) : null
+});
+
+const ConnectedMatterDocuments = connect(undefined, DispatchToMatterDocuments)(MatterDocuments);
 
 @(connect((state: EL.State) => ({
     canUpdate: hasPermission(state.user, 'edit matters')
@@ -346,6 +366,7 @@ class MatterDocuments extends React.PureComponent<MatterDocumentProps> {
     },
 }) as any)
 @MapParamsToProps(['matterId'])
+@HasIntegration('msgraph')
 @MatterHOC({cache: true})
 export class ViewMatter extends React.PureComponent<MatterProps> {
     render() {
@@ -358,7 +379,7 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
                     <MatterDeadlines {...this.props} />
                </Col>
                <Col md={12}>
-                <MatterDocuments {...this.props} />
+                <ConnectedMatterDocuments {...this.props} />
                 </Col>
             </Row>
         </React.Fragment>
@@ -588,12 +609,13 @@ class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> 
 
 @HasPermissionHOC('edit matters')
 @MapParamsToProps(['matterId'])
+@HasIntegration('msgraph')
 @MatterHOC({cache: true})
-export class EditMatter extends React.PureComponent< { matterId: string; matter: EL.Resource<EL.Matter>} > {
+export class EditMatter extends React.PureComponent< { matterId: string; matter: EL.Resource<EL.Matter>, msgraph: boolean} > {
     render() {
         return <React.Fragment>
             <UnwrappedEditMatter {...this.props} />
-            <MatterDocuments {...this.props}  canUpdate={true} />
+            <ConnectedMatterDocuments {...this.props}  canUpdate={true} />
             </React.Fragment>
     }
 }
