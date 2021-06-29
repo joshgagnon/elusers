@@ -24,6 +24,17 @@ function ListGroupCustom({ children }) {
     );
 }
 
+interface RecipientProps {
+    recipient: EL.MsGraphMailRecipient
+};
+
+const Recipient = (props)  => {
+    if(props.recipient.emailAddress.name && (props.recipient.emailAddress.address || '').includes('@)') ) {
+        return <span>{ props.recipient.emailAddress.name } &lt;{ props.recipient.emailAddress.address}&gt;</span>
+    }
+    return props.recipient.emailAddress.name;
+}
+
 class MessageResults extends React.PureComponent<MessageResultsProps, {}> {
     render() {
         if(this.props.outlookEmails.isFetching || !this.props.outlookEmails.data) {
@@ -38,7 +49,13 @@ class MessageResults extends React.PureComponent<MessageResultsProps, {}> {
                     { hits.map((hit, index) => {
                         return <ListGroupCustom key={index}>
                             <CheckboxField name={hit.hitId} naked />
-                            { hit.summary }
+                            <div className="summary-block">
+                                <span className={"from"}>From: <Recipient recipient={hit.resource.from} /></span>
+                                <span className={"to"}>To: { (hit.resource.toRecipients || hit.resource.replyTo).map((r, i) => <Recipient key={i} recipient={r}/>) }</span>
+                                <span className={"subject"}>{ hit.resource.subject }</span>
+                                <span className={"summary"} dangerouslySetInnerHTML={{__html: hit.summary }} />
+                                <a className="outlook-link" target={"_blank"} href={hit.resource.webLink}>View in Outlook</a>
+                            </div>
                         </ListGroupCustom>
                     })}
 

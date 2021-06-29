@@ -499,3 +499,34 @@ table{
 
     }
 }
+
+.outlook-results {
+    .list-group-item {
+        display:flex;
+        .summary-block {
+
+            .from, .to, .summary, .subject, outlook-link {
+                display: block;
+            }
+            .subject {
+                font-weight:bold;
+            }
+        }
+        .checkbox {
+            display: inline-block;
+
+        }
+        .form-group {
+            width: 30px;
+            align-self: center;
+            margin-bottom: 0;
+
+        }
+        &::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+    }
+}

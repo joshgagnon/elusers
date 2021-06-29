@@ -331,7 +331,7 @@ declare global {
         interface MsGraphMailRecipient {
             emailAddress: {
                 name: string;
-                address: string;
+                address?: string;
             }
         }
 
@@ -351,6 +351,7 @@ declare global {
             parentFolderId: string;
             receivedDateTime: string;
             replyTo: MsGraphMailRecipient[];
+            toRecipients?: MsGraphMailRecipient[];
             sender: MsGraphMailRecipient;
             sentDateTime: string;
             subject: string;
