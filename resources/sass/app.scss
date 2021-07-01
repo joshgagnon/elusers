@@ -501,10 +501,15 @@ table{
 }
 
 .outlook-results {
+    .outlook-results-count {
+        padding: 4px;
+        font-style: italic;
+    }
     .list-group-item {
         display:flex;
-        .summary-block {
 
+        .summary-block {
+            flex-grow: 1;
             .from, .to, .summary, .subject, outlook-link {
                 display: block;
             }
@@ -512,15 +517,17 @@ table{
                 font-weight:bold;
             }
         }
-        .checkbox {
-            display: inline-block;
-
+        .controls {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100px;
         }
         .form-group {
             width: 30px;
             align-self: center;
             margin-bottom: 0;
-
         }
         &::after {
             content: "";
