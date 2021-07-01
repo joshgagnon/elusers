@@ -12,7 +12,7 @@ import {
     TabContainer,
     Tab, Tabs
 } from 'react-bootstrap';
-import { closeModal } from '../../actions';
+import {closeModal, updateView} from '../../actions';
 import {CheckboxField, TextArea} from '../form-fields';
 import { createResource, createNotification, confirmAction } from '../../actions';
 import {OutlookSearchHOC} from "../hoc/resourceHOCs";
@@ -54,14 +54,14 @@ const OutlookItem = ({included, hit, addMessage, removeMessage}) => {
         </div>
         <div className={"controls"}>
             {!included && <Button onClick={() => addMessage(hit)}>Add</Button>}
-            {included && <Button onClick={() => removeMessage(hit)}>Remove</Button>}
-        </div>
-    </ListGroupCustom>
+            {included && <Button onClick={() => removeMessage(hit.hitId)}>Remove</Button>}
+</div>
+</ListGroupCustom>
 }
 
 const Recipient = (props)  => {
-    if(props.recipient.emailAddress.name && (props.recipient.emailAddress.address || '').includes('@)') ) {
-        return <span>{ props.recipient.emailAddress.name } &lt;{ props.recipient.emailAddress.address}&gt;</span>
+if(props.recipient.emailAddress.name && (props.recipient.emailAddress.address || '').includes('@)') ) {
+return <span>{ props.recipient.emailAddress.name } &lt;{ props.recipient.emailAddress.address}&gt;</span>
     }
     return props.recipient.emailAddress.name;
 }
@@ -123,6 +123,7 @@ interface ImportFromOutlookProps {
     matterId?: string;
     contactId?: string;
     type: string;
+    isLoading: boolean;
     submit:  (id: string, type: string, data: any) => void;
 }
 
@@ -144,47 +145,55 @@ class ImportFromOutlookModal extends React.PureComponent<ImportFromOutlookProps,
         });
     }
     render() {
-        const { matterId, contactId, type } = this.props;
-            let title = 'Selected';
-            return (
-                <Modal bsSize="large" backdrop="static" show={true} onHide={this.props.closeModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{ type === 'contact' ? 'Import Outlook Messages' : 'Import Outlook Messages'}</Modal.Title>
-                    </Modal.Header>
+        const { matterId, contactId, type, isLoading } = this.props;
+        let title = 'Selected';
+        return (
+            <Modal bsSize="large" backdrop="static" show={true} onHide={this.props.closeModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{ type === 'contact' ? 'Import Outlook Messages' : 'Import Outlook Messages'}</Modal.Title>
+                </Modal.Header>
 
-                    <Modal.Body>
-                        <Tabs id={"outlook-search-tabs"} defaultActiveKey={"search"}>
-                            <Tab eventKey={"search"}  title={'Search'} >
-                                <OutlookSearch hitIds={this.state.hitIds} addMessage={this.addMessage} removeMessage={this.removeMessage} />
-                            </Tab>
-                            <Tab eventKey={"selected"} title={title} >
-                                <OutlookSelection hitIds={this.state.hitIds} hits={this.state.hits} addMessage={this.addMessage} removeMessage={this.removeMessage} />
-                            </Tab>
-                        </Tabs>
-                    </Modal.Body>
+                <Modal.Body>
+                    { isLoading && <Loading/> }
+                    { !isLoading && <Tabs id={"outlook-search-tabs"} defaultActiveKey={"search"}>
+                        <Tab eventKey={"search"}  title={'Search'} >
+                            <OutlookSearch hitIds={this.state.hitIds} addMessage={this.addMessage} removeMessage={this.removeMessage} />
+                        </Tab>
+                        <Tab eventKey={"selected"} title={title} >
+                            <OutlookSelection hitIds={this.state.hitIds} hits={this.state.hits} addMessage={this.addMessage} removeMessage={this.removeMessage} />
+                        </Tab>
+                    </Tabs> }
+                </Modal.Body>
 
-                    <Modal.Footer>
-                        <ButtonToolbar className="pull-right">
-                            <Button onClick={() => {this.props.closeModal()}}>Close</Button>
-                            <Button bsStyle="primary" onClick={() => this.props.submit(this.props.matterId || this.props.contactId, this.props.type, this.state.hits)}>{'Import hits'}</Button>
-                        </ButtonToolbar>
-                    </Modal.Footer>
-                </Modal>
-            );
-        }
+                <Modal.Footer>
+                    <ButtonToolbar className="pull-right">
+                        <Button onClick={() => {this.props.closeModal()}}>Close</Button>
+                        <Button bsStyle="primary" onClick={() => this.props.submit(this.props.matterId || this.props.contactId, this.props.type, this.state.hits)}>{'Import Messages'}</Button>
+                    </ButtonToolbar>
+                </Modal.Footer>
+            </Modal>
+        );
     }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
     {
         closeModal: () => closeModal({ modalName: EL.ModalNames.IMPORT_FROM_OUTLOOK}),
-        submit: (id: string, type: string, data: any) => {
-            const url = `${type}s/${id}/notes`;
+        submit: (id: string, type: string, data: EL.MsGraphHit[]) => {
+            dispatch(updateView({name: EL.FormNames.IMPORT_FROM_OUTLOOK, isLoading: true}));
+            const url = `${type}s/${id}/import-outlook`;
             const meta: EL.Actions.Meta = {
-                onSuccess: [createNotification('hits Imported.'), closeModal({ modalName: EL.ModalNames.IMPORT_FROM_OUTLOOK })],
-                onFailure: [createNotification('Failed to import hits.', true)],
+                onSuccess: [
+                    createNotification('Messages Imported.'),
+                    updateView({name: EL.FormNames.IMPORT_FROM_OUTLOOK, isLoading: false}),
+                    closeModal({ modalName: EL.ModalNames.IMPORT_FROM_OUTLOOK })],
+                onFailure: [
+                    createNotification('Failed to import messages.', true),
+                    updateView({name: EL.FormNames.IMPORT_FROM_OUTLOOK, isLoading: false})
+                ],
                 invalidateList: [`${type}s/${id}`]
             };
-            return createResource(url, data, meta)
+            return createResource(url, {internetMessageIds: data.map(data => data.resource.internetMessageId)}, meta)
         }
     },
     dispatch,
@@ -192,6 +201,6 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
 
 
 export default connect(
-    (state : EL.State) => state.modals[EL.ModalNames.IMPORT_FROM_OUTLOOK],
+    (state : EL.State) => ({...(state.modals[EL.ModalNames.IMPORT_FROM_OUTLOOK] || {}), isLoading: !!(state.views[EL.FormNames.IMPORT_FROM_OUTLOOK] || {}).isLoading}),
     mapDispatchToProps,
 )(ImportFromOutlookModal as any);

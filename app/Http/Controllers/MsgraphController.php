@@ -31,24 +31,12 @@ class MsgraphController extends Controller
                 ],
             ]
         ]);
-        /*
-        $params = http_build_query([
-            "\$top" => 1000,
-            "\$skip" => $skip,
-            "\$count" => "true",
-        ]);
-        return MsGraph::get('/me/messages?'.$params);
-
-
-        $id = 'AQMkADAwATM0MDAAMS1kMDJkLWM1NQBiLTAwAi0wMAoARgAAA3AJdMcNnEpMnVRrB3uI4iQHAAAAQ2Is2WKxRYhozFpirrVfAAACAQkAAAFDYizZYrFFiGjMWmKutV8AA3sJI2EAAAA=';
-
-        return MsGraphage::mime($id);
-        $mime = MsGraph::get('/me/messages/'.$id.'/$value');
-        return $mime;
-        return MsGraph::emails()->find($id);
-        dd(count($mime));*/
-
-
     }
 
+    public function mime(Request $request)
+    {
+        $results = MsGraph::get("/me/messages?\$filter=internetMessageId eq '".urlencode('<ME3P282MB0818F3252A79829FAE1C5F6DC0029@ME3P282MB0818.AUSP282.PROD.OUTLOOK.COM>')."'");
+        $id = $results['value'][0]['id'];;
+        return MsGraphage::mime($id);
+    }
 }

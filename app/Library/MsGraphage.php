@@ -12,6 +12,14 @@ class MsGraphage extends MsGraph
         return self::guzzleBody('get', '/me/messages/'.$id.'/$value', [], [], auth()->id());
     }
 
+    public function mimeFromMessageId($id)
+    {
+        $results = $this->get("/me/messages?\$filter=internetMessageId eq '".urlencode($id)."'");
+        $id = $results['value'][0]['id'];;
+        return $this->mime($id);
+    }
+
+
     protected function guzzleBody($type, $request, $data = [], $headers = [], $id = null)
     {
         try {

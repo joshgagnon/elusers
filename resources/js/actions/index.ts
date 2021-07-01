@@ -193,3 +193,11 @@ export function showOutlookModal(payload: EL.Actions.ShowOutlookModalPayload): E
         payload
     };
 }
+
+
+export function updateView(payload: EL.Actions.UpdateViewPayload): EL.Actions.UpdateView{
+    return {
+        type: EL.ActionTypes.UPDATE_VIEW,
+        payload
+    };
+}

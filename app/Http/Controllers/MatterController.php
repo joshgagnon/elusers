@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Facades\App\Library\MsGraphage;
 use Illuminate\Http\Request;
 use App\Matter;
 use App\File;
@@ -211,6 +212,7 @@ class MatterController extends Controller
     }
 
 
+
     public function updateDocument(Request $request, $matterId, $fileId)
     {
         $user = $request->user();
@@ -246,6 +248,20 @@ class MatterController extends Controller
         }
 
         return response()->json(['message' => 'Email Uploaded', 'file' => $file->toArray()], 200);
+    }
+
+    public function addOutlookEmailsToMatter(Request $request, $matterId)
+    {
+        $user = $request->user();
+        $matter = Matter::where('id', $matterId)->where('organisation_id', $request->user()->organisation_id)->first();
+        $data = $request->allJson();
+        $emailDirectory = $matter->files()->where(['filename'=>'Emails', 'protected' => true, 'directory' => true])->first();
+        foreach($data['internet_message_ids'] as $messageId) {
+            $content = MsGraphage::mimeFromMessageId($messageId);
+            $file = $this->saveEmail($content, $user, $emailDirectory->id);
+            $matter->files()->attach($file);
+        }
+        return response()->json(['message' => 'Emails Saved'], 200);
     }
 
     /**

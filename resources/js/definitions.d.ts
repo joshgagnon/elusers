@@ -382,6 +382,14 @@ declare global {
 
         interface INotifications extends ObjectOf<INotification> {}
 
+        interface View {
+            isLoading?: boolean;
+            isEditing?: boolean;
+        }
+        interface Views {
+            [name: string]: View;
+        }
+
         export interface State {
             routing: any;
             user: User;
@@ -391,6 +399,7 @@ declare global {
             notifications: INotifications;
             modals: Modals;
             uploads: Uploads;
+            views: Views;
             version: {
                 ASSET_HASH: string;
             }
@@ -463,6 +472,8 @@ declare global {
 
             SAVE_TO_LOCAL_STORAGE = 'SAVE_TO_LOCAL_STORAGE',
             LOAD_FROM_LOCAL_STORAGE = 'LOAD_FROM_LOCAL_STORAGE',
+
+            UPDATE_VIEW = 'UPDATE_VIEW'
         }
 
         export const enum RequestStatus {
@@ -732,6 +743,16 @@ declare global {
 
         interface ShowDocumentModal extends Action {
             payload: ShowDocumentModalPayload
+        }
+
+        interface UpdateViewPayload {
+            name: string,
+            isLoading?: boolean;
+            isEditing?: boolean;
+        }
+
+        interface UpdateView extends Action {
+            payload: UpdateViewPayload
         }
 
     }
