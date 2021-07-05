@@ -258,7 +258,7 @@ class MatterController extends Controller
         $emailDirectory = $matter->files()->where(['filename'=>'Emails', 'protected' => true, 'directory' => true])->first();
         foreach($data['internet_message_ids'] as $messageId) {
             $content = MsGraphage::mimeFromMessageId($messageId);
-            $file = $this->saveEmail($content, $user, $emailDirectory->id);
+            $file = $this->saveEmail($content, $user, $emailDirectory->id, ['internet_message_id' => $messageId]);
             $matter->files()->attach($file);
         }
         return response()->json(['message' => 'Emails Saved'], 200);
@@ -321,7 +321,7 @@ class MatterController extends Controller
         return $file;
     }
 
-    private function saveEmail($contents, $user, $parentId)
+    private function saveEmail($contents, $user, $parentId, $metadata=[])
     {
         $f = new File;
         // Get the user's organisation's encryption key
@@ -346,7 +346,7 @@ class MatterController extends Controller
             'encrypted' => true,
             'parent_id' => $parentId
         ]);
-        $file->update(['metadata' => $file->parseMetadata($user)]);
+        $file->update(['metadata' => array_merge($file->parseMetadata($user), $metadata)]);
         if($file->metadata['subject'] ?? false) {
             $file->update(['filename' => $file->metadata['subject'].".eml"]);
         }
