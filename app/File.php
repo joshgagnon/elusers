@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use App\FilePermission;
 use App\FileNote;
+use App\FilePreview;
 use App\Library\SQLFile;
 use App\Library\Encryption;
 use Phemail\MessageParser;
@@ -84,6 +85,11 @@ class File extends Model  implements Auditable
     public function parent()
     {
         return $this->belongsTo(File::class, 'parent_id');
+    }
+
+    public function preview()
+    {
+        return $this->hasOne(FilePreview::class);
     }
 
     public function getContent($key=null)

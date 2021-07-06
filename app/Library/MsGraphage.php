@@ -21,7 +21,7 @@ class MsGraphage extends MsGraph
     {
         $results = $this->get("/me/messages?\$filter=internetMessageId eq '".urlencode($id)."'");
         $id = $results['value'][0]['id'];;
-        return ['id' => $id, 'mime' => $this->mime($id), 'attachments' => $this->allAttachments($id)];
+        return ['id' => $id, 'mime' => $this->mime($id), 'msgraph' => $results['value'][0], 'attachments' => $this->allAttachments($id)];
     }
 
     public function allAttachments($id)

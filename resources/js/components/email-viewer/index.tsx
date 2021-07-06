@@ -63,7 +63,7 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
             if(section.contentType === 'text/plain') {
                 return <pre key={index}>{ section.value }</pre>
             }
-            if(section.contenType.startsWith('image/')) {
+            if(section.contentType.startsWith('image/')) {
                 return null;
             }
 
@@ -73,13 +73,18 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
 
     }
 
+    renderMsGraphPreview() {
+        const fileData = this.state.data;
+        return <div  dangerouslySetInnerHTML={{__html: fileData.body.content }} /> ;
+    }
 
     render() {
         const { loading } = this.props;
         return <div>
             { this.state.status === Status.NotStarted || this.state.status === Status.InProgress && loading}
             { this.state.status === Status.Failed && <div className="alert alert-danger">Failed to load document</div> }
-            { this.state.status === Status.Complete &&  this.renderFields() }
+            { this.state.status === Status.Complete && !this.state.data['@odata.etag'] && this.renderFields() }
+            { this.state.status === Status.Complete && this.state.data['@odata.etag'] && this.renderMsGraphPreview() }
         </div>
     }
 }

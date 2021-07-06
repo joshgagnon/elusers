@@ -260,6 +260,7 @@ class MatterController extends Controller
             $messageTuple = MsGraphage::mimeFromMessageId($messageId);
             $file = $this->saveEmail($messageTuple['mime'], $user, $emailDirectory->id, ['internet_message_id' => $messageId, 'msgraph_id' => $messageTuple['id']]);
             $matter->files()->attach($file);
+            $file->preview()->create(['data' => $messageTuple['msgraph']]);
             foreach($messageTuple['attachments'] as $attach) {
                 $attachment = $this->saveFile($attach['contents'], $attach['filename'], $attach['mime_type'], $user, $file->id, $metadata=[]);
                 $attachment->update(['protected' => true]);
