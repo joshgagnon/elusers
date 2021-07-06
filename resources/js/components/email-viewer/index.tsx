@@ -16,7 +16,7 @@ interface EmailViewerProps {
 
 
  function formatEmail(data) {
-    return data.name ? data.name + " [" + data.address + "]" : data.email;
+    return data.name ? data.name + " [" + data.address + "]" : data.address;
 }
 
 export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
@@ -60,9 +60,14 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
             if(section.contentType === 'text/html') {
                 return <div key={index}  dangerouslySetInnerHTML={{__html: section.value }} />
             }
-            return <pre key={index}>{ section.value }</pre>
+            if(section.contentType === 'text/plain') {
+                return <pre key={index}>{ section.value }</pre>
+            }
+            if(section.contenType.startsWith('image/')) {
+                return null;
+            }
 
-        } )}
+        } ).filter(Boolean)}
         </dd>
         </dl>
 

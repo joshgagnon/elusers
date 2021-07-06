@@ -262,6 +262,7 @@ class MatterController extends Controller
             $matter->files()->attach($file);
             foreach($messageTuple['attachments'] as $attach) {
                 $attachment = $this->saveFile($attach['contents'], $attach['filename'], $attach['mime_type'], $user, $file->id, $metadata=[]);
+                $attachment->update(['protected' => true]);
                 $matter->files()->attach($attachment);
             }
         }
