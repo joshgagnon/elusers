@@ -111,6 +111,7 @@ declare global {
             directory?: boolean;
             protected?: boolean;
             children?: Document[];
+            hasChildren?: boolean;
             parentId?: string;
             pivot?: {
                 createdByUserId?: number;

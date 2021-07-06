@@ -12,13 +12,28 @@ class MsGraphage extends MsGraph
         return self::guzzleBody('get', '/me/messages/'.$id.'/$value', [], [], auth()->id());
     }
 
+    public function downloadAttachment($id, $attachmentId)
+    {
+        return self::guzzleBody('get', '/me/messages/'.$id.'/attachments/'.$attachmentId."/\$value", [], [], auth()->id());
+    }
+
     public function mimeFromMessageId($id)
     {
         $results = $this->get("/me/messages?\$filter=internetMessageId eq '".urlencode($id)."'");
         $id = $results['value'][0]['id'];;
-        return $this->mime($id);
+        return ['id' => $id, 'mime' => $this->mime($id), 'attachments' => $this->allAttachments($id)];
     }
 
+    public function allAttachments($id)
+    {
+        $attachments = $this->get("/me/messages/".$id."/attachments")['value'];
+        $results = [];
+        foreach($attachments as $attach) {
+            $binary = $this->downloadAttachment($id, $attach['id']);
+            $results[] = ['filename' => $attach['name'], 'mime_type' => $attach['contentType'], 'contents' => $binary];
+        }
+        return $results;
+    }
 
     protected function guzzleBody($type, $request, $data = [], $headers = [], $id = null)
     {

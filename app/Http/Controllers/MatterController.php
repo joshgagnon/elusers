@@ -257,9 +257,13 @@ class MatterController extends Controller
         $data = $request->allJson();
         $emailDirectory = $matter->files()->where(['filename'=>'Emails', 'protected' => true, 'directory' => true])->first();
         foreach($data['internet_message_ids'] as $messageId) {
-            $content = MsGraphage::mimeFromMessageId($messageId);
-            $file = $this->saveEmail($content, $user, $emailDirectory->id, ['internet_message_id' => $messageId]);
+            $messageTuple = MsGraphage::mimeFromMessageId($messageId);
+            $file = $this->saveEmail($messageTuple['mime'], $user, $emailDirectory->id, ['internet_message_id' => $messageId, 'msgraph_id' => $messageTuple['id']]);
             $matter->files()->attach($file);
+            foreach($messageTuple['attachments'] as $attach) {
+                $attachment = $this->saveFile($attach['contents'], $attach['filename'], $attach['mime_type'], $user, $file->id, $metadata=[]);
+                $matter->files()->attach($attachment);
+            }
         }
         return response()->json(['message' => 'Emails Saved'], 200);
     }
@@ -294,14 +298,17 @@ class MatterController extends Controller
         // Get the uploaded file contents
         $uploadedFilePath = $file->getRealPath();
         $contents = file_get_contents($uploadedFilePath);
+        return $this->saveFile($contents, $file->getClientOriginalName(), $file->getMimeType(), $user, $parentId);
+    }
+
+    private function saveFile($contents, $filename, $mimetype, $user, $parentId, $metadata=[])
+    {
 
         // Get the user's organisation's encryption key
         $encryptionKey = $user->organisation()->first()->encryption_key;
-
         // Encrypt the file contents
         $encryption = new Encryption($encryptionKey);
         $encryptedContents = $encryption->encrypt($contents);
-
         // Create a unique path for the file
         do {
             $storageName = time() . uniqid();
@@ -312,18 +319,17 @@ class MatterController extends Controller
         Storage::put($storagePath, $encryptedContents);
         $file = File::create([
             'path'      => $storagePath,
-            'filename'  => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
+            'filename'  => $filename,
+            'mime_type' => $mimetype,
             'encrypted' => true,
             'parent_id' => $parentId
         ]);
-        $file->update(['metadata' => $file->parseMetadata($user)]);
+        $file->update(['metadata' => array_merge($file->parseMetadata($user), ['metadata' => $metadata])]);
         return $file;
     }
 
     private function saveEmail($contents, $user, $parentId, $metadata=[])
     {
-        $f = new File;
         // Get the user's organisation's encryption key
         $encryptionKey = $user->organisation()->first()->encryption_key;
 

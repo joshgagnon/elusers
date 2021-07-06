@@ -359,6 +359,7 @@ function listToTree(documents: EL.Document[] = []) {
             roots.push(map[d.id]);
         } else if (map[d.parentId]) {
             map[d.parentId].children.push(map[d.id]);
+            map[d.parentId].hasChildren = true;
         } else {
             //for now, ignore things in subtrees
         }
@@ -517,7 +518,6 @@ class RenderFile extends React.PureComponent<any> {
         }
 
         const showNewForm = () => {
-            // is.props.createDirectory(item.id === 'root' ? null : item.id, 'New Folder')
             return <div className="file-sub-tree"><span className="expand-control"></span>
                 <span className="file selected">
                         <span className="icon fa fa-plus-circle"></span>
@@ -545,11 +545,11 @@ class RenderFile extends React.PureComponent<any> {
 
         const renderedFile = (<div className="file-sub-tree">
               <span className="expand-control">
-                {item.directory && showingSubTree && <span className="fa fa-minus-square-o" onClick={(e) => {
+                {(item.directory || item.hasChildren) && showingSubTree && <span className="fa fa-minus-square-o" onClick={(e) => {
                     e.stopPropagation && e.stopPropagation();
                     props.hideSubTree()
                 }}/>}
-                  {item.directory && !showingSubTree && <span className="fa fa-plus-square-o" onClick={(e) => {
+                  {(item.directory || item.hasChildren) && !showingSubTree && <span className="fa fa-plus-square-o" onClick={(e) => {
                       e.stopPropagation && e.stopPropagation();
                       props.showSubTree()
                   }}/>}
@@ -561,8 +561,13 @@ class RenderFile extends React.PureComponent<any> {
                 {canCreateDirectory && !this.props.creatingFolder && showNew()}
                 {canCreateDirectory && this.props.creatingFolder && showNewForm()}
                 {props.children}
-            </div>
-            }
+            </div> }
+
+            {!item.directory  && item.hasChildren &&
+            <div className={classnames("children", {"showing": showingSubTree})}>
+                {props.children}
+            </div> }
+
         </div>)
 
         if (item.id === "root") {
@@ -783,7 +788,7 @@ class FileTree extends React.PureComponent<any> {
         viewDocument: (file) => dispatch(showDocumentModal({document: file}))
     })) as any)
 export class DocumentsTree extends React.PureComponent<any> {
-
+    state = {tree: []}
     constructor(props) {
         super(props);
         this.move = this.move.bind(this);
@@ -794,6 +799,13 @@ export class DocumentsTree extends React.PureComponent<any> {
         this.upload = this.upload.bind(this);
         this.replace = this.replace.bind(this);
         this.updateNote = this.updateNote.bind(this);
+        this.state.tree = listToTree(props.files)
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.files !== this.props.files) {
+            this.setState({tree: listToTree(this.props.files)})
+        }
     }
 
     renderField(key, value) {
@@ -847,7 +859,7 @@ export class DocumentsTree extends React.PureComponent<any> {
             <FileTree
                 loading={this.props.cached || this.props.loading}
                 title={this.props.title}
-                files={listToTree(files)}
+                files={this.state.tree}
                 flatFiles={files}
                 viewDocument={this.props.viewDocument}
                 move={this.move}
