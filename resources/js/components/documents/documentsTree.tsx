@@ -337,7 +337,11 @@ const documentTypeClasses = (doc, showingSubTree) => {
 const documentDescriptor = (doc) => {
     if (isEmail(doc) && doc.metadata && Object.keys(doc.metadata).length) {
         try {
-            return <span>{doc.metadata.subject} - <i>{formatDateTime(doc.metadata.date)}</i> - <i>{doc.metadata.to.map(to => to.name).join(', ')}</i></span>;
+            return <span>{[ doc.metadata.subject,
+                `${formatDateTime(doc.metadata.date)}`,
+                `From: ${doc.metadata.from.name || doc.metadata.from.address}`,
+                `To: ${doc.metadata.to.map(to => to.name || to.address)}`].join(' - ')}
+                </span>;
         } catch (e) {
         }
     }
