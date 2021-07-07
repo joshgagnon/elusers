@@ -263,7 +263,6 @@ class MatterController extends Controller
             $file->preview()->create(['data' => $messageTuple['msgraph']]);
             foreach($messageTuple['attachments'] as $attach) {
                 $attachment = $this->saveFile($attach['contents'], $attach['filename'], $attach['mime_type'], $user, $file->id, $metadata=[]);
-                $attachment->update(['protected' => true]);
                 $matter->files()->attach($attachment);
             }
         }
