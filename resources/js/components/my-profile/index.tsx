@@ -70,16 +70,15 @@ class MyOrganisationNavigation extends React.Component<{user: EL.User}> {
                         <ListGroupItem>Basic Details</ListGroupItem>
                     </IndexLinkContainer>
 
-                    <IndexLinkContainer to="/my-profile/organisation/users">
-                       { hasPermission(this.props.user, 'administer organisation users') &&   <ListGroupItem>Users</ListGroupItem> }
-
-                    </IndexLinkContainer>
+                    { hasPermission(this.props.user, 'administer organisation users') && <IndexLinkContainer to="/my-profile/organisation/users">
+                         <ListGroupItem>Users</ListGroupItem>
+                    </IndexLinkContainer> }
                     {/* <IndexLinkContainer to="/my-profile/organisation/permissions">
                         { hasPermission(this.props.user, 'administer organisation permissions') && <ListGroupItem>Permissions</ListGroupItem> }
                     </IndexLinkContainer> */ }
-                  <IndexLinkContainer to="/my-profile/organisation/roles">
-                        { hasPermission(this.props.user, 'administer organisation roles') && <ListGroupItem>Roles</ListGroupItem> }
-                    </IndexLinkContainer>
+                    { hasPermission(this.props.user, 'administer organisation roles') && <IndexLinkContainer to="/my-profile/organisation/roles">
+                         <ListGroupItem>Roles</ListGroupItem>
+                    </IndexLinkContainer> }
                 </ListGroup>
             </Panel>
         );

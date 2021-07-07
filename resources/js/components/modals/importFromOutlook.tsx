@@ -18,6 +18,7 @@ import { createResource, createNotification, confirmAction } from '../../actions
 import {OutlookSearchHOC} from "../hoc/resourceHOCs";
 import Loading from "../loading";
 import {PureComponent} from "react";
+import {formatDateTime} from "../utils";
 
 interface MessageControlsProps {
     addMessage: (hit: EL.MsGraphHit) => void;
@@ -48,6 +49,7 @@ const OutlookItem = ({included, hit, addMessage, removeMessage}) => {
         <div className="summary-block">
             <span className={"from"}>From: <Recipient recipient={hit.resource.from} /></span>
             <span className={"to"}>To: { (hit.resource.toRecipients || hit.resource.replyTo).map((r, i) => <Recipient key={i} recipient={r}/>) }</span>
+            <span className={"date"}>Date: { formatDateTime(hit.resource.lastModifiedDateTime) }</span>
             <span className={"subject"}>{ hit.resource.subject }</span>
             <span className={"summary"} dangerouslySetInnerHTML={{__html: hit.summary }} />
             <a className="outlook-link" target={"_blank"} href={hit.resource.webLink}>View in Outlook</a>
