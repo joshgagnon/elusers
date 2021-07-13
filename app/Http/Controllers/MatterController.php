@@ -321,7 +321,7 @@ class MatterController extends Controller
         $file = File::create([
             'path'      => $storagePath,
             'filename'  => $filename,
-            'mime_type' => $mimetype,
+            'mime_type' => $mimetype ? $mimetype : 'application/octet-stream',
             'encrypted' => true,
             'parent_id' => $parentId
         ]);
