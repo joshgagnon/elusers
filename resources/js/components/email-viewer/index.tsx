@@ -29,7 +29,7 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
 
     componentDidMount() {
         this.setState({status: Status.InProgress})
-        axios.get(this.props.src, { responseType: 'application/json' })
+        axios.get(this.props.src, { responseType: 'json' })
             .then(response => {
                 this.setState({status: Status.Complete, data: response.data});
             })
