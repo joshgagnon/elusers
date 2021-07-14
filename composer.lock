@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d00903daf6834b90a8a727815c6272b",
+    "content-hash": "0363ca409611914e5f94d2afe8fe6fc5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -97,6 +97,66 @@
                 "map"
             ],
             "time": "2020-10-02T16:03:48+00:00"
+        },
+        {
+            "name": "dcblogdev/laravel-microsoft-graph",
+            "version": "v3.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dcblogdev/laravel-microsoft-graph.git",
+                "reference": "4bce6e9747fa89489a9e4907ec91b436d245c829"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dcblogdev/laravel-microsoft-graph/zipball/4bce6e9747fa89489a9e4907ec91b436d245c829",
+                "reference": "4bce6e9747fa89489a9e4907ec91b436d245c829",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "6.x|7.x",
+                "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x",
+                "league/oauth2-client": "^1.4|^2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dcblogdev\\MsGraph\\MsGraphServiceProvider"
+                    ],
+                    "aliases": {
+                        "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
+                        "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dcblogdev\\MsGraph\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Carr",
+                    "email": "dave@dcblog.dev",
+                    "homepage": "https://dcblog.dev"
+                }
+            ],
+            "description": "A Laravel Microsoft Graph API (Office365) package",
+            "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
+            "keywords": [
+                "Microsoft graph",
+                "Microsoft365",
+                "MsGraph",
+                "Office365",
+                "graph",
+                "laravel"
+            ],
+            "time": "2021-02-07T15:15:02+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -1626,6 +1686,72 @@
             ],
             "description": "Mime-type detection for Flysystem",
             "time": "2021-01-18T20:58:21+00:00"
+        },
+        {
+            "name": "league/oauth2-client",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/oauth2-client.git",
+                "reference": "badb01e62383430706433191b82506b6df24ad98"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/badb01e62383430706433191b82506b6df24ad98",
+                "reference": "badb01e62383430706433191b82506b6df24ad98",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0 || ^7.0",
+                "paragonie/random_compat": "^1 || ^2 || ^9.99",
+                "php": "^5.6 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.3",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpunit/phpunit": "^5.7 || ^6.0 || ^9.3",
+                "squizlabs/php_codesniffer": "^2.3 || ^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\OAuth2\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Bilbie",
+                    "email": "hello@alexbilbie.com",
+                    "homepage": "http://www.alexbilbie.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Woody Gilk",
+                    "homepage": "https://github.com/shadowhand",
+                    "role": "Contributor"
+                }
+            ],
+            "description": "OAuth 2.0 Client Library",
+            "keywords": [
+                "Authentication",
+                "SSO",
+                "authorization",
+                "identity",
+                "idp",
+                "oauth",
+                "oauth2",
+                "single sign on"
+            ],
+            "time": "2020-10-28T02:03:40+00:00"
         },
         {
             "name": "monolog/monolog",

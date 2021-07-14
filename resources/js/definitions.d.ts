@@ -43,6 +43,9 @@ declare global {
             permissions: Permission[]
         }
 
+        interface IntegrationDetails {
+            msgraph: boolean;
+        }
 
         interface User {
             id?: number;
@@ -58,6 +61,7 @@ declare global {
             roles?: Role[];
             permissions?: Permission[];
             requires2FA?: boolean;
+            integrations: IntegrationDetails;
         }
 
         interface StateResources {
@@ -107,6 +111,7 @@ declare global {
             directory?: boolean;
             protected?: boolean;
             children?: Document[];
+            hasChildren?: boolean;
             parentId?: string;
             pivot?: {
                 createdByUserId?: number;
@@ -324,7 +329,67 @@ declare global {
             [documentId: string]: DocumentUpload
         }
 
+        interface MsGraphMailRecipient {
+            emailAddress: {
+                name: string;
+                address?: string;
+            }
+        }
+
+        interface MsGraphResource {
+            "@odata.type": string;
+            bodyPreview: string;
+            conversationId: string;
+            createdDateTime: string;
+            from: MsGraphMailRecipient;
+            hasAttachments: boolean;
+            importance: string;
+            inferenceClassification: string;
+            internetMessageId: string;
+            isDraft: boolean;
+            isRead: boolean;
+            lastModifiedDateTime: string;
+            parentFolderId: string;
+            receivedDateTime: string;
+            replyTo: MsGraphMailRecipient[];
+            toRecipients?: MsGraphMailRecipient[];
+            sender: MsGraphMailRecipient;
+            sentDateTime: string;
+            subject: string;
+            webLink: string;
+        }
+
+        interface MsGraphHit {
+            hitId: string,
+            rank: number,
+            resource: MsGraphResource
+            summary: string;
+        }
+
+        interface MsGraphHitContainer {
+            hits: MsGraphHit[];
+            moreResultsAvailable: boolean;
+            total: number;
+        }
+
+        interface MsGraphValue {
+            searchTerms: string[];
+            hitsContainers: MsGraphHitContainer[];
+        }
+
+        interface MsGraphSearch {
+            value: MsGraphValue[];
+        }
+
         interface INotifications extends ObjectOf<INotification> {}
+
+        interface View {
+            isLoading?: boolean;
+            isEditing?: boolean;
+        }
+        interface Views {
+            [name: string]: View;
+        }
 
         export interface State {
             routing: any;
@@ -335,6 +400,7 @@ declare global {
             notifications: INotifications;
             modals: Modals;
             uploads: Uploads;
+            views: Views;
             version: {
                 ASSET_HASH: string;
             }
@@ -392,6 +458,7 @@ declare global {
             SHOW_DOCUMENT_MODAL = 'SHOW_DOCUMENT_MODAL',
             SHOW_DEADLINE_MODAL = 'SHOW_DEADLINE_MODAL',
             SHOW_ADD_NOTE_MODAL = 'SHOW_ADD_NOTE_MODAL',
+            SHOW_OUTLOOK_MODAL = 'SHOW_OUTLOOK_MODAL',
             /**
              * Initial testing
              */
@@ -406,6 +473,8 @@ declare global {
 
             SAVE_TO_LOCAL_STORAGE = 'SAVE_TO_LOCAL_STORAGE',
             LOAD_FROM_LOCAL_STORAGE = 'LOAD_FROM_LOCAL_STORAGE',
+
+            UPDATE_VIEW = 'UPDATE_VIEW'
         }
 
         export const enum RequestStatus {
@@ -447,7 +516,8 @@ declare global {
             DEADLINE = 'DEADLINE',
             UPLOAD = 'UPLOAD',
             DOCUMENT = 'DOCUMENT',
-            ADD_NOTE = 'ADD_NOTE'
+            ADD_NOTE = 'ADD_NOTE',
+            IMPORT_FROM_OUTLOOK = 'IMPORT_FROM_OUTLOOK'
         }
 
         export const enum FormNames {
@@ -473,7 +543,8 @@ declare global {
 
             EDIT_USER_ROLES_FORM= 'EDIT_USER_ROLES_FORM',
             CONTACT_US_FORM='CONTACT_US_FORM',
-            ADD_NOTE='ADD_NOTE'
+            ADD_NOTE='ADD_NOTE',
+            IMPORT_FROM_OUTLOOK='IMPORT_FROM_OUTLOOK'
 
         }
 
@@ -489,6 +560,8 @@ declare global {
             visible: string;
             confirmActionModal?: ConfirmActionModal;
         }
+
+
     }
 
     namespace EL.Actions {
@@ -555,6 +628,15 @@ declare global {
             payload: ShowAddNoteModalPayload;
         }
 
+        type ShowOutlookModalPayload = {
+            type: string,
+            matterId?: string;
+            contactId?: string;
+        };
+
+        interface ShowOutlookModal extends Action {
+            payload: ShowOutlookModalPayload
+        }
 
 
         export interface CreateResourceAction extends Action {
@@ -662,6 +744,16 @@ declare global {
 
         interface ShowDocumentModal extends Action {
             payload: ShowDocumentModalPayload
+        }
+
+        interface UpdateViewPayload {
+            name: string,
+            isLoading?: boolean;
+            isEditing?: boolean;
+        }
+
+        interface UpdateView extends Action {
+            payload: UpdateViewPayload
         }
 
     }

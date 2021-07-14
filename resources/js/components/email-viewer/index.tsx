@@ -16,7 +16,7 @@ interface EmailViewerProps {
 
 
  function formatEmail(data) {
-    return data.name ? data.name + " [" + data.address + "]" : data.email;
+    return data.name ? data.name + " [" + data.address + "]" : data.address;
 }
 
 export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
@@ -29,7 +29,7 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
 
     componentDidMount() {
         this.setState({status: Status.InProgress})
-        axios.get(this.props.src, { responseType: 'application/json' })
+        axios.get(this.props.src, { responseType: 'json' })
             .then(response => {
                 this.setState({status: Status.Complete, data: response.data});
             })
@@ -60,21 +60,31 @@ export default class EmailViewer extends React.PureComponent<EmailViewerProps> {
             if(section.contentType === 'text/html') {
                 return <div key={index}  dangerouslySetInnerHTML={{__html: section.value }} />
             }
-            return <pre key={index}>{ section.value }</pre>
+            if(section.contentType === 'text/plain') {
+                return <pre key={index}>{ section.value }</pre>
+            }
+            if(section.contentType.startsWith('image/')) {
+                return null;
+            }
 
-        } )}
+        } ).filter(Boolean)}
         </dd>
         </dl>
 
     }
 
+    renderMsGraphPreview() {
+        const fileData = this.state.data;
+        return <div  dangerouslySetInnerHTML={{__html: fileData.body.content }} /> ;
+    }
 
     render() {
         const { loading } = this.props;
         return <div>
             { this.state.status === Status.NotStarted || this.state.status === Status.InProgress && loading}
             { this.state.status === Status.Failed && <div className="alert alert-danger">Failed to load document</div> }
-            { this.state.status === Status.Complete &&  this.renderFields() }
+            { this.state.status === Status.Complete && !this.state.data['@odata.etag'] && this.renderFields() }
+            { this.state.status === Status.Complete && this.state.data['@odata.etag'] && this.renderMsGraphPreview() }
         </div>
     }
 }

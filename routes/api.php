@@ -140,13 +140,24 @@ Route::group(['middleware' => ['auth', '2fa']], function() {
     Route::put('matters/{matter}/documents/{file}', 'MatterController@updateDocument');
     Route::delete('matters/{matter}/documents/{file}', 'MatterController@deleteDocument');
 
+
     Route::post('matters/{matter}/notes', 'MatterController@addNote');
+
+    Route::post('matters/{matter}/import-outlook', 'MatterController@addOutlookEmailsToMatter');
+
     Route::get('matter-files', 'MatterController@documents');
 
     Route::post('matters-sync', 'MatterController@syncMatters');
 
     Route::post('render', 'RenderController@render');
 
+});
+
+Route::group(['middleware' => ['auth', '2fa', 'MsGraphAuthenticated']], function() {
+    return [
+        Route::get('outlook-emails', 'MsgraphController@search'),
+        Route::get('outlook-mime', 'MsgraphController@mime')
+    ];
 });
 
 

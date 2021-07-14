@@ -75,6 +75,9 @@ class FileController extends Controller
                 ->header('Content-Type', $res->getHeader('Content-Type'))
                 ->header('Content-Disposition', $disp);
         }
+        if($file->preview) {
+            return $file->preview->data;
+        }
         if(Str::endsWith($file->filename, '.msg')) {
             return $file->getMsgData($user );
         }

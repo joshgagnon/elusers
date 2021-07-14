@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { requestResource } from '../../actions/index'
+import {debounce} from "../utils";
+
 
 interface IInjectorProps {
     fetch: Function;
@@ -13,6 +15,7 @@ interface IHOCFactoryParameters {
     location: (ownProps: any) => string;
     propsName: string;
     cache: boolean;
+    debounce?: number
 }
 
 function HOCFactory({cache, location, propsName}: IHOCFactoryParameters) {
@@ -20,7 +23,12 @@ function HOCFactory({cache, location, propsName}: IHOCFactoryParameters) {
     return function ConnectedInjector(ComposedComponent: any) : any {
         class Injector extends React.PureComponent<IInjectorProps, IInjectorState> {
             state = {} as any;
-
+            constructor(props: IInjectorProps) {
+                super(props);
+                if(props.debounce) {
+                    this.fetch = debounce(this.fetch.bind(this), props.debounce);
+                }
+            }
             fetch(refresh?: boolean){
                 // Set the default of refresh to false
                 refresh = refresh !== undefined ? refresh : false;
@@ -126,3 +134,4 @@ export const ClientRequestTokenHOC = ({cache=false, name} : {cache?: boolean, na
 export const RolesAndPermissionsHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `roles`, propsName: 'rolesAndPermissions' });
 
 export const DeadlinesHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props) => `deadlines`, propsName: 'deadlines' });
+export const OutlookSearchHOC = ({cache=false} : {cache?: boolean} = {}) => HOCFactory({ cache, location: (props: {query: string}) => `outlook-emails?${new URLSearchParams({query: props.query} as any).toString()}`, propsName: 'outlookEmails' });

@@ -40,7 +40,7 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
                     <div className="button-row"><a className="btn btn-primary" target="_blank" href={`/api/files/${this.props.document.id}`}>Download</a></div>
                     <div className="pdf-wrapper">
                        { pdfLike && <PDF url={`/api/files/${this.props.document.id}/preview`} scale={2.5} noPDFMsg='Loading...' /> }
-                       { image && <img style={{maxWidth: '100%'}} src={`/api/files/${this.props.document.id}`} /> }
+                        { image &&<div style={{textAlign: 'center'}}><img style={{maxWidth: '100%'}} src={`/api/files/${this.props.document.id}`} /></div> }
                        { email && <EmailViewer src={`/api/files/${this.props.document.id}/preview`} loading={<Loading />} /> }
                     </div>
                 </Modal.Body>

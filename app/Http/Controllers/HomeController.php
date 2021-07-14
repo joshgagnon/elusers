@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use Dcblogdev\MsGraph\Facades\MsGraph;
 use Illuminate\Http\Request;
 use App\ClientRequest;
 use App\Organisation;
@@ -22,6 +24,7 @@ class HomeController extends Controller
         $loadData['user']['roles'] = $request->user()->roles->pluck('name');
         $loadData['user']['permissions'] = $request->user()->getAllPermissions();
         $loadData['user']['requires2FA'] = $request->user()->organisation->require_2fa && !$request->user()->google2fa_secret && env('OTP_ENABLED', true);
+        $loadData['user']['integrations']['msgraph'] =  MsGraph::isConnected();
         return view('index')->with([
             'loadData' => json_encode($loadData)
         ]);
