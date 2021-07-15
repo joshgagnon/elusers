@@ -47,9 +47,9 @@ class NewClient extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(Lang::getFromJson('New Client Request - '.$this->name))
-            ->line(Lang::getFromJson('Evolution Lawyers has recieved a new client request.'))
-            ->action(Lang::getFromJson('View'), config('app.url').'/client-requests/'.$this->newClientId);
+            ->subject(Lang::get('New Client Request - '.$this->name))
+            ->line(Lang::get('Evolution Lawyers has recieved a new client request.'))
+            ->action(Lang::get('View'), config('app.url').'/client-requests/'.$this->newClientId);
     }
 
     /**

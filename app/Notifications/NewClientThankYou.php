@@ -45,9 +45,9 @@ class NewClientThankYou extends Notification
 
         return (new MailMessage())
             ->greeting('Thank You')
-            ->subject(Lang::getFromJson('New Client Request'))
-            ->line(Lang::getFromJson('Thank you for your submission.'))
-            ->line(Lang::getFromJson('We will review the information and documents provided and get back to you shortly.  We aim to answer all new client requests within one business day.'))
+            ->subject(Lang::get('New Client Request'))
+            ->line(Lang::get('Thank you for your submission.'))
+            ->line(Lang::get('We will review the information and documents provided and get back to you shortly.  We aim to answer all new client requests within one business day.'))
             ->line(new HtmlString('If you wish to add to or follow up your submission, please contact us by email 
             at <a href="mailto:mail@evolutionlawyers.nz">mail@evolutionlawyers.nz</a> or call us on <a href="tel:0800352993">0800 352 993.</a>'))
            ;
