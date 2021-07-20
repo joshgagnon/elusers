@@ -7076,9 +7076,10 @@ react-overlays@^0.7.4:
     prop-types-extra "^1.0.1"
     warning "^3.0.0"
 
-"react-pdf-component@github:joshgagnon/react-pdfjs", "react-pdf-component@github:joshgagnon/react-pdfjs#29ceed5":
+"react-pdf-component@github:joshgagnon/react-pdfjs", "react-pdf-component@github:joshgagnon/react-pdfjs#f332acb":
   version "0.0.2"
-  resolved "https://codeload.github.com/joshgagnon/react-pdfjs/tar.gz/29ceed5781f930d851a9fa955d30d65c5d3c3f4d"
+  uid f332acbe833ab2d81a3b22871aef27cfc6b1c4bb
+  resolved "https://codeload.github.com/joshgagnon/react-pdfjs/tar.gz/f332acbe833ab2d81a3b22871aef27cfc6b1c4bb"
   dependencies:
     pdfjs-dist "2.6"
 
