@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 
-export const DATE_FORMAT = 'D MMM YYYY';
-export const DATE_TIME_FORMAT = 'D MMM YYYY hh:mmA';
+export const DATE_FORMAT = 'D MMMM YYYY';
+export const DATE_TIME_FORMAT = 'D MMMM YYYY hh:mmA';
 
 // Infer the users full name
 export function fullname(user: EL.User | EL.Contact) {
