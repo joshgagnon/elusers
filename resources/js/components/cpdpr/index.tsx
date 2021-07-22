@@ -53,7 +53,7 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps> {
         const { record } = this.props;
         return (
             <tr>
-                <td>{moment(record.date).format('D MMM YYYY')}</td>
+                <td>{moment(record.date).format('D MMMM YYYY')}</td>
                 <td>{record.title}</td>
                 <td>{record.reflection}</td>
                 <td>{minutesToHoursString(record.minutes)}</td>

@@ -40,7 +40,7 @@ function validateCPDPRForm(values: any) {
     if (!values.date) {
         errors.date = 'Required';
     }
-    else if (!moment(values.date, 'D MMM YYYY', true).isValid()) {
+    else if (!moment(values.date, 'D MMMM YYYY', true).isValid()) {
         errors.date = 'Invalid date format';
     }
 

@@ -10,6 +10,7 @@ momentLocalizer(moment);
 
 
 const formats = [
+    "D MMMM YYYY",
     "D MMM YYYY",
     "d/MM/YY",
     "YYYY MM DD"
