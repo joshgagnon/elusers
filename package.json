@@ -39,7 +39,7 @@
     "clean-webpack-plugin": "^0.1.9",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
-    "el-templates": "github:joshgagnon/el-templates#bb0acd7",
+    "el-templates": "github:joshgagnon/el-templates#b56dc33",
     "file-loader": "^1.0.0",
     "font-awesome": "^4.7.0",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
