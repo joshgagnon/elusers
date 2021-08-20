@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClientRequestFile extends Model  implements Auditable
+class ClientRequestFile extends Model q
 {
     protected $fillable = [];
 
