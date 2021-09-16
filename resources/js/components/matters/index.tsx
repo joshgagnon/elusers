@@ -145,7 +145,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
     state = {
         searchValue: '',
         sortColumn: 'createdAt',
-        sortDown: true
+        sortDown: false
     }
 
     sort(column: string) {
