@@ -187,7 +187,7 @@ class File extends Model  implements Auditable
                     break;
                 case 'DEFAULT': $texte.= $tabChaine[$i]->text; //no convert
                     break;
-                default: if (in_array(strtoupper($tabChaine[$i]->charset),upperListEncode())) //found in mb_list_encodings()
+                default: if (in_array(strtoupper($tabChaine[$i]->charset), $this->upperListEncode())) //found in mb_list_encodings()
                             {$texte.= mb_convert_encoding($tabChaine[$i]->text,'UTF-8',$tabChaine[$i]->charset);}
                          else { //try to convert with iconv()
                               $ret = iconv($tabChaine[$i]->charset, "UTF-8", $tabChaine[$i]->text);
