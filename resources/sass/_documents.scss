@@ -27,18 +27,18 @@
             }
             &.selected{
 
-                background-color: lighten($brand-warning, 20%);
-                border: 1px solid $brand-warning;
+                background-color: lighten($warning, 20%);
+                border: 1px solid $warning;
             }
             &.can-drop{
-                background-color: lighten($brand-success, 20%);
-                border: 1px solid $brand-success;
+                background-color: lighten($success, 20%);
+                border: 1px solid $success;
             }
             .icon{
                 margin:0 4px;
                 font-size: 20px;
                 vertical-align:middle;
-                color:$brand-primary;
+                color:$primary;
             }
             .view{
                 font-style: italic;

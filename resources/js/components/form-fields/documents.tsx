@@ -5,7 +5,7 @@ import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { DropTarget } from 'react-dnd';
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';
-import * as DropdownList from 'react-widgets/lib/DropdownList';
+import * as DropdownList from 'react-widgets/DropdownList';
 import Icon from '../icon';
 
 const fileTarget = {

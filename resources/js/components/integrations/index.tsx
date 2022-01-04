@@ -1,11 +1,11 @@
 import * as React from 'react';
-import PanelHOC from "../hoc/panelHOC";
+import CardHOC from "../hoc/CardHOC";
 import {connect} from "react-redux";
 import {Form} from "react-bootstrap";
 
 interface IIntegrationsProps extends EL.IntegrationDetails {};
 
-@PanelHOC<void>('Integrations')
+@CardHOC<void>('Integrations')
 export class Integrations extends React.PureComponent<IIntegrationsProps> {
     render() {
         const { msgraph } = this.props;

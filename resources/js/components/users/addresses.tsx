@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { UserAddressesHOC, UserHOC, UserAddressHOC } from '../hoc/resourceHOCs';
 import mapParamsToProps from '../hoc/mapParamsToProps';
 import { connect } from 'react-redux';
@@ -36,7 +36,7 @@ interface ICreateAddressProps {
 
 @mapParamsToProps(['userId'])
 @UserAddressesHOC()
-@PanelHOC<IViewAddressesProps>('Addresses', props => props.addresses)
+@CardHOC<IViewAddressesProps>('Addresses', props => props.addresses)
 export class ViewAddresses extends React.PureComponent<IViewAddressesProps> {
     render() {
         return (
@@ -71,7 +71,7 @@ class Address extends React.PureComponent<IAddressProps> {
 @(connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>, addressId: number, userId: number) => {
+        submit: (data: React.FormEvent<typeof Form>, addressId: number, userId: number) => {
             const url = `addresses/${addressId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Address updated.'), push(`/users/${userId}/addresses`)],
@@ -84,11 +84,11 @@ class Address extends React.PureComponent<IAddressProps> {
 ) as any)
 @UserHOC()
 @UserAddressHOC()
-@PanelHOC<IEditAddressProps>('Edit Address', props => props.address)
+@CardHOC<IEditAddressProps>('Edit Address', props => props.address)
 export class EditAddress extends React.PureComponent<IEditAddressProps> {
     render() {
         return <AddressForm
-                    onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.addressId, this.props.userId)}
+                    onSubmit={(data: React.FormEvent<typeof Form>) => this.props.submit(data, this.props.addressId, this.props.userId)}
                     initialValues={this.props.address.data} />;
     }
 }
@@ -97,7 +97,7 @@ export class EditAddress extends React.PureComponent<IEditAddressProps> {
 @(connect(
     (state: EL.State) => ({ user: state.user }),
     {
-        submit: (data: React.FormEvent<Form>, userId: number) => {
+        submit: (data: React.FormEvent<typeof Form>, userId: number) => {
             const url = `users/${userId}/addresses`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Address created.'), push(`/users/${userId}/addresses`)],
@@ -108,9 +108,9 @@ export class EditAddress extends React.PureComponent<IEditAddressProps> {
         }
     }
 ) as any)
-@PanelHOC<ICreateAddressProps>('Add Address')
+@CardHOC<ICreateAddressProps>('Add Address')
 export class CreateAddress extends React.PureComponent<ICreateAddressProps> {
     render() {
-        return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.userId)} />;
+        return <AddressForm onSubmit={(data: React.FormEvent<typeof Form>) => this.props.submit(data, this.props.userId)} />;
     }
 }

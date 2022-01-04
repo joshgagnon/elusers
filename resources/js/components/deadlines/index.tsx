@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import Table from '../dataTable';
 import { DeadlinesHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
@@ -27,8 +27,8 @@ interface IDeadlinesProps {
 }
 
 interface DeadlineFormProps{
-    onSubmit: (data: React.FormEvent<Form>) => void;
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
     initialValues?: any;
 }
 
@@ -89,7 +89,7 @@ class DeadlineDetails extends React.PureComponent<{deadline: EL.Deadline}> {
 }
 
 
-@PanelHOC<IDeadlinesProps>('Deadlines', props => props.deadlines)
+@CardHOC<IDeadlinesProps>('Deadlines', props => props.deadlines)
 class Deadlines extends React.PureComponent<IDeadlinesProps> {
     state = { selected: null, _lookup: {} }
 
@@ -128,13 +128,13 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
 
         return <div>
         <br />
-        <Button bsStyle="primary" className="pull-right" onClick={() => this.props.showCreate({...this.props.initialValues, date: formatDate(this.state.selected)})}>Add Deadline</Button>
+        <Button variant="primary" className="pull-right" onClick={() => this.props.showCreate({...this.props.initialValues, date: formatDate(this.state.selected)})}>Add Deadline</Button>
         <h3 className="deadline-date-title">{ formatDate(this.state.selected) }</h3>
         { matches.map((m, i) => {
             return <DeadlineDetails key={i}  deadline={m}>
                 { hasPermission(this.props.user, 'edit deadlines') &&  <div className="deadline-controls">
-                    { !m.resolvedAt && <Button bsSize="sm" bsStyle="success" onClick={() => this.props.complete(m) }><Icon iconName="check" /> Complete</Button> }
-                   { !m.resolvedAt && <Button bsSize="sm" bsStyle="warning" onClick={() => this.props.showUpdate(m) }><Icon iconName="pencil" /> Edit</Button> }
+                    { !m.resolvedAt && <Button bsSize="sm" variant="success" onClick={() => this.props.complete(m) }><Icon iconName="check" /> Complete</Button> }
+                   { !m.resolvedAt && <Button bsSize="sm" variant="warning" onClick={() => this.props.showUpdate(m) }><Icon iconName="pencil" /> Edit</Button> }
                 </div> }
             </DeadlineDetails>;
         })}

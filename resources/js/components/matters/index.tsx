@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import PanelHOC from '../hoc/panelHOC';
-import Panel from 'components/panel';
+import CardHOC from '../hoc/CardHOC';
+import Card from 'components/Card';
 import { MattersHOC, MatterHOC } from '../hoc/resourceHOCs';
 import { MatterDeadlines } from 'components/deadlines';
 import * as moment from 'moment';
@@ -16,7 +16,7 @@ import {
     showAddNoteModal,
     showOutlookModal
 } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, Row, FormGroup, ControlLabel, Alert, FormControl, Table } from 'react-bootstrap';
+import { Form, ButtonToolbar, Button, Col, Row, FormGroup, FormLabel, Alert, FormControl, Table } from 'react-bootstrap';
 
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -161,10 +161,10 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
         const data = sortData(filterData(this.state.searchValue, this.props.matters), this.state.sortColumn, this.state.sortDown);
         return (
             <div>
-                {  hasPermission(this.props.user, 'create matter')  && <ButtonToolbar>
-                    <Link to="/matters/create" className="btn btn-primary"><Icon iconName="plus" />Create Matter</Link>
-                    <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Matter List</Button>
-                </ButtonToolbar> }
+                {  hasPermission(this.props.user, 'create matter')  && <React.Fragment>
+                    <Link to="/matters/create" className="btn btn-primary" ><Icon iconName="plus" />Create Matter</Link>
+                    <Button variant="secondary" onClick={this.props.showUploadModal} ><Icon iconName="plus" />Upload Matter List</Button>
+                </React.Fragment> }
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
                 </div>
@@ -235,7 +235,7 @@ class MattersTable extends React.PureComponent<MattersViewProps & {user: EL.User
 @(connect((state: EL.State) => ({user: state.user}), {
     showUploadModal: () => showUploadModal({uploadType: 'matters'})
 }) as any)
-@PanelHOC<MattersProps & {user: EL.User}>('Matters', props => [props.matters])
+@CardHOC<MattersProps & {user: EL.User}>('Matters', props => [props.matters])
 export class ListMatters extends React.PureComponent<MattersProps & {user: EL.User} > {
 
     render() {
@@ -255,7 +255,7 @@ interface MatterProps {
     msgraph: boolean;
 }
 
-@PanelHOC<MatterProps>('Matter', props => props.matter)
+@CardHOC<MatterProps>('Matter', props => props.matter)
 class MatterDetails extends React.PureComponent<MatterProps> {
     render() {
         const matter = this.props.matter.data;
@@ -263,9 +263,9 @@ class MatterDetails extends React.PureComponent<MatterProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    { this.props.canUpdate  && <Button bsStyle="info" bsSize="sm" onClick={() => this.props.addNote(this.props.matterId)}><Icon iconName="sticky-note" />Add Note</Button> }
-                    { this.props.canUpdate  && <Button bsSize="small" bsStyle="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button> }
-                </ButtonToolbar>
+                    { this.props.canUpdate  && <Button variant="info" bsSize="sm" onClick={() => this.props.addNote(this.props.matterId)}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { this.props.canUpdate  && <Button bsSize="small" variant="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button> }
+                </React.Fragment>
 
                 <h3>{ matter.matterNumber }</h3>
                 <h3>{ matter.matterName }</h3>
@@ -390,19 +390,19 @@ export class ViewMatter extends React.PureComponent<MatterProps> {
 
 
 interface MatterFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
     cancelLocation: string;
     form: string;
 }
 
 interface CreateMatterProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
 }
 
 interface EditMatterProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
 }
 
 
@@ -429,7 +429,7 @@ const MatterClients = ({ fields, meta: { error, submitFailed } }) => (
         </Button>
       </div>
 
-      { error && <Alert  bsStyle="danger"><p className="text-center">{ error }</p> </Alert> }
+      { error && <Alert  variant="danger"><p className="text-center">{ error }</p> </Alert> }
 
   </div>
 )
@@ -438,7 +438,7 @@ export const Notes = ({ fields, meta: { error, submitFailed } }) => (
   <div>
     { fields.map((note, index) => (
         <FormGroup key={index}>
-            <Col componentClass={ControlLabel} md={3}>
+            <Col as={FormLabel} md={3}>
                 Note
             </Col>
             <Col md={8}>
@@ -460,7 +460,7 @@ export const Notes = ({ fields, meta: { error, submitFailed } }) => (
         Add Note
         </Button>
       </div>
-      { error && <Alert  bsStyle="danger"><p className="text-center">{ error } </p></Alert> }
+      { error && <Alert  variant="danger"><p className="text-center">{ error } </p></Alert> }
   </div>
 )
 
@@ -520,10 +520,10 @@ class MatterForm extends React.PureComponent<MatterFormProps> {
                 <hr />
 
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Submit</Button>
                     <Link className="btn btn-default pull-right" to={`${this.props.cancelLocation}`}>Cancel</Link>
-                </ButtonToolbar>
+                </React.Fragment>
             </Form>
         );
     }
@@ -561,7 +561,7 @@ const EditMatterForm = (reduxForm({
 @(connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const url = 'matters';
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Matter created.'), (response) => push(`/matters/${response.id}`)],
@@ -572,7 +572,7 @@ const EditMatterForm = (reduxForm({
         }
     }
 ) as any)
-@PanelHOC<CreateMatterProps>('Create Matter')
+@CardHOC<CreateMatterProps>('Create Matter')
 export class CreateMatter extends React.PureComponent<CreateMatterProps> {
     render() {
         return <CreateMatterForm cancelLocation={`/matters`} initialValues={{clients: [{}]}} onSubmit={this.props.submit} saveButtonText="Create Matter" />
@@ -580,7 +580,7 @@ export class CreateMatter extends React.PureComponent<CreateMatterProps> {
 }
 
 interface UnwrappedEditMatterProps {
-    submit?: (matterId: string, data: React.FormEvent<Form>) => void;
+    submit?: (matterId: string, data: React.FormEvent<typeof Form>) => void;
     matterId: string;
     matter?: EL.Resource<EL.Matter>;
 }
@@ -588,7 +588,7 @@ interface UnwrappedEditMatterProps {
 @(connect(
     undefined,
     {
-        submit: (matterId: number, data: React.FormEvent<Form>) => {
+        submit: (matterId: number, data: React.FormEvent<typeof Form>) => {
             const url = `matters/${matterId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Matter updated.'), (response) => push(`/matters/${matterId}`)],
@@ -599,7 +599,7 @@ interface UnwrappedEditMatterProps {
         }
     }
 ) as any)
-@PanelHOC<UnwrappedEditMatterProps>('Edit Matter', props => props.matter)
+@CardHOC<UnwrappedEditMatterProps>('Edit Matter', props => props.matter)
 class UnwrappedEditMatter extends React.PureComponent<UnwrappedEditMatterProps> {
     render() {
         return <EditMatterForm cancelLocation={`/matters/${this.props.matterId}`} initialValues={this.props.matter.data} onSubmit={data => this.props.submit(this.props.matterId, data)} saveButtonText="Save Matter" />

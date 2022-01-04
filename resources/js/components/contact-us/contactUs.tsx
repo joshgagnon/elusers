@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ContactsHOC, ContactHOC, ClientRequestTokenHOC } from '../hoc/resourceHOCs';
 import WaitForResource from '../hoc/waitForResource';
 import Table from '../dataTable';
-import PanelHOC from '../hoc/panelHOC';
-import { Form, ButtonToolbar, Button, ProgressBar, Col, FormGroup, ControlLabel, Alert } from 'react-bootstrap';
+import CardHOC from '../hoc/CardHOC';
+import { Form, ButtonToolbar, Button, ProgressBar, Col, FormGroup, FormLabel, Alert } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
 import { reduxForm, formValueSelector, InjectedFormProps, FormSection, FieldArray, getFormValues } from 'redux-form';
 import { validate } from '../utils/validation';
@@ -27,7 +27,7 @@ class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
             { fields.map((person, index) => (
               <div key={index}>
                 <FormGroup className="no-margin">
-                    <Col componentClass={ControlLabel} md={3}>
+                    <Col as={FormLabel} md={3}>
                          Other Individual #{index+1}
                     </Col>
                     <Col md={8}>
@@ -51,7 +51,7 @@ class OtherIndividuals extends React.PureComponent<{fields: any, meta: any }> {
                   <Button onClick={() => fields.push({})}>
                 Add Another Individual
                 </Button>
-            { this.props.meta.error && <Alert bsStyle="danger">
+            { this.props.meta.error && <Alert variant="danger">
                 <p className="text-center">
                 { this.props.meta.error }
                 </p>
@@ -70,8 +70,8 @@ const FIND_OUT_OPTIONS = [
 
 
 interface ContactFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
     token: string;
     values: () => any;
@@ -276,7 +276,7 @@ class ContactPage4 extends React.PureComponent<InjectedFormProps & { previousPag
 @(connect((state, ownProps: any) => ({
     values: () => getFormValues(ownProps.form)(state),
 }), {
-    save: (token: string, data: React.FormEvent<Form>) => {
+    save: (token: string, data: React.FormEvent<typeof Form>) => {
         const url = `client-requests/${token}`;
         const meta: EL.Actions.Meta = {
             onSuccess: [createNotification('Progress saved, you can bookmark this page to return later.')],
@@ -296,10 +296,10 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
     ];
     controls() {
         return <div className="button-row">
-            <Button bsStyle="info" onClick={this.save} >Save Progress</Button>
+            <Button variant="info" onClick={this.save} >Save Progress</Button>
             { this.state.page > 0 && <Button onClick={() => this.setState({page: this.state.page-1})}>Back</Button>}
-            { this.state.page < this.pages.length - 1  && <Button  bsStyle="primary" type="submit">Next</Button>}
-            { this.state.page == this.pages.length - 1 && <Button bsStyle="primary" type="submit">Submit</Button> }
+            { this.state.page < this.pages.length - 1  && <Button  variant="primary" type="submit">Next</Button>}
+            { this.state.page == this.pages.length - 1 && <Button variant="primary" type="submit">Submit</Button> }
         </div>
     }
 
@@ -315,7 +315,7 @@ class ContactUsForm extends React.PureComponent<ContactFormProps, {page: number}
         const Page =  this.pages[this.state.page] as any;
         const onSubmit = this.state.page == this.pages.length - 1 ? (values) => this.submit(values) : () => this.setState({page: this.state.page+1});
         return <div>
-            <ProgressBar striped bsStyle="success"
+            <ProgressBar striped variant="success"
                 label={` Step ${this.state.page+1} of ${this.pages.length} `}
                 now={(this.state.page+1)/(this.pages.length) * 100}
             />
@@ -399,7 +399,7 @@ const CONTACT_COMPLETE_URL = 'https://evolutionlawyers.nz/new-client-complete';
     }, dispatch)
 })) as any)
 @ClientRequestTokenHOC({name: 'clientRequest', cache: true})
-@PanelHOC<ExternalContactProps>('New Client Form', props => props.clientRequest, {
+@CardHOC<ExternalContactProps>('New Client Form', props => props.clientRequest, {
     errorComponent: () => <div>Saved data could not be found.  Click <a href="/contact-us">here</a> to start a new enquiry.</div>
 })
 export class ExternalContact extends React.PureComponent<{clientRequest: EL.Resource<EL.ClientRequest>, token: string, submit: (any) => void}> {
@@ -421,7 +421,7 @@ export class ExternalContact extends React.PureComponent<{clientRequest: EL.Reso
 
 
 
-@PanelHOC('New Client Form')
+@CardHOC('New Client Form')
 export class ExternalContactComplete extends React.PureComponent {
     render() {
         return <div>

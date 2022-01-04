@@ -7,6 +7,9 @@ import Loading from '../loading';
 import { Field as ReduxField } from 'redux-form';
 import DocumentComponent from '../form-fields/documents';
 import { formatDate } from '../utils'
+
+
+
 @OrganisationDocumentsHOC()
 class FileList extends React.PureComponent<{values: any, documents: EL.Resource<EL.Document[]>}> {
     render() {

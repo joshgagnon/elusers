@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ContactsHOC, ContactHOC, TokenHOC } from '../hoc/resourceHOCs';
 import WaitForResource from '../hoc/waitForResource';
 import Table from '../dataTable';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { Form, ButtonToolbar, Button, ProgressBar } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField } from '../form-fields';
 import { reduxForm, formValueSelector, InjectedFormProps, FormSection } from 'redux-form';
@@ -18,8 +18,8 @@ import { AddressFields, validationRules as addressValidationRules } from '../add
 
 
 interface ContactFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
 }
 
@@ -192,8 +192,8 @@ class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: num
     controls() {
         return <div className="button-row">
             { this.state.page > 0 && <Button onClick={() => this.setState({page: this.state.page-1})}>Back</Button>}
-            { this.state.page < this.pages.length - 1  && <Button  bsStyle="primary" type="submit">Next</Button>}
-            { this.state.page == this.pages.length - 1 && <Button bsStyle="primary" type="submit">Submit</Button> }
+            { this.state.page < this.pages.length - 1  && <Button  variant="primary" type="submit">Next</Button>}
+            { this.state.page == this.pages.length - 1 && <Button variant="primary" type="submit">Submit</Button> }
         </div>
     }
 
@@ -205,7 +205,7 @@ class ContactAMLCFTForm extends React.PureComponent<ContactFormProps, {page: num
         const Page =  this.pages[this.state.page] as any;
         const onSubmit = this.state.page == this.pages.length - 1 ? (values) => this.submit(values) : () => this.setState({page: this.state.page+1});
         return <div>
-            <ProgressBar striped bsStyle="success"
+            <ProgressBar striped variant="success"
                 label={` Step ${this.state.page+1} of ${this.pages.length} `}
                 now={(this.state.page+1)/(this.pages.length) * 100}
             />
@@ -240,7 +240,7 @@ const EditFullAMLCFTForm= (reduxForm({
 })(FullAMLCFTForm as any) as any);
 
 interface UnwrappedExternalContactAMLCFTProps {
-    submit?: (token: string, data: React.FormEvent<Form>) => void;
+    submit?: (token: string, data: React.FormEvent<typeof Form>) => void;
     contact?: EL.Resource<EL.Contact & {address: any}>;
     token?: string;
 }
@@ -249,7 +249,7 @@ interface UnwrappedExternalContactAMLCFTProps {
 @(connect(
           undefined,
     {
-        submit: (token: string, data: React.FormEvent<Form>) => {
+        submit: (token: string, data: React.FormEvent<typeof Form>) => {
            const url = `access-token/${token}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Information updated.'), (response) => push('/amlcft/complete')],
@@ -261,7 +261,7 @@ interface UnwrappedExternalContactAMLCFTProps {
     }
 ) as any)
 @TokenHOC({name: 'contact'})
-@PanelHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact, {errorComponent: () => <div>Sorry, this link has expired</div>})
+@CardHOC<UnwrappedExternalContactAMLCFTProps>('AML/CFT Due Diligence Form', props => props.contact, {errorComponent: () => <div>Sorry, this link has expired</div>})
 class UnwrappedExternalContactAMLCFT extends React.PureComponent<UnwrappedExternalContactAMLCFTProps> {
     render() {
         let values = this.props.contact.data;
@@ -285,7 +285,7 @@ export class ExternalAMLCFT extends React.PureComponent<{ params: { token: strin
 }
 
 
-@PanelHOC('AML/CFT Due Diligence Form')
+@CardHOC('AML/CFT Due Diligence Form')
 export class ExternalAMLCFTComplete extends React.PureComponent {
     render() {
         return <div>
@@ -295,7 +295,7 @@ export class ExternalAMLCFTComplete extends React.PureComponent {
 }
 
 interface UnwrappedEditContactProps {
-    submit?: (contactId: number, data: React.FormEvent<Form>) => void;
+    submit?: (contactId: number, data: React.FormEvent<typeof Form>) => void;
     contactId: number;
     contact?: EL.Resource<EL.Contact>;
 }
@@ -306,7 +306,7 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
     render() {
         return <EditFullAMLCFTForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, this.props.token, this.props.originalContact, data)}>
            <div className="button-row">
-            <Button bsStyle="primary" type="submit">Merge Information into Contact</Button>
+            <Button variant="primary" type="submit">Merge Information into Contact</Button>
             </div>
         </EditFullAMLCFTForm>
     }
@@ -346,7 +346,7 @@ class TokenContactAMLCFTForm extends React.PureComponent<any> {
     }
 ) as any)
 @ContactHOC()
-@PanelHOC<UnwrappedEditContactProps>('Merge Information', props => props.contact)
+@CardHOC<UnwrappedEditContactProps>('Merge Information', props => props.contact)
 class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
     render() {
       if(!this.props.contact.data.accessTokens || !this.props.contact.data.accessTokens.length) {

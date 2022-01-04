@@ -85,8 +85,8 @@ interface InputFieldProps extends FieldProps {
 
 
 interface IAddressFormProps {
-    handleSubmit?: (event: React.FormEvent<Form>) => void;
-    onSubmit?: (event: React.FormEvent<Form>) => void;
+    handleSubmit?: (event: React.FormEvent<typeof Form>) => void;
+    onSubmit?: (event: React.FormEvent<typeof Form>) => void;
     initialValues?: any
 }
 
@@ -126,9 +126,9 @@ export default class AddressForm extends React.PureComponent<IAddressFormProps> 
                 <InputField name="addressName" label="Address Name" type="text" required />
                 <AddressFields {...this.props} />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Save Address</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Save Address</Button>
+                </React.Fragment>
             </Form>
         );
     }

@@ -18,12 +18,12 @@ export default class InputFieldComponent extends React.PureComponent<IInputField
         }
     }
     render() {
-        const input = <FormControl {...this.props.input} componentClass="input" type={this.props.type} placeholder={this.props.placeholder} readOnly={this.props.readOnly}/>;
+        const input = <FormControl {...this.props.input}  type={this.props.type} placeholder={this.props.placeholder} readOnly={this.props.readOnly}/>;
         const control = this.props.caseButton ? <InputGroup>
             { input }
-            <InputGroup.Button>
+
             <Button onClick={this.namecase}>A<i>a</i></Button>
-          </InputGroup.Button>
+
         </InputGroup> : input;
         return (
             <BaseFieldComponent {...this.props}>

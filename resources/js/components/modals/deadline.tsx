@@ -15,7 +15,7 @@ interface CreateDeadlineProps {
     date?: string;
     matterId?: string;
     deadline?: EL.Deadline;
-    submit: (form: string, name: string, data: React.FormEvent<Form>, id?: number) => void;
+    submit: (form: string, name: string, data: React.FormEvent<typeof Form>, id?: number) => void;
     deleteDeadline: (deadlineId: number) => void;
     createDeadline: () => void;
 }
@@ -35,13 +35,12 @@ class CreateDeadline extends React.PureComponent<CreateDeadlineProps> {
                 </Modal.Body>
 
                  <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
+
                         <Button onClick={() => {this.props.closeModal()}}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.props.createDeadline}>{ isNew ? 'Create' : 'Update' }</Button>
-                    </ButtonToolbar>
-                    <ButtonToolbar>
-                        { !isNew && <Button bsStyle="danger" onClick={() => this.props.deleteDeadline(this.props.deadline.id)}>Delete</Button> }
-                    </ButtonToolbar>
+                        <Button variant="primary" onClick={this.props.createDeadline}>{ isNew ? 'Create' : 'Update' }</Button>
+
+                        { !isNew && <Button variant="danger" onClick={() => this.props.deleteDeadline(this.props.deadline.id)}>Delete</Button> }
+
                 </Modal.Footer>
             </Modal>
         );
@@ -66,7 +65,7 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
         });
     },
 
-    submit: (form: string, name: string, data: React.FormEvent<Form>, id?: number) => {
+    submit: (form: string, name: string, data: React.FormEvent<typeof Form>, id?: number) => {
         if(!id) {
             const url = 'deadlines';
             const meta: EL.Actions.Meta = {

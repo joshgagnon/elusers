@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import Panel from 'components/panel';
+import Card from 'components/Card';
 import {
     confirmAction,
     createNotification,
@@ -10,7 +10,7 @@ import {
     uploadDocument,
     uploadDocumentTree
 } from '../../actions';
-import {Button, ControlLabel, FormControl, FormGroup, InputGroup} from 'react-bootstrap';
+import {Button, FormLabel, FormControl, FormGroup, InputGroup} from 'react-bootstrap';
 import Icon from '../icon';
 import {copyToClipboard, debounce, formatDateTime, name} from '../utils';
 import {UsersHOC} from 'components/hoc/resourceHOCs';
@@ -55,8 +55,8 @@ class DocumentNotes extends React.PureComponent<any> {
         const note = (this.props.file.notes && this.props.file.notes[0] && this.props.file.notes[0].note) || undefined;
         return <React.Fragment>
             <FormGroup>
-                <ControlLabel>Note:</ControlLabel>
-                <FormControl componentClass="textarea"
+                <FormLabel>Note:</FormLabel>
+                <FormControl as="textarea"
                              defaultValue={note}
                              placeholder={'Add a note here'}
                              rows={3}
@@ -133,7 +133,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
         return <React.Fragment>
             <p/>
             <FormGroup>
-                <ControlLabel>Restrict Access to Users with Permission:</ControlLabel>
+                <FormLabel>Restrict Access to Users with Permission:</FormLabel>
                 {this.permissions.map(permission => {
                     const hasPermission = (this.props.file.permissions || []).includes(permission);
                     return <div className="checkbox permission-check" key={permission}>
@@ -177,7 +177,7 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                             <FormControl autoFocus type="text" placeholder={file.filename}
                                          value={this.state.renameValue} onChange={this.onChange}/>
                             <InputGroup.Button onClick={this.submitRename}>
-                                <Button bsStyle="primary" onClick={this.submitRename}>Save</Button>
+                                <Button variant="primary" onClick={this.submitRename}>Save</Button>
                             </InputGroup.Button>
                         </InputGroup>
                     </FormGroup>}
@@ -201,8 +201,8 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                             {!file.directory && <Button onClick={() => viewDocument(file)}>View</Button>}
                             {!file.directory &&
                             <a className="btn btn-primary " target="_blank" href={`/api/files/${file.id}`}>Download</a>}
-                            {!file.directory && <Button bsStyle="success" onClick={this.copyLink}>Copy Link</Button>}
-                            {canUpdate && <Button bsStyle="danger" onClick={() => deleteFile(file.id)}>Delete</Button>}
+                            {!file.directory && <Button variant="success" onClick={this.copyLink}>Copy Link</Button>}
+                            {canUpdate && <Button variant="danger" onClick={() => deleteFile(file.id)}>Delete</Button>}
                             <Button onClick={() => unselect(null)}>Close</Button>
                         </div>
                     </div>
@@ -583,14 +583,14 @@ class RenderFile extends React.PureComponent<any> {
 
 const SearchForm = (props) => {
     return <div>
-        <h3 className="panel-title">{props.title}</h3>
+        <h3 className="card-title">{props.title}</h3>
         <form className="form-inline pull-right">
             <FormGroup><FormControl type="text" onChange={props.onSearchChange} placeholder="Search"
                                     value={props.filter}/></FormGroup>
             <div className="btn-group">
                 <Button onClick={props.expandAll}>Expand All</Button>
                 <Button onClick={props.collapseAll}>Collapse All</Button>
-                { props.importFromOutlook && <Button bsStyle={'info'} onClick={props.importFromOutlook}>Import From Outlook</Button> }
+                { props.importFromOutlook && <Button variant={'info'} onClick={props.importFromOutlook}>Import From Outlook</Button> }
             </div>
         </form>
     </div>
@@ -739,12 +739,12 @@ class FileTree extends React.PureComponent<any> {
 
         const selectedFile = this.props.flatFiles.find(file => file.id === this.state.selected);
         return <div onClick={() => this.select(null)}>
-            <Panel formattedTitle={
+            <Card formattedTitle={
                 <SearchForm
                         importFromOutlook={this.props.importFromOutlook}
                         title={this.props.title} key="search" onSearchChange={this.onSearchChange}
                         filter={this.state.filter} expandAll={this.expandAll} collapseAll={this.collapseAll}/>}
-                   className="document-panel">
+                   className="document-Card">
                 <div className="file-tree">
                     {tree.length === 0 && <span>No files found.</span>}
                     {limited && <span>Results limited to first {FileTree.MAX_FILTERED}</span>}
@@ -754,7 +754,7 @@ class FileTree extends React.PureComponent<any> {
                 {this.props.loading && <LoadingSmall/>}
                 {this.props.canUpdate && <DocumentsForm documents={{onChange: (files) => this.upload(files)}}/>}
                 {this.state.selected && selectedFile && <DocumentSideBar {...getProps(selectedFile, null)} />}
-            </Panel>
+            </Card>
         </div>
     }
 

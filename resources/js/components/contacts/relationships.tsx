@@ -4,7 +4,7 @@ import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
 
 import Icon from '../icon';
 import { ContactSelector } from './contactSelector';
-import { FormControl, ControlLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
+import { FormControl, FormLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
 import { DropdownListField  } from '../form-fields';
 
 
@@ -57,7 +57,7 @@ class RelationshipSelector extends React.PureComponent<any> {
               <div key={index}>
 
                 <FormGroup>
-                    <Col componentClass={ControlLabel} md={3}>
+                    <Col as={FormLabel} md={3}>
                         Relationship
                     </Col>
                     <Col md={4}>
@@ -79,7 +79,7 @@ class RelationshipSelector extends React.PureComponent<any> {
                   <Button onClick={() => fields.push({})}>
                 Add Relationship
                 </Button>
-            { this.props.meta.error && <Alert bsStyle="danger">
+            { this.props.meta.error && <Alert variant="danger">
                 <p className="text-center">
                 { this.props.meta.error }
                 </p>
@@ -106,7 +106,7 @@ class AgentSelector extends React.PureComponent<any> {
               <div key={index}>
 
                 <FormGroup>
-                    <Col componentClass={ControlLabel} md={3}>
+                    <Col as={FormLabel} md={3}>
                         Agent
                     </Col>
                     <Col md={8}>
@@ -125,7 +125,7 @@ class AgentSelector extends React.PureComponent<any> {
                   <Button onClick={() => fields.push({})}>
                 Add Agent
                 </Button>
-            { this.props.meta.error && <Alert bsStyle="danger">
+            { this.props.meta.error && <Alert variant="danger">
                 <p className="text-center">
                 { this.props.meta.error }
                 </p>

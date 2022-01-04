@@ -2,7 +2,7 @@ import * as React from 'react';
 import Table from '../dataTable';
 import { UsersHOC } from '../hoc/resourceHOCs';
 import { fullname } from '../utils';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { Link } from 'react-router';
 import Icon from '../icon';
 import { ButtonToolbar } from 'react-bootstrap';
@@ -14,14 +14,14 @@ interface IUsersTableProps {
 
 const HEADINGS = ['Full Name', 'Preferred Name', 'Email', 'Roles', 'Actions'];
 
-@PanelHOC<IUsersTableProps>('Users', props => props.users)
+@CardHOC<IUsersTableProps>('Users', props => props.users)
 class UsersTable extends React.PureComponent<IUsersTableProps> {
     render() {
         return (
             <div>
-                <ButtonToolbar>
+                <React.Fragment>
                     <Link to="/my-profile/organisation/users/create" className="btn btn-primary"><Icon iconName="plus" />Create User</Link>
-                </ButtonToolbar>
+                </React.Fragment>
 
                 <Table headings={HEADINGS}>
                     { this.props.users.data.map(user => (

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Row, Col, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
-import Panel from '../panel';
+import Card from '../Card';
 import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 import { hasPermission } from '../utils/permissions';
@@ -37,8 +37,8 @@ class UserNavigation extends React.Component<IUserNavigationProps & {user?: EL.U
         const userId = this.props.userId;
 
         return (
-            <Panel title="User">
-                <ListGroup fill>
+            <Card title="User">
+                <ListGroup >
                     <IndexLinkContainer to={`/my-profile/organisation/users/${userId}`}>
                         <ListGroupItem>Basic Details</ListGroupItem>
                     </IndexLinkContainer>
@@ -56,7 +56,7 @@ class UserNavigation extends React.Component<IUserNavigationProps & {user?: EL.U
                     </LinkContainer> }
 
                 </ListGroup>
-            </Panel>
+            </Card>
         );
     }
 }

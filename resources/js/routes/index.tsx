@@ -36,7 +36,7 @@ import EditOrganisation from '../components/my-profile/organisation';
 import Addresses from '../components/my-profile/addresses';
 import CreateAddress from '../components/my-profile/createAddress';
 import EditAddress from '../components/my-profile/editAddress';
-import Templates from '../components/templates';
+//import Templates from '../components/templates';
 import Documents from '../components/documents';
 import Integrations from '../components/integrations';
 import Roles, { EditRole, CreateRole, UserRoles } from '../components/permissions/roles';
@@ -125,7 +125,7 @@ const routes = (routeComponent: RouteComponent) => (
 
         </Route>
 
-        <Route path="templates" component={ Templates } />
+        {/* <Route path="templates" component={ Templates } /> */}
 
         <Route path="amlcft/complete" component={ ExternalAMLCFTComplete } />
         <Route path="amlcft/:token" component={ ExternalAMLCFT } />

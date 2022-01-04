@@ -1,26 +1,26 @@
 import * as React from 'react';
 import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { reduxForm } from 'redux-form';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { connect, Dispatch } from 'react-redux';
 import { validate } from '../utils/validation';
 import { updateResource, createNotification } from '../../actions';
 import { BasicDetailsFormFields, basicDetailsValidationRules } from '../users/formFields';
 
 interface IBasicDetailsProps {
-    submit: (event: React.FormEvent<Form>, user: EL.User) => void;
+    submit: (event: React.FormEvent<typeof Form>, user: EL.User) => void;
     user: EL.User;
 }
 
 interface IBasicDetailsFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     initialValues: EL.User;
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
-        submit: (event: React.FormEvent<Form>, user: EL.User) => {
+        submit: (event: React.FormEvent<typeof Form>, user: EL.User) => {
             const url = `users/${user.id}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Basic details updated.')],
@@ -33,11 +33,11 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 @(connect((state: EL.State) => ({ user: state.user }), mapDispatchToProps) as any)
-@PanelHOC<IBasicDetailsProps>('Basic Details')
+@CardHOC<IBasicDetailsProps>('Basic Details')
 export default class BasicDetails extends React.PureComponent<IBasicDetailsProps> {
     render() {
         return (
-            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.user)} initialValues={this.props.user} />
+            <BasicDetailsForm onSubmit={(event: React.FormEvent<typeof Form>) => this.props.submit(event, this.props.user)} initialValues={this.props.user} />
         );
     }
 }
@@ -49,9 +49,9 @@ class BasicDetailsForm extends React.PureComponent<IBasicDetailsFormProps> {
             <Form onSubmit={ this.props.handleSubmit } horizontal>
                 <BasicDetailsFormFields />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Save</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Save</Button>
+                </React.Fragment>
             </Form>
         );
     }

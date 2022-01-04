@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { reduxForm } from 'redux-form';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { connect, Dispatch } from 'react-redux';
 import { validate } from '../utils/validation';
 import { updateResource, createNotification } from '../../actions';
@@ -23,7 +23,7 @@ interface IViewBasicDetailsProps {
 interface IEditBasicDetailsProps {
     user?: EL.Resource<EL.User>;
     userId: number
-    submit?: (event: React.FormEvent<Form>, userId: number) => void;
+    submit?: (event: React.FormEvent<typeof Form>, userId: number) => void;
 }
 
 interface IViewBasicDetailsContentsProps {
@@ -32,8 +32,8 @@ interface IViewBasicDetailsContentsProps {
 }
 
 interface IEditBasicDetailsFormProps {
-    onSubmit?: (event: React.FormEvent<Form>) => void;
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    onSubmit?: (event: React.FormEvent<typeof Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
     initialValues: any
 }
 
@@ -46,7 +46,7 @@ export class ViewBasicDetails extends React.PureComponent<IViewBasicDetailsProps
 }
 
 @UserHOC()
-@PanelHOC<IViewBasicDetailsContentsProps>('Basic Details', props => props.user)
+@CardHOC<IViewBasicDetailsContentsProps>('Basic Details', props => props.user)
 export class ViewBasicDetailsContents extends React.PureComponent<IViewBasicDetailsContentsProps> {
     render() {
         const user = this.props.user.data;
@@ -83,7 +83,7 @@ export class EditBasicDetails extends React.PureComponent<{params: {userId: numb
 @(connect(
     undefined,
     {
-        submit: (event: React.FormEvent<Form>, userId: number) => {
+        submit: (event: React.FormEvent<typeof Form>, userId: number) => {
             const url = `users/${userId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Basic details updated.'), push(`/users/${userId}`)],
@@ -95,11 +95,11 @@ export class EditBasicDetails extends React.PureComponent<{params: {userId: numb
     }
 ) as any)
 @UserHOC()
-@PanelHOC<IEditBasicDetailsProps>('Basic Details', props => props.user)
+@CardHOC<IEditBasicDetailsProps>('Basic Details', props => props.user)
 class EditBasicDetailsContents extends React.PureComponent<IEditBasicDetailsProps> {
     render() {
         return (
-            <BasicDetailsForm onSubmit={(event: React.FormEvent<Form>) => this.props.submit(event, this.props.userId)} initialValues={this.props.user.data} />
+            <BasicDetailsForm onSubmit={(event: React.FormEvent<typeof Form>) => this.props.submit(event, this.props.userId)} initialValues={this.props.user.data} />
         );
     }
 }
@@ -111,9 +111,9 @@ class BasicDetailsForm extends React.PureComponent<IEditBasicDetailsFormProps> {
             <Form onSubmit={ this.props.handleSubmit } horizontal>
                 <BasicDetailsFormFields />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Save</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Save</Button>
+                </React.Fragment>
             </Form>
         );
     }

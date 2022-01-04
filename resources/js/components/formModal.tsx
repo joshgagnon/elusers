@@ -24,7 +24,7 @@ class FormModal extends React.PureComponent<IFormModalProps> {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button bsStyle="primary" onClick={() => this.props.dispatch(submit(this.props.formName))}>Save</Button>
+                    <Button variant="primary" onClick={() => this.props.dispatch(submit(this.props.formName))}>Save</Button>
                     <Button onClick={this.props.hide}>Close</Button>
                 </Modal.Footer>
             </Modal>

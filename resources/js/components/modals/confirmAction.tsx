@@ -21,10 +21,10 @@ class ConfirmAction extends React.PureComponent<ConfirmActionProps> {
                 </Modal.Body>
 
                  <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
-                        <Button onClick={this.props.closeModal}>{this.props.declineButtonText}</Button>
-                        <Button onClick={() => {this.props.accept(); this.props.closeModal();}} bsStyle="primary">{this.props.acceptButtonText}</Button>
-                    </ButtonToolbar>
+
+                        <Button onClick={this.props.closeModal} variant="secondary">{this.props.declineButtonText}</Button>
+                        <Button onClick={() => {this.props.accept(); this.props.closeModal();}} variant="primary">{this.props.acceptButtonText}</Button>
+
                 </Modal.Footer>
             </Modal>
         );

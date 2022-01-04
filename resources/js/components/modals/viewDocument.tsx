@@ -46,9 +46,9 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
                 </Modal.Body>
 
                  <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
+
                         <Button onClick={() => {this.props.closeModal();}}>Close</Button>
-                    </ButtonToolbar>
+
                 </Modal.Footer>
             </Modal>
         );

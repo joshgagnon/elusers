@@ -20,10 +20,10 @@ class VersionWarning extends React.PureComponent<VersionWarningProps> {
                 </Modal.Body>
 
                  <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
+
                         <Button onClick={() => {this.props.closeModal();}}>Close</Button>
-                        <Button bsStyle="danger" onClick={() => location.reload()}>Refresh</Button>
-                    </ButtonToolbar>
+                        <Button variant="danger" onClick={() => location.reload()}>Refresh</Button>
+
                 </Modal.Footer>
             </Modal>
         );

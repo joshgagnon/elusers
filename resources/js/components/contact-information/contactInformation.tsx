@@ -3,7 +3,7 @@ import { validate } from '../utils/validation';
 import { InputField, SelectField, Combobox, TextArea } from '../form-fields';
 import { reduxForm, formValueSelector, FieldArray, FormSection } from 'redux-form';
 import Icon from '../icon';
-import { FormControl, ControlLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
+import { FormControl, FormLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { AddressFields } from '../address/form';
 
@@ -12,7 +12,7 @@ export class EmailFields extends React.PureComponent<{}> {
     render(){
         return <React.Fragment>
             <FormGroup className="no-margin">
-                <Col componentClass={ControlLabel} md={3}>
+                <Col as={FormLabel} md={3}>
                      Email
                 </Col>
                  <Col md={4}>
@@ -33,7 +33,7 @@ export class FaxFields extends React.PureComponent<{}> {
     render(){
         return <React.Fragment>
             <FormGroup className="no-margin">
-               <Col componentClass={ControlLabel} md={3}>
+               <Col as={FormLabel} md={3}>
                Fax
                </Col>
                  <Col md={4}>
@@ -56,7 +56,7 @@ export class PhoneFields extends React.PureComponent<{}> {
     render(){
         return <React.Fragment>
             <FormGroup className="no-margin">
-                <Col componentClass={ControlLabel} md={3}>
+                <Col as={FormLabel} md={3}>
                      Phone
                 </Col>
                  <Col md={4}>
@@ -109,7 +109,7 @@ export class ContactInformationFields extends React.PureComponent<{selector: (st
             { fields.map((contactInformation, index) => (
               <div key={index}>
                 <FormGroup className="no-margin">
-                    <Col componentClass={ControlLabel} md={3}>
+                    <Col as={FormLabel} md={3}>
                          Type
                     </Col>
                     <Col md={8}>
@@ -140,7 +140,7 @@ export class ContactInformationFields extends React.PureComponent<{selector: (st
                   <Button onClick={() => fields.push({})}>
                 Add Contact Information
                 </Button>
-            { this.props.meta.error && <Alert bsStyle="danger">
+            { this.props.meta.error && <Alert variant="danger">
                 <p className="text-center">
                 { this.props.meta.error }
                 </p>

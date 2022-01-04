@@ -9,7 +9,7 @@ import ReduxRoot from './reduxRoot';
 
 // CSS
 import '../sass/app.scss';
-import 'react-widgets/dist/css/react-widgets.css';
+import 'react-widgets/styles.css';
 
 
 // Get the page load data injected when the app is served

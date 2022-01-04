@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import HasPermission from 'components/hoc/hasPermission';
 import { ClientRequestsHOC, ClientRequestHOC } from 'components/hoc/resourceHOCs';
 import { Link } from 'react-router';
@@ -12,11 +12,11 @@ import { push } from 'react-router-redux';
 import { ReviewContactUsForm  } from 'components/contact-us/contactUs';
 import { submit } from 'redux-form';
 
-interface ClientRequestsPanelProps {
+interface ClientRequestsCardProps {
     clientRequests?: EL.Resource<EL.ClientRequests>
 }
 
-interface ClientRequestPanelProps {
+interface ClientRequestCardProps {
     clientRequest?: EL.Resource<EL.ClientRequest>
     deleteRequest: (string) => void;
     triggerSubmit: () => void;
@@ -34,8 +34,8 @@ const ClientRequestSummaryLink = (props: {clientRequest: EL.ClientRequest}) => {
 
 @HasPermission("view client requests")
 @ClientRequestsHOC()
-@PanelHOC<ClientRequestsPanelProps>('Client Requests', props => props.clientRequests)
-export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanelProps> {
+@CardHOC<ClientRequestsCardProps>('Client Requests', props => props.clientRequests)
+export class ClientRequestsCard extends React.PureComponent<ClientRequestsCardProps> {
     render() {
         const clientRequests = this.props.clientRequests.data;
         return (
@@ -53,7 +53,7 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
 @HasPermission("view client requests")
 @MapParamsToProps(['clientRequestId'])
 @ClientRequestHOC()
-@PanelHOC<ClientRequestPanelProps>('Review Client Request', props => props.clientRequest)
+@CardHOC<ClientRequestCardProps>('Review Client Request', props => props.clientRequest)
 @(connect(undefined, (dispatch, ownProps: {clientRequestId: string}) => ({
     triggerSubmit: () => dispatch(submit(EL.FormNames.CONTACT_US_FORM)),
     submit: (values) => {
@@ -85,7 +85,7 @@ export class ClientRequestsPanel extends React.PureComponent<ClientRequestsPanel
         }));
     }
 })) as any)
-export  class ViewClientRequest extends React.PureComponent<ClientRequestPanelProps> {
+export  class ViewClientRequest extends React.PureComponent<ClientRequestCardProps> {
     deleteRequest = () => this.props.deleteRequest(this.props.clientRequest.data.id);
 
     render() {
@@ -93,8 +93,8 @@ export  class ViewClientRequest extends React.PureComponent<ClientRequestPanelPr
             <div>
             <ReviewContactUsForm initialValues={this.props.clientRequest.data.data} onSubmit={this.props.submit} />
            <div className="button-row">
-                <Button bsStyle="danger" onClick={this.deleteRequest}>Delete Client Request</Button>
-                <Button bsStyle="primary" onClick={this.props.triggerSubmit} >Create Contacts and Matter</Button>
+                <Button variant="danger" onClick={this.deleteRequest}>Delete Client Request</Button>
+                <Button variant="primary" onClick={this.props.triggerSubmit} >Create Contacts and Matter</Button>
             </div>
             </div>
         );

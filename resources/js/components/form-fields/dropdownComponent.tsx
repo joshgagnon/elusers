@@ -1,8 +1,8 @@
 import * as React from 'react';
 import BaseFieldComponent, { IFieldComponentProps, NakedBaseFieldComponent } from './baseFieldComponent';
-import * as DropdownList from 'react-widgets/lib/DropdownList';
+import * as DropdownList from 'react-widgets/DropdownList';
 import * as ReactList from 'react-list';
-import * as List from 'react-widgets/lib/List';
+import * as List from 'react-widgets/List';
 import { Fade } from 'components/animations';
 
 

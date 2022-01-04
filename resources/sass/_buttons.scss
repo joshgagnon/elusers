@@ -1,23 +1,18 @@
-.btn-secondary {
-    background: none;
-    font-weight: bold;
-    border-width: 0px;
-    margin: 1px;
+$font-size-xs: 0.7em;
+$btn-padding-y-xs:      .20rem !default;
+$btn-padding-x-xs:      .3rem !default;
+$btn-font-size-xs:      $font-size-xs !default;
+$btn-border-radius-xs: 2px;
 
-    &:hover {
-        background: none;
-        margin: 0px;
-        border-width: 1px;
-    }
-
-    &.btn-primary { color: $brand-primary; }
-    &.btn-success { color: $brand-success; }
-    &.btn-info { color: $brand-info; }
-    &.btn-warning { color: $brand-warning; }
-    &.btn-danger { color: $brand-danger; }
+.btn-xs {
+    @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $btn-font-size-xs, $btn-border-radius-xs);
 }
-
-
+.btn-default, btn-secondary {
+    color: $secondary;
+    background-color: #fff;
+    border-color: #ccc;
+}
 .btn:not(.btn-icon-only) i.fa, .btn:not(.btn-icon-only) i.far, .btn:not(.btn-icon-only) i.fas, .btn:not(.btn-icon-only) i.fab {
     margin-right: 8px;
 }
+

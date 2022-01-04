@@ -1,7 +1,7 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 
-@PanelHOC<{}>('Edit Organisation')
+@CardHOC<{}>('Edit Organisation')
 export default class Organisation extends React.PureComponent {
     render() {
         return <div className="alert alert-warning">More options to come</div>

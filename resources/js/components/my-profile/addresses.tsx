@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { UserAddressesHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import Icon from '../icon';
@@ -12,7 +12,7 @@ interface AddressesProps {
 
 @(connect((state: EL.State) => ({ user: state.user })) as any)
 @UserAddressesHOC()
-@PanelHOC<AddressesProps>('Addresses', props => props.addresses)
+@CardHOC<AddressesProps>('Addresses', props => props.addresses)
 export default class Addresses extends React.PureComponent<AddressesProps> {
     render() {
         return (

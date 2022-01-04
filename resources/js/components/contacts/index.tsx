@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
 import Table from '../dataTable';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { Form, ButtonToolbar, Button, ProgressBar, Alert, FormControl } from 'react-bootstrap';
 import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea, Combobox } from '../form-fields';
 import ReadOnlyComponent from '../form-fields/readOnlyComponent';
@@ -23,7 +23,7 @@ import * as ReactList from 'react-list';
 import { hasPermission } from '../utils/permissions';
 import HasPermissionHOC from '../hoc/hasPermission';
 import { DocumentsTree } from 'components/documents/documentsTree';
-import { ClientRequestsPanel } from 'components/client-requests';
+import { ClientRequestsCard } from 'components/client-requests';
 import { Notes } from 'components/matters';
 
 const HEADINGS = ['Name', 'Type', 'Email', 'Phone', 'Actions'];
@@ -99,11 +99,11 @@ interface ContactState {
 
 @HasPermissionHOC('view contacts')
 @ContactsHOC({cache:true})
-@PanelHOC<{contacts: EL.Resource<EL.Contact[]>}>('Contacts', props => props.contacts)
+@CardHOC<{contacts: EL.Resource<EL.Contact[]>}>('Contacts', props => props.contacts)
 @(connect<{user: EL.User}, {showUploadModal: () => void;}, {contacts: EL.Resource<EL.Contact[]>}>((state: EL.State) => ({user: state.user}), {
     showUploadModal: () => showUploadModal({uploadType: 'contacts'})
 }) as any)
-export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: EL.User}, ContactState> {
+export class ContactsCard extends React.PureComponent<ContactsProps & {user?: EL.User}, ContactState> {
 
     state = {
         searchValue: ''
@@ -113,10 +113,10 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
         const data = filterData(this.state.searchValue, this.props.contacts.data);
         return (
             <React.Fragment>
-                { hasPermission(this.props.user, 'create contact') && <ButtonToolbar>
+                { hasPermission(this.props.user, 'create contact') && <React.Fragment>
                     <Link to="/contacts/create" className="btn btn-primary"><Icon iconName="plus" />Create Contact</Link>
                     <Button onClick={this.props.showUploadModal}><Icon iconName="plus" />Upload Contact List</Button>
-                </ButtonToolbar> }
+                </React.Fragment> }
 
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
@@ -171,8 +171,8 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
 
 
 export const Contacts = props => <React.Fragment>
-  <ClientRequestsPanel />
-  <ContactsPanel />
+  <ClientRequestsCard />
+  <ContactsCard />
   </React.Fragment>
 
 interface ContactProps {
@@ -264,7 +264,7 @@ class ContactDocuments extends React.PureComponent<ContactDocumentProps> {
 
 
 
-@PanelHOC<ContactProps& {user: EL.User}>('Contact', props => props.contact)
+@CardHOC<ContactProps& {user: EL.User}>('Contact', props => props.contact)
 export class ContactDetails extends React.PureComponent<ContactProps> {
 
     render() {
@@ -284,10 +284,10 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { hasPermission(this.props.user, 'edit contact') &&  <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link> }
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
-                         <Button bsStyle="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
-                    { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="info" bsSize="sm" onClick={() => this.props.addNote(contact.id.toString())}><Icon iconName="sticky-note" />Add Note</Button> }
-                    { hasPermission(this.props.user, 'edit contact') &&<Button bsStyle="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
-                </ButtonToolbar>
+                         <Button variant="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button variant="info" bsSize="sm" onClick={() => this.props.addNote(contact.id.toString())}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button variant="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
+                </React.Fragment>
 
                 <h3>{fullname(contact)}</h3>
                 <h4>{contact.contactableType}</h4>
@@ -380,7 +380,7 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                         return <div key={note.id}>{ name(note.creator) } -  {note.note}</div>
                     }) } </dd>
                 </dl>
-                { hasSubmitted && <Alert  bsStyle="success">
+                { hasSubmitted && <Alert  variant="success">
                 <p className="text-center">
                 This contact has submitted their AML/CFT information. <Link className="btn btn-success" to={`/contacts/${contact.id}/merge`}>View</Link>
                 </p>
@@ -562,14 +562,14 @@ class ContactInformations extends React.PureComponent<{selector: (state: any, ..
 
 
 interface ContactFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
     form: string;
 }
 
 interface CreateContactProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
 }
 
 
@@ -614,10 +614,10 @@ class ContactForm extends React.PureComponent<ContactFormProps> {
                     </div>
                 <hr />
 
-                <ButtonToolbar>
+                <React.Fragment>
                     { /*<Link className="btn btn-default pull-right" to="/contacts">Back</Link> */ }
-                    <Button bsStyle="primary" className="pull-right" type="submit">Submit</Button>
-                </ButtonToolbar>
+                    <Button variant="primary" className="pull-right" type="submit">Submit</Button>
+                </React.Fragment>
 
             </Form>
         );
@@ -771,7 +771,7 @@ const EditContactForm = (reduxForm({
 @(connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const url = 'contacts';
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact created.'), (response) => push(`/contacts/${response.contactId}`)],
@@ -782,7 +782,7 @@ const EditContactForm = (reduxForm({
         }
     }
 ) as any)
-@PanelHOC<CreateContactProps>('Create Contact')
+@CardHOC<CreateContactProps>('Create Contact')
 export class CreateContact extends React.PureComponent<CreateContactProps> {
     render() {
         return <CreateContactForm onSubmit={this.props.submit} saveButtonText="Create Contact" />
@@ -791,7 +791,7 @@ export class CreateContact extends React.PureComponent<CreateContactProps> {
 
 
 interface UnwrappedEditContactProps {
-    submit?: (contactId: string, data: React.FormEvent<Form>) => void;
+    submit?: (contactId: string, data: React.FormEvent<typeof Form>) => void;
     contactId: string;
     contact?: EL.Resource<EL.Contact>;
 }
@@ -801,7 +801,7 @@ interface UnwrappedEditContactProps {
 @(connect(
     undefined,
     {
-        submit: (contactId: string, data: React.FormEvent<Form>) => {
+        submit: (contactId: string, data: React.FormEvent<typeof Form>) => {
             const url = `contacts/${contactId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Contact updated.'), (response) => push(`/contacts/${contactId}`)],
@@ -812,7 +812,7 @@ interface UnwrappedEditContactProps {
         }
     }
 ) as any)
-@PanelHOC<UnwrappedEditContactProps>('Edit Contact', props => props.contact)
+@CardHOC<UnwrappedEditContactProps>('Edit Contact', props => props.contact)
 class UnwrappedEditContact extends React.PureComponent<UnwrappedEditContactProps> {
     render() {
         return <EditContactForm initialValues={this.props.contact.data} onSubmit={data => this.props.submit(this.props.contactId, data)} saveButtonText="Save Contact" />

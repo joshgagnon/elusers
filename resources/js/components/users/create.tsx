@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { Form, ButtonToolbar, Button } from 'react-bootstrap';
 import { BasicDetailsFormFields, basicDetailsValidationRules, EmergencyContactFormFields, emergencyContactValidationRules } from './formFields';
 import { reduxForm } from 'redux-form';
@@ -10,12 +10,12 @@ import { push } from 'react-router-redux';
 import { Combobox, DatePicker, InputField } from '../form-fields';
 
 interface ICreateUserProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
 }
 
 interface ICreateUserFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit?: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit?: (data: React.FormEvent<typeof Form>) => void;
 }
 
 
@@ -37,16 +37,16 @@ class CreateUserForm extends React.PureComponent<ICreateUserFormProps> {
 
                 <hr />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Create User</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Create User</Button>
+                </React.Fragment>
             </Form>
         );
     }
 }
 
 
-@PanelHOC<ICreateUserProps>('Create User')
+@CardHOC<ICreateUserProps>('Create User')
 class CreateUser extends React.PureComponent<ICreateUserProps> {
     render() {
         return <CreateUserForm onSubmit={this.props.submit} />;
@@ -56,7 +56,7 @@ class CreateUser extends React.PureComponent<ICreateUserProps> {
 export default connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const url = 'users';
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('User created.'), (response) => push(`/my-profile/organisation/users/${response.userId}`)],

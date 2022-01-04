@@ -21,7 +21,7 @@ interface addNoteProps {
     closeModal: () => void;
     id: string;
     type: string;
-    submit: (form: string, name: string, data: React.FormEvent<Form>, id?: number) => void;
+    submit: (form: string, name: string, data: React.FormEvent<typeof Form>, id?: number) => void;
     addNote: () => void;
 }
 
@@ -39,10 +39,10 @@ class AddNoteModal extends React.PureComponent<addNoteProps> {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
+
                         <Button onClick={() => {this.props.closeModal()}}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.props.addNote}>{'Add Note'}</Button>
-                    </ButtonToolbar>
+                        <Button variant="primary" onClick={this.props.addNote}>{'Add Note'}</Button>
+
                 </Modal.Footer>
             </Modal>
         );
@@ -54,7 +54,7 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
         closeModal: () => closeModal({ modalName: EL.ModalNames.ADD_NOTE}),
         addNote: () => submit(EL.FormNames.ADD_NOTE),
 
-        submit: (id: string, type: string, data: React.FormEvent<Form>) => {
+        submit: (id: string, type: string, data: React.FormEvent<typeof Form>) => {
             const url = `${type}s/${id}/notes`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Note added.'), closeModal({ modalName: EL.ModalNames.ADD_NOTE })],

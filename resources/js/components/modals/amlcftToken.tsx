@@ -25,9 +25,9 @@ class AMLCFTToken extends React.PureComponent<AMLCFTTokenProps> {
                 </Modal.Body>
 
                  <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
+
                         <Button onClick={() => {this.props.closeModal();}}>Close</Button>
-                    </ButtonToolbar>
+
                 </Modal.Footer>
             </Modal>
         );

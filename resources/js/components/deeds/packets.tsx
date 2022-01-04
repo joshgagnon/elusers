@@ -3,7 +3,7 @@ import { ButtonToolbar, Form, FormControl, Button, Col, Row } from 'react-bootst
 import Table from '../dataTable';
 import { Link } from 'react-router';
 import Icon from '../icon';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { DeedPacketsHOC, DeedPacketHOC, UsersHOC, ContactsHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
 import { createResource, deleteResource, createNotification, updateResource, confirmAction } from '../../actions';
@@ -27,7 +27,7 @@ const HEADINGS = ['ID', 'Document Name', 'Document Date', 'Matter ID', 'Created 
 
 @UsersHOC()
 @DeedPacketsHOC()
-@PanelHOC<DeedPacketsProps, ListDeedPacketsState>('Deed Packets', props => [props.deedPackets, props.users])
+@CardHOC<DeedPacketsProps, ListDeedPacketsState>('Deed Packets', props => [props.deedPackets, props.users])
 export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListDeedPacketsState> {
 
     public readonly state: ListDeedPacketsState = {
@@ -81,10 +81,10 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
 
         return (
             <div>
-                <ButtonToolbar>
+                <React.Fragment>
                     <Link to="/deeds/create" className="btn btn-default"><Icon iconName="plus" />Create Deed Packet</Link>
                     <Link to="/deeds/records/create" className="btn btn-default"><Icon iconName="plus" />Create Deed Record</Link>
-                </ButtonToolbar>
+                </React.Fragment>
 
                 <div className="search-bar">
                     <FormControl type="text" value={this.state.searchValue} placeholder="Search" onChange={(e: any) => this.setState({searchValue: e.target.value})} />
@@ -128,13 +128,13 @@ export class ListDeedPackets extends React.PureComponent<DeedPacketsProps, ListD
 }
 
 interface CreateDeedPacketProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
     contacts?: EL.Resource<EL.Contact[]>;
 }
 
 interface DeedPacketFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
     contacts: EL.Contact[];
 }
@@ -166,9 +166,9 @@ export class DeedPacketForm extends React.PureComponent<DeedPacketFormProps> {
 
                 <hr />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">{this.props.saveButtonText}</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">{this.props.saveButtonText}</Button>
+                </React.Fragment>
             </Form>
         );
     }
@@ -182,7 +182,7 @@ const CreateDeedPacketForm = (reduxForm({
 @(connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const url = 'deed-packets';
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deed packet created.'), (response) => push('/deeds')],
@@ -194,7 +194,7 @@ const CreateDeedPacketForm = (reduxForm({
     }
 ) as any)
 @ContactsHOC()
-@PanelHOC<CreateDeedPacketProps>('Create Deed Packet', props => props.contacts)
+@CardHOC<CreateDeedPacketProps>('Create Deed Packet', props => props.contacts)
 export class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps> {
     render() {
         return <CreateDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} saveButtonText="Create Deed Packet" />;
@@ -203,7 +203,7 @@ export class CreateDeedPacket extends React.PureComponent<CreateDeedPacketProps>
 
 
 interface EditDeedPacketProps {
-    submit?: (data: React.FormEvent<Form>) => void;
+    submit?: (data: React.FormEvent<typeof Form>) => void;
     clients?: EL.Resource<EL.Client[]>;
     deedPacketId: number;
     deedPacket?: EL.Resource<EL.DeedPacket>;
@@ -214,7 +214,7 @@ interface EditDeedPacketProps {
 @(connect(
     undefined,
     (dispatch: Function, ownProps: { deedPacketId: number }) => ({
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const url = `deed-packets/${ownProps.deedPacketId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deed packet updated.'), (response) => push(`/deeds/${ownProps.deedPacketId}`)],
@@ -227,7 +227,7 @@ interface EditDeedPacketProps {
 ) as any)
 @DeedPacketHOC()
 @ContactsHOC()
-@PanelHOC<EditDeedPacketProps>('Edit Deed Packet', props => [props.deedPacket, props.contacts])
+@CardHOC<EditDeedPacketProps>('Edit Deed Packet', props => [props.deedPacket, props.contacts])
 export class EditDeedPacket extends React.PureComponent<EditDeedPacketProps> {
     render() {
         return <EditDeedPacketForm onSubmit={this.props.submit} contacts={this.props.contacts.data} initialValues={this.props.deedPacket.data} saveButtonText="Save Deed Packet" />;
@@ -270,7 +270,7 @@ interface DeedPacketProps {
 @DeedPacketsHOC()
 @ContactsHOC()
 @UsersHOC()
-@PanelHOC<DeedPacketProps>('Deed Packet', props => [props.deedPackets, props.contacts, props.users])
+@CardHOC<DeedPacketProps>('Deed Packet', props => [props.deedPackets, props.contacts, props.users])
 export class DeedPacket extends React.PureComponent<DeedPacketProps> {
     render() {
         const deedPacket = this.props.deedPackets.data.find(packet => packet.id.toString() === this.props.deedPacketId);
@@ -285,8 +285,8 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/deeds/${deedPacket.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.delete(deedPacket.id)}><Icon iconName="trash" />Delete</Button>
-                </ButtonToolbar>
+                    <Button variant="danger" bsSize="sm" onClick={() => this.props.delete(deedPacket.id)}><Icon iconName="trash" />Delete</Button>
+                </React.Fragment>
                 <h3>{deedPacket.title} (#{deedPacket.id})</h3>
 
                 <hr />

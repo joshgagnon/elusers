@@ -5,7 +5,7 @@ import { DatePicker, DurationField, InputField } from '../form-fields';
 import * as moment from 'moment';
 
 interface ICPDPRFormProps {
-    handleSubmit: React.EventHandler<React.FormEvent<Form>>;
+    handleSubmit: React.EventHandler<React.FormEvent<typeof Form>>;
 }
 
 const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];

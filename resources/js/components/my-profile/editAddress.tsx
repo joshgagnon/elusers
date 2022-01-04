@@ -2,7 +2,7 @@ import * as React from 'react';
 import { reduxForm } from 'redux-form';
 import { validate } from '../utils/validation';
 import { Form } from 'react-bootstrap';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { UserAddressHOC } from '../hoc/resourceHOCs';
 import AddressForm from '../address/form';
 import { updateResource, createNotification } from '../../actions';
@@ -34,7 +34,7 @@ function mapStateToProps(state: EL.State) {
 }
 
 const mapDispatchToProps = {
-    submit: (data: React.FormEvent<Form>, addressId: number) => {
+    submit: (data: React.FormEvent<typeof Form>, addressId: number) => {
         const url = `addresses/${addressId}`;
         const meta: EL.Actions.Meta = {
             onSuccess: [createNotification('Address updated.'), push('/my-profile/addresses')],
@@ -47,11 +47,11 @@ const mapDispatchToProps = {
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
 @UserAddressHOC()
-@PanelHOC<IEditAddressProps>('Edit Address', props => props.address)
+@CardHOC<IEditAddressProps>('Edit Address', props => props.address)
 class EditAddress extends React.PureComponent<IEditAddressProps> {
     render() {
         return <AddressForm
-                    onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.addressId)}
+                    onSubmit={(data: React.FormEvent<typeof Form>) => this.props.submit(data, this.props.addressId)}
                     initialValues={this.props.address.data} />;
     }
 }

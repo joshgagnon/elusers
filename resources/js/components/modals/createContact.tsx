@@ -12,7 +12,7 @@ interface CreateContactProps {
     closeModal: () => void;
     name: string;
     form: string;
-    submit: (form: string, name: string, data: React.FormEvent<Form>) => void;
+    submit: (form: string, name: string, data: React.FormEvent<typeof Form>) => void;
     createContact: () => void;
 }
 
@@ -30,10 +30,10 @@ class CreateContact extends React.PureComponent<CreateContactProps> {
                 </Modal.Body>
 
                  <Modal.Footer>
-                    <ButtonToolbar className="pull-right">
+
                         <Button onClick={() => {this.props.closeModal();}}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.props.createContact}>Create</Button>
-                    </ButtonToolbar>
+                        <Button variant="primary" onClick={this.props.createContact}>Create</Button>
+
                 </Modal.Footer>
             </Modal>
         );
@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(
   {
     closeModal: () => closeModal({ modalName: EL.ModalNames.CREATE_CONTACT }),
     createContact: () => submit(EL.FormNames.CREATE_CONTACT_FORM_SIMPLE),
-    submit: (form: string, name: string, data: React.FormEvent<Form>) => {
+    submit: (form: string, name: string, data: React.FormEvent<typeof Form>) => {
         const url = 'contacts';
         const meta: EL.Actions.Meta = {
             onSuccess: [createNotification('Contact created.'), (response) => change(form, name, response.contactId), closeModal({ modalName: EL.ModalNames.CREATE_CONTACT })],

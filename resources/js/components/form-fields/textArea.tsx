@@ -6,7 +6,7 @@ export default class TextArea extends React.PureComponent<IFieldComponentProps> 
     render() {
         return (
             <BaseFieldComponent {...this.props}>
-                <FormControl {...this.props.input} componentClass="textarea" rows={4} />
+                <FormControl {...this.props.input} as="textarea" rows={4} />
             </BaseFieldComponent>
         );
     }

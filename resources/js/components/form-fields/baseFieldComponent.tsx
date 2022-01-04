@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { WrappedFieldProps } from 'redux-form';
-import { FormGroup, ControlLabel, HelpBlock, Col, FormControl, Button } from 'react-bootstrap';
+import { FormGroup, FormLabel, HelpBlock, Col, FormControl, Button, Form } from 'react-bootstrap';
 import Icon from '../icon';
 
 export interface IFieldComponentProps extends WrappedFieldProps {
@@ -39,8 +39,8 @@ export class NakedBaseFieldComponent extends React.PureComponent<IBaseFieldCompo
         return (
             <FormGroup validationState={this.validationState(touched, error, warning)} className={ 'naked '  + (this.props.required ? 'required' : '')}>
                     {this.props.children}
-                    { displayError && <HelpBlock>{error}</HelpBlock>}
-                    { displayWarning && <HelpBlock>{warning}</HelpBlock> }
+                    { displayError && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
+                    { displayWarning && <Form.Control.Feedback >{warning}</Form.Control.Feedback>}
                     <HelpBlock>{this.props.help}</HelpBlock>
             </FormGroup>
      );
@@ -51,15 +51,15 @@ export class NakedBaseFieldComponent extends React.PureComponent<IBaseFieldCompo
 export default class BaseFieldComponent extends React.PureComponent<IBaseFieldComponentProps> {
     validationState(touched: boolean, error: string, warning: string) {
         if (!touched) {
-            return null;
+            return {};
         }
         if(error) {
-            return 'error'
+            return {isInvalid: true}
         }
         if(warning) {
-            return 'warning';
+            return {} // TODO
         }
-        return 'success';
+        return {isValid: true}
     }
 
     render() {
@@ -70,15 +70,15 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
             return <NakedBaseFieldComponent {...this.props} />
         }
         return (
-            <FormGroup validationState={this.validationState(touched, error, warning)} className={this.props.required ? 'required' : null}>
-                <Col componentClass={ControlLabel} md={3}>
+            <FormGroup {...this.validationState(touched, error, warning)} className={this.props.required ? 'required' : null}>
+                <Col as={FormLabel} md={3}>
                     {label}
                 </Col>
                 <Col md={8}>
                     {this.props.children}
                     { displayError && <HelpBlock>{error}</HelpBlock>}
                     { displayWarning && <HelpBlock>{warning}</HelpBlock>}
-                    <HelpBlock>{this.props.help}</HelpBlock>
+                    <Form.Text>{this.props.help}</Form.Text>
                 </Col>
                 {!!this.props.showRemoveButton &&
                     <Col md={1}>

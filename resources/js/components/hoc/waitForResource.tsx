@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Panel from '../panel';
+import Card from '../Card';
 import Loading from '../loading';
 
 type ResourceObjectOrArray = EL.Resource<any>[] | EL.Resource<any>;

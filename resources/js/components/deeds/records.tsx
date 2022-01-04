@@ -7,7 +7,7 @@ import { createResource, createNotification, updateResource, deleteResource, con
 import { Form, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { DeedPacketRecordHOC, OfficesHOC, DeedPacketsHOC } from '../hoc/resourceHOCs';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import MapParamsToProps from '../hoc/mapParamsToProps';
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -16,7 +16,7 @@ import * as moment from 'moment';
 
 
 interface EditDeedRecordProps {
-    submit?: (data: React.FormEvent<Form>) => void;
+    submit?: (data: React.FormEvent<typeof Form>) => void;
     recordId: number;
     record?: EL.Resource<EL.DeedRecord>;
     offices?: EL.Resource<EL.Office[]>;
@@ -24,14 +24,14 @@ interface EditDeedRecordProps {
 }
 
 interface CreateDeedRecordProps {
-    submit?: (data: React.FormEvent<Form>) => void;
+    submit?: (data: React.FormEvent<typeof Form>) => void;
     offices?: EL.Resource<EL.Office[]>;
     deedPackets?: EL.Resource<EL.DeedPacket[]>;
 }
 
 interface DeedRecordFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
 }
 
@@ -43,7 +43,7 @@ interface DeedRecordFormProps {
 @(connect(
     undefined,
     (dispatch: Function, ownProps: { recordId: number, record: { data: EL.DeedRecord }}) => ({
-        submit: (data: React.FormEvent<Form> | any) => {
+        submit: (data: React.FormEvent<typeof Form> | any) => {
             const url = `deed-packet-records/${ownProps.recordId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deed packet record updated.'), (response) => push(`/deeds/records/${ownProps.recordId}`)],
@@ -70,7 +70,7 @@ interface DeedRecordFormProps {
         }
     })
 ) as any)
-@PanelHOC<EditDeedRecordProps>('Edit Deed Record', props => [props.record, props.offices, props.deedPackets])
+@CardHOC<EditDeedRecordProps>('Edit Deed Record', props => [props.record, props.offices, props.deedPackets])
 export class EditDeedRecord extends React.PureComponent<EditDeedRecordProps> {
     render() {
         return <EditDeedRecordForm
@@ -93,8 +93,8 @@ const deedRecordValidationRules: EL.IValidationFields = {
 };
 
 interface DeedRecordFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     saveButtonText: string;
     offices: EL.Office[];
     deedPackets: EL.DeedPacket[];
@@ -149,8 +149,8 @@ class DeedRecordForm extends React.PureComponent<DeedRecordFormProps> {
                 <Row>
                     <Col md={11}>
                         <ButtonToolbar className="pull-right">
-                            <Button bsStyle="primary" type="submit">{this.props.saveButtonText}</Button>
-                        </ButtonToolbar>
+                            <Button variant="primary" type="submit">{this.props.saveButtonText}</Button>
+                        </React.Fragment>
                     </Col>
                 </Row>
             </Form>
@@ -171,7 +171,7 @@ const CreateDeedRecordForm = reduxForm({
 @(connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const url = `deed-packet-records`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Deed record created.'), (response) => push(`/deeds/records/${response.recordId}`)],
@@ -183,7 +183,7 @@ const CreateDeedRecordForm = reduxForm({
 ) as any)
 @OfficesHOC()
 @DeedPacketsHOC()
-@PanelHOC<CreateDeedRecordProps>('Create Deed Record', props => [props.offices, props.deedPackets])
+@CardHOC<CreateDeedRecordProps>('Create Deed Record', props => [props.offices, props.deedPackets])
 export class CreateDeedRecord extends React.PureComponent<CreateDeedRecordProps> {
     render() {
         const initialValues : any = {};
@@ -224,7 +224,7 @@ interface DeedRecordProps {
 @DeedPacketRecordHOC()
 @DeedPacketsHOC()
 @OfficesHOC()
-@PanelHOC<DeedRecordProps>('Deed Record', props => [props.record, props.deedPackets, props.offices])
+@CardHOC<DeedRecordProps>('Deed Record', props => [props.record, props.deedPackets, props.offices])
 export class DeedRecord extends React.PureComponent<DeedRecordProps> {
     render() {
         const deedRecord = this.props.record.data;
@@ -235,8 +235,8 @@ export class DeedRecord extends React.PureComponent<DeedRecordProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/deeds/records/${deedRecord.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    <Button bsStyle="danger" bsSize="sm" onClick={() => this.props.delete(deedRecord.id, deedRecord.deedPacketId)}><Icon iconName="trash" />Delete</Button>
-                </ButtonToolbar>
+                    <Button variant="danger" bsSize="sm" onClick={() => this.props.delete(deedRecord.id, deedRecord.deedPacketId)}><Icon iconName="trash" />Delete</Button>
+                </React.Fragment>
 
                 <h3>{deedRecord.documentName}</h3>
 

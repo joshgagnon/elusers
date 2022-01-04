@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Route, IndexRoute, RouteComponent } from 'react-router';
 import { WikiHOC, WikiIndexHOC } from '../components/hoc/resourceHOCs';
-import PanelHOC from '../components/hoc/panelHOC';
-import Panel from '../components/panel';
+import CardHOC from '../components/hoc/CardHOC';
+import Card from '../components/Card';
 import { Field, reduxForm } from 'redux-form';
 import { Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { InputField } from '../components/form-fields';
@@ -93,7 +93,7 @@ interface CategoryProps {
 type EditPageProps = InjectedWikiPageWithPathProps & WikiPageUpdateProps;
 
 interface WikiPageEditFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
     initialValues?: WikiPageForm,
     wikiPath: string
 }
@@ -113,15 +113,15 @@ class Wiki extends React.PureComponent<WikiProps> {
 }
 
 
-class WikiRootPanel extends React.PureComponent<WikiRootProps> {
+class WikiRootCard extends React.PureComponent<WikiRootProps> {
     render() {
         return <div>
             { (this.props.wiki.data || []).map((e: WikiData, i: number) => {
-                return <Panel title={e.category || 'No Category'} key={i}>
+                return <Card title={e.category || 'No Category'} key={i}>
                     <ul>
                         { e.articles.map((a, j) => <li key={j}><Link to={`/wiki/${a.path}`}>{ a.title }</Link></li>) }
                     </ul>
-                      </Panel>
+                      </Card>
                    }) }
             </div>
     }
@@ -131,7 +131,7 @@ class WikiRootPanel extends React.PureComponent<WikiRootProps> {
 class WikiRoot extends React.PureComponent<WikiRootProps> {
     render() {
         return <div className="container">
-            <WikiRootPanel wiki={this.props.wiki} />
+            <WikiRootCard wiki={this.props.wiki} />
         </div>
     }
 }
@@ -145,14 +145,14 @@ class WikiRoot extends React.PureComponent<WikiRootProps> {
 class WikiPageDetailsForm extends React.PureComponent<WrappedWikiPageEditFormProps> {
     render() {
         return (
-            <Form onSubmit={this.props.handleSubmit} horizontal>
+            <Form onSubmit={this.props.handleSubmit as any} horizontal>
                 <InputField name="title" label="Title" type="text" required />
                 <InputField name="keywords" label="Keywords" type="text" />
                 <InputField name="categories" label="Categories" type="text"/>
                 <div className="text-center">
                 <Link className="btn btn-default" to={`/wiki/${this.props.wikiPath}`}>Close</Link>
-                    { /** <Button bsStyle="danger" onClick={this.props.handleDelete}>Delete</Button> */ }
-                    <Button bsStyle="primary" type="submit">Save</Button>
+                    { /** <Button variant="danger" onClick={this.props.handleDelete}>Delete</Button> */ }
+                    <Button variant="primary" type="submit">Save</Button>
                 </div>
             </Form>
         );
@@ -222,20 +222,20 @@ class EditWikiPageWithPath extends React.PureComponent<EditPageProps> {
     render() {
         return <div>
          <div className="container">
-             <Panel title="Edit Page">
+             <Card title="Edit Page">
                  <WikiPageDetailsForm onSubmit={this.submit} initialValues={this.props.values} wikiPath={this.props.wikiPath}/>
-             </Panel>
+             </Card>
          </div>
              <Row>
                  <Col md={6}>
-                     <Panel title="Markdown">
+                     <Card title="Markdown">
                          <WikiPageBodyForm />
-                     </Panel>
+                     </Card>
                 </Col>
                  <Col md={6}>
-                     <Panel title="Preview">
+                     <Card title="Preview">
                          <WikiPagePreview  />
-                     </Panel>
+                     </Card>
                 </Col>
             </Row>
         </div>
@@ -246,14 +246,14 @@ class EditWikiPageWithPath extends React.PureComponent<EditPageProps> {
 
 class Categories extends React.PureComponent<CategoryProps> {
     render() {
-        return <Panel title={this.props.title}>
+        return <Card title={this.props.title}>
 
             { this.props.items.map((item: Category, i: number) => {
                 return <div key={i}><Link to={`/wiki/${item.path}/`}>{item.title}</Link></div>
             })
             }
 
-         </Panel>
+         </Card>
     }
 }
 
@@ -261,11 +261,11 @@ class Categories extends React.PureComponent<CategoryProps> {
 class WikiPageWithPath extends React.PureComponent<InjectedWikiPageWithPathProps> {
 
     renderBody(title: string, value: string) {
-        return <Panel title={title}>
+        return <Card title={title}>
              <RenderMarkdown input={{value: value}}  />
              <hr />
              <div className="text-right"><Link className="btn btn-primary" to={{query: {edit: true}, pathname: `/wiki/${this.props.wikiPath}`}}>Edit Page</Link></div>
-         </Panel>
+         </Card>
     }
 
     render() {

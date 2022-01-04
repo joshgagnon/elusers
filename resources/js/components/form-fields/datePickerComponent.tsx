@@ -1,12 +1,10 @@
 import * as React from 'react';
-import * as moment from 'moment';
-import { WrappedFieldInputProps } from 'redux-form';
 import { DateTimePicker } from 'react-widgets';
-import * as momentLocalizer from 'react-widgets-moment';
+
 
 import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
 
-momentLocalizer(moment);
+
 
 
 const formats = [

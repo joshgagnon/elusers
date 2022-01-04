@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export default function mapParamsToProps(paramNames: string[]) {
     return function<T extends React.Component<any, any>>(ComposedComponent: () => T) {
-        class PanelWithContent extends React.PureComponent<any, any> {
+        class CardWithContent extends React.PureComponent<any, any> {
             render() {
                 let paramProps = {};
 
@@ -13,6 +13,6 @@ export default function mapParamsToProps(paramNames: string[]) {
             }
         }
 
-        return PanelWithContent;
+        return CardWithContent;
     } as any
 }

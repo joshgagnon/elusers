@@ -43,11 +43,11 @@ class Upload extends React.PureComponent<UploadProps> {
                     </Modal.Body>
 
                     { !loading &&  <Modal.Footer>
-                        <ButtonToolbar className="pull-right">
+
                             <Button onClick={() => {this.props.closeModal();}}>Close</Button>
-                            <Button bsStyle="danger" onClick={() => this.setState({file: null})} disabled={!this.state.file}>Clear</Button>
-                            <Button bsStyle="primary" onClick={() => this.props.update({uploadType, files: [this.state.file]})} disabled={!this.state.file}>Upload</Button>
-                        </ButtonToolbar>
+                            <Button variant="danger" onClick={() => this.setState({file: null})} disabled={!this.state.file}>Clear</Button>
+                            <Button variant="primary" onClick={() => this.props.update({uploadType, files: [this.state.file]})} disabled={!this.state.file}>Upload</Button>
+
                     </Modal.Footer> }
 
             </Modal>

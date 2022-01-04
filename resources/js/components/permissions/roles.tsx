@@ -1,17 +1,25 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
-import { connect } from 'react-redux';
-import { RolesAndPermissionsHOC, UserHOC } from '../hoc/resourceHOCs';
+import CardHOC from '../hoc/CardHOC';
+import {connect} from 'react-redux';
+import {RolesAndPermissionsHOC, UserHOC} from '../hoc/resourceHOCs';
 import HasPermission from '../hoc/hasPermission';
-import { Form, ButtonToolbar, Button, Col, FormGroup, ControlLabel, Alert, FormControl } from 'react-bootstrap';
+import {Form, ButtonToolbar, Button, Col, FormGroup, FormLabel, Alert, FormControl} from 'react-bootstrap';
 import Table from '../dataTable';
-import { Link } from 'react-router';
+import {Link} from 'react-router';
 import Icon from '../icon';
-import { InputField, SelectField, DropdownListField, DocumentList, DatePicker, CheckboxField, TextArea } from '../form-fields';
-import { reduxForm, formValueSelector, FieldArray, FormSection } from 'redux-form';
-import { createNotification, createResource, deleteResource, updateResource, confirmAction } from '../../actions';
-import { push } from 'react-router-redux';
-import { validate } from '../utils/validation';
+import {
+    InputField,
+    SelectField,
+    DropdownListField,
+    DocumentList,
+    DatePicker,
+    CheckboxField,
+    TextArea
+} from '../form-fields';
+import {reduxForm, formValueSelector, FieldArray, FormSection} from 'redux-form';
+import {createNotification, createResource, deleteResource, updateResource, confirmAction} from '../../actions';
+import {push} from 'react-router-redux';
+import {validate} from '../utils/validation';
 import mapParamsToProps from '../hoc/mapParamsToProps';
 
 interface IRolesProps {
@@ -22,25 +30,26 @@ const HEADINGS = ['Role', 'Actions']
 
 @HasPermission('administer organisation roles')
 @RolesAndPermissionsHOC()
-@PanelHOC<IRolesProps>('Roles', props => props.rolesAndPermissions)
-export default class Roles extends React.PureComponent<{rolesAndPermissions: EL.Resource<EL.RolesAndPermissions>}> {
+@CardHOC<IRolesProps>('Roles', props => props.rolesAndPermissions)
+export default class Roles extends React.PureComponent<{ rolesAndPermissions: EL.Resource<EL.RolesAndPermissions> }> {
     render() {
-        const data : EL.Role[] = (this.props.rolesAndPermissions.data || {roles: []}).roles;
+        const data: EL.Role[] = (this.props.rolesAndPermissions.data || {roles: []}).roles;
         const baseUrl = '/my-profile/organisation/roles';
         return <div>
-                <ButtonToolbar>
-                    <Link to={`${baseUrl}/create`} className="btn btn-primary"><Icon iconName="plus" />Create Role</Link>
-                </ButtonToolbar>
-                <Table headings={HEADINGS} lastColIsActions>
-                    { data.map((role: EL.Role, index: number) => {
-                        return <tr key={index}>
-                            <td>{role.name}</td>
-                            <td>
-                                <Link to={`${baseUrl}/${role.id}/edit`} className="btn btn-sm btn-warning"><Icon iconName="pencil" />Edit</Link>
-                            </td>
-                        </tr> }) }
-                </Table>
-
+            <React.Fragment>
+                <Link to={`${baseUrl}/create`} className="btn btn-primary"><Icon iconName="plus"/>Create Role</Link>
+            </React.Fragment>
+            <Table headings={HEADINGS} lastColIsActions>
+                {data.map((role: EL.Role, index: number) => {
+                    return <tr key={index}>
+                        <td>{role.name}</td>
+                        <td>
+                            <Link to={`${baseUrl}/${role.id}/edit`} className="btn btn-sm btn-warning"><Icon
+                                iconName="pencil"/>Edit</Link>
+                        </td>
+                    </tr>
+                })}
+            </Table>
 
 
         </div>
@@ -48,12 +57,9 @@ export default class Roles extends React.PureComponent<{rolesAndPermissions: EL.
 }
 
 
-
-
-
 interface RoleFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     delete?: () => void;
     saveButtonText: string;
     form: string;
@@ -61,12 +67,12 @@ interface RoleFormProps {
 }
 
 interface CreateRoleProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
     rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>;
 }
 
 interface EditRoleProps {
-    submit: (data: React.FormEvent<Form>) => void;
+    submit: (data: React.FormEvent<typeof Form>) => void;
     rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>;
 }
 
@@ -82,25 +88,25 @@ class RoleForm extends React.PureComponent<RoleFormProps> {
 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-            <InputField name="name" label="Role Name" type="text" required/>
-            <FormSection name="permissions">
-            { Object.keys(categories).sort().map(key => {
-                return <fieldset key={key}>
-                    <h4 className="text-center">{ key }</h4>
-                    { categories[key].sort(function (a, b) {
-                          return a.name.localeCompare(b.name);
-                        }).map(permission => {
-                        return <CheckboxField name={permission.name}  key={permission.name}>
-                        { permission.name }
-                        </CheckboxField>
-                    }) }
+                <InputField name="name" label="Role Name" type="text" required/>
+                <FormSection name="permissions">
+                    {Object.keys(categories).sort().map(key => {
+                        return <fieldset key={key}>
+                            <h4 className="text-center">{key}</h4>
+                            {categories[key].sort(function (a, b) {
+                                return a.name.localeCompare(b.name);
+                            }).map(permission => {
+                                return <CheckboxField name={permission.name} key={permission.name}>
+                                    {permission.name}
+                                </CheckboxField>
+                            })}
 
-                    </fieldset>
-            }) }
-            </FormSection>
+                        </fieldset>
+                    })}
+                </FormSection>
                 <div className="button-row">
-                    { this.props.delete && <Button bsStyle="danger" onClick={this.props.delete}>Delete</Button> }
-                    <Button bsStyle="primary"  type="submit">{ this.props.saveButtonText }</Button>
+                    {this.props.delete && <Button variant="danger" onClick={this.props.delete}>Delete</Button>}
+                    <Button variant="primary" type="submit">{this.props.saveButtonText}</Button>
                 </div>
             </Form>
         );
@@ -108,7 +114,7 @@ class RoleForm extends React.PureComponent<RoleFormProps> {
 }
 
 const roleValidationRules: EL.IValidationFields = {
-    name: { name: 'Name', required: true },
+    name: {name: 'Name', required: true},
 }
 
 const validateRole = values => {
@@ -131,27 +137,27 @@ const formatRoleForm = (data: any) => {
     return {
         name: data.name,
         permissions: Object.keys(data.permissions || {}).map(key => {
-            if(data.permissions[key]){
+            if (data.permissions[key]) {
                 return key;
             }
         })
-        .filter(permission => !!permission)
+            .filter(permission => !!permission)
     }
 }
 
 const formatUserRolesForm = (data: any) => {
     return Object.keys(data || {}).map(key => {
-            if(data[key]){
-                return key;
-            }
-        })
+        if (data[key]) {
+            return key;
+        }
+    })
         .filter(role => !!role);
 }
 
 @(connect(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>) => {
+        submit: (data: React.FormEvent<typeof Form>) => {
             const roleData = formatRoleForm(data);
             const url = 'roles';
             const meta: EL.Actions.Meta = {
@@ -164,16 +170,17 @@ const formatUserRolesForm = (data: any) => {
     }
 ) as any)
 @RolesAndPermissionsHOC()
-@PanelHOC<CreateRoleProps>('Create Role', props => props.rolesAndPermissions)
+@CardHOC<CreateRoleProps>('Create Role', props => props.rolesAndPermissions)
 export class CreateRole extends React.PureComponent<CreateRoleProps> {
     render() {
         const data = {};
-        return <CreateRoleForm initialValues={data} onSubmit={this.props.submit} saveButtonText="Create Role" permissions={this.props.rolesAndPermissions.data.permissions}/>
+        return <CreateRoleForm initialValues={data} onSubmit={this.props.submit} saveButtonText="Create Role"
+                               permissions={this.props.rolesAndPermissions.data.permissions}/>
     }
 }
 
 interface UnwrappedEditRoleProps {
-    submit?: (roleId: number, data: React.FormEvent<Form>) => void;
+    submit?: (roleId: number, data: React.FormEvent<typeof Form>) => void;
     delete?: (roleId: number) => void;
     roleId: number;
     rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>;
@@ -182,7 +189,7 @@ interface UnwrappedEditRoleProps {
 @(connect(
     undefined,
     {
-        submit: (roleId: number, data: React.FormEvent<Form>) => {
+        submit: (roleId: number, data: React.FormEvent<typeof Form>) => {
             const roleData = formatRoleForm(data);
             const url = `roles/${roleId}`;
             const meta: EL.Actions.Meta = {
@@ -209,11 +216,11 @@ interface UnwrappedEditRoleProps {
     }
 ) as any)
 @RolesAndPermissionsHOC()
-@PanelHOC<UnwrappedEditRoleProps>('Edit Role', props => props.rolesAndPermissions)
+@CardHOC<UnwrappedEditRoleProps>('Edit Role', props => props.rolesAndPermissions)
 class UnwrappedEditRole extends React.PureComponent<UnwrappedEditRoleProps> {
     render() {
         const data = {...this.props.rolesAndPermissions.data.roles.find(r => r.id === this.props.roleId)};
-        if(!data) {
+        if (!data) {
             return <div className="alert alert-danger">Not Found</div>
         }
         data.permissions = data.permissions.reduce((acc: any, perm: EL.Permission) => {
@@ -221,21 +228,21 @@ class UnwrappedEditRole extends React.PureComponent<UnwrappedEditRoleProps> {
             return acc;
         }, {});
         return <EditRoleForm initialValues={data} delete={() => this.props.delete(this.props.roleId)}
-            onSubmit={data => this.props.submit(this.props.roleId, data)} saveButtonText="Save Role"
-            permissions={this.props.rolesAndPermissions.data.permissions} />
+                             onSubmit={data => this.props.submit(this.props.roleId, data)} saveButtonText="Save Role"
+                             permissions={this.props.rolesAndPermissions.data.permissions}/>
     }
 }
 
 export class EditRole extends React.PureComponent<{ params: { roleId: number; } }> {
     render() {
-        return <UnwrappedEditRole  roleId={parseInt(this.props.params.roleId as any, 10)}  />
+        return <UnwrappedEditRole roleId={parseInt(this.props.params.roleId as any, 10)}/>
     }
 }
 
 
 interface UserRolesFormmProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit: (data: React.FormEvent<typeof Form>) => void;
     form: string;
     roles: EL.Role[]
 }
@@ -246,22 +253,20 @@ class UserRolesForm extends React.PureComponent<UserRolesFormmProps> {
 
         return (
             <Form onSubmit={this.props.handleSubmit} horizontal>
-                { this.props.roles.sort(function (a, b) {
-                      return a.name.localeCompare(b.name);
-                    }).map(permission => {
-                    return <CheckboxField name={permission.name}  key={permission.name}>
-                    { permission.name }
+                {this.props.roles.sort(function (a, b) {
+                    return a.name.localeCompare(b.name);
+                }).map(permission => {
+                    return <CheckboxField name={permission.name} key={permission.name}>
+                        {permission.name}
                     </CheckboxField>
-                }) }
+                })}
                 <div className="button-row">
-                    <Button bsStyle="primary"  type="submit">Save</Button>
+                    <Button variant="primary" type="submit">Save</Button>
                 </div>
             </Form>
         );
     }
 }
-
-
 
 
 const EditUserRolesForm = (reduxForm({
@@ -272,11 +277,11 @@ const EditUserRolesForm = (reduxForm({
 @mapParamsToProps(['userId'])
 @UserHOC()
 @RolesAndPermissionsHOC()
-@PanelHOC<any>('Roles', props => [props.user, props.rolesAndPermissions])
+@CardHOC<any>('Roles', props => [props.user, props.rolesAndPermissions])
 @(connect(
     undefined,
     {
-        submit: (userId: number, data: React.FormEvent<Form>) => {
+        submit: (userId: number, data: React.FormEvent<typeof Form>) => {
             const roleData = {roles: formatUserRolesForm(data)};
             const url = `users/${userId}/roles`;
             const meta: EL.Actions.Meta = {
@@ -288,9 +293,11 @@ const EditUserRolesForm = (reduxForm({
         }
     }
 ) as any)
-export class UserRoles extends React.PureComponent<{userId?: number, user?: EL.Resource<EL.User>,
+export class UserRoles extends React.PureComponent<{
+    userId?: number, user?: EL.Resource<EL.User>,
     rolesAndPermissions?: EL.Resource<EL.RolesAndPermissions>,
-    submit?: (userId: number, data: React.FormEvent<Form>) => void;}> {
+    submit?: (userId: number, data: React.FormEvent<typeof Form>) => void;
+}> {
     render() {
         const roles = this.props.user.data.roles.reduce((acc, role) => {
             acc[role.name] = true;
@@ -300,7 +307,7 @@ export class UserRoles extends React.PureComponent<{userId?: number, user?: EL.R
             roles={this.props.rolesAndPermissions.data.roles}
             initialValues={roles}
             onSubmit={data => this.props.submit(this.props.userId, data)}
-              />
+        />
 
     }
 }

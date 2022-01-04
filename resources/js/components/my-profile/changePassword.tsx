@@ -3,18 +3,18 @@ import { Form, Button, ButtonToolbar } from 'react-bootstrap';
 import { InputField } from '../form-fields';
 import { reduxForm, reset } from 'redux-form';
 import { connect, Dispatch } from 'react-redux';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { updateResource, createNotification } from '../../actions';
 import { validate } from '../utils/validation';
 
 interface IChangePasswordProps {
     user: EL.User;
-    submit: (data: React.FormEvent<Form>, user: EL.User) => void;
+    submit: (data: React.FormEvent<typeof Form>, user: EL.User) => void;
 }
 
 interface IChangePasswordFormProps {
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
-    onSubmit?: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
+    onSubmit?: (data: React.FormEvent<typeof Form>) => void;
 }
 
 function mapStateToProps(state: EL.State) {
@@ -25,7 +25,7 @@ function mapStateToProps(state: EL.State) {
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
-        submit: (data: React.FormEvent<Form>, user: EL.User) => {
+        submit: (data: React.FormEvent<typeof Form>, user: EL.User) => {
             const url = `users/${user.id}/password`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [reset('change-password-form'), createNotification('Password changed.')],
@@ -38,11 +38,11 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 @(connect(mapStateToProps, mapDispatchToProps) as any)
-@PanelHOC<IChangePasswordProps>('Change Password')
+@CardHOC<IChangePasswordProps>('Change Password')
 export default class ChangePassword extends React.PureComponent<IChangePasswordProps> {
     render() {
         return (
-            <ChangePasswordForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.user)} />
+            <ChangePasswordForm onSubmit={(data: React.FormEvent<typeof Form>) => this.props.submit(data, this.props.user)} />
         );
     }
 }
@@ -63,9 +63,9 @@ class ChangePasswordForm extends React.PureComponent<IChangePasswordFormProps> {
                 <InputField name="newPassword" label="New Password" type="password" required />
                 <InputField name="newPasswordConfirmation" label="New Password Confirmation" type="password" required />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Change Password</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Change Password</Button>
+                </React.Fragment>
             </Form>
         );
     }

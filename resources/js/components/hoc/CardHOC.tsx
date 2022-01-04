@@ -1,14 +1,14 @@
 import * as React from 'react';
-import Panel from '../panel';
+import Card from '../Card';
 import Loading from '../loading';
 
 type ResourceObjectOrArray = EL.Resource<any>[] | EL.Resource<any>;
 
-type PanelHOCOptions = {
+type CardHOCOptions = {
     errorComponent?: any;
 }
 
-function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TProps) => ResourceObjectOrArray, options?: PanelHOCOptions) {
+function CardHOC<TProps, TState={}>(title?: string, checkResources?: (props: TProps) => ResourceObjectOrArray, options?: CardHOCOptions) {
     options = options || {};
     return function(ComposedComponent) {
 
@@ -28,7 +28,7 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
             return func(arrayOrObject)
         }
 
-        function PanelContent(props: TProps) {
+        function CardContent(props: TProps) {
             let status;
 
             if (checkResources) {
@@ -60,18 +60,18 @@ function PanelHOC<TProps, TState={}>(title?: string, checkResources?: (props: TP
              </React.Fragment>
         }
 
-        class PanelWithContent extends React.PureComponent<TProps, TState> {
+        class CardWithContent extends React.PureComponent<TProps, TState> {
             render() {
                 return (
-                    <Panel title={title}>
-                        <PanelContent {...this.props} />
-                    </Panel>
+                    <Card title={title}>
+                        <CardContent {...this.props} />
+                    </Card>
                 );
             }
         }
 
-        return PanelWithContent as any;
+        return CardWithContent as any;
     }
 }
 
-export default PanelHOC;
+export default CardHOC;

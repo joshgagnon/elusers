@@ -4,7 +4,7 @@ import { InputField } from '../form-fields';
 import { reduxForm } from 'redux-form';
 import { connect, Dispatch } from 'react-redux';
 import { UserEmergencyContactHOC } from '../hoc/resourceHOCs';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { updateResource, createNotification } from '../../actions';
 import { validate } from '../utils/validation';
 import { EmergencyContactFormFields, emergencyContactValidationRules } from '../users/formFields';
@@ -21,19 +21,19 @@ interface IViewEmergencyContactProps {
 
 interface IEditEmergencyContactProps {
     userId: number;
-    submit: (data: React.FormEvent<Form>, emergencyContactId: number, userId: number) => void;
+    submit: (data: React.FormEvent<typeof Form>, emergencyContactId: number, userId: number) => void;
     emergencyContact: EL.Resource<EL.IEmergencyContact>;
 }
 
 interface IEditEmergencyContactFormProps {
     onSubmit: (args: any) => void;
-    handleSubmit?: (data: React.FormEvent<Form>) => void;
+    handleSubmit?: (data: React.FormEvent<typeof Form>) => void;
     initialValues: EL.IEmergencyContact;
 }
 
 @mapParamsToProps(['userId'])
 @UserEmergencyContactHOC()
-@PanelHOC<IViewEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
+@CardHOC<IViewEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
 export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyContactProps> {
     render() {
         const emergencyContact = this.props.emergencyContact.data;
@@ -68,7 +68,7 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
 @(connect<{}, {}, {userId: number}>(
     undefined,
     {
-        submit: (data: React.FormEvent<Form>, emergencyContactId: number, userId: number) => {
+        submit: (data: React.FormEvent<typeof Form>, emergencyContactId: number, userId: number) => {
             const url = `emergency-contact/${emergencyContactId}`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Emergency contact updated.'), push(`/users/${userId}/emergency-contact`)],
@@ -80,12 +80,12 @@ export class ViewEmergencyContact extends React.PureComponent<IViewEmergencyCont
     }
 ) as any)
 @UserEmergencyContactHOC()
-@PanelHOC<IEditEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
+@CardHOC<IEditEmergencyContactProps>('Emergency Contact', props => props.emergencyContact)
 export class EditEmergencyContact extends React.PureComponent<IEditEmergencyContactProps> {
     render() {
         return (
             <EmergencyContactForm
-                onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.emergencyContact.data.id, this.props.userId)}
+                onSubmit={(data: React.FormEvent<typeof Form>) => this.props.submit(data, this.props.emergencyContact.data.id, this.props.userId)}
                 initialValues={this.props.emergencyContact.data || ({} as EL.IEmergencyContact) } />
         );
     }
@@ -101,9 +101,9 @@ class EmergencyContactForm extends React.PureComponent<IEditEmergencyContactForm
             <Form onSubmit={this.props.handleSubmit} horizontal>
                 <EmergencyContactFormFields />
 
-                <ButtonToolbar>
-                    <Button bsStyle="primary" className="pull-right" type="submit">Save</Button>
-                </ButtonToolbar>
+                <React.Fragment>
+                    <Button variant="primary" className="pull-right" type="submit">Save</Button>
+                </React.Fragment>
             </Form>
         )
     }

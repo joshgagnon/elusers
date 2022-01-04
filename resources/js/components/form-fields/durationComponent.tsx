@@ -37,7 +37,7 @@ export default class DurationFieldComponent extends React.PureComponent<IFieldCo
     render() {
         return (
             <BaseFieldComponent {...this.props} >
-                <FormControl value={this.state.fractionalHours} componentClass="input" type="text" onChange={this.onChange} onBlur={this.onBlur} />
+                <FormControl value={this.state.fractionalHours} as="input" type="text" onChange={this.onChange} onBlur={this.onBlur} />
             </BaseFieldComponent>
         );
     }

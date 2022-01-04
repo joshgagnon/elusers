@@ -5,7 +5,7 @@ import { Combobox, DatePicker, InputField } from '../form-fields';
 import { connect } from 'react-redux';
 import { fullname } from '../utils';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
-import Panel from '../panel';
+import Card from '../Card';
 import { hasPermission } from '../utils/permissions';
 
 
@@ -32,8 +32,8 @@ export default class MyProfile extends React.PureComponent<{user: EL.User}> {
 class MyProfileNavigation extends React.Component { // Cannot be pure component - or links wont update their ective state
     render() {
         return (
-            <Panel title="Profile">
-                <ListGroup fill>
+            <Card title="Profile">
+                <ListGroup >
                     <IndexLinkContainer to="/my-profile">
                         <ListGroupItem>Basic Details</ListGroupItem>
                     </IndexLinkContainer>
@@ -55,7 +55,7 @@ class MyProfileNavigation extends React.Component { // Cannot be pure component 
                     </LinkContainer>
 
                 </ListGroup>
-            </Panel>
+            </Card>
         );
     }
 }
@@ -64,8 +64,8 @@ class MyProfileNavigation extends React.Component { // Cannot be pure component 
 class MyOrganisationNavigation extends React.Component<{user: EL.User}> {
     render() {
         return (
-            <Panel title="Organisation">
-                <ListGroup fill>
+            <Card title="Organisation">
+                <ListGroup >
                     <IndexLinkContainer to="/my-profile/organisation">
                         <ListGroupItem>Basic Details</ListGroupItem>
                     </IndexLinkContainer>
@@ -80,7 +80,7 @@ class MyOrganisationNavigation extends React.Component<{user: EL.User}> {
                          <ListGroupItem>Roles</ListGroupItem>
                     </IndexLinkContainer> }
                 </ListGroup>
-            </Panel>
+            </Card>
         );
     }
 }

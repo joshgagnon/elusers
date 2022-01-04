@@ -1,5 +1,7 @@
+/*
+
 // Body
-$body-bg: #f5f8fa;
+
 
 // Borders
 $laravel-border-color: darken($body-bg, 10%);
@@ -10,13 +12,13 @@ $panel-inner-border: $laravel-border-color;
 
 // Typography
 $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
-$fa-font-path: '~font-awesome/fonts';
+
 $font-family-sans-serif: 'Open Sans', sans-serif;
 $font-size-base: 14px;
 $line-height-base: 1.6;
 $text-color: #636b6f;
 
-$brand-primary: #337ab7;
+$primary: #337ab7;
 
 // Navbar
 $navbar-default-bg: #fff;
@@ -26,72 +28,83 @@ $btn-default-color: $text-color;
 
 // Inputs
 $input-border: lighten($text-color, 40%);
-$input-border-focus: lighten($brand-primary, 25%);
+$input-border-focus: lighten($primary, 25%);
 $input-color-placeholder: lighten($text-color, 30%);
+*/
+
+//$zindex-modal: 1000;
 
 
-// Core variables and mixins
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 
-// Reset and dependencies
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/normalize";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/print";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/glyphicons";
+$popup-border: #cdcdcd;
 
-// Core CSS
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/type";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/code";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/grid";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/tables";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/forms";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/buttons";
+@import "~bootstrap/scss/_functions";
+@import "~bootstrap/scss/_variables";
+@import "~bootstrap/scss/_mixins";
 
-// Components
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/component-animations";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/dropdowns";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/button-groups";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/navs";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/navbar";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/breadcrumbs";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/pagination";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/pager";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/labels";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/badges";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/jumbotron";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/thumbnails";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/alerts";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/progress-bars";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/media";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/list-group";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/panels";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-embed";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/wells";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/close";
 
-// Components w/ JavaScript
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/modals";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/tooltip";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/popovers";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/carousel";
 
-// Utility classes
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
+//$body-bg: #f5f8fa;
+$font-family-sans-serif: 'Open Sans', sans-serif;
+$font-size-base: 14px;
+$btn-font-size: 14px;
 
+@import "~bootstrap/scss/_utilities";
+
+// Layout & components
+@import "~bootstrap/scss/_root";
+@import "~bootstrap/scss/_reboot";
+@import "~bootstrap/scss/_type";
+@import "~bootstrap/scss/_images";
+@import "~bootstrap/scss/_containers";
+@import "~bootstrap/scss/_grid";
+@import "~bootstrap/scss/_tables";
+@import "~bootstrap/scss/_forms";
+@import "~bootstrap/scss/_buttons";
+@import "~bootstrap/scss/_transitions";
+@import "~bootstrap/scss/_dropdown";
+@import "~bootstrap/scss/_button-group";
+@import "~bootstrap/scss/_nav";
+@import "~bootstrap/scss/_navbar";
+@import "~bootstrap/scss/_card";
+@import "~bootstrap/scss/_accordion";
+@import "~bootstrap/scss/_breadcrumb";
+@import "~bootstrap/scss/_pagination";
+@import "~bootstrap/scss/_badge";
+@import "~bootstrap/scss/_alert";
+@import "~bootstrap/scss/_progress";
+@import "~bootstrap/scss/_list-group";
+@import "~bootstrap/scss/_close";
+@import "~bootstrap/scss/_toasts";
+@import "~bootstrap/scss/_modal";
+@import "~bootstrap/scss/_tooltip";
+@import "~bootstrap/scss/_popover";
+@import "~bootstrap/scss/_carousel";
+@import "~bootstrap/scss/_spinners";
+@import "~bootstrap/scss/_offcanvas";
+@import "~bootstrap/scss/_placeholders";
+
+// Helpers
+@import "~bootstrap/scss/_helpers";
+
+// Utilities
+@import "~bootstrap/scss/utilities/api";
+
+
+$fa-font-path: '~font-awesome/fonts';
 @import "~font-awesome/scss/font-awesome";
 
 
 $font-path: '~react-widgets/lib/fonts';
 $img-path: '~react-widgets/lib/img';
-@import "~react-widgets/lib/scss/react-widgets";
+@import "~react-widgets/scss/styles.scss";
 
 @import "~jasons-formal/src/style/form";
 @import 'loading';
 @import 'buttons';
 @import 'documents';
+
+
 
 .sea-background {
     background-image: url(/images/sea-50q.jpg);
@@ -116,6 +129,7 @@ $img-path: '~react-widgets/lib/img';
     animation: 1s ease-out 0s 1 focus-in;
 }
 
+
 @keyframes focus-in {
   0% {
      filter: blur(30px);
@@ -125,7 +139,9 @@ $img-path: '~react-widgets/lib/img';
   }
 }
 
-
+.text-center {
+    text-align: center;
+}
 
 
 .public-navbar {
@@ -141,12 +157,17 @@ $img-path: '~react-widgets/lib/img';
 }
 
 .navbar {
-    .brand-logo{
-        filter: invert(100%);
-        height:24px;
-        margin-top:13px;
-        margin-left:13px;
+    .navbar-brand {
+        font-size:1rem;
     }
+    .brand-logo{
+
+        height:24px;
+    }
+}
+
+.navbar-nav {
+    margin-left: auto;
 }
 
 .login-container {
@@ -159,7 +180,7 @@ $img-path: '~react-widgets/lib/img';
 
 .form-group.required .control-label:after {
     content: "*";
-    color: $brand-danger;
+    color: $danger;
     font-size: 18px;
     line-height: 14px;
     padding-left: 2px;
@@ -183,14 +204,27 @@ table.table {
     }
 }
 
-@media only screen and (max-width: $screen-xs-max) {
+.card {
+    margin-bottom:1em;
+    .card-header {
+        font-weight: 300;
+    }
+    h3 {
+        margin: 5px 0;
+        font-weight: 300;
+    }
+}
+.navbar {
+    margin-bottom:1em;
+}
+@include media-breakpoint-down(sm) {
     .navbar {
         margin-bottom:0;
         border:none;
     }
     #main > div > .container {
         padding:0;
-        .panel {
+        .card {
             border-width: 1px 0 0 0;
             border-radius: 0;
             .btn-toolbar {
@@ -224,21 +258,11 @@ table.table {
 }
 
 
-.panel h3 {
-    margin: 5px 0;
-    font-weight: 300;
-}
-
-
-
-
 .title-row {
     margin-bottom: 16px;
 }
 
-.panel-default > .panel-heading {
-    background: $gray-lighter;
-}
+
 
 .notifications {
     position: fixed;
@@ -336,14 +360,14 @@ input.checkbox.form-control {
         font-size: 10px;
         line-height: 1.4;
         text-align: center;
-        background-color: $gray-lighter;
+        background-color: #cdcdcd;
         border: 8px solid #fff;;
         border-radius:4px;
         &.disabled{
             color: #ccc;
         }
         &.actionable:hover{
-            background-color: $brand-primary;
+            background-color: $primary;
             color:white;
             transition: background-color 0.5s ease,
                         color 0.5s ease;
@@ -426,17 +450,16 @@ p.form-question {
 
 .form-horizontal{
   .form-group-sm {
-    @media (min-width: $screen-sm-min) {
+      @include media-breakpoint-up(sm) {
       .rw-widget-container {
 
-           // height: $input-height-small;
-            font-size: $font-size-small;
-            line-height: $line-height-small;
-            border-radius: $input-border-radius-small;
+            font-size: $small-font-size;
+            line-height: $line-height-sm;
+            border-radius: $input-border-radius-sm;
 
       }
       .btn{
-        @include button-size($padding-small-vertical, $padding-small-horizontal, $font-size-small, $line-height-small, $btn-border-radius-small);
+          @include button-size($btn-padding-y-sm, $btn-padding-x-sm, $btn-font-size-sm, $btn-border-radius-sm);
       }
     }
   }
@@ -476,16 +499,16 @@ table{
         padding-bottom:20px;
     }
     .all-resolved {
-        background-color:lighten($brand-success, 20%);
+        background-color:lighten($success, 20%);
     }
     .has-deadline{
-        background-color: $brand-danger;
+        background-color: $danger;
         color:white;
         font-weight: bold;
     }
     .deadline-summary{
-        @extend .well;
-        @extend .well-sm;
+        @extend .card;
+        //@extend .card-sm;
         margin:0.5em 0;
         position: relative;
         dl{

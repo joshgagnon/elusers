@@ -2,7 +2,7 @@ import * as React from 'react';
 import { reduxForm } from 'redux-form';
 import { validate } from '../utils/validation';
 import { Form } from 'react-bootstrap';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import { UserAddressHOC } from '../hoc/resourceHOCs';
 import AddressForm from '../address/form';
 import { createResource, createNotification } from '../../actions';
@@ -15,10 +15,10 @@ interface ICreateAddressProps {
 }
 
 
-@PanelHOC<ICreateAddressProps>('Add Address')
+@CardHOC<ICreateAddressProps>('Add Address')
 class CreateAddress extends React.PureComponent<ICreateAddressProps> {
     render() {
-        return <AddressForm onSubmit={(data: React.FormEvent<Form>) => this.props.submit(data, this.props.user.id)} />;
+        return <AddressForm onSubmit={(data: React.FormEvent<typeof Form>) => this.props.submit(data, this.props.user.id)} />;
     }
 }
 
@@ -26,7 +26,7 @@ class CreateAddress extends React.PureComponent<ICreateAddressProps> {
 export default  connect(
     (state: EL.State) => ({ user: state.user }),
     {
-        submit: (data: React.FormEvent<Form>, userId: number) => {
+        submit: (data: React.FormEvent<typeof Form>, userId: number) => {
             const url = `users/${userId}/addresses`;
             const meta: EL.Actions.Meta = {
                 onSuccess: [createNotification('Address created.'), push('/my-profile/addresses')],

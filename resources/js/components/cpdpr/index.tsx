@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PanelHOC from '../hoc/panelHOC';
+import CardHOC from '../hoc/CardHOC';
 import Table from '../dataTable';
 import { UserCPDPRHOC } from '../hoc/resourceHOCs';
 import { connect } from 'react-redux';
@@ -41,10 +41,10 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps> {
             const editLink = `cpdpr/${this.props.record.id}/edit`;
 
             return (
-                <ButtonToolbar>
+                <React.Fragment>
                     <Link to={editLink} className="btn btn-info btn-sm">Edit</Link>
-                    <Button bsStyle="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
-                </ButtonToolbar>
+                    <Button variant="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
+                </React.Fragment>
             );
         }
     }
@@ -93,7 +93,7 @@ class CPDPRTable extends React.PureComponent<ICPDPRTableProps> {
 
 
 @UserCPDPRHOC()
-@PanelHOC<ICPDPRProps>('Professional Development Records', props => props.cpdpr)
+@CardHOC<ICPDPRProps>('Professional Development Records', props => props.cpdpr)
 class UserCPDPR extends React.PureComponent<ICPDPRProps> {
     render() {
         const { cpdpr, yearEndingIndex, nextYear, prevYear } = this.props;
@@ -117,7 +117,7 @@ class UserCPDPR extends React.PureComponent<ICPDPRProps> {
                                 <Button className="btn-icon-only" disabled={disablePrevButton} onClick={() => prevYear(yearEndingIndex)}><Icon iconName="arrow-left" /></Button>
                                 <Button className="btn-icon-only" disabled={disableNextButton} onClick={() => nextYear(yearEndingIndex)}><Icon iconName="arrow-right" /></Button>
                             </ButtonGroup>
-                        </ButtonToolbar>
+                        </React.Fragment>
 
                         <h3>1 April {currentRecordSet.yearEnding - 1} to 31 March {currentRecordSet.yearEnding}</h3>
                     </div>

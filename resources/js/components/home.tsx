@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { toggleSomething } from '../actions/index';
-import Panel from 'components/panel';
+import Card from 'components/Card';
 import { Row, Col } from 'react-bootstrap';
 import { UserHOC } from 'components/hoc/resourceHOCs';
 import { name } from 'components/utils';
 import { hasPermission } from 'components/utils/permissions';
-import { ClientRequestsPanel } from 'components/client-requests';
+import { ClientRequestsCard } from 'components/client-requests';
 import { Link } from 'react-router';
 import Icon from 'components/icon';
 import Deadlines from 'components/deadlines';
@@ -27,10 +27,10 @@ class Home extends React.PureComponent<{user: EL.User}> {
     render() {
         return <Row className="sea-foreground">
             <Col md={6}>
-                <Panel title={`Hello ${name(this.props.user)}`}>
+                <Card title={`Hello ${name(this.props.user)}`}>
                     <HomeActions {...this.props} />
-                </Panel>
-                <ClientRequestsPanel />
+                </Card>
+                <ClientRequestsCard />
             </Col>
             <Col md={6}>
                 <Deadlines />
