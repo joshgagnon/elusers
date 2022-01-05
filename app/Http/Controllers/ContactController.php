@@ -16,6 +16,7 @@ use App\ContactGovernmentBody;
 use App\ContactRelationship;
 use App\AccessToken;
 use App\ContactInformation;
+use App\Matter;
 use Illuminate\Http\Request;
 use App\Library\Encryption;
 use App\Library\EncryptionKey;
@@ -42,12 +43,18 @@ class ContactController extends Controller
      */
     public function all(Request $request)
     {
+        $data = Contact::getAll($request->user());
+        $response = \Response::make($data, 200);
+        $response->header('Content-Type', 'application/json');
+        return $response;
+        /*
         $orgId = $request->user()->organisation_id;
-
-        $contacts = Contact::where('organisation_id', $orgId)->with('contactable')->with(['contactInformations' => function ($query) {
-            $query->whereIn('type', ['phone', 'email']);
-        }])->orderBy('name', 'asc')->get();
-        return $contacts;
+        $contacts = Contact::where('organisation_id', $orgId)
+            ->with('contactable')
+            ->with(['contactInformations' => function ($query) {
+                $query->whereIn('type', ['phone', 'email']);
+        }])->orderBy('name', 'asc')->toSql();
+        return $contacts;*/
     }
 
     /**

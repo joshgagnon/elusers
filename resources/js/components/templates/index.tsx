@@ -37,7 +37,13 @@ export default class Templates extends React.PureComponent<any> {
                         }),
 
                         'recipients.individuals':  (this.props.contacts.data || [])
-                            .filter(contact => contact.contactableType === 'Individual')
+                            .filter((contact, index) => {
+                                if(!contact) {
+                                    const x = this.props;
+                                    debugger
+                                }
+                                return contact.contactableType === 'Individual'
+                            })
                             .map(contact => ({...contact.contactable, ...contact}))
                             .map((contact) => {
                                 return {value: {...contact, "recipientType": "individuals"}, title: `${contact.firstName} ${contact.surname}`}

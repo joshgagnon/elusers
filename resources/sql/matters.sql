@@ -11,6 +11,9 @@ with file_counts as (
             WHEN contactable_type = 'Company' THEN jsonb_build_object('contactable', cc.*)
             WHEN contactable_type = 'Trust' THEN jsonb_build_object('contactable', ct.*)
             WHEN contactable_type = 'Partnership' THEN jsonb_build_object('contactable', cp.*)
+            WHEN contactable_type = 'Court' THEN jsonb_build_object('contactable', crt.*)
+            WHEN contactable_type = 'Bank' THEN jsonb_build_object('contactable', cbk.*)
+
             ELSE null END
         )) as clients
     from matter_clients mc
@@ -19,6 +22,9 @@ with file_counts as (
     left outer join contact_companies cc on cc.id = c.contactable_id and contactable_type = 'Company'
     left outer join contact_trusts ct on ct.id = c.contactable_id and contactable_type = 'Trust'
     left outer join contact_partnerships cp on cp.id = c.contactable_id and contactable_type = 'Partnership'
+    left outer join contact_courts crt on crt.id = c.contactable_id and contactable_type = 'Court'
+    left outer join contact_banks cbk on cbk.id = c.contactable_id and contactable_type = 'Bank'
+
     group by matter_id
 )
 SELECT

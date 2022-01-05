@@ -110,7 +110,7 @@ export class ContactsPanel extends React.PureComponent<ContactsProps & {user?: E
     }
 
     render() {
-        const data = filterData(this.state.searchValue, this.props.contacts.data);
+        const data = this.props.contacts.data; //filterData(this.state.searchValue, this.props.contacts.data);
         return (
             <React.Fragment>
                 { hasPermission(this.props.user, 'create contact') && <ButtonToolbar>

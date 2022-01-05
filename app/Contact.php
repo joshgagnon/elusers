@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Library\SQLFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Traits\DefaultDirectoriesTrait;
@@ -50,6 +51,15 @@ class Contact extends Model  implements Auditable
             }
         }
         return null;
+    }
+
+    public static function getAll($user)
+    {
+        $orgId = $user->organisation_id;
+        $query = new SQLFile('contacts', ['orgId' => $orgId]);
+        $result = $query->get();
+
+        return $result[0]->contacts;
     }
 
     /**
