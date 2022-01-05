@@ -107,7 +107,7 @@ const ConnectedMessageResults = OutlookSearchHOC({cache: false})(MessageResults)
 class OutlookSearch extends React.PureComponent<MessageControlsProps, {query: string}> {
     state = {query: '' }
     render() {
-        return <typeof Form>
+        return <form>
             <div className="search-bar">
                 <FormControl type="text" value={this.state.query} placeholder="Search" onChange={(e: any) => this.setState({query: e.target.value})} />
                 { this.state.query && <ConnectedMessageResults
@@ -150,7 +150,7 @@ class ImportFromOutlookModal extends React.PureComponent<ImportFromOutlookProps,
         const { matterId, contactId, type, isLoading } = this.props;
         let title = 'Selected';
         return (
-            <Modal bsSize="large" backdrop="static" show={true} onHide={this.props.closeModal}>
+            <Modal size="lg" backdrop="static" show={true} onHide={this.props.closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>{ type === 'contact' ? 'Import Outlook Messages' : 'Import Outlook Messages'}</Modal.Title>
                 </Modal.Header>

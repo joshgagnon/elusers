@@ -43,7 +43,7 @@ class CPDPRTableRow extends React.PureComponent<ICPDPRTableRowProps> {
             return (
                 <React.Fragment>
                     <Link to={editLink} className="btn btn-info btn-sm">Edit</Link>
-                    <Button variant="danger" bsSize="sm" onClick={this.props.deleteRecord}>Delete</Button>
+                    <Button variant="danger" size="sm" onClick={this.props.deleteRecord}>Delete</Button>
                 </React.Fragment>
             );
         }

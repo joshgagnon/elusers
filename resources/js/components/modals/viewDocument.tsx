@@ -31,7 +31,7 @@ class ViewDocument extends React.PureComponent<ViewDocumentProps> {
 
 
         return (
-            <Modal backdrop="static" show={true} onHide={this.props.closeModal} bsSize="large">
+            <Modal backdrop="static" show={true} onHide={this.props.closeModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>View Document</Modal.Title>
                 </Modal.Header>

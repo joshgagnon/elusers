@@ -16,7 +16,19 @@ import {
     showAddNoteModal,
     showOutlookModal
 } from '../../actions';
-import { Form, ButtonToolbar, Button, Col, Row, FormGroup, FormLabel, Alert, FormControl, Table } from 'react-bootstrap';
+import {
+    Form,
+    ButtonToolbar,
+    Button,
+    Col,
+    Row,
+    FormGroup,
+    FormLabel,
+    Alert,
+    FormControl,
+    Table,
+    InputGroup
+} from 'react-bootstrap';
 
 import { Link } from 'react-router';
 import Icon from '../icon';
@@ -261,11 +273,11 @@ class MatterDetails extends React.PureComponent<MatterProps> {
         const matter = this.props.matter.data;
         return (
             <div>
-                <ButtonToolbar className="pull-right">
+                <InputGroup>
                     <Link to={`/matters/${matter.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    { this.props.canUpdate  && <Button variant="info" bsSize="sm" onClick={() => this.props.addNote(this.props.matterId)}><Icon iconName="sticky-note" />Add Note</Button> }
-                    { this.props.canUpdate  && <Button bsSize="small" variant="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button> }
-                </React.Fragment>
+                    { this.props.canUpdate  && <Button variant="info" size="sm" onClick={() => this.props.addNote(this.props.matterId)}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { this.props.canUpdate  && <Button size="sm" variant="danger" onClick={() => this.props.deleteMatter(this.props.matterId)}><Icon iconName="trash" />Delete</Button> }
+                    </InputGroup>
 
                 <h3>{ matter.matterNumber }</h3>
                 <h3>{ matter.matterName }</h3>
@@ -412,7 +424,7 @@ const MatterClients = ({ fields, meta: { error, submitFailed } }) => (
       <div key={index}>
         <div>
             <h4 className="text-center">Client #{ index+1 }
-            <Button style={{marginLeft: 20}} className="btn-icon-only" bsSize="small" onClick={() => fields.remove(index)}>
+            <Button style={{marginLeft: 20}} className="btn-icon-only" size="small" onClick={() => fields.remove(index)}>
                     <Icon iconName="times" />
             </Button>
             </h4>

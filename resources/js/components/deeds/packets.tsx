@@ -285,7 +285,7 @@ export class DeedPacket extends React.PureComponent<DeedPacketProps> {
             <div>
                 <ButtonToolbar className="pull-right">
                     <Link to={`/deeds/${deedPacket.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link>
-                    <Button variant="danger" bsSize="sm" onClick={() => this.props.delete(deedPacket.id)}><Icon iconName="trash" />Delete</Button>
+                    <Button variant="danger" size="sm" onClick={() => this.props.delete(deedPacket.id)}><Icon iconName="trash" />Delete</Button>
                 </React.Fragment>
                 <h3>{deedPacket.title} (#{deedPacket.id})</h3>
 

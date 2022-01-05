@@ -207,12 +207,10 @@ table.table {
 .card {
     margin-bottom:1em;
     .card-header {
+        font-size: 16px;
         font-weight: 300;
     }
-    h3 {
-        margin: 5px 0;
-        font-weight: 300;
-    }
+
 }
 .navbar {
     margin-bottom:1em;
@@ -442,6 +440,13 @@ p.form-question {
 .form-horizontal .form-group.naked {
     margin-left: 0;
     margin-right: 0;
+}
+
+form.horizontal {
+    .form-group {
+        @extend .row;
+
+    }
 }
 
 .form-group.no-margin{

@@ -6,7 +6,6 @@ import { InputField } from '../form-fields';
 import Autocomplete from 'react-google-autocomplete';
 import { Fields as ReduxFields} from 'redux-form';
 import BaseFieldComponent, { IFieldComponentProps } from '../form-fields/baseFieldComponent';
-import { FormControl } from 'react-bootstrap';
 
 interface IInputFieldComponentProps extends IFieldComponentProps {
 
@@ -122,7 +121,7 @@ export class AddressFields extends React.PureComponent<IAddressFormProps> {
 export default class AddressForm extends React.PureComponent<IAddressFormProps> {
     render() {
         return (
-            <Form onSubmit={this.props.handleSubmit}  horizontal>
+            <Form onSubmit={this.props.handleSubmit as any}  >
                 <InputField name="addressName" label="Address Name" type="text" required />
                 <AddressFields {...this.props} />
 

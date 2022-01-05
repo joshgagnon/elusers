@@ -50,10 +50,10 @@ interface DeadlineFormProps{
 }) as any)
 export class DeadlineForm extends React.PureComponent<DeadlineFormProps> {
     render() {
-       return <Form onSubmit={this.props.handleSubmit} horizontal>
+       return <Form onSubmit={this.props.handleSubmit as any} className="horizontal">
             <InputField name="title" label="Title" type="text" required/>
             <InputField name="description" label="Description" type="text" required/>
-           <DatePicker name="dueAt" label="Due Date" required />
+            <DatePicker name="dueAt" label="Due Date" required />
 
             </Form>
     }
@@ -133,8 +133,8 @@ class Deadlines extends React.PureComponent<IDeadlinesProps> {
         { matches.map((m, i) => {
             return <DeadlineDetails key={i}  deadline={m}>
                 { hasPermission(this.props.user, 'edit deadlines') &&  <div className="deadline-controls">
-                    { !m.resolvedAt && <Button bsSize="sm" variant="success" onClick={() => this.props.complete(m) }><Icon iconName="check" /> Complete</Button> }
-                   { !m.resolvedAt && <Button bsSize="sm" variant="warning" onClick={() => this.props.showUpdate(m) }><Icon iconName="pencil" /> Edit</Button> }
+                    { !m.resolvedAt && <Button size="sm" variant="success" onClick={() => this.props.complete(m) }><Icon iconName="check" /> Complete</Button> }
+                   { !m.resolvedAt && <Button size="sm" variant="warning" onClick={() => this.props.showUpdate(m) }><Icon iconName="pencil" /> Edit</Button> }
                 </div> }
             </DeadlineDetails>;
         })}

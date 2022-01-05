@@ -10,7 +10,7 @@ import {
     uploadDocument,
     uploadDocumentTree
 } from '../../actions';
-import {Button, FormLabel, FormControl, FormGroup, InputGroup} from 'react-bootstrap';
+import {Button, FormLabel, FormControl, FormGroup, InputGroup, ButtonGroup} from 'react-bootstrap';
 import Icon from '../icon';
 import {copyToClipboard, debounce, formatDateTime, name} from '../utils';
 import {UsersHOC} from 'components/hoc/resourceHOCs';
@@ -60,7 +60,7 @@ class DocumentNotes extends React.PureComponent<any> {
                              defaultValue={note}
                              placeholder={'Add a note here'}
                              rows={3}
-                             inputRef={ref => {
+                             ref={ref => {
                                  this.el = ref;
                              }}
                              disabled={!this.props.canUpdate} onChange={this.debounceChange}/>
@@ -176,9 +176,9 @@ class DocumentSideBar extends React.PureComponent<DocumentSideBarProps> {
                         <InputGroup>
                             <FormControl autoFocus type="text" placeholder={file.filename}
                                          value={this.state.renameValue} onChange={this.onChange}/>
-                            <InputGroup.Button onClick={this.submitRename}>
+                            <ButtonGroup onClick={this.submitRename}>
                                 <Button variant="primary" onClick={this.submitRename}>Save</Button>
-                            </InputGroup.Button>
+                            </ButtonGroup>
                         </InputGroup>
                     </FormGroup>}
                 </div>
@@ -522,7 +522,7 @@ class RenderFile extends React.PureComponent<any> {
                 <span className="file selected">
                         <span className="icon fa fa-plus-circle"></span>
                         <FormGroup><FormControl autoFocus type="text" onClick={e => e.stopPropagation()}
-                                                placeholder={'New Folder'} inputRef={ref => {
+                                                placeholder={'New Folder'} ref={ref => {
                             this.input = ref;
                         }}/></FormGroup>
                         <span onClick={submitCreateFolder} className="view">Create Folder</span>
@@ -582,18 +582,19 @@ class RenderFile extends React.PureComponent<any> {
 }
 
 const SearchForm = (props) => {
-    return <div>
-        <h3 className="card-title">{props.title}</h3>
+    return <div >
+            {props.title}
         <form className="form-inline pull-right">
-            <FormGroup><FormControl type="text" onChange={props.onSearchChange} placeholder="Search"
-                                    value={props.filter}/></FormGroup>
-            <div className="btn-group">
-                <Button onClick={props.expandAll}>Expand All</Button>
-                <Button onClick={props.collapseAll}>Collapse All</Button>
+            <InputGroup>
+            <FormControl type="text" onChange={props.onSearchChange} placeholder="Search"
+                                    value={props.filter}/>
+
+                <Button onClick={props.expandAll} variant={'default'}>Expand All</Button>
+                <Button onClick={props.collapseAll} variant={'default'}>Collapse All</Button>
                 { props.importFromOutlook && <Button variant={'info'} onClick={props.importFromOutlook}>Import From Outlook</Button> }
-            </div>
+            </InputGroup>
         </form>
-    </div>
+        </div>;
 }
 
 

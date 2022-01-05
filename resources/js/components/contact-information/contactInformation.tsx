@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { validate } from '../utils/validation';
 import { InputField, SelectField, Combobox, TextArea } from '../form-fields';
 import { reduxForm, formValueSelector, FieldArray, FormSection } from 'redux-form';
 import Icon from '../icon';
-import { FormControl, FormLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
+import { FormControl, FormLabel, FormGroup, Button, Col, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { AddressFields } from '../address/form';
 

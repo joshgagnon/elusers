@@ -1,6 +1,5 @@
 import * as React from 'react';
-import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
-import { FormGroup, FormLabel, HelpBlock, Col, FormControl, Button, Row } from 'react-bootstrap';
+import {FormGroup, FormLabel,  Col, FormControl, Form} from 'react-bootstrap';
 
 
 interface IInputFieldComponentProps {
@@ -17,7 +16,7 @@ export default class InputFieldComponent extends React.PureComponent<IInputField
                 </Col>
                 <Col md={8}>
                     <FormControl value={this.props.value} as="input" type="text" readOnly/>
-                    <HelpBlock>{this.props.help}</HelpBlock>
+                    <Form.Text>{this.props.help}</Form.Text>
                 </Col>
 
             </FormGroup>

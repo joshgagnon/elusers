@@ -1,13 +1,10 @@
 import * as React from 'react';
-import { ContactsHOC, ContactHOC } from '../hoc/resourceHOCs';
-import { reduxForm, formValueSelector, FieldArray } from 'redux-form';
+import {reduxForm, formValueSelector, FieldArray} from 'redux-form';
 
 import Icon from '../icon';
-import { ContactSelector } from './contactSelector';
-import { FormControl, FormLabel, FormGroup, InputGroup, Glyphicon, Button, Col, Alert } from 'react-bootstrap';
-import { DropdownListField  } from '../form-fields';
-
-
+import {ContactSelector} from './contactSelector';
+import { FormLabel, FormGroup,  Button, Col, Alert} from 'react-bootstrap';
+import {DropdownListField} from '../form-fields';
 
 
 const RELATIONSHIP_TYPES = [
@@ -41,105 +38,105 @@ const RELATIONSHIP_TYPES = [
 
 const RELATIONSHIP_OPTIONS = RELATIONSHIP_TYPES.map((type) => ({value: type}));
 
-export class RelationshipTypeSelector extends React.PureComponent<{name?: string;required?: boolean; naked?: boolean}> {
+export class RelationshipTypeSelector extends React.PureComponent<{ name?: string; required?: boolean; naked?: boolean }> {
     render() {
-        return <DropdownListField name={this.props.name}  naked={this.props.naked} textField="value" valueField="value"
-            placeholder="None" data={RELATIONSHIP_OPTIONS} required={this.props.required}/>
+        return <DropdownListField name={this.props.name} naked={this.props.naked} textField="value" valueField="value"
+                                  placeholder="None" data={RELATIONSHIP_OPTIONS} required={this.props.required}/>
     }
 }
 
 
 class RelationshipSelector extends React.PureComponent<any> {
     render() {
-        const { fields } = this.props;
+        const {fields} = this.props;
         return <div>
-            { fields.map((contact, index) => (
-              <div key={index}>
+            {fields.map((contact, index) => (
+                <div key={index}>
 
-                <FormGroup>
-                    <Col as={FormLabel} md={3}>
-                        Relationship
-                    </Col>
-                    <Col md={4}>
-                         <ContactSelector name={`${contact}.secondContactId`} required naked={true}/>
-                    </Col>
-                    <Col md={4}>
-                         <RelationshipTypeSelector name={`${contact}.relationshipType`} required naked={true}/>
-                    </Col>
-                    <Col md={1}>
-                        <Button className="btn-icon-only" onClick={(e) => {
+                    <FormGroup>
+                        <Col as={FormLabel} md={3}>
+                            Relationship
+                        </Col>
+                        <Col md={4}>
+                            <ContactSelector name={`${contact}.secondContactId`} required naked={true}/>
+                        </Col>
+                        <Col md={4}>
+                            <RelationshipTypeSelector name={`${contact}.relationshipType`} required naked={true}/>
+                        </Col>
+                        <Col md={1}>
+                            <Button className="btn-icon-only" onClick={(e) => {
                                 e.preventDefault();
                                 fields.remove(index)
-                              }}><Icon iconName="trash-o" /></Button>
-                    </Col>
+                            }}><Icon iconName="trash-o"/></Button>
+                        </Col>
                     </FormGroup>
-              </div>
-            )) }
-              <div className="button-row">
-                  <Button onClick={() => fields.push({})}>
-                Add Relationship
+                </div>
+            ))}
+            <div className="button-row">
+                <Button onClick={() => fields.push({})}>
+                    Add Relationship
                 </Button>
-            { this.props.meta.error && <Alert variant="danger">
-                <p className="text-center">
-                { this.props.meta.error }
-                </p>
-            </Alert> }
-              </div>
-          </div>
+                {this.props.meta.error && <Alert variant="danger">
+                    <p className="text-center">
+                        {this.props.meta.error}
+                    </p>
+                </Alert>}
+            </div>
+        </div>
     }
 }
 
 
 export class Relationships extends React.PureComponent<{}> {
     render() {
-         return <React.Fragment>
-                <FieldArray name="relationships" component={RelationshipSelector as any} />
-         </React.Fragment>
+        return <React.Fragment>
+            <FieldArray name="relationships" component={RelationshipSelector as any}/>
+        </React.Fragment>
     }
 }
 
 class AgentSelector extends React.PureComponent<any> {
     render() {
-        const { fields } = this.props;
+        const {fields} = this.props;
         return <div>
-            { fields.map((contact, index) => (
-              <div key={index}>
+            {fields.map((contact, index) => (
+                <div key={index}>
 
-                <FormGroup>
-                    <Col as={FormLabel} md={3}>
-                        Agent
-                    </Col>
-                    <Col md={8}>
-                         <ContactSelector name={`${contact}.agentId`} required naked={true}/>
-                    </Col>
-                    <Col md={1}>
-                        <Button className="btn-icon-only" onClick={(e) => {
+                    <FormGroup>
+                        <Col as={FormLabel} md={3}>
+                            Agent
+                        </Col>
+                        <Col md={8}>
+                            <ContactSelector name={`${contact}.agentId`} required naked={true}/>
+                        </Col>
+                        <Col md={1}>
+                            <Button className="btn-icon-only" onClick={(e) => {
                                 e.preventDefault();
                                 fields.remove(index)
-                              }}><Icon iconName="trash-o" /></Button>
-                    </Col>
+                            }}><Icon iconName="trash-o"/></Button>
+                        </Col>
                     </FormGroup>
-              </div>
-            )) }
-              <div className="button-row">
-                  <Button onClick={() => fields.push({})}>
-                Add Agent
+                </div>
+            ))}
+            <div className="button-row">
+                <Button onClick={() => fields.push({})}>
+                    Add Agent
                 </Button>
-            { this.props.meta.error && <Alert variant="danger">
-                <p className="text-center">
-                { this.props.meta.error }
-                </p>
-            </Alert> }
-              </div>
-          </div>
+                {this.props.meta.error && <Alert variant="danger">
+                    <p className="text-center">
+                        {this.props.meta.error}
+                    </p>
+                </Alert>}
+            </div>
+        </div>
     }
 }
 
 
 export class Agents extends React.PureComponent<{}> {
     render() {
-         return <React.Fragment>
-                <FieldArray name="agents" component={AgentSelector as any} />
-         </React.Fragment>
+        return <React.Fragment>
+            <FieldArray name="agents" component={AgentSelector as any}/>
+        </React.Fragment>
     }
 }

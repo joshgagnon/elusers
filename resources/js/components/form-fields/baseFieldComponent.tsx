@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { WrappedFieldProps } from 'redux-form';
-import { FormGroup, FormLabel, HelpBlock, Col, FormControl, Button, Form } from 'react-bootstrap';
+import { FormGroup, FormLabel, Col, Button, Form } from 'react-bootstrap';
 import Icon from '../icon';
 
 export interface IFieldComponentProps extends WrappedFieldProps {
@@ -37,11 +37,11 @@ export class NakedBaseFieldComponent extends React.PureComponent<IBaseFieldCompo
         const displayError = touched && warning
         const displayWarning = touched && warning;
         return (
-            <FormGroup validationState={this.validationState(touched, error, warning)} className={ 'naked '  + (this.props.required ? 'required' : '')}>
+            <FormGroup className={ 'naked '  + (this.props.required ? 'required' : '')}>
                     {this.props.children}
                     { displayError && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
                     { displayWarning && <Form.Control.Feedback >{warning}</Form.Control.Feedback>}
-                    <HelpBlock>{this.props.help}</HelpBlock>
+                 <Form.Text>{this.props.help}</Form.Text>
             </FormGroup>
      );
     }
@@ -70,14 +70,14 @@ export default class BaseFieldComponent extends React.PureComponent<IBaseFieldCo
             return <NakedBaseFieldComponent {...this.props} />
         }
         return (
-            <FormGroup {...this.validationState(touched, error, warning)} className={this.props.required ? 'required' : null}>
+            <FormGroup {...this.validationState(touched, error, warning)} className={(this.props.required ? 'required' : null) + ' row' }>
                 <Col as={FormLabel} md={3}>
                     {label}
                 </Col>
                 <Col md={8}>
                     {this.props.children}
-                    { displayError && <HelpBlock>{error}</HelpBlock>}
-                    { displayWarning && <HelpBlock>{warning}</HelpBlock>}
+                    { displayError && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>}
+                    { displayWarning && <Form.Control.Feedback >{warning}</Form.Control.Feedback>}
                     <Form.Text>{this.props.help}</Form.Text>
                 </Col>
                 {!!this.props.showRemoveButton &&

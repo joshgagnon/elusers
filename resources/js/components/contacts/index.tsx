@@ -284,9 +284,9 @@ export class ContactDetails extends React.PureComponent<ContactProps> {
                     { hasPermission(this.props.user, 'edit contact') &&  <Link to={`/contacts/${contact.id}/edit`} className="btn btn-sm btn-default"><Icon iconName="pencil-square-o" />Edit</Link> }
                     { contact.contactableType === EL.Constants.INDIVIDUAL &&
                       !contact.cddCompletionDate &&
-                         <Button variant="info" bsSize="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
-                    { hasPermission(this.props.user, 'edit contact') &&<Button variant="info" bsSize="sm" onClick={() => this.props.addNote(contact.id.toString())}><Icon iconName="sticky-note" />Add Note</Button> }
-                    { hasPermission(this.props.user, 'edit contact') &&<Button variant="danger" bsSize="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
+                         <Button variant="info" size="sm" onClick={() => this.props.requestAMLCFT(contact.id.toString())}><Icon iconName="pencil" />Get AML/CFT Token</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button variant="info" size="sm" onClick={() => this.props.addNote(contact.id.toString())}><Icon iconName="sticky-note" />Add Note</Button> }
+                    { hasPermission(this.props.user, 'edit contact') &&<Button variant="danger" size="sm" onClick={() => this.props.deleteContact(contact.id.toString())}><Icon iconName="trash" />Delete</Button> }
                 </React.Fragment>
 
                 <h3>{fullname(contact)}</h3>

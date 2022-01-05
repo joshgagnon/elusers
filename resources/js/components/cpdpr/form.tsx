@@ -13,7 +13,7 @@ const MINUTE_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 class CPDPRForm extends React.PureComponent<ICPDPRFormProps> {
     render() {
         return (
-            <Form onSubmit={this.props.handleSubmit} horizontal>
+            <Form onSubmit={this.props.handleSubmit as any} >
                 <DatePicker name="date" label="Date" required />
                 <DurationField name="minutes" label="Duration" required />
                 <InputField name="title" label="Title" type="text" required />

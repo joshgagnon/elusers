@@ -1,14 +1,12 @@
 import * as React from 'react';
-import { Route, IndexRoute, RouteComponent } from 'react-router';
+import { Route, IndexRoute} from 'react-router';
 import { WikiHOC, WikiIndexHOC } from '../components/hoc/resourceHOCs';
-import CardHOC from '../components/hoc/CardHOC';
 import Card from '../components/Card';
-import { Field, reduxForm } from 'redux-form';
+import {  reduxForm } from 'redux-form';
 import { Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { InputField } from '../components/form-fields';
 import { Field as ReduxField } from 'redux-form';
 import { Markdown } from 'react-showdown';
-import { IFieldComponentProps } from '../components/form-fields/baseFieldComponent';
 import { Button } from 'react-bootstrap';
 import { validate } from '../components/utils/validation';
 import { connect } from 'react-redux';

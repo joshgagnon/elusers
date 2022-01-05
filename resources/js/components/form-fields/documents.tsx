@@ -1,11 +1,9 @@
-"use strict";
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import { NativeTypes } from 'react-dnd-html5-backend-filedrop';
 import { DropTarget } from 'react-dnd';
-import BaseFieldComponent, { IFieldComponentProps } from './baseFieldComponent';
-import { FormControl, FormGroup, InputGroup, Glyphicon, Button } from 'react-bootstrap';
-import * as DropdownList from 'react-widgets/DropdownList';
+import BaseFieldComponent from './baseFieldComponent';
+import {FormControl,  InputGroup, Button, ButtonGroup} from 'react-bootstrap';
+import { DropdownList } from 'react-widgets';
 import Icon from '../icon';
 
 const fileTarget = {
@@ -130,7 +128,7 @@ class DocumentComponent extends React.PureComponent<any> {
                     return <div key={`${file.name || file.filename}-${i}`} className="file-row">
                     <InputGroup>
                     <FormControl type="static" defaultValue={file.name || file.filename}/>
-                        <InputGroup.Button>
+                        <ButtonGroup>
 
                              <Button disabled={!(documents.length > 1 && i > 0)} onClick={(e) => {
                                 e.preventDefault();
@@ -142,7 +140,7 @@ class DocumentComponent extends React.PureComponent<any> {
                                     this.props.input.onChange(clone);
                                 }
                               }}>
-                              <Glyphicon glyph="arrow-up"/>
+                              <Icon iconName="arrow-up"/>
                               </Button>
                              <Button disabled={!(documents.length > 1 && i < documents.length - 1)} onClick={(e) => {
                                 e.preventDefault();
@@ -154,7 +152,7 @@ class DocumentComponent extends React.PureComponent<any> {
                                     this.props.input.onChange(clone);
                                 }
                               }}>
-                              <Glyphicon glyph="arrow-down"/>
+                              <Icon iconName="arrow-down"/>
                               </Button>
                             <Button className="btn-icon-only" onClick={(e) => {
                                 e.preventDefault();
@@ -166,9 +164,9 @@ class DocumentComponent extends React.PureComponent<any> {
                               <Icon iconName="trash-o" />
                               </Button>
                              {file.id && <a target="_blank" className="btn btn-default" href={`/api/files/${file.id}`}>
-                              <Glyphicon glyph="new-window" />
+                              <Icon iconName="new-window" />
                               </a> }
-                            </InputGroup.Button>
+                            </ButtonGroup>
                     </InputGroup>
                     </div>
                 }) }
