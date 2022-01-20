@@ -387,6 +387,7 @@ class ContactController extends Controller
     public function syncContacts(Request $request)
     {
         DB::beginTransaction();
+        set_time_limit(420);
         $user = $request->user();
         try {
             $orgId = $request->user()->organisation_id;

@@ -363,6 +363,7 @@ class MatterController extends Controller
    public function syncMatters(Request $request)
     {
         DB::beginTransaction();
+        set_time_limit(420);
         $user = $request->user();
         $results = [];
         $count = 0;
