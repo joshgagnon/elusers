@@ -11,6 +11,7 @@ fi
 php artisan down
 
 sudo -u $1 git pull
+sudo -u $1 yarn cache clean
 sudo -u $1 yarn install
 sudo -u $1 NODE_ENV=production node_modules/.bin/webpack
 
