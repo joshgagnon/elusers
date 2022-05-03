@@ -24,6 +24,7 @@ class ExportFiles extends Command
         parent::__construct();
     }
 
+
     public function clear($path) {
 
         $it = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -65,7 +66,7 @@ class ExportFiles extends Command
                     $finalPath = $path.'/'.$subpath;
                 }
                 @mkdir($finalPath, 0777, true); // ignore result
-                file_put_contents($finalPath.'/'.$file->filename, $file->getContent($org->encryption_key));
+                file_put_contents($finalPath.'/'.File::filterPath($file->filename), $file->getContent($org->encryption_key));
                 // put file into
             }
         }
@@ -88,7 +89,8 @@ class ExportFiles extends Command
                     $finalPath = $finalPath.'/'.$subpath;
                 }
                 @mkdir($finalPath, 0777, true); // ignore result
-                file_put_contents($finalPath.'/'.$file->filename, $file->getContent($org->encryption_key));
+                echo $finalPath.'/'.File::filterPath($file->filename)."\n";
+                file_put_contents($finalPath.'/'.File::filterPath($file->filename), $file->getContent($org->encryption_key));
                 // put file into
             }
         }
@@ -109,7 +111,7 @@ class ExportFiles extends Command
                 $path = $path.'/'.$subpath;
             }
             @mkdir($path, 0777, true); // ignore result
-            file_put_contents($path.'/'.$file->file->filename, $file->file->getContent($org->encryption_key));
+            file_put_contents($path.'/'.File::filterPath($file->file->filename), $file->file->getContent($org->encryption_key));
             // put file into
         }
 
@@ -118,14 +120,15 @@ class ExportFiles extends Command
 
     public function handle()
     {
+        ini_set('memory_limit','2G');
         $orgId = $this->argument('organisation_id');
         $outputDir = $this->argument('output_dir');
 
         $org = Organisation::find($orgId);
 
         $this->contacts($org, $outputDir);
-        $this->matters($org, $outputDir);
-        $this->orgfiles($org, $outputDir);
+       # $this->matters($org, $outputDir);
+        #$this->orgfiles($org, $outputDir);
 
 
 
