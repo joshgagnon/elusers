@@ -10,6 +10,7 @@ use App\OrganisationFile;
 use App\Organisation;
 use App\Address;
 use App\File;
+use App\DeedPacketRecord;
 use Illuminate\Console\Command;
 
 
@@ -118,6 +119,28 @@ class ExportFiles extends Command
     }
 
 
+    public function deedFiles($org, $outputDir) {
+        $deedPackets =  DeedPacketRecord::get();
+        $path = $outputDir.'/Deed Packet Record Files';
+        $this->safeClear($path);
+        foreach($deedPackets as $deedPacket) {
+            foreach ($deedPacket->files as $file) {
+                if ($file->directory) {
+                    continue;
+                }
+                $subpath = $file->getFullPath();
+                $path = $outputDir . '/Deed Packet Record Files/' . File::filterPath($deedPacket->document_name);
+                if ($subpath) {
+                    $path = $path . '/' . File::filterPath($subpath);
+                }
+                @mkdir($path, 0777, true); // ignore result
+                file_put_contents($path . '/' . File::filterPath($file->filename), $file->getContent($org->encryption_key));
+                // put file into
+            }
+        }
+
+    }
+
     public function handle()
     {
         ini_set('memory_limit','2G');
@@ -126,9 +149,10 @@ class ExportFiles extends Command
 
         $org = Organisation::find($orgId);
 
-        $this->contacts($org, $outputDir);
+        #$this->contacts($org, $outputDir);
        # $this->matters($org, $outputDir);
         #$this->orgfiles($org, $outputDir);
+        $this->deedFiles($org, $outputDir);
 
 
 
