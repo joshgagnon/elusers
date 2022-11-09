@@ -38,3 +38,6 @@ Dates are not valid in in the datepicker on initial load - currently using a wor
 Some forms still need success/error notifications
 
 Users sub-navigation doesn't update until page refresh - probably caused by a PureComponent. I'm assuming the react-redux connect function is what is causing the issue. **Solution:** move the connect up to the parent component and pass the userId through
+
+
+USE NODE v10!!!
