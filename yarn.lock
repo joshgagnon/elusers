@@ -2650,9 +2650,9 @@ ee-first@1.1.1:
   version "1.0.0"
   resolved "https://codeload.github.com/joshgagnon/el-templates/tar.gz/629402a63039c69a381e78c6ea7227264681084c"
 
-"el-templates@github:joshgagnon/el-templates#301bd36":
+"el-templates@github:joshgagnon/el-templates#a956271":
   version "1.0.0"
-  resolved "https://codeload.github.com/joshgagnon/el-templates/tar.gz/301bd36acd636b73a486359bdb36efea0e1108c9"
+  resolved "https://codeload.github.com/joshgagnon/el-templates/tar.gz/a95627165e43b3e1bd35de02d8438bb3006d971d"
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30:
   version "1.3.682"
