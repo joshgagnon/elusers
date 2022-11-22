@@ -25,11 +25,12 @@ class FileList extends React.PureComponent<{values: any, documents: EL.Resource<
 @UsersHOC()
 @ContactsHOC()
 export default class Templates extends React.PureComponent<any> {
+    initialValues = {category: 'Evolution Templates', schema: 'letter'};
     render() {
         return (
             <div>
                 <FormLoader
-                    initialValues={{category: 'Evolution Templates', schema: 'letter'}}
+                    initialValues={this.initialValues}
                     formValues={{senders: [this.props.user], dateString: formatDate(new Date())}}
                     context={{
                         users: (this.props.users.data || []).map(user => {
@@ -38,10 +39,6 @@ export default class Templates extends React.PureComponent<any> {
 
                         'recipients.individuals':  (this.props.contacts.data || [])
                             .filter((contact, index) => {
-                                if(!contact) {
-                                    const x = this.props;
-                                    debugger
-                                }
                                 return contact.contactableType === 'Individual'
                             })
                             .map(contact => ({...contact.contactable, ...contact}))
