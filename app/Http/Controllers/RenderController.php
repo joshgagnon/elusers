@@ -28,8 +28,9 @@ class RenderController extends Controller
         if(isset($input['json'])){
             $input = json_decode($input['json']);
         }
-        $oddityUrl = 'https://oddity.catalex.nz/render';
+       // $oddityUrl = 'https://oddity.catalex.nz/render';
         ///$oddityUrl = 'http://localhost:5771/render';
+        $oddityUrl = 'http://localhost:5671/render';
         $res = $client->post($oddityUrl, [RequestOptions::JSON => $input]);
         $disp = $res->getHeader('Content-Disposition');
         if(count($existingDocs) or count($newDocs)) {

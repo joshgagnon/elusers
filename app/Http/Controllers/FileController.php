@@ -58,8 +58,8 @@ class FileController extends Controller
         }
 
         if(endswith($file->filename, '.doc') || endswith($file->filename, '.docx') || endswith($file->filename, '.odt')) {
-           // $convertUrl = 'https://convert.catalex.nz/convert';
-            $convertUrl = 'http://localhost:5671/convert';
+            $convertUrl = 'https://convert.catalex.nz/convert';
+          //  $convertUrl = 'http://localhost:5671/convert';
             $client = new Client();
             $res = $client->request('POST', $convertUrl, [
 
